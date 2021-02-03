@@ -7,11 +7,11 @@ import android.security.keystore.KeyProperties
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-
+//this class is responsible for saving and retrieving any key value pair
 class CustomSharedPreferences(context: Context)
 {
 
-
+//create a shared preferences
     private var sharedPreference: SharedPreferences
     init {
         // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC
@@ -24,6 +24,7 @@ class CustomSharedPreferences(context: Context)
             .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
             .build()
 
+        //key used for encryption
         val masterKey = MasterKey.Builder(context)
             .setKeyGenParameterSpec(spec)
             .build()
@@ -35,6 +36,7 @@ class CustomSharedPreferences(context: Context)
              EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
     }
 
+    //saves key and value pair
     fun setEncryptedPreference(key: String, value: String)
     {
         val editor = sharedPreference.edit()
@@ -42,12 +44,14 @@ class CustomSharedPreferences(context: Context)
         editor.apply()
     }
 
+    //returns the value for any given key
     fun getEncryptedPreference(key: String):String
     {
         val result =  sharedPreference.getString(key, "")
         return result.toString()
     }
 
+    //deletes the key and value
     fun deleteEncryptedPreference(key: String):Boolean
     {
         sharedPreference.edit().apply {
@@ -56,7 +60,6 @@ class CustomSharedPreferences(context: Context)
         }
         return sharedPreference.contains(key)
     }
-
 
 
 }

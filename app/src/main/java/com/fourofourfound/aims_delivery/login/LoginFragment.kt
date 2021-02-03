@@ -31,14 +31,20 @@ class LoginFragment : Fragment() {
             this.viewModel = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        //initialize background resource for loading animation
         binding.isLoading.setBackgroundResource(R.drawable.anim_loading)
         loadingAnimation = binding.isLoading.background as AnimationDrawable
+
+        //checks if shared preferences already contains a user that is logged in
         if(viewModel.checkUserLoggedIn()) findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
 
+        //loading animation
         viewModel.loading.observe(viewLifecycleOwner,  {
             loadingAnimation.apply {  if (it){start()} else stop() }
         })
 
+        //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner,  {
             if (it) {
                 findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
@@ -50,15 +56,19 @@ class LoginFragment : Fragment() {
         //            hideSoftKeyboard(requireActivity())
         //        }
 
+        //animate the error message by zooming in
         viewModel.errorMessage.observe(viewLifecycleOwner,  {
             val animation = AnimationUtils.loadAnimation(activity, R.anim.zoom_in_animation)
             binding.loginErrorMessage.startAnimation(animation)
         })
 
+        //show dialog listener
         binding.contactMyProvider.setOnClickListener {
             showDialog()
       }
 
+/*        added done button in the keyboard.
+        starts user authentication on click*/
         binding.passwordInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewModel.authenticateUser()
@@ -68,6 +78,7 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+    //method to display the dialog with provider's number
     private fun showDialog() {
         val dialogView = LayoutInflater.from(context).inflate(
             R.layout.contact_my_provider_dialog,
@@ -82,6 +93,8 @@ class LoginFragment : Fragment() {
             }
         .show()
     }
+
+    //start the intent to call the provider
     private fun startCall() {
         val intent = Intent(Intent.ACTION_DIAL)
         val phoneNumber = "tel:" + getString(R.string.provider_number)

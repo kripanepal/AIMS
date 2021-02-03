@@ -11,6 +11,8 @@ import com.fourofourfound.aims_delivery.network.UserLoginInfo
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) :AndroidViewModel(application) {
+
+    //required variables
     private val myApplication = application
 
     private val _navigate = MutableLiveData<Boolean>()
@@ -30,6 +32,7 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
         get() = _errorMessage
 
 
+    //save the user to the shared preferences encrypting the given username and password
     private fun saveUser(userName:String, password:String) {
          CustomSharedPreferences(myApplication).apply {
             setEncryptedPreference("username", userName)
@@ -37,6 +40,7 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
          }
     }
 
+    //checks if shared preferences already contain a user that is logged in
     fun checkUserLoggedIn(): Boolean {
         CustomSharedPreferences(myApplication).apply {
              val userName = getEncryptedPreference("username")
@@ -46,6 +50,7 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
         }
     }
 
+    //calls retrofit service to verify the user
     fun authenticateUser()
     {
         _loading.value = true
@@ -53,18 +58,19 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
            try{
                 MakeNetworkCall.retrofitService.validateUser(UserLoginInfo(userName.value.toString(),password.value.toString()))
                 _navigate.value = true
-               _loading.value = true
+               _loading.value = false
                saveUser(userName.value.toString(),password.value.toString())
             }
             catch (t:Throwable)
             {
                 _errorMessage.value = t.message
                _navigate.value = false
-                _loading.value = true
+                _loading.value = false
             }
         }
     }
 
+    //callback to ensure that the navigation is not triggered twice
     fun doneNavigatingToHomePage()
     {
         _navigate.value = false

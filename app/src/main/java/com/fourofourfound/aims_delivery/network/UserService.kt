@@ -8,6 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+//server url
 private const val BASE_URL = "https://aims-server.herokuapp.com"
 
 
@@ -16,8 +17,8 @@ val moshi: Moshi = Moshi.Builder()
     .build()
 
 
-//add a retrofit object
-var retrofit = Retrofit.Builder()
+// a retrofit object
+var retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(BASE_URL)
