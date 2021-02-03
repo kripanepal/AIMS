@@ -1,10 +1,10 @@
-package com.fourofourfound.encrypted_preferences.homePage
+package com.fourofourfound.aims_delivery.homePage
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.fourofourfound.encrypted_preferences.CustomSharedPreferences
+import com.fourofourfound.aims_delivery.CustomSharedPreferences
 
 class HomePageViewModel(application: Application) :AndroidViewModel(application) {
     private val myApplication = application

@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "Encrypted_preferences"
+rootProject.name = "AIMS Delivery"

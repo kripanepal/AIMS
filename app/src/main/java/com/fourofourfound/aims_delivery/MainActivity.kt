@@ -1,7 +1,8 @@
-package com.fourofourfound.encrypted_preferences
+package com.fourofourfound.aims_delivery
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.fourofourfound.encrypted_preferences.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -9,6 +10,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
          setContentView(R.layout.activity_main)
     }
+
+
 
 
 }

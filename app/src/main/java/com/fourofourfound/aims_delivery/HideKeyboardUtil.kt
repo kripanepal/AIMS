@@ -1,4 +1,4 @@
-package com.fourofourfound.encrypted_preferences
+package com.fourofourfound.aims_delivery
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE

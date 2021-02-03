@@ -1,4 +1,4 @@
-package com.fourofourfound.encrypted_preferences.homePage
+package com.fourofourfound.aims_delivery.homePage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.encrypted_preferences.R
 import com.fourofourfound.encrypted_preferences.databinding.FragmentHomePageBinding
@@ -16,7 +15,7 @@ class HomePage : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         binding = DataBindingUtil.inflate<FragmentHomePageBinding>(
@@ -27,7 +26,7 @@ class HomePage : Fragment() {
         binding.viewModel =viewModel
         binding.lifecycleOwner = this
 
-        viewModel.userLoggedIn.observe(viewLifecycleOwner, Observer {
+        viewModel.userLoggedIn.observe(viewLifecycleOwner,  {
             if(!it) findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
         })
 
