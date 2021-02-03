@@ -46,21 +46,21 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
         }
     }
 
-    fun authenticateUser(userName: String, password: String)
+    fun authenticateUser()
     {
         _loading.value = true
         viewModelScope.launch {
            try{
-                MakeNetworkCall.retrofitService.validateUser(UserLoginInfo(userName,password))
+                MakeNetworkCall.retrofitService.validateUser(UserLoginInfo(userName.value.toString(),password.value.toString()))
                 _navigate.value = true
-               _loading.value = false
-               saveUser(userName,password)
+               _loading.value = true
+               saveUser(userName.value.toString(),password.value.toString())
             }
             catch (t:Throwable)
             {
                 _errorMessage.value = t.message
                _navigate.value = false
-                _loading.value = false
+                _loading.value = true
             }
         }
     }
