@@ -61,11 +61,7 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
     //calls retrofit service to verify the user
     fun authenticateUser()
     {
-        if(userName.value.isNullOrEmpty() or password.value.isNullOrEmpty()) {
-            _passwordFieldTouched.value = true
-            _userFieldTouched.value = true
-            return
-        }
+        if(checkFieldsEmpty()) return
 
         _loading.value = true
         viewModelScope.launch {
@@ -82,6 +78,19 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
                 _loading.value = false
             }
         }
+    }
+
+    private fun checkFieldsEmpty(): Boolean {
+        if (userName.value.isNullOrEmpty() or password.value.isNullOrEmpty()) {
+            if (userName.value.isNullOrEmpty()) {
+                _userFieldTouched.value = true
+            }
+            if (password.value.isNullOrEmpty()) {
+                _passwordFieldTouched.value = true
+            }
+            return true
+        }
+        return false
     }
 
     //callback to ensure that the navigation is not triggered twice
