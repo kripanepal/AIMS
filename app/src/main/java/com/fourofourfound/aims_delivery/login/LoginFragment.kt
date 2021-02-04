@@ -67,7 +67,25 @@ class LoginFragment : Fragment() {
             showDialog()
       }
 
-/*        added done button in the keyboard.
+        viewModel.userFieldTouched.observe(viewLifecycleOwner){
+            if(it){
+                binding.userIdInput.apply {
+                    error = "User Id is required"
+                    hint = "Please enter your user Id"
+                }
+            }
+        }
+
+        viewModel.passwordFieldTouched.observe(viewLifecycleOwner){
+            if(it){
+                binding.passwordInput.apply {
+                    error = "Password is required"
+                    hint = "Please enter your password"
+                }
+            }
+        }
+
+        /*added done button in the keyboard.
         starts user authentication on click*/
         binding.passwordInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {

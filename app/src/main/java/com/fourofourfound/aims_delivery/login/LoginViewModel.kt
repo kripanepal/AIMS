@@ -31,6 +31,14 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
+    private val _userFieldTouched = MutableLiveData<Boolean>()
+    val userFieldTouched: LiveData<Boolean>
+        get() = _userFieldTouched
+
+    private val _passwordFieldTouched = MutableLiveData<Boolean>()
+    val passwordFieldTouched: LiveData<Boolean>
+        get() = _passwordFieldTouched
+
 
     //save the user to the shared preferences encrypting the given username and password
     private fun saveUser(userName:String, password:String) {
@@ -53,6 +61,12 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
     //calls retrofit service to verify the user
     fun authenticateUser()
     {
+        if(userName.value.isNullOrEmpty() or password.value.isNullOrEmpty()) {
+            _passwordFieldTouched.value = true
+            _userFieldTouched.value = true
+            return
+        }
+
         _loading.value = true
         viewModelScope.launch {
            try{
@@ -75,6 +89,14 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
     {
         _navigate.value = false
     }
+    fun userIdTextChanged()
+    {
+        _userFieldTouched.value = false
+    }
 
+    fun passwordTextChanged()
+    {
+        _passwordFieldTouched.value = false
+    }
 
 }
