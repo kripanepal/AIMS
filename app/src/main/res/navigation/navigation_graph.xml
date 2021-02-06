@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/landingFragment">
 
     <fragment
         android:id="@+id/homePage"
@@ -28,4 +28,9 @@
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="com.fourofourfound.aims_delivery.landingPage.LandingFragment"
+        android:label="fragment_landing"
+        tools:layout="@layout/fragment_landing" />
 </navigation>
