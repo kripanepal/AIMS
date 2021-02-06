@@ -20,7 +20,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"
+            android:text="Home"
             tools:layout_editor_absoluteX="-16dp"
             tools:layout_editor_absoluteY="0dp" />
 

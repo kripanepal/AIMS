@@ -40,4 +40,14 @@
             android:id="@+id/action_landingFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/deliveryFragment"
+        android:name="com.fourofourfound.aims_delivery.delivery.DeliveryFragment"
+        android:label="fragment_delivery"
+        tools:layout="@layout/fragment_delivery" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.fourofourfound.aims_delivery.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
