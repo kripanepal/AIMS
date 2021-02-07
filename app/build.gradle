@@ -86,6 +86,10 @@ dependencies {
     //shared preferences
     implementation 'androidx.security:security-crypto:1.1.0-alpha03'
 
+    //TODO Remove this in production
+    // debugImplementation because LeakCanary should only run in debug builds.
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+
 
 
 
