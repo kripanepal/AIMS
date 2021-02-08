@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.homePage
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -19,7 +18,6 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
     //how to create the view holder
     //viewGroup is  always the recycler view in this case
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.i("AA", "AAA")
         return ViewHolder.from(parent)
 
     }
@@ -51,7 +49,6 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
         //change view
         fun bind(item: Trip, clickListener: TripListListener) {
-            Log.i("AA", "aa")
             //added a new binding
             binding.trip = item
             binding.clickListener = clickListener
@@ -73,6 +70,6 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
 class TripListListener(val clickListener: (tripId: String) -> Unit) {
     fun onClick(trip: Trip) {
-        clickListener(trip._id)
+        clickListener(trip.name)
     }
 }

@@ -36,7 +36,7 @@ class HomePage : Fragment() {
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { tripId ->
-            Toast.makeText(context, "$tripId", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "$tripId", Toast.LENGTH_SHORT).show()
         })
         binding.sleepList.adapter = adapter
 
