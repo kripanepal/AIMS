@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.data.trip.TripInfo
 import com.fourofourfound.encrypted_preferences.R
 import com.fourofourfound.encrypted_preferences.databinding.FragmentHomePageBinding
 
@@ -41,29 +40,12 @@ class HomePage : Fragment() {
         })
         binding.sleepList.adapter = adapter
 
-        adapter.submitList(
-            listOf(
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa"),
-                TripInfo("AA", "aa")
-            )
-        )
+        viewModel.tripList.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
 
 
-        // Inflate the layout for this fragment
+
         return binding.root
     }
 

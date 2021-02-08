@@ -6,16 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-
-import com.fourofourfound.aims_delivery.data.trip.TripInfo
+import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.encrypted_preferences.databinding.TripListListViewBinding
 
 
-class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<TripInfo,
+class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<Trip,
         TripListAdapter.ViewHolder>(TripsDiffCallBack()) {
 
 
-    var data = listOf<TripInfo>()
+    var data = listOf<Trip>()
 
     //how to create the view holder
     //viewGroup is  always the recycler view in this case
@@ -51,7 +50,7 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
         }
 
         //change view
-        fun bind(item: TripInfo, clickListener: TripListListener) {
+        fun bind(item: Trip, clickListener: TripListListener) {
             Log.i("AA", "aa")
             //added a new binding
             binding.trip = item
@@ -61,19 +60,19 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
     }
 
     //using diffUtill to change the list
-    class TripsDiffCallBack : DiffUtil.ItemCallback<TripInfo>() {
-        override fun areItemsTheSame(oldItem: TripInfo, newItem: TripInfo): Boolean {
+    class TripsDiffCallBack : DiffUtil.ItemCallback<Trip>() {
+        override fun areItemsTheSame(oldItem: Trip, newItem: Trip): Boolean {
             return oldItem._id == newItem._id
         }
 
-        override fun areContentsTheSame(oldItem: TripInfo, newItem: TripInfo): Boolean {
+        override fun areContentsTheSame(oldItem: Trip, newItem: Trip): Boolean {
             return oldItem == newItem
         }
     }
 }
 
 class TripListListener(val clickListener: (tripId: String) -> Unit) {
-    fun onClick(trip: TripInfo) {
+    fun onClick(trip: Trip) {
         clickListener(trip._id)
     }
 }

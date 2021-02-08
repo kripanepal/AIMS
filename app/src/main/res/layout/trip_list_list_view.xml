@@ -6,7 +6,7 @@
 
         <variable
             name="trip"
-            type="com.fourofourfound.aims_delivery.data.trip.TripInfo" />
+            type="com.fourofourfound.aims_delivery.domain.Trip" />
 
         <variable
             name="clickListener"

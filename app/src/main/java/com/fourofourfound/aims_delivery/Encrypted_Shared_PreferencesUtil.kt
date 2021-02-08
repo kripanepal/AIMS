@@ -11,7 +11,7 @@ class CustomSharedPreferences(context: Context)
 {
 
     //create a shared preferences
-    private lateinit var sharedPreference: SharedPreferences
+    private var sharedPreference: SharedPreferences
     init {
         // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC
 
@@ -22,7 +22,7 @@ class CustomSharedPreferences(context: Context)
 
         sharedPreference = EncryptedSharedPreferences.create(
             context,
-            "encrypted-shared-preferences",
+            "encrypted-shared-preferences1",
             mainKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
