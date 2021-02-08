@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.encrypted_preferences.R
-import com.fourofourfound.encrypted_preferences.databinding.FragmentHomePageBinding
+import com.fourofourfound.aimsdelivery.R
+import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 
 class HomePage : Fragment() {
 

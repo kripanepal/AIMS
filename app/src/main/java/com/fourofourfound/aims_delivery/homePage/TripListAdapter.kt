@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.Trip
-import com.fourofourfound.encrypted_preferences.databinding.TripListListViewBinding
+import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
 
 class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<Trip,

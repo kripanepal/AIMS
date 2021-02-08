@@ -11,7 +11,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.fourofourfound.encrypted_preferences"
+        applicationId "com.fourofourfound.aimsdelivery"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
