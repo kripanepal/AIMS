@@ -1,6 +1,6 @@
 package com.fourofourfound.aims_delivery.network.user
 
-import com.fourofourfound.aims_delivery.data.user.UserLoginInfo
+import com.fourofourfound.aims_delivery.domain.UserLoginInfo
 import com.fourofourfound.aims_delivery.network.tripList.NetworkTripList
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi

@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.CustomSharedPreferences
-import com.fourofourfound.aims_delivery.data.user.UserLoginInfo
+import com.fourofourfound.aims_delivery.domain.UserLoginInfo
 import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
 import kotlinx.coroutines.launch
 

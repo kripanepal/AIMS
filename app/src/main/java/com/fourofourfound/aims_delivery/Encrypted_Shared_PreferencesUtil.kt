@@ -22,7 +22,7 @@ class CustomSharedPreferences(context: Context)
 
         sharedPreference = EncryptedSharedPreferences.create(
             context,
-            "encrypted-shared-preferences1",
+            "encrypted-shared-preferences",
             mainKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
