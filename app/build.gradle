@@ -11,7 +11,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.fourofourfound.encrypted_preferences"
+        applicationId "com.fourofourfound.aimsdelivery"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
@@ -36,6 +36,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding  true
     }
 
 
@@ -89,6 +90,13 @@ dependencies {
     //TODO Remove this in production
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+
+    // Room database
+    implementation "androidx.room:room-runtime:$version_room"
+    kapt "androidx.room:room-compiler:$version_room"
+
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$version_room"
 
 
 

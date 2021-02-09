@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.fourofourfound.encrypted_preferences.R
+import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

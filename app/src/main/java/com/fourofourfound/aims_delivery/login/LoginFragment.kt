@@ -12,19 +12,23 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.encrypted_preferences.R
-import com.fourofourfound.encrypted_preferences.databinding.FragmentLoginBinding
+import com.fourofourfound.aimsdelivery.R
+import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 
 
 class LoginFragment : Fragment() {
-    lateinit var binding: FragmentLoginBinding
+
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
+
     private lateinit var loadingAnimation: AnimationDrawable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
-        binding = FragmentLoginBinding.inflate(inflater)
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater)
 
         val viewModel = LoginViewModel(requireNotNull(this.activity).application)
         binding.apply {
@@ -118,6 +122,11 @@ class LoginFragment : Fragment() {
         val phoneNumber = "tel:" + getString(R.string.provider_number)
         intent.data = Uri.parse(phoneNumber)
         startActivity(intent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
