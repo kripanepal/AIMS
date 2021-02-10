@@ -89,7 +89,7 @@ dependencies {
 
     //TODO Remove this in production
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
     // Room database
     implementation "androidx.room:room-runtime:$version_room"
