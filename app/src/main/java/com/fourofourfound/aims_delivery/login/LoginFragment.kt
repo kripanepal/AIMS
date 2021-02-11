@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
@@ -30,7 +31,7 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater)
 
-        val viewModel = LoginViewModel(requireNotNull(this.activity).application)
+        val viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         binding.apply {
             this.viewModel = viewModel
             lifecycleOwner = viewLifecycleOwner

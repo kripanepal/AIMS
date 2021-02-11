@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
@@ -26,7 +27,7 @@ class HomePage : Fragment() {
             inflater, R.layout.fragment_home_page, container, false
         )
 
-        val viewModel = HomePageViewModel(requireNotNull(this.activity).application)
+        val viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
