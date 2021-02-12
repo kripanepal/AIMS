@@ -1,6 +1,6 @@
 package com.fourofourfound.aims_delivery.network.tripList
 
-import com.fourofourfound.aims_delivery.database.entities.DataBaseTripList
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.squareup.moshi.JsonClass
 
@@ -19,7 +19,9 @@ fun List<NetworkTripList>.asDomainModel(): List<Trip> {
         Trip(
             _id = it._id,
             name = it.name,
-            _v = it._v
+            _v = it._v,
+            completed = false
+
         )
     }
 }
@@ -28,9 +30,9 @@ fun List<NetworkTripList>.asDomainModel(): List<Trip> {
 /**
  * Convert Network results to database objects
  */
-fun List<NetworkTripList>.asDatabaseModel(): Array<DataBaseTripList> {
+fun List<NetworkTripList>.asDatabaseModel(): Array<DatabaseTrip> {
     return map {
-        DataBaseTripList(
+        DatabaseTrip(
             _id = it._id,
             name = it.name, _v = it._v
         )

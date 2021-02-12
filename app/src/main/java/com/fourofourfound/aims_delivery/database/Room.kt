@@ -4,19 +4,23 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.DataBaseTripList
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 
 @Dao
 interface TripListDao {
-    @Query("select * from DataBaseTripList")
-    fun getTripList(): LiveData<List<DataBaseTripList>>
+    @Query("select * from DatabaseTrip")
+    fun getTripList(): LiveData<List<DatabaseTrip>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg trip: DataBaseTripList)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAll(vararg trip: DatabaseTrip)
+
+    @Query("update DatabaseTrip set completed=:status where _id= :tripId")
+    fun markTripCompleted(tripId:String,status:Boolean)
+
 }
 
 
-@Database(entities = [DataBaseTripList::class], version = 1)
+@Database(entities = [DatabaseTrip::class], version = 1)
 abstract class TripListDatabse : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }

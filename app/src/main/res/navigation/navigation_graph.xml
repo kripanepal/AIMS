@@ -15,6 +15,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/homePage"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homePage_to_deliveryFragment"
+            app:destination="@id/deliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -32,7 +35,11 @@
         android:id="@+id/deliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.DeliveryFragment"
         android:label="fragment_delivery"
-        tools:layout="@layout/fragment_delivery" />
+        tools:layout="@layout/fragment_delivery" >
+        <action
+            android:id="@+id/action_deliveryFragment_to_homePage"
+            app:destination="@id/homePage" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.fourofourfound.aims_delivery.settings.SettingsFragment"

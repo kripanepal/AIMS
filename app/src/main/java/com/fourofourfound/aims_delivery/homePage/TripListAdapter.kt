@@ -68,8 +68,8 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
     }
 }
 
-class TripListListener(val clickListener: (tripId: String) -> Unit) {
+class TripListListener(val clickListener: (trip: Trip) -> Unit) {
     fun onClick(trip: Trip) {
-        clickListener(trip.name)
+        clickListener(trip)
     }
 }
