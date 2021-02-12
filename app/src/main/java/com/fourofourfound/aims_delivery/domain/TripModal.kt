@@ -16,9 +16,15 @@
  */
 package com.fourofourfound.aims_delivery.domain
 
+import android.os.Parcelable
+import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
+import kotlinx.android.parcel.Parcelize
+
 // these are the data objects used and manipulated by the app
+@Parcelize
 data class Trip(
     val _id: String,
     val name: String, val _v: Int = 0,
     val completed:Boolean
-)
+): Parcelable

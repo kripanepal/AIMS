@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.fourofourfound.aims_delivery.domain.Trip
 
 @Entity
-data class DataBaseTripList(
+data class DatabaseTrip(
     @PrimaryKey
     val _id: String,
     val name: String,
@@ -15,7 +15,7 @@ data class DataBaseTripList(
 )
 
 
-fun List<DataBaseTripList>.asDomainModel(): List<Trip> {
+fun List<DatabaseTrip>.asDomainModel(): List<Trip> {
     return map {
         Trip(
             _id = it._id,

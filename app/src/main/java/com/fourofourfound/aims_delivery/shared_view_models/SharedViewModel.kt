@@ -10,7 +10,7 @@ class SharedViewModel:ViewModel() {
     val selectedTrip: LiveData<Trip>
         get() = _selectedTrip
 
-    fun setSelectedTrip(trip:Trip)
+    fun setSelectedTrip(trip:Trip?)
     {
         _selectedTrip.value = trip
     }

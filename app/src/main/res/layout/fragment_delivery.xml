@@ -1,13 +1,36 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.fourofourfound.aims_delivery.delivery.DeliveryFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.fourofourfound.aims_delivery.delivery.DeliveryViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Delivery" />
+        tools:context="com.fourofourfound.aims_delivery.delivery.DeliveryFragment">
 
-</FrameLayout>
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/delivery_page_trip_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@{viewModel.currentTrip.name}" />
+
+        <Button
+            android:id="@+id/trip_complete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completed"
+            android:onClick="@{()->viewModel.markTripAsCompleted()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/delivery_page_trip_id"
+            app:layout_constraintStart_toStartOf="@+id/delivery_page_trip_id"
+            app:layout_constraintTop_toTopOf="@+id/delivery_page_trip_id" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

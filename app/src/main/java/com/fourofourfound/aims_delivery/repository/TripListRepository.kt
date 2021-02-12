@@ -35,4 +35,17 @@ class TripListRepository(private val database: TripListDatabse) {
 
         }
     }
+
+    suspend fun markTripCompleted(tripId:String,status:Boolean)
+    {
+        withContext(Dispatchers.IO) {
+            try {
+               //TODO make network call to inform aims dispatcher
+                database.tripListDao.markTripCompleted(tripId,status)
+            } catch (e: Exception) {
+
+            }
+
+        }
+    }
 }
