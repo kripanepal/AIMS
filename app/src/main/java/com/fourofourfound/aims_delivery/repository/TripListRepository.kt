@@ -32,7 +32,6 @@ class TripListRepository(private val database: TripListDatabse) {
             } catch (e: Exception) {
 
             }
-
         }
     }
 

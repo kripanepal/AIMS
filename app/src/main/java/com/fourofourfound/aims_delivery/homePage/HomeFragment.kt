@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
+import kotlinx.android.synthetic.main.fragment_home_page.*
+import kotlinx.android.synthetic.main.trip_list_list_view.*
 
 class HomePage : Fragment() {
 
@@ -23,7 +27,6 @@ class HomePage : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
 
         _binding = DataBindingUtil.inflate<FragmentHomePageBinding>(
             inflater, R.layout.fragment_home_page, container, false
@@ -43,7 +46,11 @@ class HomePage : Fragment() {
             sharedViewModel.setSelectedTrip(trip)
             findNavController().navigate(HomePageDirections.actionHomePageToDeliveryFragment())
         })
+
         binding.sleepList.adapter = adapter
+
+
+
 
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
@@ -60,3 +67,5 @@ class HomePage : Fragment() {
 
 
 }
+
+

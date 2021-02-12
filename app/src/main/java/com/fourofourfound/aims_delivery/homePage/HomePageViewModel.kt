@@ -32,6 +32,10 @@ class HomePageViewModel(application: Application) :AndroidViewModel(application)
     private val tripListRepository = TripListRepository(database)
 
     init {
+        fetchTripFromNetwork()
+    }
+
+    fun fetchTripFromNetwork() {
         viewModelScope.launch {
             tripListRepository.refreshTrips()
         }
