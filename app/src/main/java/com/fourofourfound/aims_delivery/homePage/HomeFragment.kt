@@ -36,14 +36,15 @@ class HomePage : Fragment() {
         })
 
         //adapter for the recycler view
-        val adapter = TripListAdapter(TripListListener { tripId ->
-            Toast.makeText(context, "$tripId", Toast.LENGTH_SHORT).show()
+        val adapter = TripListAdapter(TripListListener { trip ->
+            findNavController().navigate(HomePageDirections.actionHomePageToDeliveryFragment())
         })
         binding.sleepList.adapter = adapter
 
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+
 
 
 
