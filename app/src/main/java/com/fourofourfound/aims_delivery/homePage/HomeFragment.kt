@@ -49,7 +49,12 @@ class HomePage : Fragment() {
 
         binding.sleepList.adapter = adapter
 
-
+        binding.swipeRefresh.setOnRefreshListener{
+            if(swipe_refresh.isRefreshing){
+                swipe_refresh.isRefreshing = false
+            }
+            viewModel.fetchTripFromNetwork()
+        }
 
 
         viewModel.tripList.observe(viewLifecycleOwner) {
