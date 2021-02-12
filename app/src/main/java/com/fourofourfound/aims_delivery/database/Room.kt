@@ -11,7 +11,7 @@ interface TripListDao {
     @Query("select * from DataBaseTripList")
     fun getTripList(): LiveData<List<DataBaseTripList>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(vararg trip: DataBaseTripList)
 }
 

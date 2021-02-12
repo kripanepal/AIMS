@@ -19,7 +19,9 @@ fun List<NetworkTripList>.asDomainModel(): List<Trip> {
         Trip(
             _id = it._id,
             name = it.name,
-            _v = it._v
+            _v = it._v,
+            completed = false
+
         )
     }
 }

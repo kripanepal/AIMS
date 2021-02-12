@@ -19,5 +19,6 @@ package com.fourofourfound.aims_delivery.domain
 // these are the data objects used and manipulated by the app
 data class Trip(
     val _id: String,
-    val name: String, val _v: Int = 0
+    val name: String, val _v: Int = 0,
+    val completed:Boolean
 )
