@@ -42,7 +42,7 @@ class LoginFragment : Fragment() {
         loadingAnimation = binding.isLoading.background as AnimationDrawable
 
         //checks if shared preferences already contains a user that is logged in
-        if(viewModel.checkUserLoggedIn()) findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
+        if(viewModel.checkUserLoggedIn()) findNavController().navigate(R.id.homePage)
 
         //loading animation
         viewModel.loading.observe(viewLifecycleOwner,  {
@@ -52,7 +52,7 @@ class LoginFragment : Fragment() {
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner,  {
             if (it) {
-                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
+                if(viewModel.checkUserLoggedIn()) findNavController().navigate(R.id.homePage)
                 viewModel.doneNavigatingToHomePage() }
         })
 

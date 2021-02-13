@@ -16,22 +16,26 @@
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment">
 
         <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:id="@+id/delivery_page_trip_id"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@{viewModel.currentTrip.name}" />
 
         <Button
             android:id="@+id/trip_complete_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Completed"
             android:onClick="@{()->viewModel.markTripAsCompleted()}"
+            android:text="Mark as completed"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/delivery_page_trip_id"
-            app:layout_constraintStart_toStartOf="@+id/delivery_page_trip_id"
-            app:layout_constraintTop_toTopOf="@+id/delivery_page_trip_id" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/delivery_page_trip_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.currentTrip.name}"
+            app:layout_constraintBottom_toTopOf="@+id/trip_complete_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

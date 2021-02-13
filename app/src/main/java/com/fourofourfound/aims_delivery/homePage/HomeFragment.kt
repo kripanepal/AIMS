@@ -38,7 +38,7 @@ class HomePage : Fragment() {
         binding.lifecycleOwner = this
 
         viewModel.userLoggedIn.observe(viewLifecycleOwner, {
-            if (!it) findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
+            if (!it) findNavController().navigate(R.id.loginFragment)
         })
 
         //adapter for the recycler view
@@ -46,7 +46,7 @@ class HomePage : Fragment() {
             if(!trip.completed)
             {
                 sharedViewModel.setSelectedTrip(trip)
-                findNavController().navigate(HomePageDirections.actionHomePageToDeliveryFragment())
+                findNavController().navigate(R.id.ongoingDeliveryFragment)
             }
             else
             {

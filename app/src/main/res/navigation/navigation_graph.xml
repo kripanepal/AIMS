@@ -11,11 +11,6 @@
         android:label="fragment_home_page"
         tools:layout="@layout/fragment_home_page">
         <action
-            android:id="@+id/action_homePage_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/homePage"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_homePage_to_deliveryFragment"
             app:destination="@id/ongoingDeliveryFragment" />
         <action
@@ -25,15 +20,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.fourofourfound.aims_delivery.login.LoginFragment"
-        android:label="LoginFragment" >
-        <action
-            android:id="@+id/action_loginFragment_to_homePage"
-            app:destination="@id/homePage"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        android:label="LoginFragment" />
     <fragment
         android:id="@+id/ongoingDeliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment"
