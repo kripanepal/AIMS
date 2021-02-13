@@ -50,7 +50,7 @@ class HomePage : Fragment() {
             }
             else
             {
-                findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment())
+                findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip))
             }
 
         })
