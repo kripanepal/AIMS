@@ -8,7 +8,7 @@ import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 
 @Dao
 interface TripListDao {
-    @Query("select * from DatabaseTrip")
+    @Query("select * from DatabaseTrip order by completed")
     fun getTripList(): LiveData<List<DatabaseTrip>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
