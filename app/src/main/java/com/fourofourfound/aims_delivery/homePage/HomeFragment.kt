@@ -37,9 +37,7 @@ class HomePage : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        viewModel.userLoggedIn.observe(viewLifecycleOwner, {
-            if (!it) findNavController().navigate(R.id.loginFragment)
-        })
+
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->

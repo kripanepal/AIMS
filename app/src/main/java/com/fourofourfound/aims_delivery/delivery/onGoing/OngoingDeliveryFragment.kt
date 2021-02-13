@@ -49,7 +49,6 @@ class OngoingDeliveryFragment : Fragment() {
                 sharedViewModel.setSelectedTrip(null)
                 viewModel.doneNavigatingToHomePage()
             }
-
         }
 
         return  binding.root
@@ -61,7 +60,6 @@ class OngoingDeliveryFragment : Fragment() {
         {
             showNoTripSelectedDialog()
         }
-
     }
 
     private fun showNoTripSelectedDialog() {
@@ -71,7 +69,7 @@ class OngoingDeliveryFragment : Fragment() {
         builder.setPositiveButton("Take me to trip list") { dialog, which ->
             findNavController().navigate(R.id.homePage)
         }
-
+        builder.setCancelable(false)
         builder.show()
     }
 }
