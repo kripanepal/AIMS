@@ -10,11 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragmentDirections
-import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBinding
-import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 
 class CompletedDeliveryFragment : Fragment() {
     private var _binding: FragmentDeliveryCompletedBinding? = null

@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -11,13 +12,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+    lateinit var bottomNavigationView :BottomNavigationView
+    lateinit var navController : NavController
+
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
          setContentView(R.layout.activity_main)
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        val navController = findNavController(R.id.myNavHostFragment)
+         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+         navController = findNavController(R.id.myNavHostFragment)
         bottomNavigationView.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener{ _, nd:NavDestination, _->
+        navController.addOnDestinationChangedListener{ _, nd: NavDestination, _->
                 if(nd.id == R.id.loginFragment)
                 {
                     bottomNavigationView.visibility = View.GONE
@@ -27,6 +31,16 @@ class MainActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.VISIBLE
                 }
 
+        }
+    }
+
+    //forces user to home page on back press
+    override fun onBackPressed() {
+        var topDestinations = listOf(R.id.settingsFragment,R.id.ongoingDeliveryFragment,R.id.completedDeliveryFragment)
+        if (bottomNavigationView.selectedItemId in topDestinations) {
+            bottomNavigationView.selectedItemId = R.id.homePage
+        } else {
+           finish()
         }
     }
 
