@@ -30,7 +30,6 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     }
 
 
-
     fun markTripAsCompleted()
     {
         viewModelScope.launch {

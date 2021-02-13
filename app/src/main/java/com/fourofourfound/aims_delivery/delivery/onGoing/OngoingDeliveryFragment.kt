@@ -1,9 +1,12 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,6 +25,12 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        if(sharedViewModel.selectedTrip.value==null)
+        {
+            return view
+        }
+
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_delivery_ongoing, container, false)
 
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
@@ -31,12 +40,8 @@ class OngoingDeliveryFragment : Fragment() {
 
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
-            if(sharedViewModel.selectedTrip.value!=null)
-            {
-                viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!)
-            }
+            it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
-
 
         viewModel.tripCompleted.observe(viewLifecycleOwner){
             if(it) {
@@ -50,4 +55,23 @@ class OngoingDeliveryFragment : Fragment() {
         return  binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(sharedViewModel.selectedTrip.value==null)
+        {
+            showNoTripSelectedDialog()
+        }
+
+    }
+
+    private fun showNoTripSelectedDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("No ongoing trip")
+        builder.setMessage("No trip was selected. Please select a trip from the menu from the menu")
+        builder.setPositiveButton("Take me to trip list") { dialog, which ->
+            findNavController().navigate(R.id.homePage)
+        }
+
+        builder.show()
+    }
 }
