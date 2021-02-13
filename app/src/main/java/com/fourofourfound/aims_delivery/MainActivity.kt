@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     //forces user to home page on back press
     override fun onBackPressed() {
         var topDestinations = listOf(R.id.settingsFragment,R.id.ongoingDeliveryFragment,R.id.completedDeliveryFragment)
-        if (bottomNavigationView.selectedItemId in topDestinations) {
+        if (navController.currentDestination?.id in topDestinations) {
             bottomNavigationView.selectedItemId = R.id.homePage
         } else {
            finish()
