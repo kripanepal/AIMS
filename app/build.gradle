@@ -108,7 +108,7 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$version_room"
 
-
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 
 
