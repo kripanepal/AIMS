@@ -65,7 +65,7 @@ class OngoingDeliveryFragment : Fragment() {
     private fun showNoTripSelectedDialog() {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("No ongoing trip")
-        builder.setMessage("No trip was selected. Please select a trip from the menu from the menu")
+        builder.setMessage("No trip was selected. Please select a trip from the menu")
         builder.setPositiveButton("Take me to trip list") { dialog, which ->
             findNavController().navigate(R.id.homePage)
         }

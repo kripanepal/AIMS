@@ -17,6 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{() -> clickListener.onClick(trip)}"
         android:layout_margin="20dp">
 
         <ImageView
@@ -35,19 +36,17 @@
             android:layout_height="wrap_content"
             android:text="@{trip.name}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tripStartBottom"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageView
             android:id="@+id/tripStartBottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{trip.completed?`Show Details`:`Start`}"
-            android:color="@color/design_default_color_secondary"
-            android:onClick="@{() -> clickListener.onClick(trip)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{trip.completed?View.VISIBLE:View.GONE}"
+            app:srcCompat="@drawable/trip_done_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
