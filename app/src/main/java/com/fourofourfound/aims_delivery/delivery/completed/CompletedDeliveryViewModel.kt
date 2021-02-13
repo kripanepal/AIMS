@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.delivery
+package com.fourofourfound.aims_delivery.delivery.completed
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -11,34 +11,17 @@ import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.launch
 
-class DeliveryViewModel(application: Application) :AndroidViewModel(application) {
-    private val myApplication = application
-    private val database = getDatabase(application)
-    private val tripListRepository = TripListRepository(database)
+class CompletedDeliveryViewModel(application: Application) :AndroidViewModel(application) {
 
-    private val _currentTrip = MutableLiveData<Trip>()
-    val currentTrip: LiveData<Trip>
-        get() = _currentTrip
+
 
     private val _tripCompleted = MutableLiveData<Boolean>()
     val tripCompleted: LiveData<Boolean>
         get() = _tripCompleted
 
-    fun setCurrentTrip(trip:Trip)
-    {
-        _currentTrip.value = trip
-    }
 
 
 
-    fun markTripAsCompleted()
-    {
-        viewModelScope.launch {
-            tripListRepository.markTripCompleted(currentTrip.value!!._id,true)
-            _tripCompleted.value = true
-
-        }
-    }
 
 
     //callback to ensure that the navigation is not triggered twice

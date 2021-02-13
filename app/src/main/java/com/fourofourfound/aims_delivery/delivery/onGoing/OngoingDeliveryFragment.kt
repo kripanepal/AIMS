@@ -1,8 +1,6 @@
-package com.fourofourfound.aims_delivery.delivery
+package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
-import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryBinding
+import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 
-class DeliveryFragment : Fragment() {
-    private var _binding: FragmentDeliveryBinding? = null
+class OngoingDeliveryFragment : Fragment() {
+    private var _binding: FragmentDeliveryOngoingBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -24,9 +22,9 @@ class DeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_delivery, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_delivery_ongoing, container, false)
 
-        val viewModel = ViewModelProvider(this).get(DeliveryViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -42,7 +40,7 @@ class DeliveryFragment : Fragment() {
 
         viewModel.tripCompleted.observe(viewLifecycleOwner){
             if(it) {
-                findNavController().navigate(DeliveryFragmentDirections.actionDeliveryFragmentToHomePage())
+                findNavController().navigate(OngoingDeliveryFragmentDirections.actionDeliveryFragmentToHomePage())
                 sharedViewModel.setSelectedTrip(null)
                 viewModel.doneNavigatingToHomePage()
             }

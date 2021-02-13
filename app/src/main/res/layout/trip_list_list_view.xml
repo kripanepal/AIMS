@@ -39,13 +39,12 @@
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <TextView
             android:id="@+id/tripStartBottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start"
+            android:text="@{trip.completed?`Show Details`:`Start`}"
             android:onClick="@{() -> clickListener.onClick(trip)}"
-            android:visibility="@{trip.completed?View.INVISIBLE:View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

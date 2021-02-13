@@ -6,13 +6,13 @@
 
         <variable
             name="viewModel"
-            type="com.fourofourfound.aims_delivery.delivery.DeliveryViewModel" />
+            type="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.fourofourfound.aims_delivery.delivery.DeliveryFragment">
+        tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment">
 
         <!-- TODO: Update blank fragment layout -->
         <TextView

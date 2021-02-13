@@ -43,8 +43,16 @@ class HomePage : Fragment() {
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
-            sharedViewModel.setSelectedTrip(trip)
-            findNavController().navigate(HomePageDirections.actionHomePageToDeliveryFragment())
+            if(!trip.completed)
+            {
+                sharedViewModel.setSelectedTrip(trip)
+                findNavController().navigate(HomePageDirections.actionHomePageToDeliveryFragment())
+            }
+            else
+            {
+                findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment())
+            }
+
         })
 
         binding.sleepList.adapter = adapter
