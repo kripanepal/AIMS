@@ -47,4 +47,15 @@ class TripListRepository(private val database: TripListDatabse) {
 
         }
     }
+
+    suspend fun deleteAllTrips() {
+        withContext(Dispatchers.IO) {
+            try {
+                //TODO make network call to inform aims dispatcher
+                database.tripListDao.deleteAllTrips()
+            } catch (e: Exception) {
+
+            }
+        }
+    }
 }

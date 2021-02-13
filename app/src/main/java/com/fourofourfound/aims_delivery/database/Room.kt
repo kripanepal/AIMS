@@ -17,6 +17,9 @@ interface TripListDao {
     @Query("update DatabaseTrip set completed=:status where _id= :tripId")
     fun markTripCompleted(tripId:String,status:Boolean)
 
+    @Query("delete from DatabaseTrip")
+    fun deleteAllTrips()
+
 }
 
 

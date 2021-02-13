@@ -49,6 +49,9 @@ class HomePageViewModel(application: Application) :AndroidViewModel(application)
             deleteEncryptedPreference("username")
             deleteEncryptedPreference("password")
         }
+        viewModelScope.launch {
+            tripListRepository.deleteAllTrips()
+        }
         _userLoggedIn.value = false
     }
 
