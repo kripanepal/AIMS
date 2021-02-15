@@ -79,13 +79,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkForStoredData() {
         edit_text.setText(sharedPref.getString("textEntered", null))
+        radioGroup.check(sharedPref.getInt("radioSelected", R.id.Good))
     }
 
     override fun onStop() {
         super.onStop()
         val editor = sharedPref.edit()
         editor.putString("textEntered", edit_text.text.toString())
+        editor.putInt("radioSelected", radioGroup.checkedRadioButtonId)
         editor.apply()
+
+
     }
 
     fun checkTextEmpty(text: String): Boolean {
