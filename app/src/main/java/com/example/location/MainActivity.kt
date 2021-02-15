@@ -2,14 +2,18 @@ package com.example.location
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.RadioButton
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -79,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("MissingPermission")
         if (locationProvider.isLocationEnabled()) {
             locationProvider.fusedLocationProviderClient.lastLocation.addOnCompleteListener {
+                if(locationProvider.checkPermission()){
                 it.result?.let { coordinate ->
                     location = CustomLocation(coordinate.latitude, coordinate.longitude)
 
@@ -94,6 +99,29 @@ class MainActivity : AppCompatActivity() {
                         edit_text.text = null
                         radioGroup.check(R.id.Good)
                         closeKeyboard()
+                    }
+
+                }
+            }
+
+                else
+                {
+                    this?.let {dialog->
+                        val builder = AlertDialog.Builder(dialog)
+                        builder.apply {
+                            setPositiveButton("Open settings"
+                            ) { dialog, id ->
+                                  val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                                                    intent.data = uri
+                                                    startActivity(intent)
+                            }
+                            setTitle("Missing permissions")
+                            setMessage("Please allow location permission")
+                        }
+
+                        builder.create()
+                        builder.show()
                     }
 
                 }

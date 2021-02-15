@@ -57,7 +57,7 @@ class MyLocationProvider(var context: Context) {
     }
 
     //Checks the users permission
-    private fun checkPermission(): Boolean {
+     fun checkPermission(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
