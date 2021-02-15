@@ -14,26 +14,16 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val database = getDatabase(application)
 
     private val _records = MutableLiveData<List<LocationRecords>>()
-    lateinit var records: LiveData<List<LocationRecords>>
 
+    val records: LiveData<List<LocationRecords>> =getData()
 
-    init {
-        getAllInfo()
-    }
-
-    fun getAllInfo() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    records = Transformations.map(database.locationDao.getAllInfo()) {
-                        it
-                    }
-                } catch (e: Exception) {
-                    Log.i("Whatisthis", "e.message.toString()")
-                }
-            }
+    fun getData(): LiveData<List<LocationRecords>> {
+        var toReturn = Transformations.map(database.locationDao.getAllInfo()) {
+            it
         }
+        return toReturn
     }
+
 
     fun saveData(location: CustomLocation, radio: String, textInput: String) {
         viewModelScope.launch {
@@ -42,7 +32,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                     var tempData =
                         LocationRecords(location.latitude, location.longitude, radio, textInput)
                     database.locationDao.insertAll(tempData)
-                    getAllInfo()
+
                 } catch (e: Exception) {
                     Log.i("Whatisthis", "e.message.toString()")
                 }
