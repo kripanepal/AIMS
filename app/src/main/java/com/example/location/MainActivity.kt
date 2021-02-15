@@ -1,6 +1,8 @@
 package com.example.location
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,23 +22,26 @@ class MainActivity : AppCompatActivity() {
 
     private var radioSelected: String = "NONE"
     private var textEntered: String = ""
+    lateinit var viewModel: MainActivityViewModel
 
     var location = CustomLocation(0.0, 0.0)
+    lateinit var sharedPref: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         var locationProvider = MyLocationProvider(this)
-
+        val sharedPref = this?.getPreferences(Context.MODE_PRIVATE)
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         locationProvider.requestPermission()
         locationProvider.getLastLocation()
         //creating a view model
-        val viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-
+        checkForStoredData()
         button.setOnClickListener {
             locationProvider.requestPermission()
             locationProvider.getLastLocation()
@@ -48,27 +53,49 @@ class MainActivity : AppCompatActivity() {
 
                         val selectedRadioOption = radioGroup.checkedRadioButtonId
 
-                        radioSelected = (findViewById<View>(selectedRadioOption) as RadioButton).text as String
+                        radioSelected =
+                            (findViewById<View>(selectedRadioOption) as RadioButton).text as String
 
-                        textEntered = text_view.text.toString()
-                        viewModel.saveData(location, radioSelected, textEntered)
+                        textEntered = edit_text.text.toString()
+
+                        if (!checkTextEmpty(textEntered)) {
+                            viewModel.saveData(location, radioSelected, textEntered)
+                        }
+
                     }
                 }
-            }else{
+            } else {
                 Toast.makeText(context, "Open Location", Toast.LENGTH_SHORT).show()
             }
-
         }
         val adapter = LocationAdapter()
-
 
         binding.recyclerView.adapter = adapter
 
         viewModel.records.observe(this) {
             adapter.submitList(it)
         }
-
-
     }
 
+    private fun checkForStoredData() {
+        edit_text.setText(sharedPref.getString("textEntered", null))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val editor = sharedPref.edit()
+        editor.putString("textEntered", edit_text.text.toString())
+        editor.apply()
+    }
+
+    fun checkTextEmpty(text: String): Boolean {
+        if (text.isNullOrEmpty()) {
+            edit_text.error = "Required"
+            return true
+        }
+        return false
+    }
 }
+
+
+

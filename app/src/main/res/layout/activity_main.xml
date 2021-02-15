@@ -19,7 +19,7 @@
             tools:context=".MainActivity">
 
             <EditText
-                android:id="@+id/text_view"
+                android:id="@+id/edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -77,7 +77,7 @@
                 android:text="@string/location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_text" />
 
             <TextView
                 android:id="@+id/location_text"
