@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.RadioButton
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.location.LocationAdapter.ViewHolder.Companion.context
 import com.example.location.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (!checkTextEmpty(textEntered)) {
                             viewModel.saveData(location, radioSelected, textEntered)
+                            edit_text.text = null
                         }
 
                     }
@@ -74,7 +77,14 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.records.observe(this) {
             adapter.submitList(it)
+            recycler_view.post { recycler_view.scrollToPosition(0) }
         }
+
+        recycler_view.adapter!!.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                recycler_view.scrollToPosition(0)
+            }
+        })
     }
 
     private fun checkForStoredData() {
@@ -88,8 +98,6 @@ class MainActivity : AppCompatActivity() {
         editor.putString("textEntered", edit_text.text.toString())
         editor.putInt("radioSelected", radioGroup.checkedRadioButtonId)
         editor.apply()
-
-
     }
 
     fun checkTextEmpty(text: String): Boolean {
@@ -99,6 +107,8 @@ class MainActivity : AppCompatActivity() {
         }
         return false
     }
+
+
 }
 
 

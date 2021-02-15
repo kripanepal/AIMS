@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location</string>
+    <string name="app_name">AIMS Location</string>
     <string name="hint">Please explain why?</string>
     <string name="location">Save my record</string>
     <string name="radio_1">Good</string>
