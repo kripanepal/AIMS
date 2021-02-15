@@ -8,6 +8,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,23 +20,17 @@ class MyLocationProvider(var context: Context) {
     lateinit var locationRequest: LocationRequest
     private val PERMISSION_REQUEST = 50
 
-   var location: Location? = null
-
+   //var location: Location? = null
+    //lateinit var customLocation: CustomLocation
     //get the last known location
     fun getLastLocation() {
         if (checkPermission()) {
             if (isLocationEnabled()) {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
-                    location= task.result
-                    if (location == null) {
                         getNewLocation()
-                    } else {
-                        Log.i("Run", location!!.latitude.toString())
-                        CustomLocation(location!!.latitude, location!!.longitude)
-                    }
                 }
-            } else {
-                null
+            }else{
+
             }
         } else {
             requestPermission()
@@ -90,7 +85,7 @@ class MyLocationProvider(var context: Context) {
     }
 
     //checks if device location service is enabled
-    private fun isLocationEnabled(): Boolean {
+    fun isLocationEnabled(): Boolean {
         var locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
