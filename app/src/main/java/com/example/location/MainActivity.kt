@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
 
                         if (!checkTextEmpty(textEntered)) {
                             viewModel.saveData(location, radioSelected, textEntered)
-                            recycler_view.scrollToPosition(0)
                             edit_text.text = null
                         }
 
@@ -80,6 +79,12 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(it)
             recycler_view.post { recycler_view.scrollToPosition(0) }
         }
+
+        recycler_view.adapter!!.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                recycler_view.scrollToPosition(0)
+            }
+        })
     }
 
     private fun checkForStoredData() {
