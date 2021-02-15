@@ -19,6 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="left"
+            android:paddingHorizontal="5dp"
             android:text="@{locationRecord.teacherType}" />
 
         <TextView
@@ -26,13 +28,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@{locationRecord.teacherType}" />
+            android:gravity="left"
+            android:paddingHorizontal="5dp"
+            android:text="@{@string/formatDouble(locationRecord.longitude)}" />
 
         <TextView
             android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="left"
+            android:paddingHorizontal="5dp"
             android:text="@{locationRecord.comment}" />
 
         <TextView
@@ -40,6 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@{locationRecord.teacherType}" />
+            android:gravity="left"
+            android:paddingHorizontal="5dp"
+            android:text="@{@string/formatDouble(locationRecord.latitude)}" />
     </LinearLayout>
 </layout>
