@@ -3,12 +3,12 @@ package com.example.location
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.location.LocationManagerCompat.isLocationEnabled
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.example.location.LocationAdapter.ViewHolder.Companion.context
 import com.example.location.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity() {
                 locationProvider.fusedLocationProviderClient.lastLocation.addOnCompleteListener {
                     it.result?.let { coordinate ->
                         location = CustomLocation(coordinate.latitude, coordinate.longitude)
+
+                        val selectedRadioOption = radioGroup.checkedRadioButtonId
+
+                        radioSelected = (findViewById<View>(selectedRadioOption) as RadioButton).text as String
+
                         textEntered = text_view.text.toString()
                         viewModel.saveData(location, radioSelected, textEntered)
                     }
@@ -56,14 +61,6 @@ class MainActivity : AppCompatActivity() {
         }
         val adapter = LocationAdapter()
 
-
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            (findViewById<RadioButton>(checkedId).text as String).let {
-                if (!it.isNullOrEmpty()) {
-                    radioSelected = it
-                }
-            }
-        }
 
         binding.recyclerView.adapter = adapter
 
