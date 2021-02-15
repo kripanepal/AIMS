@@ -19,7 +19,7 @@
             tools:context=".MainActivity">
 
             <EditText
-                android:id="@+id/text_view"
+                android:id="@+id/edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:weightSum="4"
+                android:layout_marginLeft="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button">
@@ -44,14 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Teacher Type" />
-
-                <TextView
-                    android:id="@+id/longitude"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Longitude" />
+                    android:text="Person Type" />
 
                 <TextView
                     android:id="@+id/comment"
@@ -66,6 +60,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Latitude" />
+
+                <TextView
+                    android:id="@+id/longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Longitude" />
+
+
             </LinearLayout>
 
             <Button
@@ -75,7 +78,7 @@
                 android:text="@string/location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_text" />
 
             <TextView
                 android:id="@+id/location_text"
@@ -90,14 +93,14 @@
                 android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:orientation="horizontal"
+                android:checkedButton="@id/Good"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <RadioButton
-                    android:id="@+id/First"
+                    android:id="@+id/Good"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -105,7 +108,7 @@
                     android:text="@string/radio_1" />
 
                 <RadioButton
-                    android:id="@+id/Second"
+                    android:id="@+id/VeryGood"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radio_2" />
@@ -115,6 +118,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -122,6 +126,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good of a person are you?"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
