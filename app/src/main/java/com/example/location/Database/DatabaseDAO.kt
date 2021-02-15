@@ -7,7 +7,7 @@ import com.example.location.LocationRecords
 @Dao
 interface CustomLocationDao  {
 
-    @Query("SELECT * FROM LocationRecords")
+    @Query("SELECT * FROM LocationRecords order by _id DESC")
      fun getAllInfo(): LiveData<List<LocationRecords>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

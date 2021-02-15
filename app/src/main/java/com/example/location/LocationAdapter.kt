@@ -1,11 +1,19 @@
 package com.example.location
 
+import android.R
+import android.app.Activity
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TableRow.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.location.databinding.CustomLocationRecordsBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class LocationAdapter : ListAdapter<LocationRecords,
@@ -31,12 +39,13 @@ class LocationAdapter : ListAdapter<LocationRecords,
 
     class ViewHolder private constructor(var binding: CustomLocationRecordsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         //access how to inflate the view using static methods
         companion object {
+            lateinit var context: Context
             fun from(parent: ViewGroup): ViewHolder {
                 //create a new layout from the parent context
                 var layoutInflater = LayoutInflater.from(parent.context)
+                context = parent.context
 
                 //creating a binding
                 val binding = CustomLocationRecordsBinding.inflate(layoutInflater, parent, false)
@@ -59,7 +68,10 @@ class LocationAdapter : ListAdapter<LocationRecords,
             return oldItem._id == newItem._id
         }
 
-        override fun areContentsTheSame(oldItem: LocationRecords, newItem: LocationRecords): Boolean {
+        override fun areContentsTheSame(
+            oldItem: LocationRecords,
+            newItem: LocationRecords
+        ): Boolean {
             return oldItem == newItem
         }
     }

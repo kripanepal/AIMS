@@ -1,6 +1,7 @@
 package com.example.location
 
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import android.widget.RadioButton
@@ -43,7 +44,9 @@ class MainActivity : AppCompatActivity() {
         }
         val adapter = LocationAdapter()
 
+
         viewModel.records.observe(this) {
+            Log.i("Bhalu", it.toString())
                 adapter.submitList(it)
         }
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
