@@ -45,10 +45,6 @@ class MainActivity : AppCompatActivity() {
         val adapter = LocationAdapter()
 
 
-        viewModel.records.observe(this) {
-            Log.i("Bhalu", it.toString())
-                adapter.submitList(it)
-        }
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             (findViewById<RadioButton>(checkedId).text as String).let {
                 if (!it.isNullOrEmpty()) {
@@ -56,8 +52,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
 
         binding.recyclerView.adapter = adapter
 
