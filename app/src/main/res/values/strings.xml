@@ -4,5 +4,5 @@
     <string name="location">Save my record</string>
     <string name="radio_1">First</string>
     <string name="radio_2">Second</string>
-    <string name="formatDouble">%,.2f</string>
+    <string name="formatDouble">%,.8f</string>
 </resources>
