@@ -90,14 +90,13 @@
                 android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <RadioButton
-                    android:id="@+id/First"
+                    android:id="@+id/Good"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -105,7 +104,7 @@
                     android:text="@string/radio_1" />
 
                 <RadioButton
-                    android:id="@+id/Second"
+                    android:id="@+id/VeryGood"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radio_2" />
@@ -122,6 +121,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good of a teacher are you?"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

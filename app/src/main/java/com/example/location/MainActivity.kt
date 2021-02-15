@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
                         textEntered = text_view.text.toString()
                         viewModel.saveData(location, radioSelected, textEntered)
                     }
-
                 }
             }else{
                 Toast.makeText(context, "Open Location", Toast.LENGTH_SHORT).show()

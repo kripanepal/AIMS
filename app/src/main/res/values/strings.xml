@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Location</string>
-    <string name="hint">WASSSSSSSSSUUPPP</string>
+    <string name="hint">Please explain why?</string>
     <string name="location">Save my record</string>
-    <string name="radio_1">First</string>
-    <string name="radio_2">Second</string>
+    <string name="radio_1">Good</string>
+    <string name="radio_2">Very Good</string>
     <string name="formatDouble">%,.8f</string>
 </resources>
