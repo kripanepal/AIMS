@@ -47,13 +47,6 @@
                     android:text="Teacher Type" />
 
                 <TextView
-                    android:id="@+id/longitude"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Longitude" />
-
-                <TextView
                     android:id="@+id/comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,6 +59,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Latitude" />
+
+                <TextView
+                    android:id="@+id/longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Longitude" />
+
+
             </LinearLayout>
 
             <Button

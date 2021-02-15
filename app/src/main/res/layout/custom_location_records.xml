@@ -22,16 +22,6 @@
             android:gravity="left"
             android:paddingHorizontal="5dp"
             android:text="@{locationRecord.teacherType}" />
-
-        <TextView
-            android:id="@+id/longitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:paddingHorizontal="5dp"
-            android:text="@{@string/formatDouble(locationRecord.longitude)}" />
-
         <TextView
             android:id="@+id/comment"
             android:layout_width="match_parent"
@@ -49,5 +39,15 @@
             android:gravity="left"
             android:paddingHorizontal="5dp"
             android:text="@{@string/formatDouble(locationRecord.latitude)}" />
+
+        <TextView
+            android:id="@+id/longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingHorizontal="5dp"
+            android:text="@{@string/formatDouble(locationRecord.longitude)}" />
+
     </LinearLayout>
 </layout>
