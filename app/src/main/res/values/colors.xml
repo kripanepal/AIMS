@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="Antique_white">#FDE9D8</color>
+    <color name="Pale_pink">#F9DDDD</color>
+    <color name="Indian_Red">#DF5355</color>
+    <color name="Cornsilk">#FFF5D6</color>
+    <color name="Light_brown">#c2b3bb</color>
+    <color name="Aims_Orange">#F09325</color>
+    <color name="Aims_red">#DC3B41</color>
+    <color name="Aims_brown">#32021B</color>
+
+
 </resources>

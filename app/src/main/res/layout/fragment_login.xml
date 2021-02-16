@@ -17,12 +17,49 @@
 
         <!-- TODO: Update blank fragment layout -->
 
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="172dp"
+            android:src="@drawable/background_homepage_1"
+            app:layout_constraintBottom_toTopOf="@+id/userIdInput"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="-19dp"
+            android:elevation="50dp"/>
+
+
+        <ImageView
+            android:id="@+id/imageView2"
+            _toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="292dp"
+            android:layout_marginBottom="56dp"
+            android:elevation="50dp"
+            android:src="@drawable/background_homepage_5"
+            app:layout_constraintBottom_toTopOf="@+id/userIdInput"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView1"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="208dp"
+            android:layout_marginBottom="108dp"
+            android:src="@drawable/background_homepage_2"
+            app:layout_constraintBottom_toTopOf="@+id/userIdInput"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            tools:ignore="MissingConstraints" />
+
         <EditText
             android:id="@+id/userIdInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:autofillHints="User Id"
-            android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/design_default_color_primary}"
+            android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
             android:drawableEnd="@drawable/pen_icon"
             android:ems="10"
             android:hint="@string/user_id_hint"
@@ -42,8 +79,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:autofillHints="password"
-            android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/design_default_color_primary}"
-            android:drawableEnd="@android:drawable/ic_lock_lock"
+            android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
+            android:drawableEnd="@drawable/ic_lock_24"
             android:ems="10"
             android:hint="@string/password_field_hint"
             android:imeOptions="actionDone"
@@ -66,12 +103,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_error_message" />
+            app:layout_constraintTop_toBottomOf="@+id/login_error_message"
+            android:backgroundTint="@color/Aims_red"
+
+
+            />
 
         <ImageView
             android:id="@+id/is_loading"
-            android:layout_width="195dp"
-            android:layout_height="34dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="56dp"
             android:contentDescription="@string/loading_animation_content_description"
             android:text="Hello World!"
@@ -80,6 +121,28 @@
             app:layout_constraintHorizontal_bias="0.541"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="124dp"
+            android:layout_marginBottom="48dp"
+            android:src="@drawable/background_homepage_3"
+            app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
+            app:layout_constraintEnd_toStartOf="@+id/loginButton"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:src="@drawable/background_homepage_4"
+            app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
+            app:layout_constraintStart_toEndOf="@+id/is_loading"
+            app:layout_constraintTop_toBottomOf="@+id/is_loading"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/login_error_message"
@@ -109,8 +172,8 @@
             android:id="@+id/contactMyProvider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/Aims_Orange"
             android:text="@string/contact_my_provider_field_text"
-            android:backgroundTint="@color/design_default_color_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/needHelp" />
