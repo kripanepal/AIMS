@@ -17,7 +17,7 @@ fun getDatabase(context: Context): CustomLocationDatabase {
             INSTANCE = Room.databaseBuilder(
                 context.applicationContext,
                 CustomLocationDatabase::class.java,
-                "trips"
+                "Location_Records"
             ).build()
         }
     }
