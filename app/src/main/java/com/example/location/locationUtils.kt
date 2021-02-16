@@ -29,11 +29,7 @@ class MyLocationProvider(var context: Context) {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
                         getNewLocation()
                 }
-            }else{
-
             }
-        } else {
-            requestPermission()
         }
     }
 

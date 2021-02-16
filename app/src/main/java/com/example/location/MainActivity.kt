@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.location.LocationAdapter.ViewHolder.Companion.context
 import com.example.location.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         sharedPref = this.getPreferences(Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         var locationProvider = MyLocationProvider(this)
-        val sharedPref = this?.getPreferences(Context.MODE_PRIVATE)
+
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         locationProvider.requestPermission()
         locationProvider.getLastLocation()
@@ -78,7 +77,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData(locationProvider: MyLocationProvider) {
-        locationProvider.requestPermission()
         locationProvider.getLastLocation()
         @SuppressLint("MissingPermission")
         if (locationProvider.isLocationEnabled()) {
@@ -127,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } else {
-            Toast.makeText(context, "Open Location", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Turn on your location service", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class LocationAdapter : ListAdapter<LocationRecords,
         LocationAdapter.ViewHolder>(TripsDiffCallBack()) {
 
-    var data = listOf<LocationRecords>()
+
 
     //how to create the view holder
     //viewGroup is  always the recycler view in this case
