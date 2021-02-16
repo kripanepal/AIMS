@@ -47,7 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{trip.name}"
-                        app:layout_constraintBottom_toBottomOf="@+id/tripStartBottom"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/imageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,17 +65,25 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:id="@+id/cardViewNestedView"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:background="#c0c0c0"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{trip.completed?`Show details`:`Start trip`}"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
+                        android:text="@{trip.completed?`Show details`:`Start trip`}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
