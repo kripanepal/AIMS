@@ -24,22 +24,11 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.myNavHostFragment)
         bottomNavigationView.setupWithNavController(navController)
 
-        //prevents re-navigation when user clicks on button-navigation bar  twice
-        bottomNavigationView.setOnNavigationItemReselectedListener { item ->
-            navController.currentDestination?.apply {
-                if(id === item.itemId) false
-            }
-
-
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            false
         }
-
         navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
-            if (nd.id == R.id.loginFragment) {
-                bottomNavigationView.visibility = View.GONE
-            } else {
-                bottomNavigationView.visibility = View.VISIBLE
-            }
-
+            bottomNavigationView.visibility = if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
         }
     }
 
