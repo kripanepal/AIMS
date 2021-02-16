@@ -58,6 +58,8 @@
             android:id="@+id/userIdInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:autofillHints="User Id"
             android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
             android:drawableEnd="@drawable/pen_icon"
@@ -69,16 +71,18 @@
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.397" />
+            app:layout_constraintVertical_bias="0.396" />
 
         <EditText
             android:id="@+id/passwordInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:autofillHints="password"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
             android:drawableEnd="@drawable/ic_lock_24"
             android:ems="10"
@@ -98,13 +102,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:onClick="@{()->viewModel.authenticateUser()}"
-            android:text="@string/login_btn_text"
+            android:text="Login"
+            android:textSize="20dp"
+            android:drawableEnd="@drawable/ic_login_24"
+            android:ems="10"
             android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_error_message"
-            android:backgroundTint="@color/Aims_red"
+
+            android:backgroundTint="@color/Aims_Orange"
 
 
             />
@@ -124,10 +132,10 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="124dp"
-            android:layout_marginBottom="48dp"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="64dp"
             android:src="@drawable/background_homepage_3"
             app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
             app:layout_constraintEnd_toStartOf="@+id/loginButton"
@@ -136,12 +144,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="148dp"
             android:src="@drawable/background_homepage_4"
             app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
             app:layout_constraintStart_toEndOf="@+id/is_loading"
             app:layout_constraintTop_toBottomOf="@+id/is_loading"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintVertical_bias="0.0"
             tools:ignore="MissingConstraints" />
 
         <TextView
@@ -172,8 +180,9 @@
             android:id="@+id/contactMyProvider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/Aims_Orange"
+            android:backgroundTint="@color/white"
             android:text="@string/contact_my_provider_field_text"
+            android:textColor="@color/Aims_Orange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/needHelp" />
