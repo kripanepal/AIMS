@@ -54,7 +54,7 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
             binding.trip = item
             binding.clickListener = clickListener
 
-
+            //makes the nested view expandable
             binding.cardView.setOnClickListener{
 
                 binding.cardViewNestedView.apply {
