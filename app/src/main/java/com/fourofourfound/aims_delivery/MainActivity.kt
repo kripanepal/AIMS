@@ -24,9 +24,8 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.myNavHostFragment)
         bottomNavigationView.setupWithNavController(navController)
 
-        bottomNavigationView.setOnNavigationItemReselectedListener {
-            false
-        }
+        bottomNavigationView.setOnNavigationItemReselectedListener { false }
+
         navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
             bottomNavigationView.visibility = if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
         }

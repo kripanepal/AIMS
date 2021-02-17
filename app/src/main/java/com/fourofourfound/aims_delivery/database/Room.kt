@@ -4,7 +4,7 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
 
 @Dao
 interface TripListDao {

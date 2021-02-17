@@ -1,16 +1,24 @@
-package com.fourofourfound.aims_delivery.network.tripList
+package com.fourofourfound.aims_delivery.network.loadList
 
+import androidx.room.PrimaryKey
 import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.network.tripList.NetworkTripList
 import com.squareup.moshi.JsonClass
 
 /**
  * trips represent a trip info that can be displayed.
  */
 @JsonClass(generateAdapter = true)
-data class NetworkTripList(
+data class NetworkLoadList(
+    @PrimaryKey
     val _id: String,
-    val name: String, val _v: Int = 0
+    val _v: Int = 0,
+
+    val productType: String,
+    val productDestination:String,
+    val productQuantity:Double,
+    val completed: Boolean =false
 )
 
 

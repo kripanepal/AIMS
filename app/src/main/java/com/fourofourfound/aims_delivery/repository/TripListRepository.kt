@@ -3,7 +3,7 @@ package com.fourofourfound.aims_delivery.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
-import com.fourofourfound.aims_delivery.database.entities.asDomainModel
+import com.fourofourfound.aims_delivery.database.entities.trip.asDomainModal
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel
 import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
@@ -17,7 +17,7 @@ class TripListRepository(private val database: TripListDatabse) {
      */
     val trips: LiveData<List<Trip>> =
         Transformations.map(database.tripListDao.getTripList()) {
-            it.asDomainModel()
+            it.asDomainModal()
         }
 
     /**
