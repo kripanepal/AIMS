@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.delivery
+package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -11,7 +11,7 @@ import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.launch
 
-class DeliveryViewModel(application: Application) :AndroidViewModel(application) {
+class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(application) {
     private val myApplication = application
     private val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
@@ -28,7 +28,6 @@ class DeliveryViewModel(application: Application) :AndroidViewModel(application)
     {
         _currentTrip.value = trip
     }
-
 
 
     fun markTripAsCompleted()

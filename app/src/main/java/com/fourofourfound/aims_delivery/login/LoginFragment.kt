@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,16 +22,14 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-
-
     private lateinit var loadingAnimation: AnimationDrawable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater)
 
+        _binding = FragmentLoginBinding.inflate(inflater)
         val viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         binding.apply {
             this.viewModel = viewModel
@@ -42,7 +41,7 @@ class LoginFragment : Fragment() {
         loadingAnimation = binding.isLoading.background as AnimationDrawable
 
         //checks if shared preferences already contains a user that is logged in
-        if(viewModel.checkUserLoggedIn()) findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
+        if(viewModel.checkUserLoggedIn()) findNavController().navigate(R.id.homePage)
 
         //loading animation
         viewModel.loading.observe(viewLifecycleOwner,  {
@@ -51,8 +50,9 @@ class LoginFragment : Fragment() {
 
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner,  {
+            Log.i("AAAAA",it.toString())
             if (it) {
-                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomePage())
+              findNavController().navigate(R.id.homePage)
                 viewModel.doneNavigatingToHomePage() }
         })
 
