@@ -22,7 +22,6 @@ class TripListRepository(private val database: TripListDatabse) {
 
     /**
      * Refresh the trips stored in the offline cache.
-
      */
     suspend fun refreshTrips() {
         withContext(Dispatchers.IO) {

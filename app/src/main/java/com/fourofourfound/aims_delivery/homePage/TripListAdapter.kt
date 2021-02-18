@@ -56,13 +56,9 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
             //makes the nested view expandable
             binding.cardView.setOnClickListener{
-
                 binding.cardViewNestedView.apply {
-                    visibility = if(visibility=== View.VISIBLE) {
-                        View.GONE
-                    } else {
-                        View.VISIBLE
-                    }
+                    visibility = if(visibility=== View.VISIBLE) View.GONE
+                    else View.VISIBLE
                 }
             }
 

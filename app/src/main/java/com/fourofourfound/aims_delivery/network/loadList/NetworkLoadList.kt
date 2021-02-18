@@ -1,7 +1,9 @@
 package com.fourofourfound.aims_delivery.network.loadList
 
 import androidx.room.PrimaryKey
+import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
 import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
+import com.fourofourfound.aims_delivery.domain.Load
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.tripList.NetworkTripList
 import com.squareup.moshi.JsonClass
@@ -16,20 +18,21 @@ data class NetworkLoadList(
     val _v: Int = 0,
 
     val productType: String,
-    val productDestination:String,
-    val productQuantity:Double,
-    val completed: Boolean =false
+    val productDestination: String,
+    val productQuantity: Double,
+    val completed: Boolean = false
 )
 
 
-fun List<NetworkTripList>.asDomainModel(): List<Trip> {
+fun List<NetworkLoadList>.asDomainModel(): List<Load> {
     return map {
-        Trip(
+        Load(
             _id = it._id,
-            name = it.name,
             _v = it._v,
-            completed = false
-
+            productType = it.productType,
+            productDestination = it.productDestination,
+            productQuantity = it.productQuantity,
+            completed = it.completed
         )
     }
 }
@@ -38,11 +41,15 @@ fun List<NetworkTripList>.asDomainModel(): List<Trip> {
 /**
  * Convert Network results to database objects
  */
-fun List<NetworkTripList>.asDatabaseModel(): Array<DatabaseTrip> {
+fun List<NetworkLoadList>.asDatabaseModel(): Array<DatabaseLoad> {
     return map {
-        DatabaseTrip(
+        DatabaseLoad(
             _id = it._id,
-            name = it.name, _v = it._v
+            _v = it._v,
+            productType = it.productType,
+            productDestination = it.productDestination,
+            productQuantity = it.productQuantity,
+            completed = it.completed
         )
     }.toTypedArray()
 }

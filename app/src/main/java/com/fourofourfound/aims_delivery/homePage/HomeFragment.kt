@@ -33,30 +33,30 @@ class HomePage : Fragment() {
         )
 
         val viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
-         val sharedViewModel: SharedViewModel by activityViewModels()
+        val sharedViewModel: SharedViewModel by activityViewModels()
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        binding.btnStartTrip.setOnClickListener {
+            viewModel.tripList.value?.let {
+                var tripToStart = it[0]
+                if (!tripToStart.completed) {
+                    sharedViewModel.setSelectedTrip(tripToStart)
+                    findNavController().navigate(R.id.ongoingDeliveryFragment)
+                }
+            }
+        }
 
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
-            if(!trip.completed)
-            {
-                sharedViewModel.setSelectedTrip(trip)
-                findNavController().navigate(R.id.ongoingDeliveryFragment)
-            }
-            else
-            {
-                findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip))
-            }
-
+            if (trip.completed) findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip))
         })
 
         binding.sleepList.adapter = adapter
 
-        binding.swipeRefresh.setOnRefreshListener{
-            if(swipe_refresh.isRefreshing){
+        binding.swipeRefresh.setOnRefreshListener {
+            if (swipe_refresh.isRefreshing) {
                 swipe_refresh.isRefreshing = false
             }
             viewModel.fetchTripFromNetwork()
@@ -65,6 +65,7 @@ class HomePage : Fragment() {
 
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+
         }
 
 
