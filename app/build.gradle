@@ -131,5 +131,7 @@ dependencies {
     // optional - Multiprocess support
     implementation "androidx.work:work-multiprocess:$work_version"
 
+    //for location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
 }
