@@ -11,6 +11,7 @@ data class DatabaseLoad(
     val _id: String,
     val _v: Int = 0,
 
+    val tripId :String,
     val productType: String,
     val productDestination:String,
     val productQuantity:Double,

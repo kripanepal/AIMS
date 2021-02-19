@@ -27,7 +27,7 @@ class TripListRepository(private val database: TripListDatabse) {
         withContext(Dispatchers.IO) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                database.tripListDao.insertAll(*tripLists.asDatabaseModel())
+                database.tripListDao.insertTrips(*tripLists.asDatabaseModel())
             } catch (e: Exception) {
 
             }
