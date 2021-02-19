@@ -1,9 +1,10 @@
 package com.fourofourfound.aims_delivery.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
-import com.fourofourfound.aims_delivery.database.entities.asDomainModel
+import com.fourofourfound.aims_delivery.database.entities.trip.asDomainModal
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel
 import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
@@ -17,18 +18,20 @@ class TripListRepository(private val database: TripListDatabse) {
      */
     val trips: LiveData<List<Trip>> =
         Transformations.map(database.tripListDao.getTripList()) {
-            it.asDomainModel()
+            it.asDomainModal()
         }
 
     /**
      * Refresh the trips stored in the offline cache.
-
      */
     suspend fun refreshTrips() {
+
         withContext(Dispatchers.IO) {
+            Log.i("AAAAA","HERE")
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 database.tripListDao.insertAll(*tripLists.asDatabaseModel())
+
             } catch (e: Exception) {
 
             }
@@ -45,6 +48,17 @@ class TripListRepository(private val database: TripListDatabse) {
 
             }
 
+        }
+    }
+
+    suspend fun deleteAllTrips() {
+        withContext(Dispatchers.IO) {
+            try {
+                //TODO make network call to inform aims dispatcher
+                database.tripListDao.deleteAllTrips()
+            } catch (e: Exception) {
+
+            }
         }
     }
 }

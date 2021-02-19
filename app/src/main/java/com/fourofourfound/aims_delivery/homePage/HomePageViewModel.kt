@@ -13,21 +13,6 @@ import kotlinx.coroutines.launch
 class HomePageViewModel(application: Application) :AndroidViewModel(application) {
     private val myApplication = application
 
-    private val _userLoggedIn = MutableLiveData<Boolean>()
-    val userLoggedIn: LiveData<Boolean>
-        get() = _userLoggedIn
-
-
-    private val _navigate = MutableLiveData<Boolean>()
-    val navigate: LiveData<Boolean>
-        get() = _navigate
-
-
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean>
-        get() = _loading
-
-
     private val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
@@ -43,14 +28,6 @@ class HomePageViewModel(application: Application) :AndroidViewModel(application)
 
     val tripList = tripListRepository.trips
 
-
-    fun logoutUser() {
-        CustomSharedPreferences(myApplication).apply {
-            deleteEncryptedPreference("username")
-            deleteEncryptedPreference("password")
-        }
-        _userLoggedIn.value = false
-    }
 
 
 
