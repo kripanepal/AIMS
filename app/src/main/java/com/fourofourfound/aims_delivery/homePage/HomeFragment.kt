@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.homePage
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +12,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.worker.SyncDataWithServer
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.fragment_home_page.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class HomePage : Fragment() {
 
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
+    private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +72,8 @@ class HomePage : Fragment() {
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-
+        scheduleWork()
+        check()
         return binding.root
     }
 
@@ -86,7 +94,43 @@ class HomePage : Fragment() {
             .show()
     }
 
+    private fun scheduleWork() {
+        applicationScope.launch {
+            var repeatingRequest = PeriodicWorkRequestBuilder<SyncDataWithServer>(
+                15,
+                TimeUnit.MINUTES
+            ).build()
 
+            WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                SyncDataWithServer.WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                repeatingRequest
+            )
+        }
+    }
+    private fun check() {
+        applicationScope.launch {
+            val workManager = context?.let { WorkManager.getInstance(it) }
+
+            val workInfos = workManager?.getWorkInfosForUniqueWork(SyncDataWithServer.WORK_NAME)
+                ?.await()
+            if (workInfos != null) {
+                if (workInfos.size == 1) {
+                    // for (workInfo in workInfos) {
+                    val workInfo = workInfos[0]
+
+                    if (workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING) {
+                        Log.i("Refresh", "Running")
+                    } else {
+                        Log.i("Refresh", "Else Running")
+
+                    }
+                } else {
+                    Log.i("Refresh", "Nothing")
+                }
+            }
+        }
+    }
 }
 
 
