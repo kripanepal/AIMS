@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
@@ -24,10 +25,13 @@ class TripListRepository(private val database: TripListDatabse) {
      * Refresh the trips stored in the offline cache.
      */
     suspend fun refreshTrips() {
+
         withContext(Dispatchers.IO) {
+            Log.i("AAAAA","HERE")
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 database.tripListDao.insertAll(*tripLists.asDatabaseModel())
+
             } catch (e: Exception) {
 
             }

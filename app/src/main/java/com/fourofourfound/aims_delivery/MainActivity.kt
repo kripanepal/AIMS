@@ -24,7 +24,14 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.myNavHostFragment)
         bottomNavigationView.setupWithNavController(navController)
 
-        bottomNavigationView.setOnNavigationItemReselectedListener { false }
+
+        //prevents reselection of the destination and navigates user back to top destination
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            navController.currentDestination?.let {currentDestination ->
+                if(currentDestination.id!==it.itemId)
+                    navController.navigate(it.itemId)
+            }
+        }
 
         navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
             bottomNavigationView.visibility = if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
