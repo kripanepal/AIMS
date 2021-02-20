@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.homePage
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -30,6 +31,7 @@ class HomePage : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var locationProvider: LocationUtil
 
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,7 +42,6 @@ class HomePage : Fragment() {
         )
 
         val viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
-        val sharedViewModel: SharedViewModel by activityViewModels()
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
@@ -76,11 +77,6 @@ class HomePage : Fragment() {
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-
-        CustomWorkManager(requireContext()).scheduleWork()
-
-
-
         return binding.root
     }
 
@@ -90,6 +86,7 @@ class HomePage : Fragment() {
         _binding = null
     }
 
+    @SuppressLint("MissingPermission")
     private fun showDialog(tripToStart: Trip) {
         AlertDialog.Builder(context)
             .setTitle("Start a trip?")
@@ -97,6 +94,7 @@ class HomePage : Fragment() {
             .setNegativeButton("No") { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
             .setPositiveButton("Start now") { _: DialogInterface, _: Int ->
                 sharedViewModel.setSelectedTrip(tripToStart)
+                CustomWorkManager(requireContext()).sendLocationAndUpdateTrips()
                 findNavController().navigate(R.id.ongoingDeliveryFragment)
             }
             .show()
@@ -123,7 +121,7 @@ class HomePage : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!checkPermission(
                 listOf(
                     android.Manifest.permission.ACCESS_COARSE_LOCATION,
