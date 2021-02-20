@@ -2,8 +2,10 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +14,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.work.*
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.worker.SyncDataWithServer
+import com.fourofourfound.aims_delivery.utils.CustomWorkManager
+import com.fourofourfound.aims_delivery.utils.LocationUtil
+import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.fragment_home_page.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 class HomePage : Fragment() {
 
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val applicationScope = CoroutineScope(Dispatchers.Default)
+    lateinit var locationProvider: LocationUtil
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,10 +53,15 @@ class HomePage : Fragment() {
             }
         }
 
+        locationProvider = LocationUtil(requireContext())
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
-            if (trip.completed) findNavController().navigate(HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip))
+            if (trip.completed) findNavController().navigate(
+                HomePageDirections.actionHomePageToCompletedDeliveryFragment(
+                    trip
+                )
+            )
         })
 
         binding.sleepList.adapter = adapter
@@ -72,10 +76,14 @@ class HomePage : Fragment() {
         viewModel.tripList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-        scheduleWork()
-        check()
+
+        CustomWorkManager(requireContext()).scheduleWork()
+
+
+
         return binding.root
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -94,42 +102,49 @@ class HomePage : Fragment() {
             .show()
     }
 
-    private fun scheduleWork() {
-        applicationScope.launch {
-            var repeatingRequest = PeriodicWorkRequestBuilder<SyncDataWithServer>(
-                15,
-                TimeUnit.MINUTES
-            ).build()
-
-            WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-                SyncDataWithServer.WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                repeatingRequest
-            )
-        }
-    }
-    private fun check() {
-        applicationScope.launch {
-            val workManager = context?.let { WorkManager.getInstance(it) }
-
-            val workInfos = workManager?.getWorkInfosForUniqueWork(SyncDataWithServer.WORK_NAME)
-                ?.await()
-            if (workInfos != null) {
-                if (workInfos.size == 1) {
-                    // for (workInfo in workInfos) {
-                    val workInfo = workInfos[0]
-
-                    if (workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING) {
-                        Log.i("Refresh", "Running")
-                    } else {
-                        Log.i("Refresh", "Else Running")
-
-                    }
-                } else {
-                    Log.i("Refresh", "Nothing")
-                }
+    private fun showLocationPermissionMissingDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Missing Permissions")
+            .setMessage("Please provide location access")
+            .setCancelable(true)
+            .setPositiveButton("Enable location") { _: DialogInterface, _: Int ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val uri: Uri = Uri.fromParts("package", requireActivity().packageName, null)
+                intent.data = uri
+                startActivity(intent)
             }
+            .show()
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (!checkPermission(
+                listOf(
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ), requireContext()
+            )
+        ) {
+            showLocationPermissionMissingDialog()
         }
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requestPermissions(
+            arrayOf(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ), 50
+        )
     }
 }
 

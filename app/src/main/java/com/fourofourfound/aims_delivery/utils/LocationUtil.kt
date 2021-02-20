@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
 import com.google.android.gms.location.*
 
 class LocationUtil(var context: Context) {
@@ -16,13 +17,19 @@ class LocationUtil(var context: Context) {
             context
         )
     lateinit var locationRequest: LocationRequest
-    private val PERMISSION_REQUEST = 50
+    val PERMISSION_REQUEST = 50
 
     //var location: Location? = null
     //lateinit var customLocation: CustomLocation
     //get the last known location
     fun getLastLocation() {
-        if (checkPermission()) {
+        if (checkPermission(
+                listOf(
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ), context
+            )
+        ) {
             if (isLocationEnabled()) {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
                     getNewLocation()
@@ -51,24 +58,24 @@ class LocationUtil(var context: Context) {
     }
 
     //Checks the users permission
-    fun checkPermission(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
+    private fun checkPermission(permissionsToCheck: List<String>, context: Context): Boolean {
+        var toReturn = true
+        for (permission in permissionsToCheck) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                toReturn = false
+            }
         }
-        return false
+        return toReturn
     }
+
 
     //asks for the user permission
     fun requestPermission() {
-        ActivityCompat.requestPermissions(
+        requestPermissions(
             context as Activity,
             arrayOf(
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -79,10 +86,12 @@ class LocationUtil(var context: Context) {
     }
 
     //checks if device location service is enabled
-    fun isLocationEnabled(): Boolean {
-        var locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun isLocationEnabled(): Boolean {
+        var locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
     }
+
 }

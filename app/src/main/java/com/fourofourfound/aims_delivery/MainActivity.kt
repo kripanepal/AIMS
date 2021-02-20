@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -10,11 +9,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                 bottomNavigationView.visibility = View.VISIBLE
             }
         }
+
 //        layed()val workManager = WorkManager.getInstance(applicationContext)
 //        val workInfos = workManager.getWorkInfosForUniqueWork("RefreshDataWorker")
         //Log.i("Schedule", WorkManager.isAnyWorkScheduled().toString())

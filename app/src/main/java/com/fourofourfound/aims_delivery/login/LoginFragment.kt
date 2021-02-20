@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,6 @@ class LoginFragment : Fragment() {
 
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner,  {
-            Log.i("AAAAA",it.toString())
             if (it) {
               findNavController().navigate(R.id.homePage)
                 viewModel.doneNavigatingToHomePage() }

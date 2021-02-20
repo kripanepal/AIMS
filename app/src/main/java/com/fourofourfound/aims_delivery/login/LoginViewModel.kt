@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -64,7 +63,6 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
     {
         if(checkFieldsEmpty()) return
         _loading.value = true
-        Log.i("AAAAAAA","AAAAAAA")
         viewModelScope.launch {
            try{
                 MakeNetworkCall.retrofitService.validateUser(UserLoginInfo(userName.value.toString(),password.value.toString()))
