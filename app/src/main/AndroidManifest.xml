@@ -17,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Aims_delivery">
 
-        <activity android:name="com.fourofourfound.aims_delivery.MainActivity">
+        <activity
+            android:name="com.fourofourfound.aims_delivery.MainActivity"
+            android:theme="@style/Aims_delivery.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

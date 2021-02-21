@@ -59,6 +59,7 @@ class HomePage : Fragment() {
             }
         }
 
+        activity?.title = "Trip List"
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
@@ -69,7 +70,7 @@ class HomePage : Fragment() {
             )
         })
 
-        binding.sleepList.adapter = adapter
+        binding.tripList.adapter = adapter
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.fetchTripFromNetwork()

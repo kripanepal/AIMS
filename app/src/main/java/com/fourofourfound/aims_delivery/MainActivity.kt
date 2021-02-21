@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        layed()val workManager = WorkManager.getInstance(applicationContext)
-//        val workInfos = workManager.getWorkInfosForUniqueWork("RefreshDataWorker")
-        //Log.i("Schedule", WorkManager.isAnyWorkScheduled().toString())
+        var mTopToolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.my_toolbar)
+        setSupportActionBar(mTopToolbar)
+
     }
 
     //forces user to home page on back press
