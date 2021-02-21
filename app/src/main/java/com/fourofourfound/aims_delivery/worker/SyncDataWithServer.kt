@@ -32,17 +32,19 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         withContext(Dispatchers.Main) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                15 * 60 * 1000,
+                0,
                 0f,
                 this@SyncDataWithServer
             )
         }
         var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
         location?.apply {
             Log.i("Location", "Running1")
             val database = getDatabase(applicationContext)
             val repository = TripListRepository(database)
             return try {
+                Log.i("Location", "In try")
                 var customLocation = CustomDatabaseLocation(latitude, longitude, time.toString())
                 repository.refreshTrips()
                 MakeNetworkCall.retrofitService.sendLocation(customLocation)
@@ -54,6 +56,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 Result.failure()
             }
         }
+        Log.i("Location", "Outside apply")
         return Result.retry()
     }
 

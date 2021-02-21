@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -18,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.LocationUtil
 import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
@@ -29,7 +29,12 @@ class HomePage : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    lateinit var locationProvider: LocationUtil
+    var permissionsToCheck = listOf(
+        android.Manifest.permission.ACCESS_FINE_LOCATION,
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+    )
+
 
     @SuppressLint("MissingPermission")
     override fun onCreateView(
@@ -54,7 +59,6 @@ class HomePage : Fragment() {
             }
         }
 
-        locationProvider = LocationUtil(requireContext())
 
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
@@ -102,9 +106,12 @@ class HomePage : Fragment() {
 
     private fun showLocationPermissionMissingDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Missing Permissions")
-            .setMessage("Please provide location access")
-            .setCancelable(true)
+            .setTitle("Missing background location access")
+            .setMessage(
+                "Please provide background location access all the time. " +
+                        "This app uses background location to track the delivery"
+            )
+            .setCancelable(false)
             .setPositiveButton("Enable location") { _: DialogInterface, _: Int ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -121,12 +128,9 @@ class HomePage : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!checkPermission(
-                listOf(
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ), requireContext()
+                permissionsToCheck, requireContext()
             )
         ) {
             showLocationPermissionMissingDialog()
@@ -137,12 +141,19 @@ class HomePage : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        requestPermissions(
-            arrayOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ), 50
-        )
+        if (!checkPermission(permissionsToCheck, requireContext())) {
+            if (Build.VERSION.SDK_INT === Build.VERSION_CODES.R) {
+                requestPermissions(
+                    arrayOf(
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    ), 50
+                )
+            } else {
+                requestPermissions(permissionsToCheck.toTypedArray(), 50)
+            }
+        }
+
     }
 }
 
