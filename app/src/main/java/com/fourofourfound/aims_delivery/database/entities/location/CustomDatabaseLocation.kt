@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CustomDatabaseLocation(
-    var latitude: String,
-    var longitude: String,
+    var latitude: Double,
+    var longitude: Double,
     @PrimaryKey var timeStamp: String
 )
