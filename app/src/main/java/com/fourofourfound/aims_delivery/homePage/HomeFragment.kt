@@ -133,6 +133,12 @@ class HomePage : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            permissionsToCheck = listOf(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
         if (!checkPermission(
                 permissionsToCheck, requireContext()
             )
@@ -147,6 +153,14 @@ class HomePage : Fragment() {
         super.onStart()
         if (!checkPermission(permissionsToCheck, requireContext())) {
             if (Build.VERSION.SDK_INT === Build.VERSION_CODES.R) {
+                requestPermissions(
+                    arrayOf(
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    ), 50
+                )
+            }
+            if (Build.VERSION.SDK_INT === 23) {
                 requestPermissions(
                     arrayOf(
                         android.Manifest.permission.ACCESS_FINE_LOCATION,
