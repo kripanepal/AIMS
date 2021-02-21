@@ -21,6 +21,13 @@ class TripListRepository(private val database: TripListDatabse) {
             it.asDomainModal()
         }
 
+//    val locationToSend: LiveData<List<Da>> = Transformations.map(database.tripListDao.getSavedLocation()) {
+//        Log.i("SOmething", it.toString())
+//        it
+//
+//    }
+
+
     /**
      * Refresh the trips stored in the offline cache.
      */
@@ -36,6 +43,7 @@ class TripListRepository(private val database: TripListDatabse) {
             }
         }
     }
+
 
     suspend fun markTripCompleted(tripId:String,status:Boolean)
     {

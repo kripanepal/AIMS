@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ class HomePage : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    lateinit var viewModel: HomePageViewModel
     var permissionsToCheck = listOf(
         android.Manifest.permission.ACCESS_FINE_LOCATION,
         android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -46,9 +48,10 @@ class HomePage : Fragment() {
             inflater, R.layout.fragment_home_page, container, false
         )
 
-        val viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
 
         binding.btnStartTrip.setOnClickListener {
             viewModel.tripList.value?.let {
@@ -85,6 +88,16 @@ class HomePage : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        sharedViewModel.internetConnection.observe(this) {
+            if (it) {
+                Log.i("Sending", "Sending location")
+                viewModel.sendSavedLocation()
+            }
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -100,7 +113,7 @@ class HomePage : Fragment() {
             .setPositiveButton("Start now") { _: DialogInterface, _: Int ->
                 sharedViewModel.setSelectedTrip(tripToStart)
                 CustomWorkManager(requireContext()).apply {
-                    sendLocationAndUpdateTrips()
+                    //sendLocationAndUpdateTrips()
                     sendLocationOnetime()
                 }
                 findNavController().navigate(R.id.ongoingDeliveryFragment)
@@ -145,8 +158,6 @@ class HomePage : Fragment() {
         ) {
             showLocationPermissionMissingDialog()
         }
-
-
     }
 
     override fun onStart() {
