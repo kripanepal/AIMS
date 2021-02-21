@@ -4,6 +4,7 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
 
 @Dao
@@ -15,15 +16,17 @@ interface TripListDao {
     fun insertAll(vararg trip: DatabaseTrip)
 
     @Query("update DatabaseTrip set completed=:status where _id= :tripId")
-    fun markTripCompleted(tripId:String,status:Boolean)
+    fun markTripCompleted(tripId: String, status: Boolean)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLocation(location: CustomDatabaseLocation)
 }
 
 
-@Database(entities = [DatabaseTrip::class], version = 1)
+@Database(entities = [DatabaseTrip::class, CustomDatabaseLocation::class], version = 1)
 abstract class TripListDatabse : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }
