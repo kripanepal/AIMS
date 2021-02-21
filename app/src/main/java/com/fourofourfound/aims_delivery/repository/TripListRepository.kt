@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.trip.asDomainModal
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel
@@ -40,7 +41,6 @@ class TripListRepository(private val database: TripListDatabse) {
     {
         withContext(Dispatchers.IO) {
             try {
-               //TODO make network call to inform aims dispatcher
                 database.tripListDao.markTripCompleted(tripId,status)
             } catch (e: Exception) {
 
@@ -52,10 +52,18 @@ class TripListRepository(private val database: TripListDatabse) {
     suspend fun deleteAllTrips() {
         withContext(Dispatchers.IO) {
             try {
-                //TODO make network call to inform aims dispatcher
                 database.tripListDao.deleteAllTrips()
             } catch (e: Exception) {
 
+            }
+        }
+    }
+
+    suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
+        withContext(Dispatchers.IO) {
+            try {
+                database.tripListDao.insertLocation(customLocation)
+            } catch (e: Exception) {
             }
         }
     }

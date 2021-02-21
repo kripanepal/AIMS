@@ -98,7 +98,10 @@ class HomePage : Fragment() {
             .setNegativeButton("No") { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
             .setPositiveButton("Start now") { _: DialogInterface, _: Int ->
                 sharedViewModel.setSelectedTrip(tripToStart)
-                CustomWorkManager(requireContext()).sendLocationAndUpdateTrips()
+                CustomWorkManager(requireContext()).apply {
+                    sendLocationAndUpdateTrips()
+                    sendLocationOnetime()
+                }
                 findNavController().navigate(R.id.ongoingDeliveryFragment)
             }
             .show()
@@ -128,7 +131,7 @@ class HomePage : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!checkPermission(
                 permissionsToCheck, requireContext()
             )

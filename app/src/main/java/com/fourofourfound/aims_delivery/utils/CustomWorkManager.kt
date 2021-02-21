@@ -16,8 +16,6 @@ class CustomWorkManager(var context: Context) {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     fun sendLocationAndUpdateTrips() {
-
-
         //Schedule a work in 15 minutes interval
         applicationScope.launch {
             var repeatingRequest = PeriodicWorkRequestBuilder<SyncDataWithServer>(
@@ -37,11 +35,10 @@ class CustomWorkManager(var context: Context) {
         //Runs a work one time for testing only
         applicationScope.launch {
             var repeatingRequest = OneTimeWorkRequestBuilder<SyncDataWithServer>()
-                //.setInitialDelay(10, TimeUnit.SECONDS)
+                .setInitialDelay(10, TimeUnit.SECONDS)
                 .build()
 
             WorkManager.getInstance(context).enqueue(repeatingRequest)
-            sendLocationAndUpdateTrips()
         }
     }
 }
