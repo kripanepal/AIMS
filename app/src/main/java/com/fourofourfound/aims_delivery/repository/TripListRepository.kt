@@ -20,19 +20,30 @@ class TripListRepository(private val database: TripListDatabse) {
             it.asDomainModal()
         }
 
+//    val locationToSend: LiveData<List<Da>> = Transformations.map(database.tripListDao.getSavedLocation()) {
+//        Log.i("SOmething", it.toString())
+//        it
+//
+//    }
+
+
     /**
      * Refresh the trips stored in the offline cache.
      */
     suspend fun refreshTrips() {
+
         withContext(Dispatchers.IO) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 database.tripListDao.insertTrips(*tripLists.asDatabaseModel())
+                database.tripListDao.insertAll(*tripLists.asDatabaseModel())
+
             } catch (e: Exception) {
 
             }
         }
     }
+
 
     suspend fun markTripCompleted(tripId:String,status:Boolean)
     {

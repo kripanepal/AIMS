@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AIMS delivery</string>
+    <string name="app_name">App</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="provider_number">1111111111</string>
     <string name="user_id_hint">User id</string>
