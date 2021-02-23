@@ -1,14 +1,6 @@
 package com.fourofourfound.aims_delivery
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -22,12 +14,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.LocationPermissionUtil
-import com.fourofourfound.aims_delivery.utils.checkPermission
+import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -37,22 +25,17 @@ class MainActivity : AppCompatActivity() {
     lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var navController: NavController
     lateinit var noInternetText: TextView
-    lateinit var locationPermissionUtil:LocationPermissionUtil
+    lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
 
-    var permissionsToCheck = listOf<String>(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-        android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-        locationPermissionUtil = LocationPermissionUtil(this)
+        locationPermissionUtil = BackgroundLocationPermissionUtil(this)
         setUpNavController()
         initializeToolBar()
-        var sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        val sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         changeInternetConnectionText(sharedViewModel)
 
     }
@@ -76,7 +59,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val appBarConfiguration = AppBarConfiguration
-            .Builder(R.id.homePage, R.id.settingsFragment, R.id.ongoingDeliveryFragment)
+            .Builder(
+                R.id.homePage,
+                R.id.settingsFragment,
+                R.id.ongoingDeliveryFragment,
+                R.id.loginFragment
+            )
             .build()
         setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
@@ -106,6 +94,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return navController.navigateUp()
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (navController.currentDestination?.id != R.id.loginFragment) {
+            locationPermissionUtil.onPermissionSelected()
+        }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        if (navController.currentDestination?.id != R.id.loginFragment)
+            locationPermissionUtil.checkPermissionsOnStart()
     }
 
 

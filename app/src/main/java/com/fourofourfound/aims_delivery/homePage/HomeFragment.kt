@@ -1,11 +1,7 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.fragment_home_page.*
@@ -29,11 +25,6 @@ class HomePage : Fragment() {
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var viewModel: HomePageViewModel
-    var permissionsToCheck = mutableListOf<String>(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-        android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-    )
 
 
     @SuppressLint("MissingPermission")
@@ -42,7 +33,7 @@ class HomePage : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = DataBindingUtil.inflate<FragmentHomePageBinding>(
+        _binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_home_page, container, false
         )
 
@@ -62,15 +53,24 @@ class HomePage : Fragment() {
         setUpRecyclerView()
         setUpSwipeToRefresh()
 
+
         return binding.root
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
     }
 
     private fun setUpSwipeToRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.fetchTripFromNetwork()
-            if (swipe_refresh.isRefreshing) {
-                swipe_refresh.isRefreshing = false
-            }
+            if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
+
         }
     }
 
@@ -78,9 +78,7 @@ class HomePage : Fragment() {
         //adapter for the recycler view
         val adapter = TripListAdapter(TripListListener { trip ->
             if (trip.completed) findNavController().navigate(
-                HomePageDirections.actionHomePageToCompletedDeliveryFragment(
-                    trip
-                )
+                HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             )
         })
 
@@ -93,7 +91,7 @@ class HomePage : Fragment() {
     private fun startTripOnClick() {
         binding.btnStartTrip.setOnClickListener {
             viewModel.tripList.value?.let {
-                var tripToStart = it[0]
+                val tripToStart = it[0]
                 if (!tripToStart.completed)
                     showStartTripDialog(tripToStart)
             }
@@ -112,7 +110,7 @@ class HomePage : Fragment() {
             "Start a trip?",
             null,
             "Start now",
-            {  markTripStart(tripToStart) },
+            { markTripStart(tripToStart) },
             "No",
             null,
             true
@@ -128,71 +126,6 @@ class HomePage : Fragment() {
         findNavController().navigate(R.id.ongoingDeliveryFragment)
     }
 
-
-    private fun showLocationPermissionMissingDialog() {
-        CustomDialogBuilder(
-            requireContext(),
-            "Missing background location access",
-            "Please provide background location access all the time. " +
-                    "This app uses background location to track the delivery",
-            "Enable location",
-            {  takeToPermissionScreen() },
-            null,
-            null,
-            false
-        ).builder.show()
-    }
-
-    private fun takeToPermissionScreen() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val uri: Uri = Uri.fromParts("package", requireActivity().packageName, null)
-        intent.data = uri
-        startActivity(intent)
-    }
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            permissionsToCheck.removeLast()
-        }
-        if (!checkPermission(
-                permissionsToCheck, requireContext()
-            )
-        ) {
-            showLocationPermissionMissingDialog()
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!checkPermission(permissionsToCheck, requireContext())) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                requestPermissions(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 50
-                )
-            }
-            if (Build.VERSION.SDK_INT === 23) {
-                requestPermissions(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 50
-                )
-            } else {
-                requestPermissions(permissionsToCheck.toTypedArray(), 50)
-            }
-        }
-
-    }
 }
 
 

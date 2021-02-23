@@ -8,7 +8,7 @@ class CustomDialogBuilder(
     var title: String,
     var message: String?,
     var positiveButtonText: String,
-    var positiveMessageCallback: () -> Unit,
+    var positiveMessageCallback: (() -> Unit),
     var negativeButtonText: String?,
     var negativeMessageCallback: (() -> Unit)?,
     var cancelable: Boolean
@@ -24,7 +24,7 @@ class CustomDialogBuilder(
         builder.setTitle(title)
         message?.apply { builder.setMessage(this) }
 
-        if (!positiveButtonText.isNullOrEmpty())
+        if (positiveButtonText.isNotEmpty())
             builder.setPositiveButton(positiveButtonText) { dialog, which ->
                 positiveMessageCallback()
             }

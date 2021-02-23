@@ -10,7 +10,7 @@ fun checkPermission(permissionsToCheck: List<String>, context: Context): Boolean
         if (ActivityCompat.checkSelfPermission(
                 context,
                 permission
-            ) !== PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             toReturn = false
         }
