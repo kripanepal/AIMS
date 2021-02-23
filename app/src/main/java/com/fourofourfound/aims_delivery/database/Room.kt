@@ -4,8 +4,10 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
 
 @Dao
 interface TripListDao {
@@ -40,7 +42,7 @@ interface TripListDao {
 }
 
 
-@Database(entities = [DatabaseTrip::class, CustomDatabaseLocation::class], version = 1)
+@Database(entities = [DatabaseTrip::class, CustomDatabaseLocation::class,DatabaseLoad::class], version = 1,exportSchema = false)
 abstract class TripListDatabse : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }

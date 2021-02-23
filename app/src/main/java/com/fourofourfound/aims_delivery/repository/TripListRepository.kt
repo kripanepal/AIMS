@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.trip.asDomainModal
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel
@@ -20,11 +21,7 @@ class TripListRepository(private val database: TripListDatabse) {
             it.asDomainModal()
         }
 
-//    val locationToSend: LiveData<List<Da>> = Transformations.map(database.tripListDao.getSavedLocation()) {
-//        Log.i("SOmething", it.toString())
-//        it
-//
-//    }
+
 
 
     /**
@@ -36,8 +33,6 @@ class TripListRepository(private val database: TripListDatabse) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 database.tripListDao.insertTrips(*tripLists.asDatabaseModel())
-                database.tripListDao.insertAll(*tripLists.asDatabaseModel())
-
             } catch (e: Exception) {
 
             }
@@ -65,6 +60,16 @@ class TripListRepository(private val database: TripListDatabse) {
                 database.tripListDao.deleteAllTrips()
             } catch (e: Exception) {
 
+            }
+        }
+    }
+
+
+    suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
+        withContext(Dispatchers.IO) {
+            try {
+                database.tripListDao.insertLocation(customLocation)
+            } catch (e: Exception) {
             }
         }
     }

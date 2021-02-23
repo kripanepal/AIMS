@@ -1,18 +1,16 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 
@@ -63,13 +61,19 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
     private fun showNoTripSelectedDialog() {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("No ongoing trip")
-        builder.setMessage("No trip was selected. Please select a trip from the menu")
-        builder.setPositiveButton("Take me to trip list") { dialog, which ->
-            findNavController().navigate(R.id.homePage)
-        }
-        builder.setCancelable(false)
-        builder.show()
+
+        val takeToHomeScreen = {  findNavController().navigate(R.id.homePage) }
+
+        CustomDialogBuilder(requireContext(),
+            "No ongoing trip",
+            "No trip was selected. Please select a trip from the menu",
+            "Take me to trip list",
+            takeToHomeScreen,
+            null,
+            null,
+            false
+        ).builder.show()
+
+
     }
 }
