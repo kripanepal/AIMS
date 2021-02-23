@@ -14,18 +14,7 @@ import com.fourofourfound.aims_delivery.MainActivity
 class BackgroundLocationPermissionUtil(var context: Context) {
 
     lateinit var permissionMissingDialog: AlertDialog
-    var permissionsToCheck = mutableListOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-    )
-
-    init {
-        if (Build.VERSION.SDK_INT >= 29) {
-            permissionsToCheck.add(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        }
-    }
-
-
+    private var permissionsToCheck = getPermissionsToBeChecked()
     private fun takeToPermissionScreenIntent(): Intent {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

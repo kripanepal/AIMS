@@ -13,6 +13,7 @@ import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.checkPermission
+import com.fourofourfound.aims_delivery.utils.getPermissionsToBeChecked
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -28,11 +29,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     companion object {
         const val WORK_NAME = "RefreshDataWorker"
 
-        var permissionsToCheck = listOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-        )
+        var permissionsToCheck = getPermissionsToBeChecked()
     }
 
 

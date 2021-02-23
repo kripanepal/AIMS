@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.annotation.SuppressLint
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
@@ -42,19 +44,17 @@ class HomePage : Fragment() {
         binding.lifecycleOwner = this
         activity?.title = "Trip List"
 
-//        sharedViewModel.internetConnection.observe(viewLifecycleOwner) {
-//            if (it) {
-//                Log.i("Sending", "Sending location")
-//               // viewModel.sendSavedLocation()
-//            }
-//        }
-
+        registerBroadCastReceiver()
         startTripOnClick()
         setUpRecyclerView()
         setUpSwipeToRefresh()
 
-
         return binding.root
+    }
+
+    private fun registerBroadCastReceiver() {
+        val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+        context?.registerReceiver(NetworkChangedBroadCastReceiver(), intentFilter)
     }
 
     override fun onRequestPermissionsResult(
