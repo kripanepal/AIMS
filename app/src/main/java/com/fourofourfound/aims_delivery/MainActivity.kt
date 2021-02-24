@@ -79,8 +79,14 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.visibility =
                 if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
         }
-        bottomNavigationView.setupWithNavController(navController)
 
+        //setup bottomNavigation view
+        bottomNavigationView.setupWithNavController(navController)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+         if(navController.currentDestination?.id != it.itemId)
+             navController.navigate(it.itemId)
+             true
+        }
     }
 
 
@@ -120,8 +126,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        this.unregisterReceiver(NetworkChangedBroadCastReceiver())
         super.onDestroy()
+        if(sharedViewModel.isLocationBroadcastReceiverInitialized) {
+            try {
+                this.unregisterReceiver(NetworkChangedBroadCastReceiver())
+            }
+            catch(e:Exception){}
+        }
     }
 
 
