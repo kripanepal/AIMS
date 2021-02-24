@@ -44,18 +44,22 @@ class HomePage : Fragment() {
         binding.lifecycleOwner = this
         activity?.title = "Trip List"
 
-        registerBroadCastReceiver()
+
         startTripOnClick()
         setUpRecyclerView()
         setUpSwipeToRefresh()
+        registerBroadCastReceiver()
 
         return binding.root
     }
-
     private fun registerBroadCastReceiver() {
-        val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        context?.registerReceiver(NetworkChangedBroadCastReceiver(), intentFilter)
+        if (!sharedViewModel.isLocationBroadcastReceiverInitialized) {
+            val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+            requireContext().registerReceiver(NetworkChangedBroadCastReceiver(), intentFilter)
+            sharedViewModel.isLocationBroadcastReceiverInitialized = true
+        }
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -120,6 +124,7 @@ class HomePage : Fragment() {
     private fun markTripStart(tripToStart: Trip) {
         sharedViewModel.setSelectedTrip(tripToStart)
         CustomWorkManager(requireContext()).apply {
+            //TODO need to call both methods
             //sendLocationAndUpdateTrips()
             sendLocationOnetime()
         }

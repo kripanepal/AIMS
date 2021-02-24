@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aimsdelivery.R
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     lateinit var noInternetText: TextView
     lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
+    lateinit var sharedViewModel: SharedViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,14 +35,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         locationPermissionUtil = BackgroundLocationPermissionUtil(this)
+
         setUpNavController()
         initializeToolBar()
-        val sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        changeInternetConnectionText(sharedViewModel)
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        changeInternetConnectionText()
 
     }
 
-    private fun changeInternetConnectionText(sharedViewModel: SharedViewModel) {
+    private fun changeInternetConnectionText() {
         noInternetText = findViewById(R.id.no_internet)
         sharedViewModel.internetConnection
             .observe(this, Observer { isConnected ->
@@ -77,6 +80,7 @@ class MainActivity : AppCompatActivity() {
                 if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
         }
         bottomNavigationView.setupWithNavController(navController)
+
     }
 
 
@@ -110,8 +114,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (navController.currentDestination?.id != R.id.loginFragment)
+        if (navController.currentDestination?.id != R.id.loginFragment) {
             locationPermissionUtil.checkPermissionsOnStart()
+        }
+    }
+
+    override fun onDestroy() {
+        this.unregisterReceiver(NetworkChangedBroadCastReceiver())
+        super.onDestroy()
     }
 
 

@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.broadcastReceiver
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,13 +13,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-private const val TAG = "NetworkChangedBroadCastReceiver"
-
 class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
 
-    @SuppressLint("LongLogTag")
-    override fun onReceive(context: Context, intent: Intent) {
 
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.i("Sending", "RECEIVED")
 
         if (isNetworkConnected(context)) {
             Log.i("Sending", "CONNECTED")
@@ -29,9 +26,10 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
                 database.tripListDao.getSavedLocation().apply {
                     try {
                         MakeNetworkCall.retrofitService.sendLocation(this)
-                        Log.i("Sending", "Try11111")
+                        database.tripListDao.deleteAllLocations()
+
                     } catch (e: Exception) {
-                        Log.i("Sending", "Exception")
+
                     }
                 }
             }

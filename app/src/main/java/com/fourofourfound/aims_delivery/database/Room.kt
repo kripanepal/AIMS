@@ -28,8 +28,7 @@ interface TripListDao {
 
     @Transaction
     @Query("select * from DatabaseTrip where _id = :tripId")
-    fun getTripWithLoads(tripId:String): List<TripWithLoads>
-
+    fun getTripWithLoads(tripId: String): List<TripWithLoads>
 
 
     //Locations
@@ -38,6 +37,9 @@ interface TripListDao {
 
     @Query("select * from CustomDatabaseLocation limit 1")
     suspend fun getSavedLocation(): CustomDatabaseLocation
+
+    @Query("delete  from CustomDatabaseLocation")
+    suspend fun deleteAllLocations()
 
 }
 
