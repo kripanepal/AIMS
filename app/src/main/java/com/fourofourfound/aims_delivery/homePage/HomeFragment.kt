@@ -88,6 +88,8 @@ class HomePage : Fragment() {
 
         binding.tripList.adapter = adapter
         viewModel.tripList.observe(viewLifecycleOwner) {
+
+            //TODO new trip was added or modified. Need to send the notification to the user
             adapter.submitList(it)
         }
     }
@@ -125,12 +127,11 @@ class HomePage : Fragment() {
         sharedViewModel.setSelectedTrip(tripToStart)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
-            //sendLocationAndUpdateTrips()
+            sendLocationAndUpdateTrips()
             sendLocationOnetime()
         }
         findNavController().navigate(R.id.ongoingDeliveryFragment)
     }
-
 }
 
 
