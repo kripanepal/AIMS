@@ -29,7 +29,8 @@
         android:layout_centerHorizontal="true"
         >
 
-    <LinearLayout
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -40,10 +41,19 @@
         android:gravity="center"
         android:background="@drawable/layout_background">
 
-        <LinearLayout
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/aims_logo" />
+
+            <LinearLayout
+            android:id="@+id/login_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="324dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -129,38 +139,49 @@
 
         <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/needHelp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="100dp"
-            android:text="@string/need_help_field_text"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textAlignment="center" />
+                <TextView
+                    android:id="@+id/needHelp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="76dp"
 
-        <Button
-            android:id="@+id/contactMyProvider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:text="@string/contact_my_provider_field_text"
-            android:textColor="@color/Aims_Orange"
-            android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="40dp"
-             />
 
-    </LinearLayout>
-    </LinearLayout>
+                    android:text="@string/need_help_field_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="NotSibling" />
+
+                <Button
+                    android:id="@+id/contactMyProvider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+
+                    android:backgroundTint="@color/white"
+                    android:text="@string/contact_my_provider_field_text"
+
+
+                    android:textColor="@color/Aims_Orange"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/needHelp"
+                    app:layout_constraintVertical_bias="0.0" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
