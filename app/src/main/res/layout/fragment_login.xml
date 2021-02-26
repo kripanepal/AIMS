@@ -66,7 +66,7 @@
                 android:layout_marginRight="50dp"
                 android:autofillHints="User Id"
                 android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                android:drawableEnd="@drawable/pen_icon"
+                android:drawableStart="@drawable/pen_icon"
                 android:ems="10"
                 android:hint="@string/user_id_hint"
                 android:inputType="textPersonName"
@@ -83,7 +83,7 @@
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
                 android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                android:drawableEnd="@drawable/ic_lock_24"
+                android:drawableStart="@drawable/ic_lock_24"
                 android:ems="10"
                 android:hint="@string/password_field_hint"
                 android:imeOptions="actionDone"
@@ -129,6 +129,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_background"
+
                 android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
                 android:onClick="@{()->viewModel.authenticateUser()}"
                 android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
@@ -166,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
 
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="#AAFFFFFF"
                     android:text="@string/contact_my_provider_field_text"
 
 
