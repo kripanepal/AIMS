@@ -16,23 +16,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:orientation="vertical"
     tools:context="com.fourofourfound.aims_delivery.login.LoginFragment"
    >
 
 
 
-    <LinearLayout
-        android:id="@+id/loginScreenConstraintLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        >
-
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
@@ -43,107 +35,139 @@
 
 
             <ImageView
+                android:id="@+id/Aims_logo"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/aims_logo" />
-
-            <LinearLayout
-            android:id="@+id/login_linearlayout"
-            android:layout_width="match_parent"
-            android:layout_height="324dp"
-            android:layout_marginTop="50dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-
-            <EditText
-                android:id="@+id/userIdInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:autofillHints="User Id"
-                android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                android:drawableStart="@drawable/pen_icon"
-                android:ems="10"
-                android:hint="@string/user_id_hint"
-                android:inputType="textPersonName"
-                android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
-                android:text="@={viewModel.userName}"
-                android:textAlignment="center"/>
-
-
-            <EditText
-                android:id="@+id/passwordInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="password"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                android:drawableStart="@drawable/ic_lock_24"
-                android:ems="10"
-                android:hint="@string/password_field_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
-                android:text="@={viewModel.password}"
-                android:textAlignment="center"
-                />
-
-            <ImageView
-                android:id="@+id/is_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="56dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/loading_animation_content_description"
-                android:text="Hello World!"
-                android:visibility="@{viewModel.loading?View.VISIBLE:View.GONE}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.541"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
-
-            <TextView
-                android:id="@+id/login_error_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="#F32929"
-                android:backgroundTint="#D11E1E"
-                android:maxWidth="300dp"
-                android:text="@{viewModel.errorMessage}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
-
-
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_background"
-
-                android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
-                android:onClick="@{()->viewModel.authenticateUser()}"
-                android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
-                />
-
-        </LinearLayout>
-
-
-        <!-- TODO: Update blank fragment layout -->
+                android:src="@drawable/aims_logo"
+                android:contentDescription="AIMS Logo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/login_ConstraintLayout"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/login_ConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="324dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="vertical"
+
+                app:layout_constraintBottom_toTopOf="@id/needHelp_constraintLayout"
+                app:layout_constraintTop_toBottomOf="@id/Aims_logo"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:ignore="NotSibling"
+                tools:layout_editor_absoluteX="0dp">
+
+
+                <EditText
+                    android:id="@+id/userIdInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:autofillHints="User Id"
+                    android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
+                    android:drawableStart="@drawable/pen_icon"
+                    android:ems="10"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/user_id_hint"
+                    android:inputType="textPersonName"
+                    android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
+                    android:text="@={viewModel.userName}"
+
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toTopOf="@+id/passwordInput"
+                    app:layout_constraintHorizontal_bias="0.428"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/login_ConstraintLayout" />
+
+                <EditText
+                    android:id="@+id/passwordInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:autofillHints="password"
+                    android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
+                    android:drawableStart="@drawable/ic_lock_24"
+                    android:ems="10"
+                    android:hint="@string/password_field_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
+                    android:text="@={viewModel.password}"
+                    android:textAlignment="center"
+
+                    app:layout_constraintHorizontal_bias="0.428"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/userIdInput" />
+
+                <ImageView
+                    android:id="@+id/is_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="56dp"
+                    android:contentDescription="@string/loading_animation_content_description"
+                    android:text="Hello World!"
+                    android:visibility="@{viewModel.loading?View.VISIBLE:View.GONE}"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.541"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+
+
+                <TextView
+                    android:id="@+id/login_error_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="108dp"
+                    android:background="#F32929"
+                    android:backgroundTint="#D11E1E"
+                    android:maxWidth="300dp"
+                    android:text="@{viewModel.errorMessage}"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.466"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
+
+                <Button
+                    android:id="@+id/loginButton"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/button_background"
+                    android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
+
+                    android:onClick="@{()->viewModel.authenticateUser()}"
+                    android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/login_ConstraintLayout"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent
+"
+                    app:layout_constraintTop_toBottomOf="@+id/login_error_message"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/needHelp_constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                tools:layout_editor_absoluteY="495dp"
+
+                app:layout_constraintTop_toBottomOf="@+id/login_ConstraintLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent">
 
 
                 <TextView
@@ -181,9 +205,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </LinearLayout>
 
-    </LinearLayout>
+            <!-- TODO: Update blank fragment layout -->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </RelativeLayout>
 </layout>
