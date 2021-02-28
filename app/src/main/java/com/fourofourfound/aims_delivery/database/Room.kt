@@ -21,8 +21,13 @@ interface TripListDao {
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
 
+    //Locations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLocation(location: CustomDatabaseLocation)
+
+    @Query("select * from CustomDatabaseLocation limit 1")
+    suspend fun getSavedLocation(): CustomDatabaseLocation
+
 }
 
 
