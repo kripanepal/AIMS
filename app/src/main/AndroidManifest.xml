@@ -13,8 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Aims_delivery">
-        <activity android:name="com.fourofourfound.aims_delivery.MainActivity">
+        android:theme="@style/Aims_delivery"
+        android:configChanges="screenSize">
+        <activity android:name="com.fourofourfound.aims_delivery.MainActivity"
+            android:screenOrientation="sensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
