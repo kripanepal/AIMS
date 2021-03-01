@@ -19,6 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/Aims_delivery">
 
+        <!--        credentials for HERE SDK-->
+        <meta-data
+            android:name="com.here.sdk.access_key_id"
+            android:value="HR2HX0ZEUKS93b8e21vc8A" />
+        <meta-data
+            android:name="com.here.sdk.access_key_secret"
+            android:value="KO8ib6FnozE2cmkur-TU-2OEMLoBDr6-bbTLUW70JEwPVAqUuKu8Qk6ZLNku7Tfq1q9_XAHnVCMsMvmuYvysSA" />
+
         <activity
             android:name="com.fourofourfound.aims_delivery.MainActivity"
             android:theme="@style/Aims_delivery.NoActionBar">

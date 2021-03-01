@@ -1,14 +1,8 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
+import android.content.IntentFilter
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.fragment_home_page.*
@@ -31,11 +27,6 @@ class HomePage : Fragment() {
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var viewModel: HomePageViewModel
-    var permissionsToCheck = listOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-        android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-    )
 
 
     @SuppressLint("MissingPermission")
@@ -44,99 +35,29 @@ class HomePage : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = DataBindingUtil.inflate<FragmentHomePageBinding>(
+        _binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_home_page, container, false
         )
 
         viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
-
-        binding.btnStartTrip.setOnClickListener {
-            viewModel.tripList.value?.let {
-                var tripToStart = it[0]
-                if (!tripToStart.completed) {
-                    showDialog(tripToStart)
-                }
-            }
-        }
-
         activity?.title = "Trip List"
 
-        //adapter for the recycler view
-        val adapter = TripListAdapter(TripListListener { trip ->
-            if (trip.completed) findNavController().navigate(
-                HomePageDirections.actionHomePageToCompletedDeliveryFragment(
-                    trip
-                )
-            )
-        })
 
-        binding.tripList.adapter = adapter
+        startTripOnClick()
+        setUpRecyclerView()
+        setUpSwipeToRefresh()
+        registerBroadCastReceiver()
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.fetchTripFromNetwork()
-            if (swipe_refresh.isRefreshing) {
-                swipe_refresh.isRefreshing = false
-            }
-        }
-
-        viewModel.tripList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
         return binding.root
     }
-
-    override fun onResume() {
-        super.onResume()
-        sharedViewModel.internetConnection.observe(this) {
-            if (it) {
-                Log.i("Sending", "Sending location")
-                viewModel.sendSavedLocation()
-            }
+    private fun registerBroadCastReceiver() {
+        if (!sharedViewModel.isLocationBroadcastReceiverInitialized) {
+            val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+            requireContext().registerReceiver(NetworkChangedBroadCastReceiver(), intentFilter)
+            sharedViewModel.isLocationBroadcastReceiverInitialized = true
         }
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun showDialog(tripToStart: Trip) {
-        AlertDialog.Builder(context)
-            .setTitle("Start a trip?")
-            .setCancelable(false)
-            .setNegativeButton("No") { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
-            .setPositiveButton("Start now") { _: DialogInterface, _: Int ->
-                sharedViewModel.setSelectedTrip(tripToStart)
-                CustomWorkManager(requireContext()).apply {
-                    //sendLocationAndUpdateTrips()
-                    sendLocationOnetime()
-                }
-                findNavController().navigate(R.id.ongoingDeliveryFragment)
-            }
-            .show()
-    }
-
-    private fun showLocationPermissionMissingDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Missing background location access")
-            .setMessage(
-                "Please provide background location access all the time. " +
-                        "This app uses background location to track the delivery"
-            )
-            .setCancelable(false)
-            .setPositiveButton("Enable location") { _: DialogInterface, _: Int ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                val uri: Uri = Uri.fromParts("package", requireActivity().packageName, null)
-                intent.data = uri
-                startActivity(intent)
-            }
-            .show()
     }
 
 
@@ -146,43 +67,70 @@ class HomePage : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            permissionsToCheck = listOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        }
-        if (!checkPermission(
-                permissionsToCheck, requireContext()
-            )
-        ) {
-            showLocationPermissionMissingDialog()
+        BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
+    }
+
+    private fun setUpSwipeToRefresh() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.fetchTripFromNetwork()
+            if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
+
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (!checkPermission(permissionsToCheck, requireContext())) {
-            if (Build.VERSION.SDK_INT === Build.VERSION_CODES.R) {
-                requestPermissions(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 50
-                )
-            }
-            if (Build.VERSION.SDK_INT === 23) {
-                requestPermissions(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 50
-                )
-            } else {
-                requestPermissions(permissionsToCheck.toTypedArray(), 50)
+    private fun setUpRecyclerView() {
+        //adapter for the recycler view
+        val adapter = TripListAdapter(TripListListener { trip ->
+            if (trip.completed) findNavController().navigate(
+                HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
+            )
+        })
+
+        binding.tripList.adapter = adapter
+        viewModel.tripList.observe(viewLifecycleOwner) {
+
+            //TODO new trip was added or modified. Need to send the notification to the user
+            adapter.submitList(it)
+        }
+    }
+
+    private fun startTripOnClick() {
+        binding.btnStartTrip.setOnClickListener {
+            viewModel.tripList.value?.let {
+                val tripToStart = it[0]
+                if (!tripToStart.completed)
+                    showStartTripDialog(tripToStart)
             }
         }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
+    private fun showStartTripDialog(tripToStart: Trip) {
+        CustomDialogBuilder(
+            requireContext(),
+            "Start a trip?",
+            null,
+            "Start now",
+            { markTripStart(tripToStart) },
+            "No",
+            null,
+            true
+        ).builder.show()
+    }
+
+    private fun markTripStart(tripToStart: Trip) {
+        sharedViewModel.setSelectedTrip(tripToStart)
+        CustomWorkManager(requireContext()).apply {
+            //TODO need to call both methods
+            sendLocationAndUpdateTrips()
+            sendLocationOnetime()
+        }
+        findNavController().navigate(R.id.ongoingDeliveryFragment)
     }
 }
 

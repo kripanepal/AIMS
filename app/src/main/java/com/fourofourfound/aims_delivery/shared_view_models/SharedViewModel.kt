@@ -8,6 +8,7 @@ import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
+    var isLocationBroadcastReceiverInitialized: Boolean = false
     private val _selectedTrip = MutableLiveData<Trip>()
 
     val selectedTrip: LiveData<Trip>
