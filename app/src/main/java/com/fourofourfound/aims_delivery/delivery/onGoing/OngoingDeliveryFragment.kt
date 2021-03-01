@@ -53,12 +53,11 @@ class OngoingDeliveryFragment : Fragment() {
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
-
         initializeMap(savedInstanceState)
         observeTripCompletion(viewModel)
-
         return binding.root
     }
+
 
     private fun initializeMap(savedInstanceState: Bundle?) {
         // Get a MapView instance from the layout.
@@ -105,20 +104,21 @@ class OngoingDeliveryFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        mapView?.onPause()
     }
 
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        mapView?.onResume()
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
         sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
-        mapView.onDestroy()
+            ?.apply()
+        mapView?.onDestroy()
     }
 
 
