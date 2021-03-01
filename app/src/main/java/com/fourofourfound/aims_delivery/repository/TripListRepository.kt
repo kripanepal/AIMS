@@ -21,11 +21,7 @@ class TripListRepository(private val database: TripListDatabse) {
             it.asDomainModal()
         }
 
-//    val locationToSend: LiveData<List<Da>> = Transformations.map(database.tripListDao.getSavedLocation()) {
-//        Log.i("SOmething", it.toString())
-//        it
-//
-//    }
+
 
 
     /**
@@ -36,8 +32,7 @@ class TripListRepository(private val database: TripListDatabse) {
         withContext(Dispatchers.IO) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                database.tripListDao.insertAll(*tripLists.asDatabaseModel())
-
+                database.tripListDao.insertTrips(*tripLists.asDatabaseModel())
             } catch (e: Exception) {
 
             }
@@ -49,6 +44,7 @@ class TripListRepository(private val database: TripListDatabse) {
     {
         withContext(Dispatchers.IO) {
             try {
+               //TODO make network call to inform aims dispatcher
                 database.tripListDao.markTripCompleted(tripId,status)
             } catch (e: Exception) {
 
@@ -60,12 +56,14 @@ class TripListRepository(private val database: TripListDatabse) {
     suspend fun deleteAllTrips() {
         withContext(Dispatchers.IO) {
             try {
+                //TODO make network call to inform aims dispatcher
                 database.tripListDao.deleteAllTrips()
             } catch (e: Exception) {
 
             }
         }
     }
+
 
     suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
         withContext(Dispatchers.IO) {

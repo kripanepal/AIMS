@@ -20,9 +20,9 @@ data class NetworkLoadList(
     val productType: String,
     val productDestination: String,
     val productQuantity: Double,
-    val completed: Boolean = false
+    val completed: Boolean = false,
+    val tripId: String
 )
-
 
 fun List<NetworkLoadList>.asDomainModel(): List<Load> {
     return map {
@@ -49,7 +49,8 @@ fun List<NetworkLoadList>.asDatabaseModel(): Array<DatabaseLoad> {
             productType = it.productType,
             productDestination = it.productDestination,
             productQuantity = it.productQuantity,
-            completed = it.completed
+            completed = it.completed,
+            tripId = it.tripId
         )
     }.toTypedArray()
 }

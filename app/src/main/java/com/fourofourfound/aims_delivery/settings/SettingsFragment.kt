@@ -31,10 +31,14 @@ class SettingsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        checkUserLoggedIn(viewModel)
+
+        return binding.root
+    }
+
+    private fun checkUserLoggedIn(viewModel: SettingsViewModel) {
         viewModel.userLoggedIn.observe(viewLifecycleOwner, {
             if (!it) findNavController().navigate(R.id.loginFragment)
         })
-
-        return binding.root
     }
 }
