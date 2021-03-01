@@ -19,6 +19,7 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home_page.*
 
 class HomePage : Fragment() {
@@ -27,6 +28,7 @@ class HomePage : Fragment() {
     private val binding get() = _binding!!
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var viewModel: HomePageViewModel
+    lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
 
 
     @SuppressLint("MissingPermission")
@@ -39,16 +41,22 @@ class HomePage : Fragment() {
             inflater, R.layout.fragment_home_page, container, false
         )
 
+        if (!sharedViewModel.userLoggedIn.value!!) {
+            findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
+        }
+
+
         viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        activity?.title = "Trip List"
 
 
         startTripOnClick()
         setUpRecyclerView()
         setUpSwipeToRefresh()
         registerBroadCastReceiver()
+
+        requireActivity().bottom_navigation.visibility = View.VISIBLE
 
         return binding.root
     }
@@ -61,14 +69,6 @@ class HomePage : Fragment() {
     }
 
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
-    }
 
     private fun setUpSwipeToRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
@@ -77,6 +77,7 @@ class HomePage : Fragment() {
 
         }
     }
+
 
     private fun setUpRecyclerView() {
         //adapter for the recycler view
@@ -123,6 +124,11 @@ class HomePage : Fragment() {
         ).builder.show()
     }
 
+    override fun onStart() {
+        super.onStart()
+        BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
+    }
+
     private fun markTripStart(tripToStart: Trip) {
         sharedViewModel.setSelectedTrip(tripToStart)
         CustomWorkManager(requireContext()).apply {
@@ -130,7 +136,7 @@ class HomePage : Fragment() {
             sendLocationAndUpdateTrips()
             sendLocationOnetime()
         }
-        findNavController().navigate(R.id.ongoingDeliveryFragment)
+        requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
     }
 }
 
