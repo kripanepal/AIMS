@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -18,6 +17,7 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBindin
 import com.here.sdk.core.GeoCoordinates
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class OngoingDeliveryFragment : Fragment() {
@@ -32,12 +32,8 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        if (sharedViewModel.selectedTrip.value == null && sharedPref?.getString(
-                "currentTrip",
-                null
-            ) == null
-        ) {
+        if (sharedViewModel.selectedTrip.value == null) {
+            showNoTripSelectedDialog()
             return view
         }
 
@@ -57,14 +53,11 @@ class OngoingDeliveryFragment : Fragment() {
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
-
         initializeMap(savedInstanceState)
         observeTripCompletion(viewModel)
-
-
-
         return binding.root
     }
+
 
     private fun initializeMap(savedInstanceState: Bundle?) {
         // Get a MapView instance from the layout.
@@ -84,19 +77,14 @@ class OngoingDeliveryFragment : Fragment() {
     private fun observeTripCompletion(viewModel: OngoingDeliveryViewModel) {
         viewModel.tripCompleted.observe(viewLifecycleOwner) {
             if (it) {
-                findNavController().navigate(OngoingDeliveryFragmentDirections.actionDeliveryFragmentToHomePage())
+                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
                 sharedViewModel.setSelectedTrip(null)
                 viewModel.doneNavigatingToHomePage()
             }
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (sharedViewModel.selectedTrip.value == null) {
-            showNoTripSelectedDialog()
-        }
-    }
+
 
     private fun loadMapScene() {
         // Load a scene from the HERE SDK to render the map with a map scheme.
@@ -129,13 +117,15 @@ class OngoingDeliveryFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
+            ?.apply()
         mapView?.onDestroy()
     }
 
 
     private fun showNoTripSelectedDialog() {
 
-        val takeToHomeScreen = { findNavController().navigate(R.id.homePage) }
+        val takeToHomeScreen =
+            { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
 
         CustomDialogBuilder(
             requireContext(),

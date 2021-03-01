@@ -8,17 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
-import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class LoginFragment : Fragment() {
 
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var loadingAnimation: AnimationDrawable
@@ -36,19 +40,23 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = this
 
         errorMessageAnimation()
+        requireActivity().bottom_navigation.visibility = View.GONE
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
         //checks if shared preferences already contains a user that is logged in
         if(viewModel.checkUserLoggedIn()) {
             findNavController().navigate(R.id.homePage)
-            return binding.root
+            sharedViewModel.userLoggedIn.value = true
         }
 
 
         //navigate to the homepage if valid authentication is provided
-        viewModel.navigate.observe(viewLifecycleOwner,  {
+        viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
                 findNavController().navigate(R.id.homePage)
-                viewModel.doneNavigatingToHomePage() }
+                sharedViewModel.userLoggedIn.value = true
+                viewModel.doneNavigatingToHomePage()
+            }
         })
 
         //show dialog listener

@@ -8,17 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.homePage.HomePageViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
-import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 class SettingsFragment : Fragment() {
 
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
+    lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,18 +27,22 @@ class SettingsFragment : Fragment() {
         _binding = DataBindingUtil.inflate<FragmentSettingsBinding>(
             inflater, R.layout.fragment_settings, container, false
         )
-        val viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        checkUserLoggedIn(viewModel)
+        binding.logoutBtn.setOnClickListener {
+            checkUserLoggedIn()
+        }
+
+
 
         return binding.root
     }
 
-    private fun checkUserLoggedIn(viewModel: SettingsViewModel) {
-        viewModel.userLoggedIn.observe(viewLifecycleOwner, {
-            if (!it) findNavController().navigate(R.id.loginFragment)
-        })
+    private fun checkUserLoggedIn() {
+        viewModel.logoutUser()
+        sharedViewModel.userLoggedIn.value = false
+        requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
     }
 }

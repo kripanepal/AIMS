@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_navigation"
+    app:startDestination="@id/homePage">
+
+    <fragment
+        android:id="@+id/homePage"
+        android:name="com.fourofourfound.aims_delivery.homePage.HomePage"
+        android:label="HomePage">
+        <action
+            android:id="@+id/action_homePage_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homePage_to_completedDeliveryFragment"
+            app:destination="@id/completedDeliveryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/completedDeliveryFragment"
+        android:name="com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryFragment"
+        android:label="CompletedDeliveryFragment">
+        <argument
+            android:name="trip"
+            app:argType="com.fourofourfound.aims_delivery.domain.Trip" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.fourofourfound.aims_delivery.login.LoginFragment"
+        android:label="LoginFragment" />
+</navigation>

@@ -15,6 +15,11 @@ class BackgroundLocationPermissionUtil(var context: Context) {
 
     lateinit var permissionMissingDialog: AlertDialog
     private var permissionsToCheck = getPermissionsToBeChecked()
+
+    init {
+        showLocationPermissionMissingDialog()
+    }
+
     private fun takeToPermissionScreenIntent(): Intent {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
