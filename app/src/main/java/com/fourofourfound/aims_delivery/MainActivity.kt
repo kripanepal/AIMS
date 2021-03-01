@@ -40,9 +40,7 @@ class MainActivity : AppCompatActivity() {
         } // Else, need to wait for onRestoreInstanceState
 
 
-//        setUpNavController()
         initializeToolBar()
-//
 
 
     }
@@ -104,54 +102,8 @@ class MainActivity : AppCompatActivity() {
         //Add a toolbar
         val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
         setSupportActionBar(toolbar)
-
-//        val appBarConfiguration = AppBarConfiguration
-//            .Builder(
-//                R.id.homePage,
-//                R.id.settingsFragment,
-//                R.id.ongoingDeliveryFragment,
-//                R.id.loginFragment
-//            )
-//            .build()
-//        setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
-    //
-//
-//    private fun setUpNavController() {
-//        navController = findNavController(R.id.myNavHostFragment)
-//        navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
-//            bottomNavigationView.visibility =
-//                if (nd.id == R.id.loginFragment) View.GONE else View.VISIBLE
-//        }
-//
-//        //setup bottomNavigation view
-//        bottomNavigationView.setupWithNavController(navController)
-//        bottomNavigationView.setOnNavigationItemSelectedListener {
-//         if(navController.currentDestination?.id != it.itemId)
-//             navController.navigate(it.itemId)
-//             true
-//        }
-//    }
-//
-//
-//    //forces user to home page on back press
-//    override fun onBackPressed() {
-//        val destinations = listOf(
-//            R.id.settingsFragment,
-//            R.id.ongoingDeliveryFragment,
-//            R.id.completedDeliveryFragment
-//        )
-//        if (navController.currentDestination?.id in destinations)
-//            bottomNavigationView.selectedItemId = R.id.homePage
-//        else finish()
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return navController.navigateUp()
-//    }
-//
-//
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -162,8 +114,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onDestroy() {
         super.onDestroy()
         if(sharedViewModel.isLocationBroadcastReceiverInitialized) {
@@ -173,6 +123,5 @@ class MainActivity : AppCompatActivity() {
             catch(e:Exception){}
         }
     }
-
 
 }

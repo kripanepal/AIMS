@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +41,7 @@ class LoginFragment : Fragment() {
 
         errorMessageAnimation()
         requireActivity().bottom_navigation.visibility = View.GONE
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
         //checks if shared preferences already contains a user that is logged in
         if(viewModel.checkUserLoggedIn()) {

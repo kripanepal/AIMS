@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,6 +22,7 @@ import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home_page.*
+
 
 class HomePage : Fragment() {
 
@@ -57,6 +59,7 @@ class HomePage : Fragment() {
         registerBroadCastReceiver()
 
         requireActivity().bottom_navigation.visibility = View.VISIBLE
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
 
         return binding.root
     }
