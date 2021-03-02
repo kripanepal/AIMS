@@ -15,29 +15,29 @@
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-
-        android:configChanges="screenSize">
+        android:roundIcon="@mipmap/ic_launcher_round">
 
         <!--        credentials for HERE SDK-->
         <meta-data
-            android:name="com.here.sdk.access_key_id"
-            android:value="HR2HX0ZEUKS93b8e21vc8A" />
+            android:name="com.here.android.maps.appid"
+            android:value="g6IGti5m22h2yGg8h0SQ" />
         <meta-data
-            android:name="com.here.sdk.access_key_secret"
-            android:value="KO8ib6FnozE2cmkur-TU-2OEMLoBDr6-bbTLUW70JEwPVAqUuKu8Qk6ZLNku7Tfq1q9_XAHnVCMsMvmuYvysSA" />
+            android:name="com.here.android.maps.apptoken"
+            android:value="u5VV7v_9SMMRJP0rdUF4nw" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="csshi5Q9nknSWEwukN/GvbyF5Ns7VHrW2g30c3ZhWrciUNfa+xaGNFChsYUamHA4kpVkqp26F4I0jNVOvSiz0eDeaf017Me0rYeclEcQANQIBgVOniT1fFygzAosvIjWXBz9xadq7AGB6lKChZFsQO3bk24KKl7XyGE8XWUkAC9ChUBl+3xtS4p31bWVGa7Gn1iNKbTzFLilQYlE42uWt2wXlvo19fNlyM3M+Y3vYFkKN0vFw+oFqUg0l2b/DLNK8a+Dsbt9FOSwBbG4KwJW+dp4R6hkwGkJiVERR9dhAYZCYaL/pq+/vsAHBly/EHmpdaJ3WAGBS8UoWZVVcACwQB1T1PFcQjlFIc0QrHhDyVSEZrgpcvmGnaTiwqlMgKekTBXzQme+lTLol5xAASQS1D9G+qK80w/G7a6Aj2L/4SPEeJMBhxc09d2KTAQUqag7yRXSMt6t67vWYjI4oG/FwnK6F2W3xXLvFb6ZPUxnWI8NVJHzjtfhwSBZFCkvYy+tXqbZjYCJdfQq+1AzI3apCSNp+ukSvqre490/fHiWUwfHVrSj2Ljo+TBPD44n9Oe2TTbXkf5gvACDdk9wl2mQz4g5OpihacI0ywgqFXDUijVw0mTPiBf7CuM4oZMTfaGk+0q1LXPsecFtBOOx9wy52/GRjv8GVWOQcnL80RefZkQ=" />
+
 
         <activity
             android:name="com.fourofourfound.aims_delivery.MainActivity"
-            android:screenOrientation="sensor"
             android:theme="@style/Aims_delivery.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
     </application>
 
