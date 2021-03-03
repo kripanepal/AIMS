@@ -1,4 +1,5 @@
 package com.fourofourfound.aims_delivery.login
+
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
@@ -17,6 +18,7 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_main.*
 
 

@@ -56,11 +56,11 @@
                 android:orientation="vertical"
 
                 app:layout_constraintBottom_toTopOf="@id/needHelp_constraintLayout"
-                app:layout_constraintTop_toBottomOf="@id/Aims_logo"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
-                tools:ignore="NotSibling"
-                tools:layout_editor_absoluteX="0dp">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/Aims_logo"
+                tools:ignore="NotSibling">
 
 
                 <EditText
@@ -85,28 +85,38 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@id/login_ConstraintLayout" />
 
-                <EditText
-                    android:id="@+id/passwordInput"
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:autofillHints="password"
                     android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                    android:drawableStart="@drawable/visibility_white_18dp"
-                    android:ems="10"
-                    android:hint="@string/password_field_hint"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
-                    android:text="@={viewModel.password}"
-                    android:textAlignment="center"
 
-                    app:layout_constraintHorizontal_bias="0.428"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/userIdInput" />
+                    app:boxBackgroundColor="#FFFFFF"
+                    app:boxCornerRadiusBottomEnd="15dp"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopEnd="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
+
+                    app:layout_constraintEnd_toEndOf="@+id/userIdInput"
+                    app:layout_constraintStart_toStartOf="@+id/userIdInput"
+                    app:layout_constraintTop_toBottomOf="@+id/userIdInput"
+                    app:passwordToggleEnabled="true">
 
 
+                    <EditText
+                        android:id="@+id/passwordInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
+                        android:text="@={viewModel.password}"
+                        android:boxStrokeColor="#000000"
+                        android:boxStrokeWidth="2dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/is_loading"
