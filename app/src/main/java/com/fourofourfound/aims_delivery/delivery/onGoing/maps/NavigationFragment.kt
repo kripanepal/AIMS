@@ -1,12 +1,14 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,28 +18,36 @@ import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
 import com.here.android.mpa.common.GeoBoundingBox
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.OnEngineInitListener
+import com.here.android.mpa.common.PositioningManager
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.routing.*
+import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.properties.Delegates
 
 class NavigationFragment : Fragment() {
 
 
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: NavigationFragmentBinding
+    lateinit var locationManager: LocationManager
 
     // map embedded in the map fragment
     lateinit var map: Map
 
     // map fragment embedded in this activity
     lateinit var mapFragment: AndroidXMapFragment
-    lateinit var naviControlButton: Button
+    var currentLatidude by Delegates.notNull<Double>()
+    var currentLongitude by Delegates.notNull<Double>()
+
+
     lateinit var navigationManager: NavigationManager
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
+    var navigationOnProgress = false
 
 
     override fun onCreateView(
@@ -47,10 +57,12 @@ class NavigationFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
 
+        locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
 
 
         binding.mapRecenterBtn.setOnClickListener { recenter() }
@@ -59,6 +71,7 @@ class NavigationFragment : Fragment() {
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun initializeMap() {
 
         mapFragment = childFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment
@@ -67,11 +80,16 @@ class NavigationFragment : Fragment() {
             if (error == OnEngineInitListener.Error.NONE) {
                 // retrieve a reference of the map from the map fragment
                 map = mapFragment.map!!
-                // Set the map center to the Vancouver region (no animation)
+
+                PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
+                    currentLatidude = latitude
+                    currentLongitude = longitude
+                }
                 map.setCenter(
-                    GeoCoordinate(49.196261, -123.004773, 0.0),
+                    GeoCoordinate(currentLatidude, currentLongitude, 0.0),
                     Map.Animation.BOW
                 )
+
                 // Set the zoom level to the average between min and max
                 map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
                 navigationManager = NavigationManager.getInstance()
@@ -102,8 +120,8 @@ class NavigationFragment : Fragment() {
         routePlan.routeOptions = routeOptions
 
 
-        val startPoint = RouteWaypoint(GeoCoordinate(49.259149, -123.008555))
-        val destination = RouteWaypoint(GeoCoordinate(49.073640, -122.559549))
+        val startPoint = RouteWaypoint(GeoCoordinate(currentLatidude, currentLongitude))
+        val destination = RouteWaypoint(GeoCoordinate(32.52406, -92.09638))
 
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
@@ -112,7 +130,7 @@ class NavigationFragment : Fragment() {
             routePlan,
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {
-                    /* The calculation progress can be retrieved in this callback. */
+                    Log.i("AAAAA", i.toString())
                 }
 
                 override fun onCalculateRouteFinished(
@@ -154,6 +172,8 @@ class NavigationFragment : Fragment() {
                     }
                 }
             })
+
+
     }
 
     private fun recenter() {
@@ -174,32 +194,37 @@ class NavigationFragment : Fragment() {
 
         navigationManager.setMap(map)
         mapFragment.positionIndicator!!.isVisible = true
-        if (navigationManager.elapsedDistance == 0L) {
+        if (!navigationOnProgress) {
             val alertDialogBuilder = AlertDialog.Builder(context)
             alertDialogBuilder.setTitle("Navigation")
             alertDialogBuilder.setMessage("Choose Mode")
             alertDialogBuilder.setNegativeButton("Navigation") { dialoginterface, i ->
                 navigationManager.startNavigation(route!!)
                 map.tilt = 60f
+                navigationOnProgress = true
+
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
-                navigationManager.simulate(route!!, 60) //Simualtion speed is set to 60 m/s
+                navigationManager.simulate(route!!, 40) //Simualtion speed is set to 60 m/s
                 map.tilt = 60f
+                navigationOnProgress = true
             }
             val alertDialog = alertDialogBuilder.create()
-
             alertDialog.show()
         }
 
-
-
         recenter()
-
-
-
         navigationManager.distanceUnit = NavigationManager.UnitSystem.METRIC
+
+
+        navigationManager.addRerouteListener(WeakReference(another))
 
     }
 
-
+    var another = object : NavigationManager.RerouteListener() {
+        override fun onRerouteEnd(p0: RouteResult, p1: RoutingError?) {
+            super.onRerouteEnd(p0, p1)
+            map.addMapObject(MapRoute(p0.route))
+        }
+    }
 }

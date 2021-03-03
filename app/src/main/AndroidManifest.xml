@@ -20,14 +20,13 @@
         <!--        credentials for HERE SDK-->
         <meta-data
             android:name="com.here.android.maps.appid"
-            android:value="g6IGti5m22h2yGg8h0SQ" />
+            android:value="xNWjFgYa7FvrlVt7lJLO" />
         <meta-data
             android:name="com.here.android.maps.apptoken"
-            android:value="u5VV7v_9SMMRJP0rdUF4nw" />
+            android:value="InRCQ1h7f_5QOCyearDi2Q" />
         <meta-data
             android:name="com.here.android.maps.license.key"
-            android:value="csshi5Q9nknSWEwukN/GvbyF5Ns7VHrW2g30c3ZhWrciUNfa+xaGNFChsYUamHA4kpVkqp26F4I0jNVOvSiz0eDeaf017Me0rYeclEcQANQIBgVOniT1fFygzAosvIjWXBz9xadq7AGB6lKChZFsQO3bk24KKl7XyGE8XWUkAC9ChUBl+3xtS4p31bWVGa7Gn1iNKbTzFLilQYlE42uWt2wXlvo19fNlyM3M+Y3vYFkKN0vFw+oFqUg0l2b/DLNK8a+Dsbt9FOSwBbG4KwJW+dp4R6hkwGkJiVERR9dhAYZCYaL/pq+/vsAHBly/EHmpdaJ3WAGBS8UoWZVVcACwQB1T1PFcQjlFIc0QrHhDyVSEZrgpcvmGnaTiwqlMgKekTBXzQme+lTLol5xAASQS1D9G+qK80w/G7a6Aj2L/4SPEeJMBhxc09d2KTAQUqag7yRXSMt6t67vWYjI4oG/FwnK6F2W3xXLvFb6ZPUxnWI8NVJHzjtfhwSBZFCkvYy+tXqbZjYCJdfQq+1AzI3apCSNp+ukSvqre490/fHiWUwfHVrSj2Ljo+TBPD44n9Oe2TTbXkf5gvACDdk9wl2mQz4g5OpihacI0ywgqFXDUijVw0mTPiBf7CuM4oZMTfaGk+0q1LXPsecFtBOOx9wy52/GRjv8GVWOQcnL80RefZkQ=" />
-
+            android:value="InHaoHQ4jAyXbIKgXtzLbdSosuRaWuE1Tuu96BU/FmAFoiisD1JbfWAuhtwg+50PiP5Xr7utcfJaRKp0O8k2m5F9IuQk/RA5V2zYuc7CCCUt6+Xi3M+o1vrAhuSny6ZYIIr8+xpq7Pc1fHed4N6hq4atp6EPpk0zfXP+VFOUiszeuskoJv1hQuEn+gG8WHCGylBJQUGjyfQiC5j7TiIpjpIVm9van0cmczRDCHhEGuDX5lZdSfjiImBmhN5LMWwjbBnpW/nsAJIpNxVL+KEHUZncMAgcjaDb6HIEa/d6yS0h+TfFGFGO2PCNHPFiJhp2GSt4TpZRqkJ6QcNealuNq9HLT7q1EDgKaG6XfCxfFXNAio6Zdcf590WC5Eb7yoO33KARSDcOD9lGuvGuokfpXC+dPdHneXDzFGBjgRhGK4JgkMcg1x/V2CJXZSPJU/N3XI5wR7nVLVRYhEWlMNG7VqjjU0x4I8A1Sy/XQRXOSAUwAW0YM6TV2z3q954H61kphA/GyTYMCE485S/9vJW7pWR/OWzr44Y0WXsls7x6r56FE+FzThP8rPouYfOs6PiaesNlYsPjS/v7vp8JPUKlYtooJJlGY/uxsUgaZlMstPfM2fs6M+ImDYjcHQREXW/GQM8KmxFbKWu03udYaiZepEiE2PCocTKSMTh2Qp3sSQI=" />
 
         <activity
             android:name="com.fourofourfound.aims_delivery.MainActivity"
