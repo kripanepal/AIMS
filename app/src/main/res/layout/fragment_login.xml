@@ -56,65 +56,91 @@
                 android:orientation="vertical"
 
                 app:layout_constraintBottom_toTopOf="@id/needHelp_constraintLayout"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/Aims_logo"
                 tools:ignore="NotSibling">
 
 
-                <EditText
-                    android:id="@+id/userIdInput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:autofillHints="User Id"
-                    android:backgroundTint="@{viewModel.userFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
-                    android:drawableStart="@drawable/pen_icon"
-                    android:ems="10"
-                    android:gravity="center_horizontal"
-                    android:hint="@string/user_id_hint"
-                    android:inputType="textPersonName"
-                    android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
-                    android:text="@={viewModel.userName}"
-
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toTopOf="@+id/passwordInput"
-                    app:layout_constraintHorizontal_bias="0.428"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/login_ConstraintLayout" />
-
-
                 <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
+                    android:id="@+id/textInputLayout2"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+
+                    android:layout_marginTop="32dp"
+                    android:background="@android:color/transparent"
                     android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
 
-                    app:boxBackgroundColor="#FFFFFF"
+                    app:boxBackgroundColor="@android:color/transparent"
                     app:boxCornerRadiusBottomEnd="15dp"
                     app:boxCornerRadiusBottomStart="15dp"
                     app:boxCornerRadiusTopEnd="15dp"
                     app:boxCornerRadiusTopStart="15dp"
 
-                    app:layout_constraintEnd_toEndOf="@+id/userIdInput"
-                    app:layout_constraintStart_toStartOf="@+id/userIdInput"
-                    app:layout_constraintTop_toBottomOf="@+id/userIdInput"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <EditText
+
+                        android:id="@+id/userIdInput"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+
+                        android:drawableEnd="@drawable/pen_icon"
+                        android:hint="@string/user_id_hint"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPersonName"
+                        android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
+                        android:paddingTop="28dp"
+                        android:paddingBottom="10dp"
+                        android:text="@={viewModel.userName}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/pen_icon"
+
+
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
+                    app:boxBackgroundColor="@android:color/transparent"
+
+                    app:boxCornerRadiusBottomEnd="15dp"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopEnd="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
+                    app:layout_constraintBottom_toTopOf="@+id/login_error_message"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+                    app:layout_constraintVertical_bias="0.07999998"
                     app:passwordToggleEnabled="true">
 
 
                     <EditText
+
                         android:id="@+id/passwordInput"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+
                         android:hint="Password"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
                         android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
-                        android:text="@={viewModel.password}"
-                        android:boxStrokeColor="#000000"
-                        android:boxStrokeWidth="2dp"/>
+                        android:paddingTop="28dp"
+                        android:paddingBottom="10dp"
+                        android:text="@={viewModel.password}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,7 +164,6 @@
                     android:id="@+id/login_error_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:background="#F32929"
                     android:backgroundTint="#D11E1E"
                     android:maxWidth="300dp"
@@ -147,8 +172,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/loginButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <Button
                     android:id="@+id/loginButton"
@@ -165,8 +189,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent
 "
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
