@@ -16,11 +16,20 @@
         android:layout_height="match_parent"
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment">
 
-        <fragment
-            android:id="@+id/mapfragment"
-            class="com.here.android.mpa.mapping.AndroidXMapFragment"
+        <LinearLayout
+            android:id="@+id/mapFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <fragment
+                android:id="@+id/mapfragment"
+                class="com.here.android.mpa.mapping.AndroidXMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/mapRecenterBtn"
@@ -28,9 +37,39 @@
             android:layout_height="43dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="40dp"
+            android:background="#214191"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/map_icon" />
+
+        <Button
+            android:id="@+id/destinationReached"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:text="Reached"
+            app:layout_constraintBottom_toBottomOf="@+id/mapFragmentContainer"
+            app:layout_constraintEnd_toStartOf="@+id/mapRecenterBtn"
+            app:layout_constraintHorizontal_bias="0.714"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/progressBarContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/mapFragmentContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/routeProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

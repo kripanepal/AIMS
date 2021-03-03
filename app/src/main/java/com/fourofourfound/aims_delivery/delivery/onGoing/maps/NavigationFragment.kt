@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
 import com.here.android.mpa.common.GeoBoundingBox
@@ -25,7 +28,6 @@ import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.routing.*
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.properties.Delegates
 
 class NavigationFragment : Fragment() {
@@ -47,7 +49,6 @@ class NavigationFragment : Fragment() {
     lateinit var navigationManager: NavigationManager
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
-    var navigationOnProgress = false
 
 
     override fun onCreateView(
@@ -66,6 +67,7 @@ class NavigationFragment : Fragment() {
 
 
         binding.mapRecenterBtn.setOnClickListener { recenter() }
+        binding.destinationReached.setOnClickListener { destinationReached() }
         initializeMap()
         return binding.root
     }
@@ -87,16 +89,21 @@ class NavigationFragment : Fragment() {
                 }
                 map.setCenter(
                     GeoCoordinate(currentLatidude, currentLongitude, 0.0),
-                    Map.Animation.BOW
+                    Map.Animation.NONE
                 )
 
                 // Set the zoom level to the average between min and max
                 map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
                 navigationManager = NavigationManager.getInstance()
 
-                if (route !== null) {
-                    navigationManager.resume()
+                if (navigationManager.runningState
+                    == NavigationManager.NavigationState.RUNNING
+                ) {
+                    Log.i("AAAA", "RUNNNINNNNNG")
+                    binding.mapFragmentContainer.visibility = View.VISIBLE
                     recenter()
+                    route?.let { navigationManager.startNavigation(it) }
+
                 } else {
                     createRoute()
                 }
@@ -125,20 +132,26 @@ class NavigationFragment : Fragment() {
 
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
+        binding.progressBarContainer.visibility = View.VISIBLE
 
         coreRouter.calculateRoute(
             routePlan,
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {
-                    Log.i("AAAAA", i.toString())
+                    binding.routeProgressBar.progress = i
                 }
 
                 override fun onCalculateRouteFinished(
                     routeResults: List<RouteResult>?,
                     routingError: RoutingError
                 ) {
+
                     if (routingError == RoutingError.NONE) {
                         if (routeResults!![0].route != null) {
+
+                            binding.progressBarContainer.visibility = View.GONE
+                            binding.mapFragmentContainer.visibility = View.VISIBLE
+
                             route = routeResults[0].route
                             val mapRoute = MapRoute(routeResults[0].route)
 
@@ -153,6 +166,7 @@ class NavigationFragment : Fragment() {
                                 Map.MOVE_PRESERVE_ZOOM_LEVEL.toFloat()
                             )
 
+
                             startNavigation()
 
 
@@ -162,6 +176,7 @@ class NavigationFragment : Fragment() {
                                 "Error:route results returned is not valid",
                                 Toast.LENGTH_LONG
                             ).show()
+                            findNavController().navigateUp()
                         }
                     } else {
                         Toast.makeText(
@@ -169,6 +184,8 @@ class NavigationFragment : Fragment() {
                                     + routingError,
                             Toast.LENGTH_LONG
                         ).show()
+
+                        findNavController().navigateUp()
                     }
                 }
             })
@@ -178,53 +195,58 @@ class NavigationFragment : Fragment() {
 
     private fun recenter() {
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
+        Handler(Looper.getMainLooper()).postDelayed({
+            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
+        }, 2000)
 
-        Timer().schedule(
-            object : TimerTask() {
-                override fun run() {
-                    navigationManager.mapUpdateMode =
-                        NavigationManager.MapUpdateMode.POSITION_ANIMATION
-                }
-            },
-            2000
-        )
     }
+
 
     private fun startNavigation() {
 
         navigationManager.setMap(map)
         mapFragment.positionIndicator!!.isVisible = true
-        if (!navigationOnProgress) {
-            val alertDialogBuilder = AlertDialog.Builder(context)
+
+        val alertDialogBuilder = AlertDialog.Builder(context)
             alertDialogBuilder.setTitle("Navigation")
             alertDialogBuilder.setMessage("Choose Mode")
             alertDialogBuilder.setNegativeButton("Navigation") { dialoginterface, i ->
                 navigationManager.startNavigation(route!!)
-                map.tilt = 60f
-                navigationOnProgress = true
-
+                map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
-                navigationManager.simulate(route!!, 40) //Simualtion speed is set to 60 m/s
-                map.tilt = 60f
-                navigationOnProgress = true
+                navigationManager.simulate(route!!, 40)
+                map.tilt = 70f
             }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
-        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+
 
         recenter()
+        binding.mapFragmentContainer.visibility = View.VISIBLE
         navigationManager.distanceUnit = NavigationManager.UnitSystem.METRIC
-
-
-        navigationManager.addRerouteListener(WeakReference(another))
-
+        navigationManager.addRerouteListener(WeakReference(rerouteListener))
+        navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
     }
 
-    var another = object : NavigationManager.RerouteListener() {
+    var rerouteListener = object : NavigationManager.RerouteListener() {
         override fun onRerouteEnd(p0: RouteResult, p1: RoutingError?) {
             super.onRerouteEnd(p0, p1)
             map.addMapObject(MapRoute(p0.route))
         }
+    }
+
+    private var routeCompleteListener =
+        object : NavigationManager.NavigationManagerEventListener() {
+            override fun onDestinationReached() {
+                destinationReached()
+                super.onDestinationReached()
+            }
+        }
+
+    //Task to be done once destination is reached
+    private fun destinationReached() {
+        navigationManager.stop()
+        findNavController().navigateUp()
     }
 }
