@@ -3,6 +3,8 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
@@ -15,6 +17,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
@@ -29,6 +32,7 @@ import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.routing.*
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
+
 
 class NavigationFragment : Fragment() {
 
@@ -50,6 +54,8 @@ class NavigationFragment : Fragment() {
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
 
+    lateinit var mPrefs: SharedPreferences
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,7 +63,7 @@ class NavigationFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
-
+        mPrefs = requireActivity().getPreferences(MODE_PRIVATE)
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -68,7 +74,9 @@ class NavigationFragment : Fragment() {
 
         binding.mapRecenterBtn.setOnClickListener { recenter() }
         binding.destinationReached.setOnClickListener { destinationReached() }
+
         initializeMap()
+
         return binding.root
     }
 
@@ -94,16 +102,15 @@ class NavigationFragment : Fragment() {
 
                 // Set the zoom level to the average between min and max
                 map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
+
                 navigationManager = NavigationManager.getInstance()
 
-                if (navigationManager.runningState
-                    == NavigationManager.NavigationState.RUNNING
-                ) {
-                    Log.i("AAAA", "RUNNNINNNNNG")
-                    binding.mapFragmentContainer.visibility = View.VISIBLE
-                    recenter()
-                    route?.let { navigationManager.startNavigation(it) }
 
+                if (route !== null) {
+
+                    navigationManager.resume()
+                    binding.mapFragmentContainer.visibility = View.VISIBLE
+                    map = mapFragment.map!!
                 } else {
                     createRoute()
                 }
@@ -207,7 +214,8 @@ class NavigationFragment : Fragment() {
         navigationManager.setMap(map)
         mapFragment.positionIndicator!!.isVisible = true
 
-        val alertDialogBuilder = AlertDialog.Builder(context)
+        if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
+            val alertDialogBuilder = AlertDialog.Builder(context)
             alertDialogBuilder.setTitle("Navigation")
             alertDialogBuilder.setMessage("Choose Mode")
             alertDialogBuilder.setNegativeButton("Navigation") { dialoginterface, i ->
@@ -215,11 +223,12 @@ class NavigationFragment : Fragment() {
                 map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
-                navigationManager.simulate(route!!, 40)
+                navigationManager.simulate(route!!, 100)
                 map.tilt = 70f
             }
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
 
 
         recenter()
@@ -227,6 +236,7 @@ class NavigationFragment : Fragment() {
         navigationManager.distanceUnit = NavigationManager.UnitSystem.METRIC
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
+
     }
 
     var rerouteListener = object : NavigationManager.RerouteListener() {
@@ -247,6 +257,11 @@ class NavigationFragment : Fragment() {
     //Task to be done once destination is reached
     private fun destinationReached() {
         navigationManager.stop()
-        findNavController().navigateUp()
+        lifecycleScope.launchWhenResumed {
+            findNavController().navigateUp()
+        }
+
     }
+
+
 }
