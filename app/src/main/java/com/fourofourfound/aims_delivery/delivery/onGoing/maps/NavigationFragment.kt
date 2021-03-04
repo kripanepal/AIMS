@@ -39,11 +39,7 @@ class NavigationFragment : Fragment() {
     lateinit var binding: NavigationFragmentBinding
     lateinit var locationManager: LocationManager
     var voiceId: Long = -1
-
-    // map embedded in the map fragment
     lateinit var map: Map
-
-    // map fragment embedded in this activity
     lateinit var mapFragment: AndroidXMapFragment
     private var currentLatitude by Delegates.notNull<Double>()
     var currentLongitude by Delegates.notNull<Double>()
@@ -83,7 +79,6 @@ class NavigationFragment : Fragment() {
                 if (route !== null) {
                     mapFragment.onResume()
                     navigationManager.resume()
-                    binding.mapFragmentContainer.visibility = View.VISIBLE
                 } else {
                     map = mapFragment.map!!
                     PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
@@ -124,7 +119,6 @@ class NavigationFragment : Fragment() {
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
         binding.progressBarContainer.visibility = View.VISIBLE
-
         coreRouter.calculateRoute(
             routePlan,
             object : Router.Listener<List<RouteResult>, RoutingError> {
@@ -140,8 +134,6 @@ class NavigationFragment : Fragment() {
                     if (routingError == RoutingError.NONE) {
                         if (routeResults!![0].route != null) {
 
-                            binding.progressBarContainer.visibility = View.GONE
-                            binding.mapFragmentContainer.visibility = View.VISIBLE
 
                             route = routeResults[0].route
                             val mapRoute = MapRoute(routeResults[0].route)
@@ -204,21 +196,27 @@ class NavigationFragment : Fragment() {
 
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
-                navigationManager.simulate(route!!, 10)
+                navigationManager.simulate(route!!, 50)
                 map.tilt = 70f
-
 
             }
             val alertDialog = alertDialogBuilder.create()
+            alertDialogBuilder.setCancelable(false)
             alertDialog.show()
+
 
         } else {
             mapFragment.onResume()
         }
+        binding.speedInfoContainer.visibility = View.VISIBLE
+        binding.destinationReached.visibility = View.VISIBLE
+        binding.mapRecenterBtn.visibility = View.VISIBLE
+        binding.progressBarContainer.visibility = View.GONE
         addListeners()
     }
 
     private fun addListeners() {
+
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
@@ -280,16 +278,13 @@ class NavigationFragment : Fragment() {
             }
             if (p1 != null) {
                 if (p1.isValid && p1 is MatchedGeoPosition) {
-                    var currentSpeedLimitTransformed = 0
+                    var currentSpeedLimit = 0.0
                     val currentSpeed: Double = p1.speed
                     if (p1.roadElement != null) {
-                        val currentSpeedLimit: Double = p1.roadElement!!.speedLimit.toDouble()
-                        currentSpeedLimitTransformed = meterPerSecToKmPerHour(currentSpeedLimit)
-                    }
-                    updateCurrentSpeedView(currentSpeed)
-                    updateCurrentSpeedLimitView(currentSpeedLimitTransformed)
-                } else {
+                        currentSpeedLimit = p1.roadElement!!.speedLimit.toDouble()
 
+                    }
+                    updateSpeedTexts(currentSpeed, currentSpeedLimit)
                 }
             }
         }
@@ -311,25 +306,26 @@ class NavigationFragment : Fragment() {
     }
 
 
-
-    private fun meterPerSecToKmPerHour(speed: Double): Int {
-        return (speed * 0.681818).toInt()
+    private fun meterPerSecToMilesPerHour(speed: Double): Int {
+        return (speed * 2.23694).toInt()
     }
 
 
-    private fun updateCurrentSpeedView(currentSpeed: Double) {
-        binding.currentSpeed.text = currentSpeed.toString()
-    }
-
-    private fun updateCurrentSpeedLimitView(currentSpeedLimit: Int) {
+    private fun updateSpeedTexts(currentSpeed: Double, currentSpeedLimit: Double) {
         val currentSpeedLimitText: String = if (currentSpeedLimit > 0) {
-            currentSpeedLimit.toString()
+            meterPerSecToMilesPerHour(currentSpeedLimit).toString()
         } else {
             "N/A"
         }
         binding.currentSpeedLimit.text = currentSpeedLimitText
-    }
+        binding.currentSpeed.text = meterPerSecToMilesPerHour(currentSpeed).toString()
 
+        if (currentSpeed > currentSpeedLimit && currentSpeedLimit > 0) {
+            binding.speedInfoContainer.setBackgroundResource(R.color.Red)
+        } else {
+            binding.speedInfoContainer.setBackgroundResource(R.color.Green)
+        }
+    }
 
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
@@ -337,8 +333,6 @@ class NavigationFragment : Fragment() {
                 navigationManager.nextManeuver
             }
         }
-
-
 
     override fun onResume() {
         super.onResume()
@@ -349,7 +343,6 @@ class NavigationFragment : Fragment() {
         super.onPause()
         mapFragment.onPause()
     }
-
 
 }
 
