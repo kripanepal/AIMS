@@ -21,15 +21,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
-import com.here.android.mpa.common.GeoBoundingBox
-import com.here.android.mpa.common.GeoCoordinate
-import com.here.android.mpa.common.OnEngineInitListener
-import com.here.android.mpa.common.PositioningManager
+import com.here.android.mpa.common.*
+import com.here.android.mpa.guidance.LaneInformation
 import com.here.android.mpa.guidance.NavigationManager
+import com.here.android.mpa.guidance.NavigationManager.LaneInformationListener
+import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
+import com.here.android.mpa.guidance.VoiceCatalog
 import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapRoute
+import com.here.android.mpa.prefetcher.MapDataPrefetcher
+import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
+import com.here.android.mpa.routing.Route.TrafficPenaltyMode
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
 
@@ -40,6 +44,7 @@ class NavigationFragment : Fragment() {
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: NavigationFragmentBinding
     lateinit var locationManager: LocationManager
+    var id: Long = -1
 
     // map embedded in the map fragment
     lateinit var map: Map
@@ -55,6 +60,9 @@ class NavigationFragment : Fragment() {
     var route: Route? = null
 
     lateinit var mPrefs: SharedPreferences
+
+    private var fetchingDataInProgress = false
+    private lateinit var voiceCatalog: VoiceCatalog
 
 
     override fun onCreateView(
@@ -76,45 +84,35 @@ class NavigationFragment : Fragment() {
         binding.destinationReached.setOnClickListener { destinationReached() }
 
         initializeMap()
-
         return binding.root
     }
 
 
     @SuppressLint("MissingPermission")
     private fun initializeMap() {
-
         mapFragment = childFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment
-
         mapFragment.init { error ->
             if (error == OnEngineInitListener.Error.NONE) {
-                // retrieve a reference of the map from the map fragment
-                map = mapFragment.map!!
-
-                PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
-                    currentLatidude = latitude
-                    currentLongitude = longitude
-                }
-                map.setCenter(
-                    GeoCoordinate(currentLatidude, currentLongitude, 0.0),
-                    Map.Animation.NONE
-                )
-
-                // Set the zoom level to the average between min and max
-                map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
-
-                navigationManager = NavigationManager.getInstance()
-
-
                 if (route !== null) {
-
+                    mapFragment.onResume()
                     navigationManager.resume()
                     binding.mapFragmentContainer.visibility = View.VISIBLE
-                    map = mapFragment.map!!
                 } else {
+                    map = mapFragment.map!!
+                    PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
+                        currentLatidude = latitude
+                        currentLongitude = longitude
+                    }
+
+                    map.setCenter(
+                        GeoCoordinate(currentLatidude, currentLongitude, 0.0),
+                        Map.Animation.NONE
+                    )
+                    // Set the zoom level to the average between min and max
+                    map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
+                    navigationManager = NavigationManager.getInstance()
                     createRoute()
                 }
-
             } else {
                 Log.i("AAAA", error.toString())
             }
@@ -126,7 +124,6 @@ class NavigationFragment : Fragment() {
         val coreRouter = CoreRouter()
         val routePlan = RoutePlan()
         val routeOptions = RouteOptions()
-
         routeOptions.transportMode = RouteOptions.TransportMode.CAR
         routeOptions.routeType = RouteOptions.Type.SHORTEST
 
@@ -135,7 +132,7 @@ class NavigationFragment : Fragment() {
 
 
         val startPoint = RouteWaypoint(GeoCoordinate(currentLatidude, currentLongitude))
-        val destination = RouteWaypoint(GeoCoordinate(32.52406, -92.09638))
+        val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
 
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
@@ -170,10 +167,8 @@ class NavigationFragment : Fragment() {
                             map.zoomTo(
                                 geoBoundingBox,
                                 Map.Animation.NONE,
-                                Map.MOVE_PRESERVE_ZOOM_LEVEL.toFloat()
+                                Map.MOVE_PRESERVE_TILT.toFloat()
                             )
-
-
                             startNavigation()
 
 
@@ -187,17 +182,14 @@ class NavigationFragment : Fragment() {
                         }
                     } else {
                         Toast.makeText(
-                            context, "Error:route calculation returned error code: "
-                                    + routingError,
+                            context,
+                            "Error:route calculation returned error code: $routingError",
                             Toast.LENGTH_LONG
                         ).show()
-
                         findNavController().navigateUp()
                     }
                 }
             })
-
-
     }
 
     private fun recenter() {
@@ -223,23 +215,48 @@ class NavigationFragment : Fragment() {
                 map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
-                navigationManager.simulate(route!!, 100)
+                navigationManager.simulate(route!!, 10)
                 map.tilt = 70f
+
             }
             val alertDialog = alertDialogBuilder.create()
             alertDialog.show()
+
+        } else {
+            mapFragment.onResume()
         }
+        addListeners()
+    }
 
-
-        recenter()
-        binding.mapFragmentContainer.visibility = View.VISIBLE
-        navigationManager.distanceUnit = NavigationManager.UnitSystem.METRIC
+    private fun addListeners() {
+        navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
+        MapDataPrefetcher.getInstance().addListener(prefetcherListener)
+        PositioningManager.getInstance().addListener(WeakReference(positionLister))
+        navigationManager.addLaneInformationListener(WeakReference(laneInformationListener))
+
+        navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
+        navigationManager.addPositionListener(WeakReference(positionListener))
+        setUpVoiceNavigation()
 
     }
 
-    var rerouteListener = object : NavigationManager.RerouteListener() {
+
+    private fun removeListeners() {
+        navigationManager.apply {
+
+            navigationManager.removeRerouteListener(rerouteListener)
+            navigationManager.removeNavigationManagerEventListener(routeCompleteListener)
+            MapDataPrefetcher.getInstance().removeListener(prefetcherListener)
+            PositioningManager.getInstance().removeListener(positionLister)
+            navigationManager.stop()
+        }
+
+
+    }
+
+    private var rerouteListener = object : NavigationManager.RerouteListener() {
         override fun onRerouteEnd(p0: RouteResult, p1: RoutingError?) {
             super.onRerouteEnd(p0, p1)
             map.addMapObject(MapRoute(p0.route))
@@ -254,14 +271,121 @@ class NavigationFragment : Fragment() {
             }
         }
 
+    private var prefetcherListener: MapDataPrefetcher.Adapter =
+        object : MapDataPrefetcher.Adapter() {
+            override fun onStatus(requestId: Int, status: PrefetchStatus) {
+                if (status != PrefetchStatus.PREFETCH_IN_PROGRESS) {
+                    fetchingDataInProgress = false
+                }
+            }
+        }
+
+    private var positionLister = object : PositioningManager.OnPositionChangedListener {
+        override fun onPositionUpdated(
+            p0: PositioningManager.LocationMethod?,
+            p1: GeoPosition?,
+            p2: Boolean
+        ) {
+            if (PositioningManager.getInstance().roadElement == null && !fetchingDataInProgress) {
+                val areaAround = p1?.let { GeoBoundingBox(it.coordinate, 500F, 500F) }
+                if (areaAround != null) {
+                    MapDataPrefetcher.getInstance().fetchMapData(areaAround)
+                }
+                fetchingDataInProgress = true
+            }
+            if (p1 != null) {
+                if (p1.isValid && p1 is MatchedGeoPosition) {
+                    var currentSpeedLimitTransformed = 0
+                    val currentSpeed: Double = p1.speed
+                    if (p1.roadElement != null) {
+                        val currentSpeedLimit: Double = p1.roadElement!!.speedLimit.toDouble()
+                        currentSpeedLimitTransformed = meterPerSecToKmPerHour(currentSpeedLimit)
+                    }
+                    updateCurrentSpeedView(currentSpeed)
+                    updateCurrentSpeedLimitView(currentSpeedLimitTransformed)
+                } else {
+
+                }
+            }
+        }
+
+        override fun onPositionFixChanged(
+            p0: PositioningManager.LocationMethod?,
+            p1: PositioningManager.LocationStatus?
+        ) {
+        }
+    }
+
+
     //Task to be done once destination is reached
     private fun destinationReached() {
-        navigationManager.stop()
+        removeListeners()
         lifecycleScope.launchWhenResumed {
             findNavController().navigateUp()
         }
+    }
+
+
+    private val laneInformationListener: LaneInformationListener =
+        object : LaneInformationListener() {
+            override fun onLaneInformation(
+                items: List<LaneInformation>,
+                roadElement: RoadElement?
+            ) {
+                Log.i("AAAAAAA", items.toString())
+                Log.i("AAAAAAA", roadElement.toString())
+            }
+        }
+
+
+    private fun meterPerSecToKmPerHour(speed: Double): Int {
+        return (speed * 0.681818).toInt()
+    }
+
+
+    private fun updateCurrentSpeedView(currentSpeed: Double) {
+        binding.currentSpeed.text = currentSpeed.toString()
+    }
+
+    private fun updateCurrentSpeedLimitView(currentSpeedLimit: Int) {
+        val currentSpeedLimitText: String = if (currentSpeedLimit > 0) {
+            currentSpeedLimit.toString()
+        } else {
+            "N/A"
+        }
+        binding.currentSpeedLimit.text = currentSpeedLimitText
 
     }
+
+
+// add application specific logic in each of the callbacks.
+
+    // declare the listeners
+    // add application specific logic in each of the callbacks.
+    private val instructListener: NewInstructionEventListener =
+        object : NewInstructionEventListener() {
+            override fun onNewInstructionEvent() {
+                // Interpret and present the Maneuver object as it contains
+                // turn by turn navigation instructions for the user.
+                navigationManager.nextManeuver
+            }
+        }
+
+    private val positionListener: NavigationManager.PositionListener =
+        object : NavigationManager.PositionListener() {
+            override fun onPositionUpdated(loc: GeoPosition) {
+                // the position we get in this callback can be used
+                // to reposition the map and change orientation.
+                loc.coordinate
+                loc.heading
+                loc.speed
+
+                // also remaining time and distance can be
+                // fetched from navigation manager
+                navigationManager.getTta(TrafficPenaltyMode.DISABLED, true)
+                navigationManager.destinationDistance
+            }
+        }
 
 
 }
