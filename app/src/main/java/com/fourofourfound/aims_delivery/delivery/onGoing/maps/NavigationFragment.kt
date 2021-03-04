@@ -236,7 +236,7 @@ class NavigationFragment : Fragment() {
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
-        MapDataPrefetcher.getInstance().addListener(prefetcherListener)
+        MapDataPrefetcher.getInstance().addListener(prefetchListener)
         PositioningManager.getInstance().addListener(WeakReference(positionLister))
         navigationManager.addLaneInformationListener(WeakReference(laneInformationListener))
 
@@ -252,7 +252,7 @@ class NavigationFragment : Fragment() {
 
             navigationManager.removeRerouteListener(rerouteListener)
             navigationManager.removeNavigationManagerEventListener(routeCompleteListener)
-            MapDataPrefetcher.getInstance().removeListener(prefetcherListener)
+            MapDataPrefetcher.getInstance().removeListener(prefetchListener)
             PositioningManager.getInstance().removeListener(positionLister)
             navigationManager.stop()
             stopForegroundService()
@@ -276,7 +276,7 @@ class NavigationFragment : Fragment() {
             }
         }
 
-    private var prefetcherListener: MapDataPrefetcher.Adapter =
+    private var prefetchListener: MapDataPrefetcher.Adapter =
         object : MapDataPrefetcher.Adapter() {
             override fun onStatus(requestId: Int, status: PrefetchStatus) {
                 if (status != PrefetchStatus.PREFETCH_IN_PROGRESS) {
