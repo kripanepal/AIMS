@@ -45,7 +45,6 @@ class ForegroundService : Service() {
         return START_NOT_STICKY
     }
 
-
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -63,11 +62,28 @@ class ForegroundService : Service() {
         notificationManager.createNotificationChannel(channel)
     }
 
-
     companion object {
         var FOREGROUND_SERVICE_ID = 101
         var START_ACTION = "start navigation "
         var STOP_ACTION = "stop navigaion"
         private const val CHANNEL = "default"
+    }
+}
+
+fun NavigationFragment.stopForegroundService() {
+    if (foregroundServiceStarted) {
+        foregroundServiceStarted = false
+        val stopIntent = Intent(requireContext(), ForegroundService::class.java)
+        stopIntent.action = ForegroundService.STOP_ACTION
+        requireContext().startService(stopIntent)
+    }
+}
+
+fun NavigationFragment.startForegroundService() {
+    if (!foregroundServiceStarted) {
+        foregroundServiceStarted = true
+        val startIntent = Intent(requireContext(), ForegroundService::class.java)
+        startIntent.action = ForegroundService.START_ACTION
+        requireContext().startService(startIntent)
     }
 }

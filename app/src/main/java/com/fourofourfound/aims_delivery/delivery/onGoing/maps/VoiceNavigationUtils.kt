@@ -34,14 +34,14 @@ private fun NavigationFragment.downloading(
     voiceCatalog: VoiceCatalog
 ): Boolean {
     if (vPackage.isTts) {
-        id = vPackage.id
-        voiceCatalog.downloadVoice(id) { error ->
+        voiceId = vPackage.id
+        voiceCatalog.downloadVoice(voiceId) { error ->
             if (error == VoiceCatalog.Error.NONE) {
 
                 // set the voice skin for use by navigation manager
                 val voiceGuidanceOptions: VoiceGuidanceOptions =
                     navigationManager.voiceGuidanceOptions
-                voiceGuidanceOptions.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(id)!!)
+                voiceGuidanceOptions.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(voiceId)!!)
                 navigationManager.naturalGuidanceMode =
                     EnumSet.allOf(NavigationManager.NaturalGuidanceMode::class.java)
 

@@ -3,9 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.content.SharedPreferences
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
@@ -23,9 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
 import com.here.android.mpa.common.*
-import com.here.android.mpa.guidance.LaneInformation
 import com.here.android.mpa.guidance.NavigationManager
-import com.here.android.mpa.guidance.NavigationManager.LaneInformationListener
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
 import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
@@ -33,7 +28,6 @@ import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
-import com.here.android.mpa.routing.Route.TrafficPenaltyMode
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
 
@@ -44,7 +38,7 @@ class NavigationFragment : Fragment() {
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: NavigationFragmentBinding
     lateinit var locationManager: LocationManager
-    var id: Long = -1
+    var voiceId: Long = -1
 
     // map embedded in the map fragment
     lateinit var map: Map
@@ -53,18 +47,11 @@ class NavigationFragment : Fragment() {
     lateinit var mapFragment: AndroidXMapFragment
     private var currentLatitude by Delegates.notNull<Double>()
     var currentLongitude by Delegates.notNull<Double>()
-
-
     lateinit var navigationManager: NavigationManager
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
-
-    lateinit var mPrefs: SharedPreferences
-
-
     private var fetchingDataInProgress = false
-
-    private var foregroundServiceStarted = false
+    var foregroundServiceStarted = false
 
 
     override fun onCreateView(
@@ -73,7 +60,6 @@ class NavigationFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
-        mPrefs = requireActivity().getPreferences(MODE_PRIVATE)
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -195,6 +181,7 @@ class NavigationFragment : Fragment() {
     }
 
     private fun recenter() {
+
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
         Handler(Looper.getMainLooper()).postDelayed({
             navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
@@ -238,10 +225,7 @@ class NavigationFragment : Fragment() {
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
         MapDataPrefetcher.getInstance().addListener(prefetchListener)
         PositioningManager.getInstance().addListener(WeakReference(positionLister))
-        navigationManager.addLaneInformationListener(WeakReference(laneInformationListener))
-
         navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
-        navigationManager.addPositionListener(WeakReference(positionListener))
         setUpVoiceNavigation()
 
     }
@@ -264,8 +248,11 @@ class NavigationFragment : Fragment() {
     private var rerouteListener = object : NavigationManager.RerouteListener() {
         override fun onRerouteEnd(p0: RouteResult, p1: RoutingError?) {
             super.onRerouteEnd(p0, p1)
+            map.removeAllMapObjects()
             map.addMapObject(MapRoute(p0.route))
         }
+
+
     }
 
     private var routeCompleteListener =
@@ -331,17 +318,6 @@ class NavigationFragment : Fragment() {
     }
 
 
-    private val laneInformationListener: LaneInformationListener =
-        object : LaneInformationListener() {
-            override fun onLaneInformation(
-                items: List<LaneInformation>,
-                roadElement: RoadElement?
-            ) {
-                Log.i("AAAAAAA", items.toString())
-                Log.i("AAAAAAA", roadElement.toString())
-            }
-        }
-
 
     private fun meterPerSecToKmPerHour(speed: Double): Int {
         return (speed * 0.681818).toInt()
@@ -359,39 +335,17 @@ class NavigationFragment : Fragment() {
             "N/A"
         }
         binding.currentSpeedLimit.text = currentSpeedLimitText
-
     }
 
 
-// add application specific logic in each of the callbacks.
-
-    // declare the listeners
-    // add application specific logic in each of the callbacks.
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
-                // Interpret and present the Maneuver object as it contains
-                // turn by turn navigation instructions for the user.
                 navigationManager.nextManeuver
-
             }
         }
 
-    private val positionListener: NavigationManager.PositionListener =
-        object : NavigationManager.PositionListener() {
-            override fun onPositionUpdated(loc: GeoPosition) {
-                // the position we get in this callback can be used
-                // to reposition the map and change orientation.
-                loc.coordinate
-                loc.heading
-                loc.speed
 
-                // also remaining time and distance can be
-                // fetched from navigation manager
-                navigationManager.getTta(TrafficPenaltyMode.DISABLED, true)
-                navigationManager.destinationDistance
-            }
-        }
 
     override fun onResume() {
         super.onResume()
@@ -403,22 +357,8 @@ class NavigationFragment : Fragment() {
         mapFragment.onPause()
     }
 
-    private fun startForegroundService() {
-        if (!foregroundServiceStarted) {
-            foregroundServiceStarted = true
-            val startIntent = Intent(requireContext(), ForegroundService::class.java)
-            startIntent.action = ForegroundService.START_ACTION
-            requireContext().startService(startIntent)
-        }
-    }
-
-    private fun stopForegroundService() {
-        if (foregroundServiceStarted) {
-            foregroundServiceStarted = false
-            val stopIntent = Intent(requireContext(), ForegroundService::class.java)
-            stopIntent.action = ForegroundService.STOP_ACTION
-            requireContext().startService(stopIntent)
-        }
-    }
 
 }
+
+
+
