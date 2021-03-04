@@ -8,4 +8,6 @@
     <string name="need_help_field_text">Need Help?</string>
     <string name="contact_my_provider_field_text">Contact My Provider</string>
     <string name="loading_animation_content_description">Loading animation</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -107,9 +107,6 @@
                     android:id="@+id/textInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/pen_icon"
-
-
                     android:background="@android:color/transparent"
                     android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
                     app:boxBackgroundColor="@android:color/transparent"
@@ -133,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-
+                        android:drawableEnd="@drawable/visibility_off_black_18dp"
                         android:hint="Password"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
