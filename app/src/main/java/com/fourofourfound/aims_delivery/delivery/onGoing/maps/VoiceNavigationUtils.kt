@@ -1,8 +1,10 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
+import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.VoiceCatalog
 import com.here.android.mpa.guidance.VoiceGuidanceOptions
 import com.here.android.mpa.guidance.VoicePackage
+import java.util.*
 
 
 fun NavigationFragment.setUpVoiceNavigation() {
@@ -40,6 +42,9 @@ private fun NavigationFragment.downloading(
                 val voiceGuidanceOptions: VoiceGuidanceOptions =
                     navigationManager.voiceGuidanceOptions
                 voiceGuidanceOptions.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(id)!!)
+                navigationManager.naturalGuidanceMode =
+                    EnumSet.allOf(NavigationManager.NaturalGuidanceMode::class.java)
+
             }
         }
         return true

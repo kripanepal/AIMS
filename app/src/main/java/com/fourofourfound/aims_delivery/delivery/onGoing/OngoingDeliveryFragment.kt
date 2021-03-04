@@ -16,6 +16,7 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
+import com.here.android.mpa.common.MapEngine
 import com.here.android.mpa.mapping.Map
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -46,7 +47,7 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var m_map: Map? = null
+    private var map: Map? = null
 
 
     /**
@@ -120,6 +121,16 @@ class OngoingDeliveryFragment : Fragment() {
                 viewModel.doneNavigatingToHomePage()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MapEngine.getInstance().onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MapEngine.getInstance().onPause()
     }
 
 

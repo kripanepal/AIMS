@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.location.LocationManager
 import android.os.Bundle
@@ -26,7 +27,6 @@ import com.here.android.mpa.guidance.LaneInformation
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.LaneInformationListener
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
-import com.here.android.mpa.guidance.VoiceCatalog
 import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapRoute
@@ -51,7 +51,7 @@ class NavigationFragment : Fragment() {
 
     // map fragment embedded in this activity
     lateinit var mapFragment: AndroidXMapFragment
-    var currentLatidude by Delegates.notNull<Double>()
+    private var currentLatitude by Delegates.notNull<Double>()
     var currentLongitude by Delegates.notNull<Double>()
 
 
@@ -61,8 +61,10 @@ class NavigationFragment : Fragment() {
 
     lateinit var mPrefs: SharedPreferences
 
+
     private var fetchingDataInProgress = false
-    private lateinit var voiceCatalog: VoiceCatalog
+
+    private var foregroundServiceStarted = false
 
 
     override fun onCreateView(
@@ -100,12 +102,12 @@ class NavigationFragment : Fragment() {
                 } else {
                     map = mapFragment.map!!
                     PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
-                        currentLatidude = latitude
+                        currentLatitude = latitude
                         currentLongitude = longitude
                     }
 
                     map.setCenter(
-                        GeoCoordinate(currentLatidude, currentLongitude, 0.0),
+                        GeoCoordinate(currentLatitude, currentLongitude, 0.0),
                         Map.Animation.NONE
                     )
                     // Set the zoom level to the average between min and max
@@ -131,7 +133,7 @@ class NavigationFragment : Fragment() {
         routePlan.routeOptions = routeOptions
 
 
-        val startPoint = RouteWaypoint(GeoCoordinate(currentLatidude, currentLongitude))
+        val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
         val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
 
         routePlan.addWaypoint(startPoint)
@@ -204,7 +206,7 @@ class NavigationFragment : Fragment() {
     private fun startNavigation() {
 
         navigationManager.setMap(map)
-        mapFragment.positionIndicator!!.isVisible = true
+        mapFragment.positionIndicator?.isVisible = true
 
         if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
             val alertDialogBuilder = AlertDialog.Builder(context)
@@ -213,10 +215,12 @@ class NavigationFragment : Fragment() {
             alertDialogBuilder.setNegativeButton("Navigation") { dialoginterface, i ->
                 navigationManager.startNavigation(route!!)
                 map.tilt = 70f
+                startForegroundService()
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
                 navigationManager.simulate(route!!, 10)
                 map.tilt = 70f
+                startForegroundService()
 
             }
             val alertDialog = alertDialogBuilder.create()
@@ -251,6 +255,7 @@ class NavigationFragment : Fragment() {
             MapDataPrefetcher.getInstance().removeListener(prefetcherListener)
             PositioningManager.getInstance().removeListener(positionLister)
             navigationManager.stop()
+            stopForegroundService()
         }
 
 
@@ -368,6 +373,7 @@ class NavigationFragment : Fragment() {
                 // Interpret and present the Maneuver object as it contains
                 // turn by turn navigation instructions for the user.
                 navigationManager.nextManeuver
+
             }
         }
 
@@ -387,5 +393,32 @@ class NavigationFragment : Fragment() {
             }
         }
 
+    override fun onResume() {
+        super.onResume()
+        mapFragment.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapFragment.onPause()
+    }
+
+    private fun startForegroundService() {
+        if (!foregroundServiceStarted) {
+            foregroundServiceStarted = true
+            val startIntent = Intent(requireContext(), ForegroundService::class.java)
+            startIntent.action = ForegroundService.START_ACTION
+            requireContext().startService(startIntent)
+        }
+    }
+
+    private fun stopForegroundService() {
+        if (foregroundServiceStarted) {
+            foregroundServiceStarted = false
+            val stopIntent = Intent(requireContext(), ForegroundService::class.java)
+            stopIntent.action = ForegroundService.STOP_ACTION
+            requireContext().startService(stopIntent)
+        }
+    }
 
 }
