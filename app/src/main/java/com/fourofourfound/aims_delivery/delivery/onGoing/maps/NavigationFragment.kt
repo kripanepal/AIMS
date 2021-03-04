@@ -51,7 +51,6 @@ class NavigationFragment : Fragment() {
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
     private var fetchingDataInProgress = false
-    var foregroundServiceStarted = false
 
 
     override fun onCreateView(
@@ -130,7 +129,7 @@ class NavigationFragment : Fragment() {
             routePlan,
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {
-                    binding.routeProgressBar.progress = i
+                    binding.routeProgressBar.isIndeterminate = true
                 }
 
                 override fun onCalculateRouteFinished(
@@ -202,12 +201,12 @@ class NavigationFragment : Fragment() {
             alertDialogBuilder.setNegativeButton("Navigation") { dialoginterface, i ->
                 navigationManager.startNavigation(route!!)
                 map.tilt = 70f
-                startForegroundService()
+
             }
             alertDialogBuilder.setPositiveButton("Simulation") { dialoginterface, i ->
                 navigationManager.simulate(route!!, 10)
                 map.tilt = 70f
-                startForegroundService()
+
 
             }
             val alertDialog = alertDialogBuilder.create()
@@ -233,16 +232,12 @@ class NavigationFragment : Fragment() {
 
     private fun removeListeners() {
         navigationManager.apply {
-
             navigationManager.removeRerouteListener(rerouteListener)
             navigationManager.removeNavigationManagerEventListener(routeCompleteListener)
             MapDataPrefetcher.getInstance().removeListener(prefetchListener)
             PositioningManager.getInstance().removeListener(positionLister)
             navigationManager.stop()
-            stopForegroundService()
         }
-
-
     }
 
     private var rerouteListener = object : NavigationManager.RerouteListener() {
@@ -251,8 +246,6 @@ class NavigationFragment : Fragment() {
             map.removeAllMapObjects()
             map.addMapObject(MapRoute(p0.route))
         }
-
-
     }
 
     private var routeCompleteListener =
