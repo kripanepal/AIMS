@@ -102,8 +102,10 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    /*added done button in the keyboard.
-starts user authentication on click*/
+    /**
+     * added done button in the keyboard.
+     * starts user authentication on click
+     */
     private fun loginOnDoneKey() {
         binding.passwordInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -127,6 +129,7 @@ starts user authentication on click*/
             val animation = AnimationUtils.loadAnimation(activity, R.anim.zoom_in_animation)
             binding.loginErrorMessage.startAnimation(animation)
         })
+
         //loading animation
         viewModel.loading.observe(viewLifecycleOwner, {
             loadingAnimation.apply {
@@ -139,7 +142,7 @@ starts user authentication on click*/
 
     /**
      * Observe login fields
-     *observe login fields to display errors if the fields are empty
+     * observe login fields to display errors if the fields are empty
      */
     private fun observeLoginFields() {
         viewModel.userFieldTouched.observe(viewLifecycleOwner) {
@@ -184,7 +187,7 @@ starts user authentication on click*/
 
     /**
      * Start call
-     *Start a intent to start the call to a
+     *Start an intent to start the call to a
      * specific number
      */
     private fun startCall() {

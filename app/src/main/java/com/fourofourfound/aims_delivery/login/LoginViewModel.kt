@@ -41,44 +41,60 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
 
 
     //save the user to the shared preferences encrypting the given username and password
-    private fun saveUser(userName:String, password:String) {
-         CustomSharedPreferences(myApplication).apply {
+    private fun saveUser(userName: String, password: String) {
+        CustomSharedPreferences(myApplication).apply {
             setEncryptedPreference("username", userName)
             setEncryptedPreference("password", password)
-         }
+        }
     }
 
     //checks if shared preferences already contain a user that is logged in
+    /**
+     * This method checks if shared preferences already contain a user
+     * us logged in
+     *
+     * @return if the user is logged in or not
+     */
     fun checkUserLoggedIn(): Boolean {
         CustomSharedPreferences(myApplication).apply {
-             val userName = getEncryptedPreference("username")
-             val password = getEncryptedPreference("password")
-            if(userName!="" && password!="") return true
+            val userName = getEncryptedPreference("username")
+            val password = getEncryptedPreference("password")
+            if (userName != "" && password != "") return true
             return false
         }
     }
 
     //calls retrofit service to verify the user
-    fun authenticateUser()
-    {
-        if(checkFieldsEmpty()) return
+    /**
+     * This method calls retrofit service to verify the user
+     */
+    fun authenticateUser() {
+        if (checkFieldsEmpty()) return
         _loading.value = true
         viewModelScope.launch {
-           try{
-                MakeNetworkCall.retrofitService.validateUser(UserLoginInfo(userName.value.toString(),password.value.toString()))
+            try {
+                MakeNetworkCall.retrofitService.validateUser(
+                    UserLoginInfo(
+                        userName.value.toString(),
+                        password.value.toString()
+                    )
+                )
                 _navigate.value = true
-               _loading.value = false
-               saveUser(userName.value.toString(),password.value.toString())
-            }
-            catch (t:Throwable)
-            {
+                _loading.value = false
+                saveUser(userName.value.toString(), password.value.toString())
+            } catch (t: Throwable) {
                 _errorMessage.value = t.message
-               _navigate.value = false
+                _navigate.value = false
                 _loading.value = false
             }
         }
     }
 
+    /**
+     * This method checks if the user id and password field is empty
+     *
+     * @return if the text field is empty or not
+     */
     private fun checkFieldsEmpty(): Boolean {
         if (userName.value.isNullOrEmpty() or password.value.isNullOrEmpty()) {
             if (userName.value.isNullOrEmpty()) {
@@ -92,18 +108,27 @@ class LoginViewModel(application: Application) :AndroidViewModel(application) {
         return false
     }
 
-    //callback to ensure that the navigation is not triggered twice
-    fun doneNavigatingToHomePage()
-    {
+    /**
+     * This method ensures that the navigation is not
+     * triggered twice
+     */
+    fun doneNavigatingToHomePage() {
         _navigate.value = false
     }
-    fun userIdTextChanged()
-    {
+
+    /**
+     * This method
+     *
+     */
+    fun userIdTextChanged() {
         _userFieldTouched.value = false
     }
 
-    fun passwordTextChanged()
-    {
+    /**
+     *
+     *
+     */
+    fun passwordTextChanged() {
         _passwordFieldTouched.value = false
     }
 

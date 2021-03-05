@@ -17,6 +17,7 @@ import retrofit2.http.POST
 private const val BASE_URL = "https://aims-server.herokuapp.com"
 
 
+//a moshi object
 val moshi: Moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()

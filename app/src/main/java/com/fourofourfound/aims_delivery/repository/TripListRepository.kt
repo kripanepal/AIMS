@@ -39,13 +39,17 @@ class TripListRepository(private val database: TripListDatabse) {
         }
     }
 
-
-    suspend fun markTripCompleted(tripId:String,status:Boolean)
-    {
+    /**
+     * Marks the trip as completed when the trip
+     * finishes.
+     * @param tripId The id of the trip
+     * @param status The status of the trip
+     */
+    suspend fun markTripCompleted(tripId: String, status: Boolean) {
         withContext(Dispatchers.IO) {
             try {
-               //TODO make network call to inform aims dispatcher
-                database.tripListDao.markTripCompleted(tripId,status)
+                //TODO make network call to inform aims dispatcher
+                database.tripListDao.markTripCompleted(tripId, status)
             } catch (e: Exception) {
 
             }
@@ -53,6 +57,9 @@ class TripListRepository(private val database: TripListDatabse) {
         }
     }
 
+    /**
+     * Deletes all the trips for the local database
+     */
     suspend fun deleteAllTrips() {
         withContext(Dispatchers.IO) {
             try {
@@ -64,7 +71,11 @@ class TripListRepository(private val database: TripListDatabse) {
         }
     }
 
-
+    /**
+     * Saves the user current location to the local database
+     *
+     * @param customLocation Current location of the user
+     */
     suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
         withContext(Dispatchers.IO) {
             try {

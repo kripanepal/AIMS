@@ -11,12 +11,26 @@ import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.LiveData
 
+/**
+ * This method checks if the internet is available or not.
+ *
+ * @property context the context of the current state of the application
+ */
 class CheckInternetConnection(val context: Context) : LiveData<Boolean>() {
 
+    /**
+     * Connectivity Manager
+     * Connectivity manager object to monitor the network of the device.
+     */
     private var connectivityManager: ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+    /**
+     * Connectivity Manager call back
+     * To notify the application about the network change
+     */
     private lateinit var connectivityManagerCallback: ConnectivityManager.NetworkCallback
+
 
     override fun onActive() {
         super.onActive()
@@ -47,6 +61,11 @@ class CheckInternetConnection(val context: Context) : LiveData<Boolean>() {
         )
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private fun getConnectivityManagerCallback(): ConnectivityManager.NetworkCallback {
 
         connectivityManagerCallback = object : ConnectivityManager.NetworkCallback() {
