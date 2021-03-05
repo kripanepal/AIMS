@@ -20,8 +20,6 @@
     tools:context="com.fourofourfound.aims_delivery.login.LoginFragment"
    >
 
-
-
         <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -141,21 +139,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:id="@+id/is_loading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="56dp"
-                    android:contentDescription="@string/loading_animation_content_description"
-                    android:text="Hello World!"
-                    android:visibility="@{viewModel.loading?View.VISIBLE:View.GONE}"
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.541"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/loginButton" />
-
 
                 <TextView
                     android:id="@+id/login_error_message"
@@ -176,16 +159,27 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center_horizontal"
-
                     android:background="@drawable/button_background"
-
                     android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
                     android:onClick="@{()->viewModel.authenticateUser()}"
                     android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintRight_toRightOf="parent
-"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/is_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="56dp"
+                    android:contentDescription="@string/loading_animation_content_description"
+                    android:text="Hello World!"
+                    android:visibility="@{viewModel.loading?View.VISIBLE:View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -195,7 +189,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:orientation="vertical"
-
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -209,8 +202,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="76dp"
-
-
                     android:text="@string/need_help_field_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
@@ -223,11 +214,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-
                     android:backgroundTint="#AAFFFFFF"
                     android:text="@string/contact_my_provider_field_text"
-
-
                     android:textColor="@color/Aims_Orange"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -235,12 +223,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/needHelp"
                     app:layout_constraintVertical_bias="0.0" />
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <!-- TODO: Update blank fragment layout -->
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

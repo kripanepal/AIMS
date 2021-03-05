@@ -1,14 +1,17 @@
 package com.fourofourfound.aims_delivery.login
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,7 +21,6 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -91,10 +93,19 @@ starts user authentication on click*/
             val animation = AnimationUtils.loadAnimation(activity, R.anim.zoom_in_animation)
             binding.loginErrorMessage.startAnimation(animation)
         })
+
         //loading animation
         viewModel.loading.observe(viewLifecycleOwner, {
+
+            //hide the keyboard when animation starts loading
+            val imm =
+                requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+
             loadingAnimation.apply {
                 if (it) {
+                    Log.i("AAAAAA", "LOADINGS TATER")
                     start()
                 } else stop()
             }
@@ -106,18 +117,12 @@ starts user authentication on click*/
             if (it) {
                 binding.userIdInput.apply {
                     error = "User Id is required"
-                    hint = "Please enter your user Id"
                 }
             }
         }
 
         viewModel.passwordFieldTouched.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.passwordInput.apply {
-                    error = "Password is required"
-                    hint = "Please enter your password"
-                }
-            }
+            if (it) binding.passwordInput.error = "Password is required"
         }
     }
 
