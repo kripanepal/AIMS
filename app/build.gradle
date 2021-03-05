@@ -48,7 +48,13 @@ android {
         dataBinding true
         viewBinding  true
     }
-
+    sourceSets {
+        main {
+            java {
+                srcDirs 'src/main/java', 'src/main/java/com.fourofourfound.aims_delivery', 'src/main/java/2', 'src/main/java/com.fourofourfound.aims_delivery/pickup'
+            }
+        }
+    }
 
 
 }
