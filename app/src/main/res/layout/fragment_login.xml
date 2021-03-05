@@ -85,13 +85,10 @@
 
                         android:id="@+id/userIdInput"
                         android:layout_width="match_parent"
-
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-
                         android:drawableEnd="@drawable/pen_icon"
                         android:hint="@string/user_id_hint"
-                        android:imeOptions="actionDone"
                         android:inputType="textPersonName"
                         android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
                         android:paddingTop="28dp"
@@ -122,9 +119,7 @@
 
 
                     <EditText
-
                         android:id="@+id/passwordInput"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
