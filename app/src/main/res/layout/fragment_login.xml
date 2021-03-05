@@ -107,13 +107,9 @@
                     android:id="@+id/textInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/pen_icon"
-
-
                     android:background="@android:color/transparent"
                     android:backgroundTint="@{viewModel.passwordFieldTouched?@color/design_default_color_error:@color/Aims_brown}"
                     app:boxBackgroundColor="@android:color/transparent"
-
                     app:boxCornerRadiusBottomEnd="15dp"
                     app:boxCornerRadiusBottomStart="15dp"
                     app:boxCornerRadiusTopEnd="15dp"
@@ -123,10 +119,10 @@
                     app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
                     app:layout_constraintVertical_bias="0.07999998"
-                    app:passwordToggleEnabled="true">
-
+                    app:endIconMode="password_toggle">
 
                     <EditText
+
 
                         android:id="@+id/passwordInput"
 

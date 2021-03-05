@@ -18,7 +18,7 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
-import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -103,21 +103,14 @@ starts user authentication on click*/
 
     private fun observeLoginFields() {
         viewModel.userFieldTouched.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.userIdInput.apply {
-                    error = "User Id is required"
-                    hint = "Please enter your user Id"
-                }
-            }
+            if (it) binding.userIdInput.error = "User Id is required"
         }
 
         viewModel.passwordFieldTouched.observe(viewLifecycleOwner) {
             if (it) {
-                binding.passwordInput.apply {
-                    error = "Password is required"
-                    hint = "Please enter your password"
-                }
-            }
+                binding.textInputLayout?.endIconMode = TextInputLayout.END_ICON_NONE
+                binding.passwordInput.error = "Password is required"
+            } else binding.textInputLayout?.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
         }
     }
 
