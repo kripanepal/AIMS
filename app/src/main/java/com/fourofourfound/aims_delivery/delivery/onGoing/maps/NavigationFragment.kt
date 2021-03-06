@@ -101,15 +101,20 @@ class NavigationFragment : Fragment() {
             val coreRouter = CoreRouter()
             val routePlan = RoutePlan()
             val routeOptions = RouteOptions()
-            routeOptions.transportMode = RouteOptions.TransportMode.CAR
+            routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
+            //TODO need to change these parameters
             routeOptions.routeType = RouteOptions.Type.SHORTEST
+            routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
+                .setTruckLength(25.25f)
+                .setTruckHeight(2.6f).truckTrailersCount = 1
             routeOptions.routeCount = 1
             routePlan.routeOptions = routeOptions
             val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
             val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
             routePlan.addWaypoint(startPoint)
             routePlan.addWaypoint(destination)
-            coreRouter.calculateRoute(routePlan,
+            coreRouter.calculateRoute(
+                routePlan,
                 object : Router.Listener<List<RouteResult>, RoutingError> {
                     override fun onProgress(i: Int) {}
                     override fun onCalculateRouteFinished(
@@ -321,7 +326,9 @@ class NavigationFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MapEngine.getInstance().onResume()
-        NavigationManager.getInstance().resume()
+        if (::navigationManager.isInitialized) {
+            navigationManager.resume()
+        }
     }
 
     override fun onPause() {
