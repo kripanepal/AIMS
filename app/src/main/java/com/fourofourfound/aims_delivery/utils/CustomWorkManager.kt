@@ -11,10 +11,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+/**
+ * Custom work manager
+ * This class creates a work manager object to refresh trip list,
+ * send location coordinates on certain intervals.
+ * @property context  the current state of the application
+ * @constructor Create empty Custom work manager
+ */
 class CustomWorkManager(var context: Context) {
 
+    /**
+     * Application scope
+     * Coroutine scope that runs in the background
+     */
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
+    /**
+     * Send location and update trips
+     * This method runs in certain intervals to perform the
+     * work assigned in the background
+     */
     fun sendLocationAndUpdateTrips() {
         //Schedule a work in 15 minutes interval
         applicationScope.launch {
@@ -31,6 +47,11 @@ class CustomWorkManager(var context: Context) {
         }
     }
 
+    /**
+     * Send location onetime
+     * This method runs once to perform the
+     * work assigned in the background
+     */
     fun sendLocationOnetime() {
         //Runs a work one time for testing only
         applicationScope.launch {

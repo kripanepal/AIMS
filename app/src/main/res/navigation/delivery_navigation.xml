@@ -7,5 +7,11 @@
     <fragment
         android:id="@+id/ongoingDeliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment"
-        android:label="Current Delivery" />
+
+        android:label="OngoingDeliveryFragment" />
+    <fragment
+        android:id="@+id/navigationFragment"
+        android:name="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment"
+        android:label="NavigationFragment" />
+
 </navigation>

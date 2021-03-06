@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
+
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -10,33 +11,71 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
-import com.here.sdk.core.GeoCoordinates
-import com.here.sdk.mapview.MapScheme
-import com.here.sdk.mapview.MapView
+import com.here.android.mpa.common.MapEngine
+import com.here.android.mpa.mapping.Map
 import kotlinx.android.synthetic.main.activity_main.*
 
 
+/**
+ * Ongoing delivery fragment
+ *This fragment is responsible for displaying the data related to
+ * deliveries that are being delivered
+ * @constructor Create empty Ongoing delivery fragment
+ */
 class OngoingDeliveryFragment : Fragment() {
+    /**
+     * _binding
+     * The binding object that is used by this fragment
+     */
     private var _binding: FragmentDeliveryOngoingBinding? = null
+
+    /**
+     * binding
+     * The binding object that is used by this fragment which delegates to
+     * _binding to prevent memory leaks
+     */
     private val binding get() = _binding!!
+
+    /**
+     * Shared view model
+     * ViewModel that contains shared information about the user and the
+     * trip
+     */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var mapView: MapView? = null
-    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+    private var map: Map? = null
 
 
+    /**
+     * Shared pref this is used to store key value pair to the file system
+     */
+    private val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+
+    /**
+     * On create view
+     * @param inflater the inflator used to inflate the layout
+     * @param container the viewGroup where the layout is added
+     * @param savedInstanceState any saved data from configuration changes
+     * @return the view that is displayed dby this fragment
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.i("AAAAAAAA", "create view")
+
+        //return if no this is not an ongoing delivery
         if (sharedViewModel.selectedTrip.value == null) {
             showNoTripSelectedDialog()
             return view
         }
 
+        //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_delivery_ongoing,
@@ -44,36 +83,36 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
+        //viewModel used by this fragment
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
+        //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        //sets current trip to trip from the sharedViewModel
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
-        initializeMap(savedInstanceState)
+
         observeTripCompletion(viewModel)
+
+        binding.startNavigation.setOnClickListener {
+            findNavController().navigate(R.id.navigationFragment)
+        }
+
+
+
         return binding.root
     }
 
 
-    private fun initializeMap(savedInstanceState: Bundle?) {
-        // Get a MapView instance from the layout.
-        // Get a MapView instance from the layout.
-        mapView = binding.mapView
-        mapView!!.onCreate(savedInstanceState)
-
-        mapView!!.setOnReadyListener { // This will be called each time after this activity is resumed.
-            // It will not be called before the first map scene was loaded.
-            // Any code that requires map data may not work as expected beforehand.
-            Log.d("AAAAA", "HERE Rendering Engine attached.")
-        }
-
-        loadMapScene()
-    }
-
+    /**
+     * Observe trip completion
+     * observe the viewModel to know when the trip is completed
+     * @param viewModel the view Model where the information about the trip is present
+     */
     private fun observeTripCompletion(viewModel: OngoingDeliveryViewModel) {
         viewModel.tripCompleted.observe(viewLifecycleOwner) {
             if (it) {
@@ -84,44 +123,29 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
-
-
-    private fun loadMapScene() {
-        // Load a scene from the HERE SDK to render the map with a map scheme.
-        mapView!!.mapScene.loadScene(
-            MapScheme.NORMAL_DAY
-        ) { mapError ->
-            if (mapError == null) {
-                val distanceInMeters = (1000 * 10).toDouble()
-                mapView!!.camera.lookAt(
-                    GeoCoordinates(52.530932, 13.384915), distanceInMeters
-                )
-            } else {
-                Log.d("AAAAA", "Loading map failed: mapError: " + mapError.name)
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        MapEngine.getInstance().onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView?.onPause()
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        mapView?.onResume()
+        MapEngine.getInstance().onPause()
     }
 
 
     override fun onDestroy() {
+        // Log.i("AAAAAA", "destroy")
         super.onDestroy()
+        //save the ongoing trip info to sharedPreferences
         sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
             ?.apply()
-        mapView?.onDestroy()
     }
 
-
+    /**
+     * Show no trip selected dialog
+     *Returns an AlertDialog object to inform that no Ongoing Trip is present
+     */
     private fun showNoTripSelectedDialog() {
 
         val takeToHomeScreen =
@@ -138,5 +162,6 @@ class OngoingDeliveryFragment : Fragment() {
             false
         ).builder.show()
     }
+
 
 }

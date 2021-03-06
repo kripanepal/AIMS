@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+app/libs/HERE-sdk.aar
+app/libs/heresdk-explore-android-4.6.3.0.4520.aar
+
