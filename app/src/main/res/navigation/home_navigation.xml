@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/homePage"
         android:name="com.fourofourfound.aims_delivery.homePage.HomePage"
-        android:label="HomePage">
+        android:label="Home">
         <action
             android:id="@+id/action_homePage_to_loginFragment"
             app:destination="@id/loginFragment"

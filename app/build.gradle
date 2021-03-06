@@ -52,6 +52,7 @@ android {
         viewBinding  true
     }
 
+
     dokka {
         outputFormat = 'html'
         outputDirectory = "$buildDir/javadoc"
