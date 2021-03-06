@@ -8,10 +8,10 @@
         android:id="@+id/ongoingDeliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment"
 
-        android:label="OngoingDeliveryFragment" />
+        android:label="Current Trip" />
     <fragment
         android:id="@+id/navigationFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment"
-        android:label="NavigationFragment" />
+        android:label="Navigation" />
 
 </navigation>
