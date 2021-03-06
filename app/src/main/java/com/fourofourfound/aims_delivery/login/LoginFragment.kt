@@ -22,13 +22,46 @@ import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
-
+/**
+ * Login fragment
+ * This fragment is responsible for displaying the login screen, validate and
+ * authenticate the user and redirect the user to homescreen
+ *
+ * @constructor Create empty Login fragment
+ */
 class LoginFragment : Fragment() {
 
+    /**
+     * Shared view model
+     * ViewModel that contains shared information about the user and the
+     * trip
+     */
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+
+    /**
+     * _binding
+     * The binding object that is used by this fragment
+     */
     private var _binding: FragmentLoginBinding? = null
+
+    /**
+     * binding
+     * The binding object that is used by this fragment which delegates to
+     * _binding to prevent memory leaks
+     */
     private val binding get() = _binding!!
+
+    /**
+     * Loading animation
+     * Animations that are used to display when user is being authenticated
+     */
     private lateinit var loadingAnimation: AnimationDrawable
+
+    /**
+     * View model
+     *  the ViewModel that is used by the fragment to store the data
+     */
     private lateinit var viewModel: LoginViewModel
 
     override fun onCreateView(
@@ -72,8 +105,10 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    /*added done button in the keyboard.
-starts user authentication on click*/
+    /**
+     * done button in the keyboard.
+     * starts user authentication on click
+     */
     private fun loginOnDoneKey() {
         binding.passwordInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -84,6 +119,10 @@ starts user authentication on click*/
     }
 
 
+    /**
+     * Observe login fields
+     * observe login fields to display errors if the fields are empty
+     */
     private fun observeLoginFields() {
         viewModel.userFieldTouched.observe(viewLifecycleOwner) {
             if (it) binding.userIdInput.error = "User Id is required"
@@ -98,7 +137,11 @@ starts user authentication on click*/
         }
     }
 
-    //method to display the dialog with provider's number
+
+    /**
+     * Show dialog
+     *method to display the dialog with provider's number
+     */
     private fun showDialog() {
         val dialogView = LayoutInflater.from(context).inflate(
             R.layout.contact_my_provider_dialog, null
@@ -115,7 +158,11 @@ starts user authentication on click*/
         ).builder.setView(dialogView).show()
     }
 
-    //start the intent to call the provider
+    /**
+     * Start call
+     *Start an intent to start the call to a
+     * specific number
+     */
     private fun startCall() {
         val intent = Intent(Intent.ACTION_DIAL)
         val phoneNumber = "tel:" + getString(R.string.provider_number)
@@ -123,6 +170,10 @@ starts user authentication on click*/
         startActivity(intent)
     }
 
+    /**
+     * On destroy view
+     *assign _binding to null to prevent memory leaks
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

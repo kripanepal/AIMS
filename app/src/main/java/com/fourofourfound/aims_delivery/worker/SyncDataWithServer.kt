@@ -10,13 +10,22 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.getDatabase
-import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
+import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.checkPermission
-import com.fourofourfound.aims_delivery.utils.getPermissionsToBeChecked
+import com.fourofourfound.aims_delivery.utils.getLocationPermissionsToBeChecked
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Sync data with server
+ * This class is responsible for syncing data with server to
+ * update local database and inform the server about current location
+ * @constructor
+ *
+ * @param appContext current state of the application
+ * @param params parameters for a coroutine worker
+ */
 class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params), LocationListener {
 
@@ -29,12 +38,15 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     companion object {
         const val WORK_NAME = "RefreshDataWorker"
 
-        var permissionsToCheck = getPermissionsToBeChecked()
+        var permissionsToCheck = getLocationPermissionsToBeChecked()
     }
 
-
-    //will run untill doWork returns something
-
+    /**
+     * Do work
+     * This method tries to perform the assigned work and
+     * shows the appropriate notification if it fails
+     * @return Result of the work
+     */
     override suspend fun doWork(): Result {
         Log.i("WORKER", "Running")
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -42,7 +54,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 initializeLocationManager()
                 var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
-                    return sendLocationToServer()
+                    return sendLocationToServerAndUpdateTrips()
                 }
                 return Result.failure()
             } else {
@@ -57,7 +69,12 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
     }
 
-    private suspend fun Location.sendLocationToServer() = try {
+    /**
+     * Send location to server and update trips
+     * This method sends the location information to the server
+     * and gets updated trip from the server if any
+     */
+    private suspend fun Location.sendLocationToServerAndUpdateTrips() = try {
         Log.i("WORKER", "SENDING LOCATION")
         customLocation =
             CustomDatabaseLocation(latitude, longitude, time.toString())
@@ -72,6 +89,10 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         Result.failure()
     }
 
+    /**
+     * Initialize location manager
+     * This method initializes the location manager
+     */
     @SuppressLint("MissingPermission")
     private suspend fun initializeLocationManager() {
         withContext(Dispatchers.Main) {

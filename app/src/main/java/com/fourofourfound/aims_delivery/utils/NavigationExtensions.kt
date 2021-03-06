@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, The Android Open Source Project
+ * Copyright 2019, fourofour found
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
+ * Setup With Nav Controller
  * Manages the various graphs needed for a [BottomNavigationView].
  *
  * This sample is a workaround until the Navigation Component supports multiple back stacks.

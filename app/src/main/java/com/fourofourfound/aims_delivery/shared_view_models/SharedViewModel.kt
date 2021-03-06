@@ -7,6 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
 
+/**
+ * Shared View Model
+ * This view model stores the information about current user, connection status and
+ * currently selected trip. This View Model is used buy multiple fragments
+ *
+ * @constructor
+ *
+ * @param application the applicationContext which created this viewModel
+ */
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
     var userLoggedIn = MutableLiveData(false)
     var isLocationBroadcastReceiverInitialized: Boolean = false
