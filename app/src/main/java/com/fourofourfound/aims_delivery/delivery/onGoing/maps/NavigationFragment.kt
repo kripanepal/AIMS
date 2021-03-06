@@ -343,12 +343,14 @@ class NavigationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mapFragment.onResume()
+        MapEngine.getInstance().onResume()
+        NavigationManager.getInstance().resume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapFragment.onPause()
+        MapEngine.getInstance().onPause()
+
     }
 
 }

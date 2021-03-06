@@ -16,7 +16,6 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
-import com.here.android.mpa.common.MapEngine
 import com.here.android.mpa.mapping.Map
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -123,21 +122,9 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        MapEngine.getInstance().onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        MapEngine.getInstance().onPause()
-    }
-
 
     override fun onDestroy() {
-        // Log.i("AAAAAA", "destroy")
         super.onDestroy()
-        //save the ongoing trip info to sharedPreferences
         sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
             ?.apply()
     }
