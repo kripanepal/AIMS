@@ -30,7 +30,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
     /**
      * Fetch trip from network
-     *It makes a netwok call to fetch updated trip list from the user
+     * It makes a network call to fetch updated trip list from the user
      */
     fun fetchTripFromNetwork() {
         viewModelScope.launch {

@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.network.user
+package com.fourofourfound.aims_delivery.network
 
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
@@ -14,6 +14,10 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 //server url
+/**
+ * Base URL
+ * The URL of the server
+ */
 private const val BASE_URL = "https://aims-server.herokuapp.com"
 
 
@@ -31,6 +35,11 @@ var retrofit: Retrofit = Retrofit.Builder()
     .build()
 
 //interface to add the methods
+/**
+ * User service
+ * Interface to make network calls
+ * @constructor Create empty User service
+ */
 interface UserService {
     @POST("/signin")
     suspend fun validateUser(@Body loginInfo: UserLoginInfo): Boolean
@@ -44,7 +53,11 @@ interface UserService {
     suspend fun getAllTrips(): List<NetworkTripList>
 }
 
-//object to link interface and retrofit object
+/**
+ * Make network call
+ * Object to link interface and retrofit object
+ * @constructor Create empty Make network call
+ */
 object MakeNetworkCall {
     val retrofitService: UserService by lazy {
         retrofit.create(UserService::class.java)

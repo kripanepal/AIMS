@@ -9,7 +9,8 @@ import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
 
 /**
  * Shared View Model
- * This view model stores the list of the trips.
+ * This view model stores the information about current user, connection status and
+ * currently selected trip. This View Model is used buy multiple fragments
  *
  * @constructor
  *

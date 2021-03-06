@@ -25,8 +25,8 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
     var data = listOf<Trip>()
 
 
-    /*
-      create the view holder
+    /**
+    create the view holder
     viewGroup is  always the recycler view in this case
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +34,12 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
     }
 
-    //display an item on the view holder
+    /**
+     * This method displays an item on the view holder
+     *
+     * @param holder holds the trip in the list
+     * @param position the position of the trip in the list
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
         holder.bind(item, clickListener)
@@ -65,7 +70,6 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
             }
         }
 
-        //change view
         /**
          * Bind
          *This methods sets how each item is to be initialized ans displayed

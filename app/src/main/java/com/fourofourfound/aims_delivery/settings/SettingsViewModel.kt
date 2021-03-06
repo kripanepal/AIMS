@@ -13,8 +13,6 @@ import kotlinx.coroutines.launch
  * This view model is used by the SettingsFragment to store the settings information
  *
  * @constructor
- *
- *
  * @param application the applicationContext which created this viewModel
  */
 class SettingsViewModel(application: Application) :AndroidViewModel(application) {
@@ -24,6 +22,7 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
 
 
     /**
+     * Logout User
      * This method logs the user out of the application
      * upon clicking the logout button.
      */

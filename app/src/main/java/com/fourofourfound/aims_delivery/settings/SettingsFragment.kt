@@ -22,8 +22,7 @@ class SettingsFragment : Fragment() {
 
     /**
      * sharedViewModel
-     * ViewModel that contains shared information about the user and the
-     * trip
+     * ViewModel that contains shared information about the user and the trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -63,7 +62,7 @@ class SettingsFragment : Fragment() {
 
         //checks if the user is logged in
         binding.logoutBtn.setOnClickListener {
-            checkUserLoggedIn()
+            logoutUser()
         }
 
 
@@ -72,11 +71,11 @@ class SettingsFragment : Fragment() {
     }
 
     /**
-     * This method checks is the user is logged into
-     * the application.
+     * Logout user
+     * This methods logout the user and navigate to
+     * login screen.
      */
-
-    private fun checkUserLoggedIn() {
+    private fun logoutUser() {
         viewModel.logoutUser()
         sharedViewModel.userLoggedIn.value = false
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation

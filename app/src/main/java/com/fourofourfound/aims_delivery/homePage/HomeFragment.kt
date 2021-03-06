@@ -91,7 +91,7 @@ class HomePage : Fragment() {
 
     /**
      * Set Up Tool Bar
-     *This methods changes the visibilty of toolvbar and action bar to visible
+     *This methods changes the visibility of toolbar and action bar to visible
      */
     private fun setUpToolBar() {
         requireActivity().apply {
@@ -102,8 +102,7 @@ class HomePage : Fragment() {
 
     /**
      * Register broad cast receiver
-     * This method registers for a broadcast receiver to listen for internet connection changes
-     *
+     * This method registers for a broadcast receiver to listen for internet connection change.
      */
     private fun registerBroadCastReceiver() {
         if (!sharedViewModel.isLocationBroadcastReceiverInitialized) {
@@ -194,15 +193,17 @@ class HomePage : Fragment() {
     }
 
 
+    /**
+     * This method checks for all required permissions to access the location in background.
+     */
     override fun onStart() {
         super.onStart()
-        //checks for all required permissions to access the location in background
         BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
     }
 
     /**
      * Mark trip start
-     *Starts a worker to start sending location updates and  navigates the user to
+     * Starts a worker to start sending location updates and  navigates the user to
      * delivery page
      * @param tripToStart
      */
@@ -213,6 +214,8 @@ class HomePage : Fragment() {
             sendLocationAndUpdateTrips()
             sendLocationOnetime()
         }
+
+        //change the active tab to delivery tab
         requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
     }
 }

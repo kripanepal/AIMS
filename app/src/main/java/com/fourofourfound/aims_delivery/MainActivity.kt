@@ -17,7 +17,11 @@ import com.fourofourfound.aims_delivery.utils.setupWithNavController
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
+/**
+ * Main activity
+ * This is the main activity of the application
+ * @constructor Create empty Main activity
+ */
 class MainActivity : AppCompatActivity() {
 
     lateinit var bottomNavigationView: BottomNavigationView
@@ -42,18 +46,25 @@ class MainActivity : AppCompatActivity() {
 
         initializeToolBar()
 
-
     }
 
+    /**
+     * On restore instance state
+     * Now that BottomNavigationBar has restored its instance state
+     * and its selectedItemId, we can proceed with setting up the
+     * BottomNavigationBar with Navigation
+     * @param savedInstanceState the values that are saved in the bundle
+     */
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with setting up the
-        // BottomNavigationBar with Navigation
+
         setupBottomNavigationBar()
     }
 
     /**
+     * Setup bottom navigation bar
+     * This method sets up navigation bar with top level
+     * destination
      * Called on first creation and when restoring state.
      */
     private fun setupBottomNavigationBar() {
@@ -85,6 +96,11 @@ class MainActivity : AppCompatActivity() {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
+    /**
+     * Change internet connection text
+     * This method displays the no internet connection text
+     * if there is no internet.
+     */
     private fun changeInternetConnectionText() {
         noInternetText = findViewById(R.id.no_internet)
         sharedViewModel.internetConnection
@@ -98,12 +114,22 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     * Initialize tool bar
+     * This method initializes the custom toolbar
+     */
     private fun initializeToolBar() {
-        //Add a toolbar
         val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
         setSupportActionBar(toolbar)
     }
 
+    /**
+     * On request permissions result
+     * TODO This might be replaced with Foreground service
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -114,13 +140,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * On destroy
+     * This methods stops the receiving connection broadcast when
+     * application close
+     */
     override fun onDestroy() {
         super.onDestroy()
-        if(sharedViewModel.isLocationBroadcastReceiverInitialized) {
+        if (sharedViewModel.isLocationBroadcastReceiverInitialized) {
             try {
                 this.unregisterReceiver(NetworkChangedBroadCastReceiver())
+            } catch (e: Exception) {
             }
-            catch(e:Exception){}
         }
     }
 

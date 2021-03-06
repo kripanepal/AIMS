@@ -10,16 +10,27 @@ import android.provider.Settings
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.fourofourfound.aims_delivery.MainActivity
 
-
+/**
+ * Background location permission util
+ * This class is responsible for checking and managing background location
+ * @property context current state of the application
+ * @constructor Create empty Background location permission util
+ */
 class BackgroundLocationPermissionUtil(var context: Context) {
 
     lateinit var permissionMissingDialog: AlertDialog
-    private var permissionsToCheck = getPermissionsToBeChecked()
+    private var permissionsToCheck = getLocationPermissionsToBeChecked()
 
     init {
         showLocationPermissionMissingDialog()
     }
 
+    /**
+     * Take to Permission Screen Intent
+     * This method takes the user to the permission settings screen
+     *
+     * @return permission setting intent
+     */
     private fun takeToPermissionScreenIntent(): Intent {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -28,6 +39,11 @@ class BackgroundLocationPermissionUtil(var context: Context) {
         return (intent)
     }
 
+    /**
+     * On permission selected
+     * This method is called everytime the permission for the
+     * application is changed
+     */
     fun onPermissionSelected() {
         if (!permissionMissingDialog.isShowing) {
             if (!checkPermission(permissionsToCheck, context as MainActivity)
@@ -38,6 +54,12 @@ class BackgroundLocationPermissionUtil(var context: Context) {
         }
     }
 
+    /**
+     * Check Permission On Start
+     * This method shows the permission missing dialog on the startup
+     * if the permission is not granted.
+     *
+     */
     fun checkPermissionsOnStart() {
         val tempPermissionList = permissionsToCheck.toMutableList()
         if (!checkPermission(permissionsToCheck, context as MainActivity)) {
@@ -50,6 +72,10 @@ class BackgroundLocationPermissionUtil(var context: Context) {
 
     }
 
+    /**
+     * Show Location Permission Missing Dialog
+     * This method creates a location permission missing dialog box.
+     */
     private fun showLocationPermissionMissingDialog() {
         permissionMissingDialog = CustomDialogBuilder(
             context,

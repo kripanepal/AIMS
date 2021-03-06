@@ -103,7 +103,7 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * added done button in the keyboard.
+     * done button in the keyboard.
      * starts user authentication on click
      */
     private fun loginOnDoneKey() {

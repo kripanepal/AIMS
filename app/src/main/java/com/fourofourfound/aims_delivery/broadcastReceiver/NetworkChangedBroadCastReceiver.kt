@@ -7,7 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.getDatabase
-import com.fourofourfound.aims_delivery.network.user.MakeNetworkCall
+import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
