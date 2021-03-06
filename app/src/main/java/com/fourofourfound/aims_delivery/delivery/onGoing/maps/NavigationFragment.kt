@@ -149,6 +149,7 @@ class NavigationFragment : Fragment() {
         map.addMapObject(mapRoute)
         geoBoundingBox = givenRoute.boundingBox!!
         map.zoomTo(geoBoundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_TILT)
+        map.mapScheme = Map.Scheme.TRUCKNAV_DAY
         startNavigation()
     }
 
