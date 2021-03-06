@@ -73,12 +73,14 @@ class NavigationFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun initializeMap() {
+        binding.progressBarContainer.visibility = View.VISIBLE
         mapFragment = childFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment
         mapFragment.init { error ->
             if (error == OnEngineInitListener.Error.NONE) {
                 if (route !== null) {
                     mapFragment.onResume()
                     navigationManager.resume()
+                    changeViewsVisibility()
                 } else {
                     map = mapFragment.map!!
                     PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
@@ -118,12 +120,11 @@ class NavigationFragment : Fragment() {
 
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
-        binding.progressBarContainer.visibility = View.VISIBLE
+
         coreRouter.calculateRoute(
             routePlan,
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {
-                    binding.routeProgressBar.isIndeterminate = true
                 }
 
                 override fun onCalculateRouteFinished(
@@ -133,8 +134,6 @@ class NavigationFragment : Fragment() {
 
                     if (routingError == RoutingError.NONE) {
                         if (routeResults!![0].route != null) {
-
-
                             route = routeResults[0].route
                             val mapRoute = MapRoute(routeResults[0].route)
 
@@ -208,11 +207,19 @@ class NavigationFragment : Fragment() {
         } else {
             mapFragment.onResume()
         }
+        changeViewsVisibility()
+        addListeners()
+    }
+
+    /**
+     * Change views visibility
+     *This method brings views to screen which are only required during navigation
+     */
+    private fun changeViewsVisibility() {
         binding.speedInfoContainer.visibility = View.VISIBLE
         binding.destinationReached.visibility = View.VISIBLE
         binding.mapRecenterBtn.visibility = View.VISIBLE
         binding.progressBarContainer.visibility = View.GONE
-        addListeners()
     }
 
     private fun addListeners() {
