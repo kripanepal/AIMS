@@ -73,6 +73,7 @@ class LoginFragment : Fragment() {
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
+        viewModel.loading.observe(viewLifecycleOwner) { if (it) hideSoftKeyboard(requireActivity()) }
         return binding.root
     }
 
