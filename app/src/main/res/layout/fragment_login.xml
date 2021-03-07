@@ -14,6 +14,7 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/loginPageMainView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
@@ -145,19 +146,21 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <ImageView
-                    android:id="@+id/is_loading"
+                <com.github.ybq.android.spinkit.SpinKitView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/spin_kit"
+                    style="@style/SpinKitView.Large.Circle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="56dp"
-                    android:contentDescription="@string/loading_animation_content_description"
-                    android:text="Hello World!"
-                    android:visibility="@{viewModel.loading?View.VISIBLE:View.GONE}"
+                    app:SpinKit_Color="@color/Aims_Orange"
+
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
