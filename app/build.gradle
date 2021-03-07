@@ -158,17 +158,11 @@ dependencies {
     //for location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
-//loading_animation
-
-    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude : ['*mock*.jar'])
-
-    //loading animation
-    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
-
     implementation 'org.locationtech.jts:jts-core:1.15.0'
     implementation 'com.google.code.gson:gson:2.8.0'
 
-
+    //loading animation
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
 
 }
