@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -59,8 +60,11 @@ class NavigationFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
         if (sharedViewModel.selectedTrip.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
+
             return binding.root
         }
+
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -172,6 +176,7 @@ class NavigationFragment : Fragment() {
     }
 
     private fun startNavigation() {
+        changeNextManeuverTexts()
         changeViewsVisibility()
         navigationManager.setMap(map)
         mapFragment.positionIndicator?.isVisible = true
@@ -340,17 +345,21 @@ class NavigationFragment : Fragment() {
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
-                navigationManager.nextManeuver?.icon?.apply {
-                    binding.nextTurn.text =
-                        if (this == null || this == Maneuver.Icon.END) "Keep Straight" else this.toString()
-                }
-
-                navigationManager.afterNextManeuver?.roadName.apply {
-                    if (this != null) binding.nextRoad.text = this
-                }
+                changeNextManeuverTexts()
 
             }
         }
+
+    private fun changeNextManeuverTexts() {
+        navigationManager.nextManeuver?.icon?.apply {
+            viewModel.nextManeuverDirection.value =
+                if (this == null || this == Maneuver.Icon.END) "Keep Straight" else this.toString()
+        }
+
+        navigationManager.afterNextManeuver?.roadName.apply {
+            if (this != null) viewModel.nextManeuverRoadName.value = this
+        }
+    }
 
     override fun onResume() {
         super.onResume()

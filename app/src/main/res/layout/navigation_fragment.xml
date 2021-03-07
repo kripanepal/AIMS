@@ -35,6 +35,7 @@
 
             <TextView
                 android:id="@+id/nextTurn"
+                android:text="@{viewModel.nextManeuverDirection}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -51,6 +52,7 @@
 
             <TextView
                 android:id="@+id/nextRoad"
+                android:text="@{viewModel.nextManeuverRoadName}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/nextTurn"
