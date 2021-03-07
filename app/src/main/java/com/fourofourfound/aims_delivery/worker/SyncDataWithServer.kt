@@ -1,12 +1,23 @@
 package com.fourofourfound.aims_delivery.worker
 
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
+import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.getDatabase
@@ -14,8 +25,10 @@ import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aims_delivery.utils.getLocationPermissionsToBeChecked
+import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
 
 /**
  * Sync data with server
@@ -49,6 +62,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      */
     override suspend fun doWork(): Result {
         Log.i("WORKER", "Running")
+        setForeground(startForeground())
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (checkPermission(permissionsToCheck, applicationContext)) {
                 initializeLocationManager()
@@ -110,5 +124,39 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
 
     }
 
+    private fun startForeground(): ForegroundInfo {
+        val channelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel("my_service", "My Background Service")
+            } else ""
+
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
+        val notification = notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("Syncing with server")
+            .setPriority(PRIORITY_DEFAULT)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build()
+        return ForegroundInfo(101, notification)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String {
+        val chan = NotificationChannel(
+            channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE
+        )
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service =
+            applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
+    }
+
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+
+    }
 
 }
