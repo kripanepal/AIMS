@@ -283,11 +283,8 @@ class NavigationFragment : Fragment() {
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
                 //meter to miles
-
-                var formatted = String.format(
-                    getString(R.string.remainingDistanceToNextTurn),
-                    navigationManager.nextManeuverDistance * 0.000621371
-                )
+                var formatted =
+                    String.format("%.2f", navigationManager.nextManeuverDistance * 0.000621371)
                 binding.remainingDistance.text = formatted
 
                 var currentSpeedLimit = 0.0
