@@ -15,7 +15,6 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
-import com.here.android.mpa.mapping.Map
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -45,8 +44,6 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var map: Map? = null
-
 
     /**
      * Shared pref this is used to store key value pair to the file system
@@ -92,14 +89,13 @@ class OngoingDeliveryFragment : Fragment() {
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
+        if (sharedViewModel.activeRoute !== null) binding.startNavigation.text =
+            "Continue Navigation"
 
         observeTripCompletion(viewModel)
-
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
-
-
 
         return binding.root
     }

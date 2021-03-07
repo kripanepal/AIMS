@@ -30,6 +30,7 @@ import com.here.android.mpa.routing.*
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
 
+
 class NavigationFragment : Fragment() {
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: NavigationFragmentBinding
@@ -112,6 +113,7 @@ class NavigationFragment : Fragment() {
                 .setTruckLength(25.25f)
                 .setTruckHeight(2.6f).truckTrailersCount = 1
             routeOptions.routeCount = 1
+
             routePlan.routeOptions = routeOptions
             val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
             val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
@@ -214,9 +216,9 @@ class NavigationFragment : Fragment() {
         MapDataPrefetcher.getInstance().addListener(prefetchListener)
         PositioningManager.getInstance().addListener(WeakReference(positionLister))
         navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
+
         setUpVoiceNavigation()
     }
-
 
     private fun removeListeners() {
         navigationManager.apply {
@@ -280,6 +282,7 @@ class NavigationFragment : Fragment() {
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
 
+
                 var currentSpeedLimit = 0.0
                 val currentSpeed: Double = positionCoordinates.speed
                 positionCoordinates.roadElement?.apply {
@@ -332,9 +335,10 @@ class NavigationFragment : Fragment() {
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
-                navigationManager.nextManeuver
+
             }
         }
+
 
     override fun onResume() {
         super.onResume()

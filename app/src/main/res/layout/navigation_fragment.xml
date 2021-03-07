@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="N/A"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@id/currentSpeedLimit" />
@@ -53,9 +54,11 @@
             <TextView
                 android:id="@+id/currentSpeedLimit"
                 android:layout_width="0dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="N/A"
+
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -99,12 +102,11 @@
             android:id="@+id/destinationReached"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="10dp"
             android:text="Reached"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/mapFragmentContainer"
-            app:layout_constraintEnd_toStartOf="@+id/mapRecenterBtn"
-            app:layout_constraintHorizontal_bias="0.714"
+            app:layout_constraintBottom_toTopOf="@id/speedInfoContainer"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
