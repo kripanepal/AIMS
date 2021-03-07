@@ -206,6 +206,7 @@ class NavigationFragment : Fragment() {
         binding.destinationReached.visibility = View.VISIBLE
         binding.mapRecenterBtn.visibility = View.VISIBLE
         binding.deliveryProgress.visibility = View.VISIBLE
+        binding.nextInfoContainer.visibility = View.VISIBLE
         binding.progressBarContainer.visibility = View.GONE
     }
 
@@ -281,7 +282,13 @@ class NavigationFragment : Fragment() {
 
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
+                //meter to miles
 
+                var formatted = String.format(
+                    getString(R.string.remainingDistanceToNextTurn),
+                    navigationManager.nextManeuverDistance * 0.000621371
+                )
+                binding.remainingDistance.text = formatted
 
                 var currentSpeedLimit = 0.0
                 val currentSpeed: Double = positionCoordinates.speed
@@ -329,16 +336,24 @@ class NavigationFragment : Fragment() {
             binding.speedInfoContainer.setBackgroundResource(R.color.Red)
         } else {
             binding.speedInfoContainer.setBackgroundResource(R.color.Green)
+            Maneuver.Action.END
         }
     }
 
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
+                navigationManager.nextManeuver?.icon?.apply {
+                    binding.nextTurn.text =
+                        if (this == null || this == Maneuver.Icon.END) "Keep Straight" else this.toString()
+                }
+
+                navigationManager.afterNextManeuver?.roadName.apply {
+                    if (this != null) binding.nextRoad.text = this
+                }
 
             }
         }
-
 
     override fun onResume() {
         super.onResume()
