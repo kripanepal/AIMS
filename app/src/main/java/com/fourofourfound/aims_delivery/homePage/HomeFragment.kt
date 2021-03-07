@@ -208,7 +208,7 @@ class HomePage : Fragment() {
      * @param tripToStart
      */
     private fun markTripStart(tripToStart: Trip) {
-        sharedViewModel.setSelectedTrip(tripToStart)
+        sharedViewModel.selectedTrip.value = (tripToStart)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
             sendLocationAndUpdateTrips()

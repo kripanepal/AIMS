@@ -56,6 +56,10 @@ class NavigationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
+        if (sharedViewModel.selectedTrip.value === null) {
+            findNavController().navigate(R.id.ongoingDeliveryFragment)
+            return binding.root
+        }
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

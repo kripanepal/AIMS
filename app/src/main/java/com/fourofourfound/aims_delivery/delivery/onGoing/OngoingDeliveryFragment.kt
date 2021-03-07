@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +65,6 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i("AAAAAAAA", "create view")
 
         //return if no this is not an ongoing delivery
         if (sharedViewModel.selectedTrip.value == null) {
@@ -116,7 +114,7 @@ class OngoingDeliveryFragment : Fragment() {
         viewModel.tripCompleted.observe(viewLifecycleOwner) {
             if (it) {
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-                sharedViewModel.setSelectedTrip(null)
+                sharedViewModel.selectedTrip.value = null
                 viewModel.doneNavigatingToHomePage()
             }
         }
