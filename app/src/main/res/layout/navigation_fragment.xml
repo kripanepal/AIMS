@@ -16,16 +16,29 @@
         android:layout_height="match_parent"
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment">
 
+
+        <ProgressBar
+            android:id="@+id/deliveryProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/speedInfoContainer" />
+
+
         <LinearLayout
             android:id="@+id/speedInfoContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/deliveryProgress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapFragmentContainer">
+            app:layout_constraintTop_toBottomOf="@id/mapFragmentContainer">
 
             <TextView
                 android:id="@+id/currentSpeed"
@@ -33,10 +46,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="N/A"
-                app:layout_constraintBottom_toTopOf="@+id/mapFragmentContainer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/currentSpeedLimit" />
+                app:layout_constraintStart_toEndOf="@id/currentSpeedLimit" />
 
             <TextView
                 android:id="@+id/currentSpeedLimit"
@@ -44,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="N/A"
-                app:layout_constraintEnd_toStartOf="@id/currentSpeed"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -79,8 +90,8 @@
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="40dp"
             android:background="#214191"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/map_icon" />
 

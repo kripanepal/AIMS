@@ -203,6 +203,7 @@ class NavigationFragment : Fragment() {
         binding.speedInfoContainer.visibility = View.VISIBLE
         binding.destinationReached.visibility = View.VISIBLE
         binding.mapRecenterBtn.visibility = View.VISIBLE
+        binding.deliveryProgress.visibility = View.VISIBLE
         binding.progressBarContainer.visibility = View.GONE
     }
 
@@ -273,12 +274,20 @@ class NavigationFragment : Fragment() {
             }
 
             if (positionCoordinates != null && positionCoordinates.isValid && positionCoordinates is MatchedGeoPosition) {
+                var completedDistance = navigationManager.elapsedDistance.toInt()
+                val remainingDistance = navigationManager.destinationDistance.toDouble()
+
+                binding.deliveryProgress.progress =
+                    (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
+
                 var currentSpeedLimit = 0.0
                 val currentSpeed: Double = positionCoordinates.speed
                 positionCoordinates.roadElement?.apply {
                     currentSpeedLimit = positionCoordinates.roadElement!!.speedLimit.toDouble()
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
+
+
             }
         }
 
