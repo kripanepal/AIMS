@@ -49,7 +49,7 @@ class BackgroundLocationPermissionUtil(var context: Context) {
             if (!checkPermission(permissionsToCheck, context as MainActivity)
             ) {
                 showLocationPermissionMissingDialog()
-                permissionMissingDialog.show()
+                //permissionMissingDialog.show()
             }
         }
     }

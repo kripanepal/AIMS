@@ -1,17 +1,19 @@
 package com.fourofourfound.aims_delivery.worker
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -47,11 +49,14 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     val database = getDatabase(applicationContext)
     private val repository = TripListRepository(database)
     lateinit var customLocation: CustomDatabaseLocation
+    lateinit var notificationBuilder: NotificationCompat.Builder
+    lateinit var notification: Notification
 
     companion object {
         const val WORK_NAME = "RefreshDataWorker"
-
         var permissionsToCheck = getLocationPermissionsToBeChecked()
+        const val NOTIFICATION_ID = 101
+
     }
 
     /**
@@ -62,7 +67,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      */
     override suspend fun doWork(): Result {
         Log.i("WORKER", "Running")
-        setForeground(startForeground())
+        setForeground(startForeground("Sending", null))
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (checkPermission(permissionsToCheck, applicationContext)) {
                 initializeLocationManager()
@@ -72,14 +77,18 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 }
                 return Result.failure()
             } else {
-                ////TODO Permission not provided. Send notification to the user to provide permission for the app.
                 Log.i("WORKER", "Permission not provided")
-                return Result.retry()
+                val resultIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
+                setForeground(startForeground("Permission not provided.", resultIntent))
+                return Result.failure()
             }
         } else {
-            //TODO GPS not enabled. Send notification to the user to enable to location service on the device.
             Log.i("WORKER", "GPS not enabled")
-            return Result.retry()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            intent.putExtra("enabled", true)
+            setForeground(startForeground("GPS not enabled", intent))
+            return Result.failure()
         }
     }
 
@@ -124,20 +133,42 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
 
     }
 
-    private fun startForeground(): ForegroundInfo {
+    private fun startForeground(title: String, resultIntent: Intent?): ForegroundInfo {
         val channelId =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel("my_service", "My Background Service")
             } else ""
 
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
-        val notification = notificationBuilder.setOngoing(true)
+        var resultPendingIntent: PendingIntent? = null
+        resultIntent?.apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (resultIntent.action == ACTION_APPLICATION_DETAILS_SETTINGS) {
+                val uri: Uri = Uri.fromParts("package", applicationContext.packageName, null)
+                data = uri
+            }
+
+            resultPendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                0,
+                resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+        notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
+
+        var toBuildNotification = notificationBuilder.setOngoing(true)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Syncing with server")
+            .setContentTitle(title)
             .setPriority(PRIORITY_DEFAULT)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .build()
-        return ForegroundInfo(101, notification)
+            .setAutoCancel(false)
+            .setContentIntent(resultPendingIntent)
+
+        resultPendingIntent?.apply {
+            toBuildNotification.setContentIntent(resultPendingIntent)
+        }
+        notification = toBuildNotification.build()
+
+        return ForegroundInfo(NOTIFICATION_ID, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
