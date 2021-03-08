@@ -5,7 +5,7 @@ import android.app.*
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.graphics.Color
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -43,7 +43,6 @@ import kotlinx.coroutines.withContext
  */
 class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params), LocationListener {
-
     var locationManager: LocationManager =
         appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     val database = getDatabase(applicationContext)
@@ -51,11 +50,39 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     lateinit var customLocation: CustomDatabaseLocation
     lateinit var notificationBuilder: NotificationCompat.Builder
     lateinit var notification: Notification
+    private val notificationManager =
+        appContext.getSystemService(NOTIFICATION_SERVICE) as
+                NotificationManager
 
     companion object {
         const val WORK_NAME = "RefreshDataWorker"
         var permissionsToCheck = getLocationPermissionsToBeChecked()
         const val NOTIFICATION_ID = 101
+        const val errorChannelId = "errorSendingData"
+        const val errorChannelName = "Missing Requirements"
+        const val errorChannelDescription =
+            "Notification that is shown whenever there any missing permissions oin the background"
+        const val successChannelId = "successSendingData"
+        const val successChannelName = "Data synced with server"
+        const val successChannelDescription =
+            "Notification that is shown whenever app is synced with the server"
+
+        const val successTitle = "Syncing with server"
+        const val unKnownErrorTitle = "Cannot sync to server"
+        const val unKnownErrorContentText = "Tap to open the app"
+        const val unKnownErrorBigText =
+            "Cannot send data to the server. Open the app to do it manually."
+
+        const val locationErrorTitle = "Location not found"
+        const val locationErrorContentText = "Tap to provide location permissions"
+        const val locationErrorBigText =
+            "You have disabled location permissions to this app. Please enable it to send your" +
+                    "information to the dispatcher"
+
+        const val gpsErrorTitle = "GPS not enabled"
+        const val gpsErrorContentText = "Tap here to enable GPS to send your data"
+        const val gpsErrorBigText =
+            "You have disabled your GPS. Please turn it back on to send you information to the server"
 
     }
 
@@ -67,27 +94,58 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      */
     override suspend fun doWork(): Result {
         Log.i("WORKER", "Running")
-        setForeground(startForeground("Sending", null))
+        buildNotification(successTitle, null, null, null, successChannelId)
+        setForeground(
+            ForegroundInfo(
+                NOTIFICATION_ID,
+                notification,
+                FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        )
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (checkPermission(permissionsToCheck, applicationContext)) {
+
                 initializeLocationManager()
                 var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
                     return sendLocationToServerAndUpdateTrips()
                 }
+
+                buildNotification(
+                    unKnownErrorTitle,
+                    unKnownErrorContentText,
+                    unKnownErrorBigText,
+                    null,
+                    errorChannelId
+                )
+
+                notificationManager.notify(NOTIFICATION_ID, notification)
                 return Result.failure()
             } else {
-                Log.i("WORKER", "Permission not provided")
+                Log.i("WORKER", "Missing permissions")
                 val resultIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
-                setForeground(startForeground("Permission not provided.", resultIntent))
+                buildNotification(
+                    locationErrorTitle,
+                    locationErrorContentText,
+                    locationErrorBigText,
+                    resultIntent,
+                    errorChannelId
+                )
+
+                notificationManager.notify(NOTIFICATION_ID, notification)
                 return Result.failure()
             }
         } else {
             Log.i("WORKER", "GPS not enabled")
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            intent.putExtra("enabled", true)
-            setForeground(startForeground("GPS not enabled", intent))
+            buildNotification(
+                gpsErrorTitle,
+                gpsErrorContentText,
+                gpsErrorBigText,
+                intent,
+                errorChannelId
+            )
+            notificationManager.notify(NOTIFICATION_ID, notification)
             return Result.failure()
         }
     }
@@ -128,16 +186,15 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
     }
 
+    private fun buildNotification(
+        title: String,
+        contentText: String?,
+        bigText: String?, resultIntent: Intent?, channelId: String
+    ) {
 
-    override fun onLocationChanged(location: Location) {
-
-    }
-
-    private fun startForeground(title: String, resultIntent: Intent?): ForegroundInfo {
-        val channelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel("my_service", "My Background Service")
-            } else ""
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(channelId)
+        }
 
         var resultPendingIntent: PendingIntent? = null
         resultIntent?.apply {
@@ -155,39 +212,43 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
         notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
 
-        var toBuildNotification = notificationBuilder.setOngoing(true)
+        notificationBuilder
+            .setOngoing(true)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setPriority(PRIORITY_DEFAULT)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .setAutoCancel(false)
-            .setContentIntent(resultPendingIntent)
+            .setAutoCancel(true)
+            .setContentText(contentText)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(bigText)
+            )
 
         resultPendingIntent?.apply {
-            toBuildNotification.setContentIntent(resultPendingIntent)
+            notificationBuilder.setContentIntent(resultPendingIntent)
         }
-        notification = toBuildNotification.build()
-
-        return ForegroundInfo(NOTIFICATION_ID, notification)
+        notification = notificationBuilder.build()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(channelId: String, channelName: String): String {
-        val chan = NotificationChannel(
-            channelId,
-            channelName, NotificationManager.IMPORTANCE_NONE
-        )
-        chan.lightColor = Color.BLUE
-        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        val service =
-            applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(chan)
-        return channelId
+    private fun createNotificationChannel(id: String) {
+        var name = successChannelName
+        var description = successChannelDescription
+        var importance = NotificationManager.IMPORTANCE_DEFAULT
+        if (id === errorChannelId) {
+            name = errorChannelName
+            description = errorChannelDescription
+            importance = NotificationManager.IMPORTANCE_HIGH
+        }
+
+
+        val mChannel = NotificationChannel(id, name, importance)
+        mChannel.description = description
+        notificationManager.createNotificationChannel(mChannel)
     }
 
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-
-    }
+    override fun onLocationChanged(location: Location) {}
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
 }
