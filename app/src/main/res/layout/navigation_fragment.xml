@@ -22,7 +22,6 @@
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/mapFragmentContainer"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +32,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/aims_logo" />
+                app:imageResource="@{viewModel.nextManeuverArrow}" />
 
             <TextView
                 android:id="@+id/nextTurn"
@@ -50,7 +49,8 @@
                 android:layout_below="@+id/nextRoad"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="0dp" />
+                android:layout_marginEnd="0dp"
+                android:text="@{viewModel.nextManeuverRoadName}" />
 
             <TextView
                 android:id="@+id/nextRoad"
@@ -138,6 +138,7 @@
             android:layout_height="43dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="40dp"
+            android:background="#214191"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
