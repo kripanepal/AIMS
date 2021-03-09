@@ -328,9 +328,8 @@ class NavigationFragment : Fragment() {
     private fun updateSpeedTexts(currentSpeed: Double, currentSpeedLimit: Double) {
         val currentSpeedLimitText: String = if (currentSpeedLimit > 0) {
             meterPerSecToMilesPerHour(currentSpeedLimit).toString()
-        } else {
-            "N/A"
-        }
+        } else "N/A"
+
         binding.currentSpeedLimit.text = currentSpeedLimitText
         binding.currentSpeed.text = meterPerSecToMilesPerHour(currentSpeed).toString()
 
@@ -347,9 +346,8 @@ class NavigationFragment : Fragment() {
             override fun onNewInstructionEvent() {
                 changeNextManeuverTexts()
                 Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
-
-                binding.imageView2.setImageResource(routeNameToImageMapper(navigationManager.nextManeuver?.icon))
-
+                viewModel.nextManeuverArrow.value =
+                    routeNameToImageMapper(navigationManager.nextManeuver?.icon)
             }
         }
 

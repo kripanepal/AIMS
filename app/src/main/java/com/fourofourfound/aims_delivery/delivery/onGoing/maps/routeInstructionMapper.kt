@@ -30,6 +30,7 @@ fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int {
         Maneuver.Icon.ENTER_HIGHWAY_RIGHT_LANE -> R.drawable.enter_highway_right_lane
         Maneuver.Icon.ENTER_HIGHWAY_LEFT_LANE -> R.drawable.enter_highway_left_lane
         Maneuver.Icon.LEAVE_HIGHWAY_LEFT_LANE -> R.drawable.leave_highway_left_lane
+        Maneuver.Icon.LEAVE_HIGHWAY_RIGHT_LANE -> R.drawable.leave_highway_right_lane
         Maneuver.Icon.HIGHWAY_KEEP_RIGHT -> R.drawable.leave_highway_right_lane
 
         Maneuver.Icon.END -> R.drawable.end
