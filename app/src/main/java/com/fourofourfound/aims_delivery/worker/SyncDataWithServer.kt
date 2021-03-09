@@ -95,16 +95,16 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     override suspend fun doWork(): Result {
         Log.i("WORKER", "Running")
         buildNotification(successTitle, null, null, null, successChannelId)
-        setForeground(
-            ForegroundInfo(
-                NOTIFICATION_ID,
-                notification,
-                FOREGROUND_SERVICE_TYPE_LOCATION
-            )
-        )
+
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (checkPermission(permissionsToCheck, applicationContext)) {
-
+                setForeground(
+                    ForegroundInfo(
+                        NOTIFICATION_ID,
+                        notification,
+                        FOREGROUND_SERVICE_TYPE_LOCATION
+                    )
+                )
                 initializeLocationManager()
                 var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
@@ -158,7 +158,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     private suspend fun Location.sendLocationToServerAndUpdateTrips() = try {
         Log.i("WORKER", "SENDING LOCATION")
         customLocation =
-            CustomDatabaseLocation(latitude, longitude, time.toString())
+            CustomDatabaseLocation(latitude, longitude, "time")
         repository.refreshTrips()
         MakeNetworkCall.retrofitService.sendLocation(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)

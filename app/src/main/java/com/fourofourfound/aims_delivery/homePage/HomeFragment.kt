@@ -212,7 +212,7 @@ class HomePage : Fragment() {
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
             sendLocationAndUpdateTrips()
-            sendLocationOnetime()
+//            sendLocationOnetime()
         }
 
         //change the active tab to delivery tab
