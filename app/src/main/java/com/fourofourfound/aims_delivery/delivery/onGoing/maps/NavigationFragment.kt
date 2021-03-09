@@ -298,8 +298,6 @@ class NavigationFragment : Fragment() {
                     currentSpeedLimit = positionCoordinates.roadElement!!.speedLimit.toDouble()
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
-
-
             }
         }
 
@@ -346,9 +344,11 @@ class NavigationFragment : Fragment() {
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
                 changeNextManeuverTexts()
-                Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
-
-                binding.imageView2.setImageResource(routeNameToImageMapper(navigationManager.nextManeuver?.icon))
+                routeNameToImageMapper(navigationManager.nextManeuver?.icon)?.let {
+                    binding.imageView2.setImageResource(
+                        it
+                    )
+                }
 
             }
         }
@@ -356,11 +356,16 @@ class NavigationFragment : Fragment() {
     private fun changeNextManeuverTexts() {
         navigationManager.nextManeuver?.icon?.apply {
             viewModel.nextManeuverDirection.value =
-                if (this == null || this == Maneuver.Icon.END) "Keep Straight" else this.toString()
+                if (this == null) "Keep Straight" else routeNameToDirectionTextMapper(
+                    navigationManager.nextManeuver?.icon
+                )
         }
 
         navigationManager.afterNextManeuver?.roadName.apply {
             if (this != null) viewModel.nextManeuverRoadName.value = this
+            else {
+                viewModel.nextManeuverRoadName.value = "UNAVAILABLE"
+            }
         }
     }
 
