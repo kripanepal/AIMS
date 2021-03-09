@@ -362,7 +362,7 @@ class NavigationFragment : Fragment() {
         navigationManager.afterNextManeuver?.roadName.apply {
             if (this != null) viewModel.nextManeuverRoadName.value = this
             else {
-                viewModel.nextManeuverRoadName.value = "UNAVAILABLE"
+                viewModel.nextManeuverRoadName.value = "Destination Ahead"
             }
         }
     }
