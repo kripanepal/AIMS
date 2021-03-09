@@ -346,6 +346,9 @@ class NavigationFragment : Fragment() {
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
                 changeNextManeuverTexts()
+                Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
+
+                binding.imageView2.setImageResource(routeNameToImageMapper(navigationManager.nextManeuver?.icon))
 
             }
         }
