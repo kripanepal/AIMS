@@ -211,8 +211,8 @@ class HomePage : Fragment() {
         sharedViewModel.selectedTrip.value = (tripToStart)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
-            sendLocationAndUpdateTrips()
-//            sendLocationOnetime()
+            //sendLocationAndUpdateTrips()
+            sendLocationOnetime()
         }
 
         //change the active tab to delivery tab

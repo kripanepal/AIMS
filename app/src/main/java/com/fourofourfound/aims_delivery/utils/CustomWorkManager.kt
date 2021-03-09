@@ -56,7 +56,7 @@ class CustomWorkManager(var context: Context) {
         //Runs a work one time for testing only
         applicationScope.launch {
             var repeatingRequest = OneTimeWorkRequestBuilder<SyncDataWithServer>()
-                .setInitialDelay(5, TimeUnit.SECONDS)
+                .setInitialDelay(10, TimeUnit.SECONDS)
                 .build()
 
             WorkManager.getInstance(context).enqueue(repeatingRequest)

@@ -98,42 +98,23 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (checkPermission(permissionsToCheck, applicationContext)) {
-                setForeground(
-                    ForegroundInfo(
-                        NOTIFICATION_ID,
-                        notification,
-                        FOREGROUND_SERVICE_TYPE_LOCATION
-                    )
-                )
+
                 initializeLocationManager()
                 var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
+                    setForeground(
+                        ForegroundInfo(
+                            NOTIFICATION_ID,
+                            notification,
+                            FOREGROUND_SERVICE_TYPE_LOCATION
+                        )
+                    )
                     return sendLocationToServerAndUpdateTrips()
                 }
-
-                buildNotification(
-                    unKnownErrorTitle,
-                    unKnownErrorContentText,
-                    unKnownErrorBigText,
-                    null,
-                    errorChannelId
-                )
-
-                notificationManager.notify(NOTIFICATION_ID, notification)
-                return Result.failure()
+                Log.i("WORKER", "Missing location")
+                return showMissingPermissionNotification()
             } else {
-                Log.i("WORKER", "Missing permissions")
-                val resultIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
-                buildNotification(
-                    locationErrorTitle,
-                    locationErrorContentText,
-                    locationErrorBigText,
-                    resultIntent,
-                    errorChannelId
-                )
-
-                notificationManager.notify(NOTIFICATION_ID, notification)
-                return Result.failure()
+                return showMissingPermissionNotification()
             }
         } else {
             Log.i("WORKER", "GPS not enabled")
@@ -146,8 +127,24 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 errorChannelId
             )
             notificationManager.notify(NOTIFICATION_ID, notification)
+            Log.i("WORKER", "Missing permissions")
             return Result.failure()
         }
+    }
+
+    private fun showMissingPermissionNotification(): Result {
+
+        val resultIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
+        buildNotification(
+            locationErrorTitle,
+            locationErrorContentText,
+            locationErrorBigText,
+            resultIntent,
+            errorChannelId
+        )
+
+        notificationManager.notify(NOTIFICATION_ID, notification)
+        return Result.retry()
     }
 
     /**
