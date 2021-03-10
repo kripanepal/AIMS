@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,14 +12,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
-import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
+import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
@@ -28,13 +28,14 @@ import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
 
 
-class NavigationFragment : Fragment() {
+class NavigationFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: NavigationViewModel
-    lateinit var binding: NavigationFragmentBinding
+    lateinit var binding: FragmentNavigationBinding
     var voiceId: Long = -1
     lateinit var map: Map
     lateinit var mapFragment: AndroidXMapFragment
@@ -57,7 +58,7 @@ class NavigationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
         if (sharedViewModel.selectedTrip.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
 
@@ -73,6 +74,15 @@ class NavigationFragment : Fragment() {
         sharedViewModel.activeRoute?.apply { route = this }
         initializeMap()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().bottom_navigation.visibility =
+            if (resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE)
+                View.GONE
+            else View.VISIBLE
+
     }
 
     private fun initializeMap() {
