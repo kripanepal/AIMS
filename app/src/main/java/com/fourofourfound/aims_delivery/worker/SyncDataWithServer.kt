@@ -68,10 +68,6 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
             "Notification that is shown whenever app is synced with the server"
 
         const val successTitle = "Syncing with server"
-        const val unKnownErrorTitle = "Cannot sync to server"
-        const val unKnownErrorContentText = "Tap to open the app"
-        const val unKnownErrorBigText =
-            "Cannot send data to the server. Open the app to do it manually."
 
         const val locationErrorTitle = "Location not found"
         const val locationErrorContentText = "Tap to provide location permissions"
@@ -209,24 +205,22 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
         notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
 
+
         notificationBuilder
-            .setOngoing(true)
+            .setOngoing(false)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setPriority(PRIORITY_DEFAULT)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setAutoCancel(true)
             .setContentText(contentText)
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(bigText)
-            )
-
+            .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
         resultPendingIntent?.apply {
             notificationBuilder.setContentIntent(resultPendingIntent)
         }
         notification = notificationBuilder.build()
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(id: String) {
@@ -236,7 +230,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         if (id === errorChannelId) {
             name = errorChannelName
             description = errorChannelDescription
-            importance = NotificationManager.IMPORTANCE_HIGH
+            importance = NotificationManager.IMPORTANCE_DEFAULT
         }
 
 
