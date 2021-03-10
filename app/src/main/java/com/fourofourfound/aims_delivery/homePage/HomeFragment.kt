@@ -154,8 +154,8 @@ class HomePage : Fragment() {
      */
     private fun startTripOnClick() {
         binding.btnStartTrip.setOnClickListener {
-            viewModel.tripList.value?.let {
-                val tripToStart = it[0]
+            viewModel.tripList.value?.get(0)?.let {
+                val tripToStart = it
                 if (!tripToStart.completed)
                     showStartTripDialog(tripToStart)
             }
@@ -208,7 +208,7 @@ class HomePage : Fragment() {
      * @param tripToStart
      */
     private fun markTripStart(tripToStart: Trip) {
-        sharedViewModel.setSelectedTrip(tripToStart)
+        sharedViewModel.selectedTrip.value = (tripToStart)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
             sendLocationAndUpdateTrips()
