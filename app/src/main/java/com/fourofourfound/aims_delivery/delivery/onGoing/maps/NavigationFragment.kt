@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,15 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
-import com.fourofourfound.aimsdelivery.databinding.NavigationFragmentBinding
+import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
@@ -27,13 +28,14 @@ import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
 
 
-class NavigationFragment : Fragment() {
+class NavigationFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: NavigationViewModel
-    lateinit var binding: NavigationFragmentBinding
+    lateinit var binding: FragmentNavigationBinding
     var voiceId: Long = -1
     lateinit var map: Map
     lateinit var mapFragment: AndroidXMapFragment
@@ -56,11 +58,14 @@ class NavigationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.navigation_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
         if (sharedViewModel.selectedTrip.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
+
             return binding.root
         }
+
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -69,6 +74,15 @@ class NavigationFragment : Fragment() {
         sharedViewModel.activeRoute?.apply { route = this }
         initializeMap()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().bottom_navigation.visibility =
+            if (resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE)
+                View.GONE
+            else View.VISIBLE
+
     }
 
     private fun initializeMap() {
@@ -172,6 +186,7 @@ class NavigationFragment : Fragment() {
     }
 
     private fun startNavigation() {
+        changeNextManeuverTexts()
         changeViewsVisibility()
         navigationManager.setMap(map)
         mapFragment.positionIndicator?.isVisible = true
@@ -283,11 +298,8 @@ class NavigationFragment : Fragment() {
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
                 //meter to miles
-
-                var formatted = String.format(
-                    getString(R.string.remainingDistanceToNextTurn),
-                    navigationManager.nextManeuverDistance * 0.000621371
-                )
+                var formatted =
+                    String.format("%.2f", navigationManager.nextManeuverDistance * 0.000621371)
                 binding.remainingDistance.text = formatted
 
                 var currentSpeedLimit = 0.0
@@ -326,9 +338,8 @@ class NavigationFragment : Fragment() {
     private fun updateSpeedTexts(currentSpeed: Double, currentSpeedLimit: Double) {
         val currentSpeedLimitText: String = if (currentSpeedLimit > 0) {
             meterPerSecToMilesPerHour(currentSpeedLimit).toString()
-        } else {
-            "N/A"
-        }
+        } else "N/A"
+
         binding.currentSpeedLimit.text = currentSpeedLimitText
         binding.currentSpeed.text = meterPerSecToMilesPerHour(currentSpeed).toString()
 
@@ -343,17 +354,28 @@ class NavigationFragment : Fragment() {
     private val instructListener: NewInstructionEventListener =
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
-                navigationManager.nextManeuver?.icon?.apply {
-                    binding.nextTurn.text =
-                        if (this == null || this == Maneuver.Icon.END) "Keep Straight" else this.toString()
-                }
-
-                navigationManager.afterNextManeuver?.roadName.apply {
-                    if (this != null) binding.nextRoad.text = this
-                }
-
+                changeNextManeuverTexts()
+                Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
+                viewModel.nextManeuverArrow.value =
+                    routeNameToImageMapper(navigationManager.nextManeuver?.icon)
             }
         }
+
+    private fun changeNextManeuverTexts() {
+        navigationManager.nextManeuver?.icon?.apply {
+            viewModel.nextManeuverDirection.value =
+                if (this == null) "Keep Straight" else routeNameToDirectionTextMapper(
+                    navigationManager.nextManeuver?.icon
+                )
+        }
+
+        navigationManager.afterNextManeuver?.roadName.apply {
+            if (this != null) viewModel.nextManeuverRoadName.value = this
+            else {
+                viewModel.nextManeuverRoadName.value = "Destination Ahead"
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
