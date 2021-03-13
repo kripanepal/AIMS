@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
+import com.here.android.mpa.common.MapEngine
+import com.here.android.mpa.guidance.NavigationManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -66,7 +68,6 @@ class SettingsFragment : Fragment() {
         }
 
 
-
         return binding.root
     }
 
@@ -76,8 +77,12 @@ class SettingsFragment : Fragment() {
      * login screen.
      */
     private fun logoutUser() {
-        viewModel.logoutUser()
         sharedViewModel.userLoggedIn.value = false
+        sharedViewModel.activeRoute = null
+        sharedViewModel.selectedTrip.value = (null)
+        NavigationManager.getInstance()?.stop()
+        MapEngine.getInstance().onPause()
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+        viewModel.logoutUser()
     }
 }

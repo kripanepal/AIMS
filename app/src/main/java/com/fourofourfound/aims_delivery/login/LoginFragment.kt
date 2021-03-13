@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.login
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
@@ -8,14 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -75,7 +73,7 @@ class LoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        errorMessageAnimation()
+
         requireActivity().bottom_navigation.visibility = View.GONE
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
@@ -102,6 +100,10 @@ class LoginFragment : Fragment() {
 
         observeLoginFields()
         loginOnDoneKey()
+        binding.loginPageMainView.setOnClickListener {
+            hideSoftKeyboard(requireActivity())
+        }
+        viewModel.loading.observe(viewLifecycleOwner) { if (it) hideSoftKeyboard(requireActivity()) }
         return binding.root
     }
 
@@ -118,34 +120,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    /**
-     * Error message animation
-     * Animate error messages if any, after the
-     * network call is made to authenticate the user
-     */
-    private fun errorMessageAnimation() {
-        //initialize background resource for loading animation
-        binding.isLoading.setBackgroundResource(R.drawable.anim_loading)
-        loadingAnimation = binding.isLoading.background as AnimationDrawable
-        //animate the error message by zooming in
-        viewModel.errorMessage.observe(viewLifecycleOwner, {
-            val animation = AnimationUtils.loadAnimation(activity, R.anim.zoom_in_animation)
-            binding.loginErrorMessage.startAnimation(animation)
-        })
-
-        //loading animation
-        viewModel.loading.observe(viewLifecycleOwner, {
-            loadingAnimation.apply {
-                if (it) {
-                    start()
-                    val imm =
-                        requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-
-                } else stop()
-            }
-        })
-    }
 
     /**
      * Observe login fields

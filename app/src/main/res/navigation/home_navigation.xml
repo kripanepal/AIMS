@@ -11,6 +11,7 @@
         <action
             android:id="@+id/action_homePage_to_loginFragment"
             app:destination="@id/loginFragment"
+            app:launchSingleTop="false"
             app:popUpTo="@id/loginFragment" />
         <action
             android:id="@+id/action_homePage_to_completedDeliveryFragment"

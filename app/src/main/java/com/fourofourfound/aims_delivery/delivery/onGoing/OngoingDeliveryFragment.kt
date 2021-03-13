@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,6 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
-import com.here.android.mpa.common.MapEngine
-import com.here.android.mpa.mapping.Map
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -47,8 +44,6 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var map: Map? = null
-
 
     /**
      * Shared pref this is used to store key value pair to the file system
@@ -67,7 +62,6 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i("AAAAAAAA", "create view")
 
         //return if no this is not an ongoing delivery
         if (sharedViewModel.selectedTrip.value == null) {
@@ -95,14 +89,13 @@ class OngoingDeliveryFragment : Fragment() {
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
+        if (sharedViewModel.activeRoute !== null) binding.startNavigation.text =
+            "Continue Navigation"
 
         observeTripCompletion(viewModel)
-
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
-
-
 
         return binding.root
     }
@@ -117,27 +110,15 @@ class OngoingDeliveryFragment : Fragment() {
         viewModel.tripCompleted.observe(viewLifecycleOwner) {
             if (it) {
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-                sharedViewModel.setSelectedTrip(null)
+                sharedViewModel.selectedTrip.value = null
                 viewModel.doneNavigatingToHomePage()
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        MapEngine.getInstance().onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        MapEngine.getInstance().onPause()
-    }
-
 
     override fun onDestroy() {
-        // Log.i("AAAAAA", "destroy")
         super.onDestroy()
-        //save the ongoing trip info to sharedPreferences
         sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
             ?.apply()
     }
