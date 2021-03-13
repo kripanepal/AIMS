@@ -156,9 +156,7 @@ class HomePage : Fragment() {
         binding.btnStartTrip.setOnClickListener {
 
             //If the user selects Start Trip and there is no trip available, prevents the app from crashing
-            //TODO add a dialog box that informs the user that there are no trips to choose from
-            if(!viewModel.tripList.value.isNullOrEmpty())
-            {
+            if(!viewModel.tripList.value.isNullOrEmpty()) {
                 viewModel.tripList.value?.get(0)?.let {
                     val tripToStart = it
 
@@ -166,6 +164,19 @@ class HomePage : Fragment() {
                         showStartTripDialog(tripToStart)
                 }
             }
+            else {
+                CustomDialogBuilder(
+                    requireContext(),
+                    "There are currently no trips available",
+                    null,
+                    "Ok",
+                    null,
+                    null,
+                    null,
+                    true
+                ).builder.show()
+            }
+
         }
     }
 
