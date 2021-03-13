@@ -4,9 +4,14 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.fourofourfound.aims_delivery.database.entities.fuel.Fuel
 import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
+import com.fourofourfound.aims_delivery.database.entities.site.Site
+import com.fourofourfound.aims_delivery.database.entities.source.Source
 import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.relations.SourceWithLocation
 import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
 
 @Dao
@@ -41,10 +46,26 @@ interface TripListDao {
     @Query("delete  from CustomDatabaseLocation")
     suspend fun deleteAllLocations()
 
+    //Dr.Smith Json
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSource(source: Source)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocation(location: LocationWithAddress)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFuel(fuel: Fuel)
+
+    @Query("select * from Source where id = 's1' ")
+    suspend fun getSource(): SourceWithLocation
 }
 
 
-@Database(entities = [DatabaseTrip::class, CustomDatabaseLocation::class,DatabaseLoad::class], version = 1,exportSchema = false)
+@Database(
+    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, Source::class, LocationWithAddress::class, Fuel::class, Site::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class TripListDatabse : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }
