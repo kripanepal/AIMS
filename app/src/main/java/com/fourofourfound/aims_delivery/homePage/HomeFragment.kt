@@ -154,11 +154,29 @@ class HomePage : Fragment() {
      */
     private fun startTripOnClick() {
         binding.btnStartTrip.setOnClickListener {
-            viewModel.tripList.value?.get(0)?.let {
-                val tripToStart = it
-                if (!tripToStart.completed)
-                    showStartTripDialog(tripToStart)
+
+            //If the user selects Start Trip and there is no trip available, prevents the app from crashing
+            if(!viewModel.tripList.value.isNullOrEmpty()) {
+                viewModel.tripList.value?.get(0)?.let {
+                    val tripToStart = it
+
+                    if (!tripToStart.completed)
+                        showStartTripDialog(tripToStart)
+                }
             }
+            else {
+                CustomDialogBuilder(
+                    requireContext(),
+                    "There are currently no trips available",
+                    null,
+                    "Ok",
+                    null,
+                    null,
+                    null,
+                    true
+                ).builder.show()
+            }
+
         }
     }
 
