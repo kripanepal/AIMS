@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_navigation"
     android:label="Settings"
     app:startDestination="@id/settingsFragment">
@@ -8,5 +9,14 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.fourofourfound.aims_delivery.settings.SettingsFragment"
-        android:label="Settings" />
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_mapDownloadFragment"
+            app:destination="@id/mapDownloadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapDownloadFragment"
+        android:name="com.fourofourfound.aims_delivery.settings.mapDownload.MapDownloadFragment"
+        android:label="fragment_map_download"
+        tools:layout="@layout/fragment_map_download" />
 </navigation>

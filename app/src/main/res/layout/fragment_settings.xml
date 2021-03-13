@@ -7,7 +7,7 @@
     type="com.fourofourfound.aims_delivery.settings.SettingsViewModel" />
     </data>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.fourofourfound.aims_delivery.settings.SettingsFragment">
@@ -22,8 +22,17 @@
             android:id="@+id/logout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"
-          />
+            android:text="Logout" />
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/takeToDownloadMapPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="240dp"
+            android:layout_marginBottom="443dp"
+            android:text="Download Maps" />
+
+    </RelativeLayout>
 </layout>
