@@ -61,7 +61,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
                 database.tripListDao.insertTrip(DatabaseTrips("t1"))
                 tripListRepository.refreshTrips()
-                Log.i("AAAAAA", database.tripListDao.getAllTrip().toString())
+                Log.i("AAAAAA", database.tripListDao.getAllTrip().source.size.toString())
             }
         }
     }

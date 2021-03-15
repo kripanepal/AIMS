@@ -62,7 +62,7 @@ interface TripListDao {
 
     @Transaction
     @Query("select * from DatabaseTrips where tripId = 't1'")
-    suspend fun getAllTrip(): List<DatabaseTripsWithInfo>
+    suspend fun getAllTrip(): DatabaseTripsWithInfo
 }
 
 

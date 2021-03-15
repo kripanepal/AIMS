@@ -10,12 +10,14 @@ data class SiteWithLocationAndFuel(
     @Embedded val site: Site,
     @Relation(
         parentColumn = "siteId",
-        entityColumn = "sourceOrSiteId"
+        entityColumn = "sourceOrSiteId",
+        entity = LocationWithAddress::class
     )
-    val location: LocationWithAddress,
+    val location: LocationWithAddress?,
     @Relation(
         parentColumn = "siteId",
-        entityColumn = "sourceOrSiteId"
+        entityColumn = "sourceOrSiteId",
+        entity = Fuel::class
     )
-    val fuel: Fuel
+    val fuel: Fuel?
 )
