@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 
 @Entity
-class Site(
+class DatabaseSource(
     @PrimaryKey(autoGenerate = false)
-    var siteId: String,
+    var sourceId: String,
     var name: String,
     var tripId: String
 )

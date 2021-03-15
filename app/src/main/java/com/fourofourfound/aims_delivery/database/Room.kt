@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
+import com.fourofourfound.aims_delivery.database.entities.location.DatabaseLocationWithAddress
 import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 import com.fourofourfound.aims_delivery.database.relations.SourceWithLocationAndFuel
 import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
@@ -45,29 +45,33 @@ interface TripListDao {
 
     //Dr.Smith Json
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSource(source: Source)
+    suspend fun insertSources(source: List<DatabaseSource>)
+
+    //Dr.Smith Json
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSites(site: List<DatabaseSite>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: LocationWithAddress)
+    suspend fun insertLocation(location: DatabaseLocationWithAddress)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFuel(fuel: Fuel)
+    suspend fun insertFuel(fuel: DatabaseFuel)
 
     @Transaction
-    @Query("select * from Source where sourceId = 's1' ")
+    @Query("select * from DatabaseSource where sourceId = 's1' ")
     suspend fun getSource(): SourceWithLocationAndFuel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrip(trip: DatabaseTrips)
+    fun insertTrip(trip: DatabaseTripf)
 
     @Transaction
-    @Query("select * from DatabaseTrips where tripId = 't1'")
-    suspend fun getAllTrip(): DatabaseTripsWithInfo
+    @Query("select * from DatabaseTripf ")
+    fun getAllTrip(): List<DatabaseTripsWithInfo>
 }
 
 
 @Database(
-    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, Source::class, LocationWithAddress::class, Fuel::class, Site::class, DatabaseTrips::class],
+    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, DatabaseSource::class, DatabaseLocationWithAddress::class, DatabaseFuel::class, DatabaseSite::class, DatabaseTripf::class],
     version = 1,
     exportSchema = false
 )

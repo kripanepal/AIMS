@@ -2,22 +2,22 @@ package com.fourofourfound.aims_delivery.database.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.fourofourfound.aims_delivery.database.entities.Fuel
-import com.fourofourfound.aims_delivery.database.entities.Site
-import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
+import com.fourofourfound.aims_delivery.database.entities.DatabaseFuel
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSite
+import com.fourofourfound.aims_delivery.database.entities.location.DatabaseLocationWithAddress
 
 data class SiteWithLocationAndFuel(
-    @Embedded val site: Site,
+    @Embedded val site: DatabaseSite,
     @Relation(
         parentColumn = "siteId",
         entityColumn = "sourceOrSiteId",
-        entity = LocationWithAddress::class
+        entity = DatabaseLocationWithAddress::class
     )
-    val location: LocationWithAddress?,
+    val location: DatabaseLocationWithAddress?,
     @Relation(
         parentColumn = "siteId",
         entityColumn = "sourceOrSiteId",
-        entity = Fuel::class
+        entity = DatabaseFuel::class
     )
-    val fuel: Fuel?
+    val fuel: DatabaseFuel?
 )

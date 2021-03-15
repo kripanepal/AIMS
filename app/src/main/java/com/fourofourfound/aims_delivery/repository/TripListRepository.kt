@@ -1,13 +1,15 @@
 package com.fourofourfound.aims_delivery.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.asDomainModal
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.domain.asDatabaseModel
+import com.fourofourfound.aims_delivery.domain.asDomainModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
-import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,6 +31,7 @@ class TripListRepository(private val database: TripListDatabse) {
         }
 
 
+
     /**
      * Refresh trips
      * Refresh the trips stored in the offline cache.
@@ -38,9 +41,29 @@ class TripListRepository(private val database: TripListDatabse) {
         withContext(Dispatchers.IO) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                database.tripListDao.insertTrips(*tripLists.asDatabaseModel())
-            } catch (e: Exception) {
+                for (each in tripLists) {
+                    database.tripListDao.apply {
+                        insertTrip(each.asDatabaseModel())
+                        insertSources(each.source.asDatabaseModel(each.tripID))
+                        insertSites(each.site.asDomainModel(each.tripID))
 
+                        for (source in each.source) {
+                            insertFuel(source.fuel.asDatabaseModel(source.sourceID))
+                            insertLocation(source.location.asDatabaseModel(source.sourceID))
+                        }
+
+                        for (site in each.site) {
+                            insertFuel(site.fuel.asDatabaseModel(site.siteID))
+                            insertLocation(site.location.asDatabaseModel(site.siteID))
+                        }
+
+                    }
+                }
+
+                Log.i("AAAAAAAAAAAA", database.tripListDao.getAllTrip()[0].source.size.toString())
+            } catch (e: Exception) {
+                //TODO check ID spelling on actual JSON
+                Log.i("AAAAAAAAAAAAA", e.message.toString())
             }
         }
     }

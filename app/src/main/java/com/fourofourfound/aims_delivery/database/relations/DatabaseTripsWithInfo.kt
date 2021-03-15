@@ -2,22 +2,22 @@ package com.fourofourfound.aims_delivery.database.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrips
-import com.fourofourfound.aims_delivery.database.entities.Site
-import com.fourofourfound.aims_delivery.database.entities.Source
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSite
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSource
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTripf
 
 class DatabaseTripsWithInfo(
-    @Embedded val databaseTrips: DatabaseTrips,
+    @Embedded val databaseTrips: DatabaseTripf,
     @Relation(
         parentColumn = "tripId",
         entityColumn = "tripId",
-        entity = Source::class,
+        entity = DatabaseSource::class,
     )
     val source: List<SourceWithLocationAndFuel>,
     @Relation(
         parentColumn = "tripId",
         entityColumn = "tripId",
-        entity = Site::class
+        entity = DatabaseSite::class
     )
     val site: List<SiteWithLocationAndFuel>
 )

@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["type", "sourceOrSiteId"])
-class Fuel(
+class DatabaseFuel(
     var type: String,
-    @Embedded var quantity: Quantity,
+    @Embedded var quantity: DatabaseFuelQuantity,
     var sourceOrSiteId: String
 )
 
-data class Quantity(var volume: Int, var measure: String)
+data class DatabaseFuelQuantity(var volume: Int, var measure: String)

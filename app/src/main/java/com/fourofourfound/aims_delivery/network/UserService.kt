@@ -2,8 +2,8 @@ package com.fourofourfound.aims_delivery.network
 
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.domain.Tripf
 import com.fourofourfound.aims_delivery.domain.UserLoginInfo
-import com.fourofourfound.aims_delivery.network.tripList.NetworkTripList
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -50,7 +50,7 @@ interface UserService {
     }
 
     @GET("/alltrips")
-    suspend fun getAllTrips(): List<NetworkTripList>
+    suspend fun getAllTrips(): List<Tripf>
 }
 
 /**

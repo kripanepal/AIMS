@@ -1,15 +1,8 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrips
-import com.fourofourfound.aims_delivery.database.entities.Fuel
-import com.fourofourfound.aims_delivery.database.entities.Quantity
-import com.fourofourfound.aims_delivery.database.entities.Source
-import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
-import com.fourofourfound.aims_delivery.database.entities.location.TripLocation
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.Dispatchers
@@ -45,23 +38,8 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                database.tripListDao.insertSource(Source("s1", "Monroe", "t1"))
-                database.tripListDao.insertSource(Source("s2", "Monroe1", "t1"))
-                database.tripListDao.insertFuel(Fuel("Leaded", Quantity(10000, "GAL"), "s1"))
-                database.tripListDao.insertLocation(
-                    LocationWithAddress(
-                        "McGFuire",
-                        "Monroe",
-                        "LA",
-                        71203,
-                        TripLocation(1.1, 1.2),
-                        "s1"
-                    )
-                )
-
-                database.tripListDao.insertTrip(DatabaseTrips("t1"))
                 tripListRepository.refreshTrips()
-                Log.i("AAAAAA", database.tripListDao.getAllTrip().source.size.toString())
+
             }
         }
     }

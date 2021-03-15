@@ -5,15 +5,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class LocationWithAddress(
+class DatabaseLocationWithAddress(
     var street: String,
     var city: String,
     var state: String,
     var zip: Int,
     @PrimaryKey
-    @Embedded var gps: TripLocation,
+    @Embedded var gps: DatabaseCoordinates,
     var sourceOrSiteId: String
 )
 
 
-data class TripLocation(var latitude: Double, var longitude: Double)
+data class DatabaseCoordinates(var latitude: Double, var longitude: Double)
