@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.asDomainModal
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.domain.asDatabaseModel
 import com.fourofourfound.aims_delivery.domain.asDomainModel
@@ -30,6 +31,7 @@ class TripListRepository(private val database: TripListDatabse) {
             it.asDomainModal()
         }
 
+    val allTrips: LiveData<List<DatabaseTripsWithInfo>> = database.tripListDao.getAllTrip()
 
 
     /**
@@ -60,7 +62,6 @@ class TripListRepository(private val database: TripListDatabse) {
                     }
                 }
 
-                Log.i("AAAAAAAAAAAA", database.tripListDao.getAllTrip()[0].source.size.toString())
             } catch (e: Exception) {
                 //TODO check ID spelling on actual JSON
                 Log.i("AAAAAAAAAAAAA", e.message.toString())

@@ -66,7 +66,7 @@ interface TripListDao {
 
     @Transaction
     @Query("select * from DatabaseTripf ")
-    fun getAllTrip(): List<DatabaseTripsWithInfo>
+    fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
 }
 
 
