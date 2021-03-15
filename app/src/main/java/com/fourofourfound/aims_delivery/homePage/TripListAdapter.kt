@@ -105,7 +105,7 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
         override fun areItemsTheSame(oldItem: Trip, newItem: Trip): Boolean {
             //check for similar item
-            return oldItem._id == newItem._id
+            return oldItem.tripID == newItem.travelID
         }
 
         override fun areContentsTheSame(oldItem: Trip, newItem: Trip): Boolean {

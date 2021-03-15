@@ -4,33 +4,28 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.*
+import com.fourofourfound.aims_delivery.database.entities.DatabaseFuel
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSite
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSource
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.location.DatabaseLocationWithAddress
 import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 import com.fourofourfound.aims_delivery.database.relations.SourceWithLocationAndFuel
-import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
 
 @Dao
 interface TripListDao {
-    @Query("select * from DatabaseTrip order by completed")
-    fun getTripList(): LiveData<List<DatabaseTrip>>
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertTrips(vararg trip: DatabaseTrip)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertLoads(vararg trip: DatabaseLoad)
 
-    @Query("update DatabaseTrip set completed=:status where _id= :tripId")
-    fun markTripCompleted(tripId: String, status: Boolean)
+    @Query("update DatabaseTrip set status=:status where tripId= :tripId")
+    fun changeTripStatus(tripId: String, status: String)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
-
-    @Transaction
-    @Query("select * from DatabaseTrip where _id = :tripId")
-    fun getTripWithLoads(tripId: String): List<TripWithLoads>
 
 
     //Locations
@@ -62,16 +57,16 @@ interface TripListDao {
     suspend fun getSource(): SourceWithLocationAndFuel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrip(trip: DatabaseTripf)
+    fun insertTrip(trip: DatabaseTrip)
 
     @Transaction
-    @Query("select * from DatabaseTripf ")
+    @Query("select * from DatabaseTrip ")
     fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
 }
 
 
 @Database(
-    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, DatabaseSource::class, DatabaseLocationWithAddress::class, DatabaseFuel::class, DatabaseSite::class, DatabaseTripf::class],
+    entities = [CustomDatabaseLocation::class, DatabaseSource::class, DatabaseLocationWithAddress::class, DatabaseFuel::class, DatabaseSite::class, DatabaseTrip::class],
     version = 1,
     exportSchema = false
 )

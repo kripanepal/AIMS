@@ -2,12 +2,9 @@ package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
-import com.fourofourfound.aims_delivery.database.entities.asDomainModal
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
-import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.domain.asDatabaseModel
 import com.fourofourfound.aims_delivery.domain.asDomainModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
@@ -22,16 +19,8 @@ import kotlinx.coroutines.withContext
  */
 class TripListRepository(private val database: TripListDatabse) {
 
-    /**
-     * Trips
-     * A list of trips that can be shown on the screen.
-     */
-    val trips: LiveData<List<Trip>> =
-        Transformations.map(database.tripListDao.getTripList()) {
-            it.asDomainModal()
-        }
 
-    val allTrips: LiveData<List<DatabaseTripsWithInfo>> = database.tripListDao.getAllTrip()
+    val trips: LiveData<List<DatabaseTripsWithInfo>> = database.tripListDao.getAllTrip()
 
 
     /**

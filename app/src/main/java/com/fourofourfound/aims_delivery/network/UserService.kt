@@ -2,7 +2,7 @@ package com.fourofourfound.aims_delivery.network
 
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.domain.Tripf
+import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.domain.UserLoginInfo
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -50,7 +50,7 @@ interface UserService {
     }
 
     @GET("/alltrips")
-    suspend fun getAllTrips(): List<Tripf>
+    suspend fun getAllTrips(): List<Trip>
 }
 
 /**

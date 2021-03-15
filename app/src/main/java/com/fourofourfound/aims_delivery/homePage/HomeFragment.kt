@@ -134,7 +134,7 @@ class HomePage : Fragment() {
         val adapter = TripListAdapter(TripListListener { trip ->
 
             //set up the behaviour of button on the item being displayed
-            if (trip.completed) findNavController().navigate(
+            if (trip.status === "Completed") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             )
         })
@@ -156,7 +156,7 @@ class HomePage : Fragment() {
         binding.btnStartTrip.setOnClickListener {
             viewModel.tripList.value?.get(0)?.let {
                 val tripToStart = it
-                if (!tripToStart.completed)
+                if (tripToStart.status !== "Not Started")
                     showStartTripDialog(tripToStart)
             }
         }

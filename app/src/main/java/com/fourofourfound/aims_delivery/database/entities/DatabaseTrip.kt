@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class DatabaseTripf(
+class DatabaseTrip(
     @PrimaryKey
     var tripId: String,
 

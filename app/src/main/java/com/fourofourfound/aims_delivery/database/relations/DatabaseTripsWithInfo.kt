@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.fourofourfound.aims_delivery.database.entities.DatabaseSite
 import com.fourofourfound.aims_delivery.database.entities.DatabaseSource
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTripf
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 
 class DatabaseTripsWithInfo(
-    @Embedded val databaseTrips: DatabaseTripf,
+    @Embedded val databaseTrips: DatabaseTrip,
     @Relation(
         parentColumn = "tripId",
         entityColumn = "tripId",
