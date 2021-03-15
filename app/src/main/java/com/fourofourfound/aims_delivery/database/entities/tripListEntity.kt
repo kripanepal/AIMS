@@ -1,9 +1,7 @@
-package com.fourofourfound.aims_delivery.database.entities.trip
+package com.fourofourfound.aims_delivery.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
-import com.fourofourfound.aims_delivery.domain.Load
 import com.fourofourfound.aims_delivery.domain.Trip
 
 @Entity

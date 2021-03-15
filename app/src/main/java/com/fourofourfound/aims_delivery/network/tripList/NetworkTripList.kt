@@ -1,6 +1,6 @@
 package com.fourofourfound.aims_delivery.network.tripList
 
-import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.squareup.moshi.JsonClass
 

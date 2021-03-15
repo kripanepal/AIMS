@@ -1,14 +1,20 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.fuel.Fuel
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrips
+import com.fourofourfound.aims_delivery.database.entities.Fuel
+import com.fourofourfound.aims_delivery.database.entities.Quantity
+import com.fourofourfound.aims_delivery.database.entities.Source
 import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
-import com.fourofourfound.aims_delivery.database.entities.source.Source
+import com.fourofourfound.aims_delivery.database.entities.location.TripLocation
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Home page view model
@@ -36,76 +42,27 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
      * It makes a network call to fetch updated trip list from the user
      */
     fun fetchTripFromNetwork() {
+
         viewModelScope.launch {
-            database.tripListDao.insertFuel(Fuel("Leaded", 10000, "GAL", "s1"))
-            database.tripListDao.insertFuel(Fuel("ULeaded", 1000, "GAL", "s2"))
-            database.tripListDao.insertFuel(Fuel("PLeaded", 100, "GAL", "s3"))
-            database.tripListDao.insertFuel(Fuel("DLeaded", 10, "GAL", "s4"))
+            withContext(Dispatchers.IO) {
+                database.tripListDao.insertSource(Source("s1", "Monroe", "t1"))
+                database.tripListDao.insertSource(Source("s2", "Monroe1", "t1"))
+                database.tripListDao.insertFuel(Fuel("Leaded", Quantity(10000, "GAL"), "s1"))
+                database.tripListDao.insertLocation(
+                    LocationWithAddress(
+                        "McGFuire",
+                        "Monroe",
+                        "LA",
+                        71203,
+                        TripLocation(1.1, 1.2),
+                        "s1"
+                    )
+                )
 
-            database.tripListDao.insertSource(Source("s1", "Source 1"))
-            database.tripListDao.insertSource(Source("s2", "Source 2"))
-            database.tripListDao.insertSource(Source("s3", "Source 3"))
-            database.tripListDao.insertSource(Source("s4", "Source 4"))
-
-            database.tripListDao.insertLocation(
-                LocationWithAddress(
-                    "McGuire",
-                    "Monroe",
-                    "LA",
-                    71203,
-                    1.11,
-                    1.2,
-                    "s1"
-                )
-            )
-            database.tripListDao.insertLocation(
-                LocationWithAddress(
-                    "McGuiree",
-                    "Monroe1",
-                    "LA",
-                    712033,
-                    1.111,
-                    1.2,
-                    "s2"
-                )
-            )
-            database.tripListDao.insertLocation(
-                LocationWithAddress(
-                    "McGuireee",
-                    "Monroe2",
-                    "LA",
-                    712034,
-                    1.12,
-                    1.2,
-                    "s3"
-                )
-            )
-            database.tripListDao.insertLocation(
-                LocationWithAddress(
-                    "McGuireeee",
-                    "Monroe3",
-                    "LA",
-                    71205,
-                    1.13,
-                    1.2,
-                    "s4"
-                )
-            )
-            database.tripListDao.insertLocation(
-                LocationWithAddress(
-                    "McGuireeee",
-                    "Monroe3",
-                    "LA",
-                    71205,
-                    1.14,
-                    1.2,
-                    "s5"
-                )
-            )
-
-            var result = database.tripListDao.getSource()
-
-            tripListRepository.refreshTrips()
+                database.tripListDao.insertTrip(DatabaseTrips("t1"))
+                tripListRepository.refreshTrips()
+                Log.i("AAAAAA", database.tripListDao.getAllTrip().toString())
+            }
         }
     }
 

@@ -1,11 +1,8 @@
 package com.fourofourfound.aims_delivery.network.loadList
 
 import androidx.room.PrimaryKey
-import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
-import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseLoad
 import com.fourofourfound.aims_delivery.domain.Load
-import com.fourofourfound.aims_delivery.domain.Trip
-import com.fourofourfound.aims_delivery.network.tripList.NetworkTripList
 import com.squareup.moshi.JsonClass
 
 /**

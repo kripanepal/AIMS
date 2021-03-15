@@ -3,8 +3,8 @@ package com.fourofourfound.aims_delivery.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.entities.asDomainModal
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.entities.trip.asDomainModal
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.tripList.asDatabaseModel

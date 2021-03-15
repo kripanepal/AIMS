@@ -4,14 +4,11 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.fuel.Fuel
-import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
+import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.entities.location.LocationWithAddress
-import com.fourofourfound.aims_delivery.database.entities.site.Site
-import com.fourofourfound.aims_delivery.database.entities.source.Source
-import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
-import com.fourofourfound.aims_delivery.database.relations.SourceWithLocation
+import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
+import com.fourofourfound.aims_delivery.database.relations.SourceWithLocationAndFuel
 import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
 
 @Dao
@@ -56,13 +53,21 @@ interface TripListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFuel(fuel: Fuel)
 
-    @Query("select * from Source where id = 's1' ")
-    suspend fun getSource(): SourceWithLocation
+    @Transaction
+    @Query("select * from Source where sourceId = 's1' ")
+    suspend fun getSource(): SourceWithLocationAndFuel
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTrip(trip: DatabaseTrips)
+
+    @Transaction
+    @Query("select * from DatabaseTrips where tripId = 't1'")
+    suspend fun getAllTrip(): List<DatabaseTripsWithInfo>
 }
 
 
 @Database(
-    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, Source::class, LocationWithAddress::class, Fuel::class, Site::class],
+    entities = [DatabaseTrip::class, CustomDatabaseLocation::class, DatabaseLoad::class, Source::class, LocationWithAddress::class, Fuel::class, Site::class, DatabaseTrips::class],
     version = 1,
     exportSchema = false
 )
@@ -80,7 +85,9 @@ fun getDatabase(context: Context): TripListDatabse {
                 context.applicationContext,
                 TripListDatabse::class.java,
                 "trips"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
     return INSTANCE
