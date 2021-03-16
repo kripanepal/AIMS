@@ -71,6 +71,7 @@ class HomePage : Fragment() {
         //navigate user to login screen if user is not logged in
         if (!sharedViewModel.userLoggedIn.value!!) {
             findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
+            return binding.root
         }
 
         //initialize viewModel and assign value to the viewModel in xml file
@@ -141,8 +142,9 @@ class HomePage : Fragment() {
 
         binding.tripList.adapter = adapter
 
+
         //observe for any changes on the trips and inform that to the user
-        viewModel.tripList.observe(viewLifecycleOwner) {
+        viewModel.tripList?.observe(viewLifecycleOwner) {
             //TODO new trip was added or modified. Need to send the notification to the user
             adapter.submitList(it)
         }
@@ -154,7 +156,7 @@ class HomePage : Fragment() {
      */
     private fun startTripOnClick() {
         binding.btnStartTrip.setOnClickListener {
-            viewModel.tripList.value?.get(0)?.let {
+            viewModel.tripList?.value?.get(0)?.let {
                 val tripToStart = it
                 if (tripToStart.status !== "Not Started")
                     showStartTripDialog(tripToStart)

@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
  * @param application the applicationContext which created this viewModel
  */
 class HomePageViewModel(application: Application) : AndroidViewModel(application) {
+
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
@@ -25,10 +26,9 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
      * List of trip that is a to be displayed
      */
     val tripList = tripListRepository.trips
-    val allTrips = tripListRepository.allTrips
-
     init {
         fetchTripFromNetwork()
+
     }
 
     /**
@@ -40,8 +40,8 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 tripListRepository.refreshTrips()
-
             }
+
         }
     }
 

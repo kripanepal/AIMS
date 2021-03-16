@@ -8,10 +8,10 @@ class DatabaseTrip(
     @PrimaryKey
     var tripId: String,
 
-//    var tripLog: String,
-//    var truckID: String,
-//    var truckName:  String,
-//    var travelID: String,
-//    var travelType: String,
+    var tripLog: String,
+    var truckID: String,
+    var truckName: String,
+    var travelID: String,
+    var travelType: String,
     val status: String = "Not Completed"
 )

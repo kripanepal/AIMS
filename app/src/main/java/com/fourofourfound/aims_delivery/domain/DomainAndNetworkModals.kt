@@ -2,29 +2,31 @@ package com.fourofourfound.aims_delivery.domain
 
 import android.os.Parcelable
 import com.fourofourfound.aims_delivery.database.entities.*
-import com.fourofourfound.aims_delivery.database.entities.location.DatabaseCoordinates
-import com.fourofourfound.aims_delivery.database.entities.location.DatabaseLocationWithAddress
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
-
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Quantity(
     val volume: Int,
     val measure: String
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Fuel(
     val type: String,
     val quantity: Quantity
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Coordinates(
     val lat: Double,
     val long: Double
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Location(
     val street: String,
@@ -34,6 +36,7 @@ data class Location(
     val gps: Coordinates
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class NetworkSite(
     val siteID: String,
@@ -42,6 +45,7 @@ data class NetworkSite(
     val fuel: Fuel
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Source(
     val sourceID: String,
@@ -50,6 +54,7 @@ data class Source(
     val fuel: Fuel,
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Site(
     val siteID: String,
@@ -58,6 +63,7 @@ data class Site(
     val fuel: Fuel,
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Trip(
     val tripID: String,
@@ -68,8 +74,10 @@ data class Trip(
     val travelType: String,
     val source: List<Source>,
     val site: List<Site>,
-    val status: String
-) : Parcelable
+) : Parcelable {
+
+    val status: String = "Not Started"
+}
 
 fun Quantity.asDatabaseModel(): DatabaseFuelQuantity = DatabaseFuelQuantity(volume, measure)
 
@@ -95,6 +103,8 @@ fun Location.asDatabaseModel(sourceOrSiteId: String): DatabaseLocationWithAddres
 fun Trip.asDatabaseModel(): DatabaseTrip {
     return DatabaseTrip(
         tripID,
+        tripLog,
+        truckID, truckName, travelID, travelType
     )
 }
 
@@ -103,6 +113,11 @@ fun List<Trip>.asDatabaseModel(): Array<DatabaseTrip> {
     return map {
         DatabaseTrip(
             tripId = it.tripID,
+            it.tripLog,
+            it.truckID,
+            it.truckName,
+            it.travelID,
+            it.travelType
         )
 
     }.toTypedArray()
