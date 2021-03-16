@@ -117,7 +117,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 _loading.value = false
                 saveUser(userName.value.toString(), password.value.toString())
             } catch (t: Throwable) {
-                _errorMessage.value = t.message
+                //_errorMessage.value = t.message
+                _errorMessage.value = "Login failed"
                 _navigate.value = false
                 _loading.value = false
             }
