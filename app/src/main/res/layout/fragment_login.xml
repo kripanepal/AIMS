@@ -37,19 +37,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/aims_logo"
+                android:layout_marginTop="32dp"
                 android:contentDescription="AIMS Logo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/login_ConstraintLayout"
+                android:src="@drawable/aims_logo"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/login_ConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="324dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@id/needHelp_constraintLayout"
@@ -79,12 +80,12 @@
                         android:drawableEnd="@drawable/pen_icon"
                         android:drawableTint="@color/design_default_color_primary"
                         android:hint="@string/user_id_hint"
-                        android:textColor="@color/black"
                         android:inputType="textPersonName"
                         android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
                         android:paddingTop="28dp"
                         android:paddingBottom="10dp"
-                        android:text="@={viewModel.userName}" />
+                        android:text="@={viewModel.userName}"
+                        android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -94,13 +95,13 @@
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
                     app:endIconMode="password_toggle"
+                    app:endIconTint="@color/design_default_color_primary"
+                    app:hintTextColor="@color/black"
                     app:layout_constraintBottom_toTopOf="@+id/login_error_message"
                     app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
                     app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-                    app:layout_constraintVertical_bias="0.07999998"
-                    app:endIconTint="@color/design_default_color_primary"
-                    app:hintTextColor="@color/black">
+                    app:layout_constraintVertical_bias="0.07999998">
 
                     <EditText
                         android:id="@+id/passwordInput"
@@ -109,12 +110,12 @@
                         android:background="@android:color/transparent"
                         android:hint="Password"
                         android:imeOptions="actionDone"
-                        android:textColor="@color/black"
                         android:inputType="textPassword"
                         android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
                         android:paddingTop="28dp"
                         android:paddingBottom="10dp"
-                        android:text="@={viewModel.password}" />
+                        android:text="@={viewModel.password}"
+                        android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,8 +147,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.github.ybq.android.spinkit.SpinKitView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/spin_kit"
                     style="@style/SpinKitView.Large.Circle"
                     android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
