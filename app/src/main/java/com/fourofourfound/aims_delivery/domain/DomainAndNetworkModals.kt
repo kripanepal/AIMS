@@ -74,10 +74,8 @@ data class Trip(
     val travelType: String,
     val source: List<Source>,
     val site: List<Site>,
-) : Parcelable {
-
-    val status: String = "Not Started"
-}
+    val status: String = "NOT_STARTED"
+) : Parcelable
 
 fun Quantity.asDatabaseModel(): DatabaseFuelQuantity = DatabaseFuelQuantity(volume, measure)
 

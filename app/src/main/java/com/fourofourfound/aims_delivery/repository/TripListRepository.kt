@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
@@ -21,9 +22,14 @@ import kotlinx.coroutines.withContext
  */
 class TripListRepository(private val database: TripListDatabse) {
 
+    val updating = MutableLiveData(false)
     val trips: LiveData<List<Trip>>? = Transformations.map(database.tripListDao.getAllTrip()) {
-        it.asDomainModel()
+        updating.value = true
+        val toReturn = it.asDomainModel()
+        updating.value = false
+        toReturn
     }
+
 
     /**
      * Refresh trips
@@ -35,31 +41,38 @@ class TripListRepository(private val database: TripListDatabse) {
 
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                for (each in tripLists) {
-                    database.tripListDao.apply {
+
+                if (tripLists != (trips?.value)) {
+                    for (each in tripLists) {
+                        database.tripListDao.apply {
 
 
-                        for (source in each.source) {
+                            for (source in each.source) {
 
-                            insertFuel(source.fuel.asDatabaseModel(source.sourceID))
-                            insertLocation(source.location.asDatabaseModel(source.sourceID))
+                                insertFuel(source.fuel.asDatabaseModel(source.sourceID))
+                                insertLocation(source.location.asDatabaseModel(source.sourceID))
+                            }
+
+                            for (site in each.site) {
+                                insertFuel(site.fuel.asDatabaseModel(site.siteID))
+                                insertLocation(site.location.asDatabaseModel(site.siteID))
+                            }
+                            insertSources(each.source.asDatabaseModel(each.tripID))
+                            insertSites(each.site.asDomainModel(each.tripID))
+
+                            insertTrip(each.asDatabaseModel())
                         }
-
-                        for (site in each.site) {
-                            insertFuel(site.fuel.asDatabaseModel(site.siteID))
-                            insertLocation(site.location.asDatabaseModel(site.siteID))
-                        }
-                        insertSources(each.source.asDatabaseModel(each.tripID))
-                        insertSites(each.site.asDomainModel(each.tripID))
-
-                        insertTrip(each.asDatabaseModel())
                     }
+                } else {
                 }
+
 
             } catch (e: Exception) {
                 //TODO check ID spelling on actual JSON
                 Log.i("AAAAAAAAAAAAA", e.message.toString())
             }
+
+
         }
     }
 
@@ -70,11 +83,11 @@ class TripListRepository(private val database: TripListDatabse) {
      * @param tripId The id of the trip
      * @param status The status of the trip
      */
-    suspend fun markTripCompleted(tripId: String, status: Boolean) {
+    suspend fun changeTripStatus(tripId: String, status: String) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                //database.tripListDao.markTripCompleted(tripId, status)
+                database.tripListDao.changeTripStatus(tripId, status)
             } catch (e: Exception) {
 
             }

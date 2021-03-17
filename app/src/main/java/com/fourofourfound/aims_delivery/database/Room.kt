@@ -50,6 +50,7 @@ interface TripListDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTrip(trip: DatabaseTrip)
 
+
     @Transaction
     @Query("select * from  DatabaseTrip ")
     fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>

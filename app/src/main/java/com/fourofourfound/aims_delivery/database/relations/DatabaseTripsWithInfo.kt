@@ -33,7 +33,9 @@ fun List<DatabaseTripsWithInfo>.asDomainModel(): List<Trip> {
             it.databaseTrips.travelID,
             it.databaseTrips.travelType,
             it.source.asDomainModel(),
-            it.site.asDomainModel()
+            it.site.asDomainModel(),
+            it.databaseTrips.status
+
         )
     }
 }

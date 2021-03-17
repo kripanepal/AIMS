@@ -33,12 +33,14 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/tripStartBottom"
+                        android:id="@+id/tripStatusImage"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        visibilityBasedOnStatus="@{trip.status}"
+
                         app:srcCompat="@drawable/trip_done_icon" />
 
                     <TextView
@@ -47,11 +49,11 @@
                         android:layout_height="wrap_content"
                         android:text="@{trip.tripID}"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/tripImage"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/tripImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,6 +85,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
                         android:text="Show details"
+                        visibilityBasedOnStatus="@{trip.status}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

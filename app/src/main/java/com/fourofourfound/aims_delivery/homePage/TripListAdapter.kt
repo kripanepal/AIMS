@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.homePage
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,6 @@ import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
  */
 class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<Trip,
         TripListAdapter.ViewHolder>(TripsDiffCallBack()) {
-
-    /**
-     * Data the list of trips that is used by the recycler view
-     */
-    var data = listOf<Trip>()
 
 
     /**
@@ -80,6 +76,7 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
             //added a new binding
             binding.trip = item
+            Log.i("AAAAAAAAAAAAAA", item.toString())
             binding.clickListener = clickListener
 
             //makes the nested view expandable

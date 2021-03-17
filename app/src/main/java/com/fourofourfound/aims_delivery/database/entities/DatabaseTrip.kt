@@ -13,5 +13,5 @@ class DatabaseTrip(
     var truckName: String,
     var travelID: String,
     var travelType: String,
-    val status: String = "Not Completed"
+    val status: String = "NOT_STARTED"
 )

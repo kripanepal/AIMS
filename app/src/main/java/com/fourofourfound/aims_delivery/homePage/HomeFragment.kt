@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,6 +88,13 @@ class HomePage : Fragment() {
 
         setUpToolBar()
 
+        viewModel.updating.observe(viewLifecycleOwner)
+        {
+            if (!it) {
+                Log.i("CCCCCCCCCCCCCC", "HERE")
+            }
+        }
+
         return binding.root
     }
 
@@ -135,7 +143,7 @@ class HomePage : Fragment() {
         val adapter = TripListAdapter(TripListListener { trip ->
 
             //set up the behaviour of button on the item being displayed
-            if (trip.status === "Completed") findNavController().navigate(
+            if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             )
         })
@@ -158,7 +166,7 @@ class HomePage : Fragment() {
         binding.btnStartTrip.setOnClickListener {
             viewModel.tripList?.value?.get(0)?.let {
                 val tripToStart = it
-                if (tripToStart.status !== "Not Started")
+                if (tripToStart.status !== "COMPLETED")
                     showStartTripDialog(tripToStart)
             }
         }

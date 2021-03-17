@@ -26,8 +26,10 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
      * List of trip that is a to be displayed
      */
     val tripList = tripListRepository.trips
+    val updating = tripListRepository.updating
     init {
         fetchTripFromNetwork()
+
 
     }
 
