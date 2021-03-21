@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
@@ -22,11 +21,8 @@ import kotlinx.coroutines.withContext
  */
 class TripListRepository(private val database: TripListDatabse) {
 
-    val updating = MutableLiveData(false)
     val trips: LiveData<List<Trip>>? = Transformations.map(database.tripListDao.getAllTrip()) {
-        updating.value = true
         val toReturn = it.asDomainModel()
-        updating.value = false
         toReturn
     }
 
@@ -45,21 +41,16 @@ class TripListRepository(private val database: TripListDatabse) {
                 if (tripLists != (trips?.value)) {
                     for (each in tripLists) {
                         database.tripListDao.apply {
-
-
                             for (source in each.source) {
-
                                 insertFuel(source.fuel.asDatabaseModel(source.sourceID))
                                 insertLocation(source.location.asDatabaseModel(source.sourceID))
                             }
-
                             for (site in each.site) {
                                 insertFuel(site.fuel.asDatabaseModel(site.siteID))
                                 insertLocation(site.location.asDatabaseModel(site.siteID))
                             }
                             insertSources(each.source.asDatabaseModel(each.tripID))
                             insertSites(each.site.asDomainModel(each.tripID))
-
                             insertTrip(each.asDatabaseModel())
                         }
                     }
