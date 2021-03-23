@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey">#AA808080</color>
 
     <color name="Antique_white">#99FDE9D8</color>
     <color name="Pale_pink">#99F9DDDD</color>
@@ -20,4 +21,7 @@
     <color name="Aims_brown">#32021B</color>
     <color name="Aims_light_orange">#F5C141</color>
     <color name="arrow_color">#4555E8</color>
+
+    <color name="light_grey">#D3D3D3</color>
+    <color name="dark_grey">#C0C0C0</color>
 </resources>
