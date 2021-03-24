@@ -5,8 +5,12 @@ import androidx.room.Relation
 import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.domain.TrailerInfo
+import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.domain.TruckInfo
 
-class DatabaseTripsWithInfo(
+data class DatabaseTripsWithInfo(
     @Embedded val tripInfo: DatabaseTrip,
     @Relation(
         parentColumn = "tripId",
@@ -20,3 +24,57 @@ class DatabaseTripsWithInfo(
     )
     val sourceOrSite: List<SourceWithTrailer>,
 )
+
+
+fun List<DatabaseTripsWithInfo>.asDomainModel(): List<Trip> {
+    var listOfSourceAndSite = mutableListOf<SourceOrSite>()
+    var finalList = mutableListOf<Trip>()
+    map {
+        for (each in it.sourceOrSite) {
+            each.apply {
+                var trailer =
+                    TrailerInfo(trailer.trailerId, trailer.trailerCode, trailer.trailerDesc)
+                source.apply {
+                    var sourceOrSite = SourceOrSite(
+                        trailer,
+                        seqNum,
+                        wayPointTypeDescription,
+                        latitude,
+                        longitude,
+                        destinationCode,
+                        destinationName,
+                        address1,
+                        city,
+                        stateAbbrev,
+                        postalCode,
+                        siteContainerCode,
+                        siteContainerDescription,
+                        delReqNum,
+                        delReqLineNum,
+                        productId,
+                        productCode,
+                        productDesc,
+                        requestedQty,
+                        uom,
+                        fill
+                    )
+                    listOfSourceAndSite.add(sourceOrSite)
+                }
+            }
+        }
+
+        var truck = TruckInfo(it.truck.truckId, it.truck.truckCode, it.truck.truckDesc)
+
+        var trip = Trip(
+            truck,
+            it.tripInfo.tripId,
+            it.tripInfo.tripName,
+            it.tripInfo.tripDate,
+            listOfSourceAndSite
+        )
+        finalList.add(trip)
+
+    }
+
+    return finalList
+}

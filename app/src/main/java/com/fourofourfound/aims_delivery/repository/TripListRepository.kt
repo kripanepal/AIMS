@@ -10,6 +10,7 @@ import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.relations.asDomainModel
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkModels
@@ -26,7 +27,7 @@ class TripListRepository(private val database: TripListDatabse) {
 
     val updating = MutableLiveData(false)
     val trips: LiveData<List<Trip>>? = Transformations.map(database.tripListDao.getAllTrip()) {
-        null
+        it.asDomainModel()
     }
 
 
@@ -35,16 +36,13 @@ class TripListRepository(private val database: TripListDatabse) {
      * Refresh the trips stored in the offline cache.
      */
     suspend fun refreshTrips() {
-
         withContext(Dispatchers.IO) {
-
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 saveTrips(tripLists.data.resultSet1)
-                Log.i("AAAAAA", tripLists.data.resultSet1.toString())
 
             } catch (e: Exception) {
-                //TODO check ID spelling on actual JSON
+                //todo need to do actual error handling
                 Log.i("AAAAAAAAAAAAA", e.message.toString())
             }
 
@@ -52,9 +50,7 @@ class TripListRepository(private val database: TripListDatabse) {
         }
     }
 
-    suspend fun saveTrips(list: List<NetworkModels.NetworkTrip>) {
-
-
+    private suspend fun saveTrips(list: List<NetworkModels.NetworkTrip>) {
         withContext(Dispatchers.IO) {
 
             try {

@@ -12,7 +12,7 @@ data class Trip(
     var tripId: String,
     var tripName: String,
     var tripDate: String,
-    var sourceOrSite: SourceOrSite,
+    var sourceOrSite: List<SourceOrSite>,
     val status: String = "NOT_STARTED",
 ) : Parcelable
 
@@ -31,8 +31,6 @@ data class SourceOrSite(
     var postalCode: Int,
 
 
-    val status: String = "NOT_STARTED",
-
     var siteContainerCode: String? = null,
     var siteContainerDescription: String? = null,
     var delReqNum: Int? = null,
@@ -43,6 +41,9 @@ data class SourceOrSite(
     var requestedQty: Int? = null,
     var uom: String? = null,
     var fill: String = "",
+
+
+    val status: String = "NOT_STARTED",
 
     ) : Parcelable
 
