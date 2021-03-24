@@ -4,24 +4,20 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.*
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 
 @Dao
 interface TripListDao {
-
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertTrips(vararg trip: DatabaseTrip)
-
-
     @Query("update DatabaseTrip set status=:status where tripId= :tripId")
     fun changeTripStatus(tripId: String, status: String)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
-
 
     //Locations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,21 +31,10 @@ interface TripListDao {
 
     //Dr.Smith Json
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSources(source: List<DatabaseSource>)
-
-    //Dr.Smith Json
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSites(site: List<DatabaseSite>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: DatabaseLocationWithAddress)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFuel(fuel: DatabaseFuel)
+    suspend fun insertSitesOrSource(vararg siteOrSource: DatabaseSourceOrSite)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTrip(trip: DatabaseTrip)
-
 
     @Transaction
     @Query("select * from  DatabaseTrip ")
@@ -60,7 +45,7 @@ interface TripListDao {
 
 
 @Database(
-    entities = [CustomDatabaseLocation::class, DatabaseSource::class, DatabaseLocationWithAddress::class, DatabaseFuel::class, DatabaseSite::class, DatabaseTrip::class],
+    entities = [DatabaseTrailer::class, DatabaseTrip::class, DatabaseTruck::class, DatabaseSourceOrSite::class, CustomDatabaseLocation::class],
     version = 1,
     exportSchema = false
 )

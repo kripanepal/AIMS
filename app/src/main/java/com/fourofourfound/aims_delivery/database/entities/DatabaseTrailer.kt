@@ -3,11 +3,12 @@ package com.fourofourfound.aims_delivery.database.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity
-class DatabaseSite(
+class DatabaseTrailer(
     @PrimaryKey
-    var siteId: String,
-    var name: String,
-    var tripId: String
+    var trailerId: Int,
+    var trailerCode: String,
+    var trailerDesc: String,
+    var truckId: Int
 )
+

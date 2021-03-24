@@ -2,40 +2,21 @@ package com.fourofourfound.aims_delivery.database.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSite
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSource
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
-import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
 
 class DatabaseTripsWithInfo(
-    @Embedded val databaseTrips: DatabaseTrip,
+    @Embedded val tripInfo: DatabaseTrip,
     @Relation(
         parentColumn = "tripId",
         entityColumn = "tripId",
-        entity = DatabaseSource::class,
-    )
-    val source: List<SourceWithLocationAndFuel>,
+
+        ) val truck: DatabaseTruck,
     @Relation(
         parentColumn = "tripId",
         entityColumn = "tripId",
-        entity = DatabaseSite::class
+        entity = DatabaseSourceOrSite::class
     )
-    val site: List<SiteWithLocationAndFuel>
+    val sourceOrSite: List<SourceWithTrailer>,
 )
-
-fun List<DatabaseTripsWithInfo>.asDomainModel(): List<Trip> {
-    return map {
-        Trip(
-            it.databaseTrips.tripId,
-            it.databaseTrips.tripLog,
-            it.databaseTrips.truckID,
-            it.databaseTrips.truckName,
-            it.databaseTrips.travelID,
-            it.databaseTrips.travelType,
-            it.source.asDomainModel(),
-            it.site.asDomainModel(),
-            it.databaseTrips.status
-
-        )
-    }
-}
