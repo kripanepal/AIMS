@@ -5,9 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
+import com.fourofourfound.aims_delivery.network.NetworkModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -35,8 +40,62 @@ class TripListRepository(private val database: TripListDatabse) {
 
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
+                saveTrips(tripLists.data.resultSet1)
                 Log.i("AAAAAA", tripLists.data.resultSet1.toString())
 
+            } catch (e: Exception) {
+                //TODO check ID spelling on actual JSON
+                Log.i("AAAAAAAAAAAAA", e.message.toString())
+            }
+
+
+        }
+    }
+
+    suspend fun saveTrips(list: List<NetworkModels.NetworkTrip>) {
+
+
+        withContext(Dispatchers.IO) {
+
+            try {
+                for (each in list) {
+                    each.apply {
+                        var truck = DatabaseTruck(truckId, truckCode, truckDesc, tripId)
+                        var trailer = DatabaseTrailer(trailerId, trailerCode, trailerDesc, truckId)
+                        var sourceOrSite = DatabaseSourceOrSite(
+                            tripId,
+                            seqNum,
+                            waypointTypeDescription,
+                            latitude,
+                            longitude,
+                            destinationCode,
+                            destinationName,
+                            siteContainerCode,
+                            siteContainerDescription,
+                            address1,
+                            city,
+                            stateAbbrev,
+                            postalCode,
+                            delReqNum,
+                            delReqLineNum,
+                            productId,
+                            productCode,
+                            productDesc,
+                            requestedQty,
+                            uom,
+                            fill,
+                            truckId,
+                            trailerId
+                        )
+                        var trip = DatabaseTrip(tripId, tripName, tripDate)
+
+                        database.tripListDao.insertTruck(truck)
+                        database.tripListDao.insertTrailer(trailer)
+                        database.tripListDao.insertSitesOrSource(sourceOrSite)
+                        database.tripListDao.insertTrip(trip)
+                    }
+
+                }
             } catch (e: Exception) {
                 //TODO check ID spelling on actual JSON
                 Log.i("AAAAAAAAAAAAA", e.message.toString())

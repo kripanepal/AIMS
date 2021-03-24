@@ -36,6 +36,12 @@ interface TripListDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTrip(trip: DatabaseTrip)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTruck(truck: DatabaseTruck)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTrailer(trailer: DatabaseTrailer)
+
     @Transaction
     @Query("select * from  DatabaseTrip ")
     fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>

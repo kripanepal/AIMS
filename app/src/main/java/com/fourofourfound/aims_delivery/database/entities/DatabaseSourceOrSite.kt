@@ -25,5 +25,7 @@ data class DatabaseSourceOrSite(
     var requestedQty: Int? = null,
     var uom: String? = null,
     var fill: String = "",
+    var truckId: Int,
     var trailerId: Int
 )
+
