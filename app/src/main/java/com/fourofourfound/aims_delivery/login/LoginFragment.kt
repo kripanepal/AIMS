@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.login
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
@@ -8,9 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -81,10 +78,14 @@ class LoginFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
         //checks if shared preferences already contains a user that is logged in
-        if(viewModel.checkUserLoggedIn()) {
-            findNavController().navigate(R.id.homePage)
-            sharedViewModel.userLoggedIn.value = true
-        }
+//        if(viewModel.checkUserLoggedIn()) {
+//            findNavController().navigate(R.id.homePage)
+//            sharedViewModel.userLoggedIn.value = true
+//        }
+
+        //TODO remove this
+        findNavController().navigate(R.id.homePage)
+        sharedViewModel.userLoggedIn.value = true
 
 
         //navigate to the homepage if valid authentication is provided

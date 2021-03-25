@@ -13,7 +13,7 @@ data class Trip(
     var tripName: String,
     var tripDate: String,
     var sourceOrSite: List<SourceOrSite>,
-    val status: String = "NOT_STARTED",
+    val status: String? = "NOT_STARTED",
 ) : Parcelable
 
 @Parcelize

@@ -47,5 +47,15 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun getFuelTypes(tripId: String): List<String>? {
+        var toReturn: List<String>? = null
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                toReturn = database.tripListDao.getAllProductsForTrip(tripId)
+            }
+        }
+        return toReturn
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.homePage
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +75,6 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
             //added a new binding
             binding.trip = item
-            Log.i("AAAAAAAAAAAAAA", item.toString())
             binding.clickListener = clickListener
 
             //makes the nested view expandable

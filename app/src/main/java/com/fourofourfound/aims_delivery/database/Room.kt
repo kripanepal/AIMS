@@ -33,18 +33,25 @@ interface TripListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSitesOrSource(vararg siteOrSource: DatabaseSourceOrSite)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrip(trip: DatabaseTrip)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTruck(truck: DatabaseTruck)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrailer(trailer: DatabaseTrailer)
 
     @Transaction
     @Query("select * from  DatabaseTrip ")
     fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
+
+    @Query("select productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
+    fun getAllProductsForTrip(tripId: String): List<String>
+
+
+    @Query("select * from  DatabaseTrip  where tripId=:tripId ")
+    fun getTripById(tripId: String): DatabaseTrip?
 
 
 }

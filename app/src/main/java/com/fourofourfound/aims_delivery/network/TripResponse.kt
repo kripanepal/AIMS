@@ -5,5 +5,5 @@ class TripResponse {
 }
 
 class Data {
-    lateinit var resultSet1: List<NetworkModels.NetworkTrip>
+    lateinit var resultSet1: List<NetworkTrip>
 }

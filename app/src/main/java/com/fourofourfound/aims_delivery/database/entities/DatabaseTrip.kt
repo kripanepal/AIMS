@@ -9,5 +9,5 @@ data class DatabaseTrip(
     var tripId: String,
     var tripName: String,
     var tripDate: String,
-    val status: String = "NOT_STARTED"
+    var status: String = "NOT_STARTED"
 )

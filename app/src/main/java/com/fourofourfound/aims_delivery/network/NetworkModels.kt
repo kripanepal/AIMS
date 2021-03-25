@@ -1,9 +1,6 @@
 package com.fourofourfound.aims_delivery.network
 
 import com.google.gson.annotations.SerializedName
-
-class NetworkModels {
-
     data class NetworkTrip(
         @SerializedName("TruckId")
         var truckId: Int,
@@ -94,4 +91,4 @@ class NetworkModels {
     )
 
 
-}
+

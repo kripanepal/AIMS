@@ -67,11 +67,12 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cardViewNestedView"
-                    android:visibility="gone"
+
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <View
+                        android:id="@+id/view"
                         android:layout_width="0dp"
                         android:layout_height="2dp"
                         android:background="#c0c0c0"
@@ -79,19 +80,51 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/tripSpecialInstructions"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ListView
+                        android:id="@+id/nestedTripDetailsListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        app:layout_constraintBottom_toTopOf="@+id/showDetailsBtn"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </ListView>
+
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/showDetailsBtn"
+                        textBasedOnStatus="@{trip.status}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
-                        android:text="Show details"
-                        visibilityBasedOnStatus="@{trip.status}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         tools:layout_conversion_absoluteHeight="48dp"
                         tools:layout_conversion_absoluteWidth="93dp" />
+
+                    <TextView
+                        android:id="@+id/totalFuelTypes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/tripSpecialInstructions"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view"
+                        app:layout_constraintVertical_bias="0.479" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 

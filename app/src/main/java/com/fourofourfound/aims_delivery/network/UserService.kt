@@ -17,7 +17,7 @@ import retrofit2.http.POST
  * Base URL
  * The URL of the server
  */
-private const val BASE_URL = "https://run.mocky.io/"
+private const val BASE_URL = "https://aims-server.herokuapp.com/"
 
 
 //a moshi object
@@ -48,7 +48,7 @@ interface UserService {
         Log.i("Refresh", location.toString())
     }
 
-    @GET("/v3/17320445-0a4b-4fb4-8627-2a8c24b458f0")
+    @GET("/alltrips")
     suspend fun getAllTrips(): TripResponse
 }
 

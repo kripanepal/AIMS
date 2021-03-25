@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,13 +87,6 @@ class HomePage : Fragment() {
 
         setUpToolBar()
 
-        viewModel.updating.observe(viewLifecycleOwner)
-        {
-            if (!it) {
-                Log.i("CCCCCCCCCCCCCC", "HERE")
-            }
-        }
-
         return binding.root
     }
 
@@ -130,7 +122,6 @@ class HomePage : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.fetchTripFromNetwork()
             if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
-
         }
     }
 
