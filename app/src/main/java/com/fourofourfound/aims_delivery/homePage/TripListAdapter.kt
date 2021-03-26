@@ -5,13 +5,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
 import com.fourofourfound.aims_delivery.domain.Trip
-import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
 /**
@@ -92,23 +90,19 @@ class TripListAdapter(
             binding.clickListener = clickListener
             var fuelInfo = mutableListOf<Fuel_with_info>()
 
+            //fuelInfo.add( Fuel_with_info("Fuel Type", "Source", "Site Count"))
+
             val productList = parentViewModel.getFuelTypes(item.tripId)
             if (productList != null) {
                 for (each in productList) {
                     var sourceName = parentViewModel.getSourceName(each, item.tripId)
                     var siteCount = parentViewModel.getSiteCount(each, item.tripId)
 
-                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount)
+                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount.toString())
 
                     fuelInfo.add(fuelWithInfo)
                 }
             }
-            val list: List<String> = (productList?.map { it } ?: null) as List<String>
-
-            val arrayAdapter = ArrayAdapter(context, R.layout.fuel_summary_view, list)
-
-            binding.totalFuelTypes.adapter = arrayAdapter
-
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
                 binding.cardViewNestedView.apply {
@@ -118,7 +112,7 @@ class TripListAdapter(
             }
 
             val adapter = FuelSummaryAdapter(context, fuelInfo)
-            binding.totalFuelTypes.adapter = adapter
+            binding.nestedTripDetailsListView.adapter = adapter
 
             binding.executePendingBindings()
         }

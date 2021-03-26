@@ -82,24 +82,26 @@
 
                     <TextView
                         android:id="@+id/tripSpecialInstructions"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
                         android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
 
                     <ListView
                         android:id="@+id/nestedTripDetailsListView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        app:layout_constraintBottom_toTopOf="@+id/showDetailsBtn"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                    </ListView>
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view"
+                        app:layout_constraintVertical_bias="0.479"></ListView>
 
                     <Button
                         android:id="@+id/showDetailsBtn"
@@ -113,17 +115,6 @@
                         tools:layout_conversion_absoluteHeight="48dp"
                         tools:layout_conversion_absoluteWidth="93dp" />
 
-                    <ListView
-                        android:id="@+id/totalFuelTypes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/tripSpecialInstructions"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/view"
-                        app:layout_constraintVertical_bias="0.479"></ListView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
