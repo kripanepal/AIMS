@@ -1,49 +1,55 @@
 package com.fourofourfound.aims_delivery.homePage
 
-
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
 import com.fourofourfound.aimsdelivery.R
 
+class FuelSummaryAdapter(private val dataSet: Array<Fuel_with_info>) :
+    RecyclerView.Adapter<FuelSummaryAdapter.ViewHolder>() {
 
-class FuelSummaryAdapter(context: Context, dataList: List<Fuel_with_info>) :
-    ArrayAdapter<Fuel_with_info>(context, R.layout.fuel_summary_view, dataList) {
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder).
+     */
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val fuelType: TextView
+        val fuelSource: TextView
+        val siteCount: TextView
 
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
-        val viewHolder: ViewHolder
-        if (convertView == null) {
-            val inflater = LayoutInflater.from(context)
-            convertView = inflater.inflate(R.layout.fuel_summary_view, null)
-            viewHolder = ViewHolder()
-            viewHolder.fuel_type = convertView.findViewById<View>(R.id.fuel_type) as TextView
-            viewHolder.fuel_source = convertView.findViewById<View>(R.id.fuel_source) as TextView
-            viewHolder.site_count = convertView.findViewById<View>(R.id.site_count) as TextView
-            convertView.tag = viewHolder
-        } else {
-            viewHolder = convertView.tag as ViewHolder
+        init {
+            // Define click listener for the ViewHolder's View.
+            fuelType = view.findViewById(R.id.fuel_type)
+            fuelSource = view.findViewById(R.id.fuel_source)
+            siteCount = view.findViewById(R.id.site_count)
         }
-
-        //you can use data.get(position) too
-        val data: Fuel_with_info? = getItem(position)
-        viewHolder.fuel_type.text = data?.fuel_type
-        viewHolder.fuel_source.text = data?.fuel_source
-        viewHolder.site_count.text = data?.site_count.toString()
-
-        return convertView!!
     }
 
-    inner class ViewHolder {
-        lateinit var fuel_type: TextView
-        lateinit var fuel_source: TextView
-        lateinit var site_count: TextView
+    // Create new views (invoked by the layout manager)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        // Create a new view, which defines the UI of the list item
+        val view = LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.fuel_summary_view, viewGroup, false)
+
+        return ViewHolder(view)
     }
 
-    //constructor
+    // Replace the contents of a view (invoked by the layout manager)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+
+        // Get element from your dataset at this position and replace the
+        // contents of the view with that element
+        viewHolder.fuelType.text = dataSet[position].fuel_type
+        viewHolder.fuelSource.text = dataSet[position].fuel_source
+        viewHolder.siteCount.text = dataSet[position].site_count
+    }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    override fun getItemCount() = dataSet.size
+
 }
+
+

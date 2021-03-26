@@ -111,7 +111,7 @@ class TripListAdapter(
                 }
             }
 
-            val adapter = FuelSummaryAdapter(context, fuelInfo)
+            val adapter = FuelSummaryAdapter(fuelInfo.toTypedArray())
             binding.nestedTripDetailsListView.adapter = adapter
 
             binding.executePendingBindings()

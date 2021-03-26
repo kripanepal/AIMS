@@ -69,7 +69,7 @@
                     android:id="@+id/cardViewNestedView"
 
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <View
                         android:id="@+id/view"
@@ -91,29 +91,27 @@
                         app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
 
-                    <ListView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/nestedTripDetailsListView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/view"
-                        app:layout_constraintVertical_bias="0.479"></ListView>
+                        app:layout_constraintTop_toBottomOf="@+id/view" />
 
-                    <Button
-                        android:id="@+id/showDetailsBtn"
-                        textBasedOnStatus="@{trip.status}"
-                        android:layout_width="1dp"
-                        android:layout_height="1dp"
-                        android:onClick="@{() -> clickListener.onClick(trip)}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_conversion_absoluteHeight="48dp"
-                        tools:layout_conversion_absoluteWidth="93dp" />
+                    <!--                    <Button-->
+                    <!--                        android:id="@+id/showDetailsBtn"-->
+                    <!--                        textBasedOnStatus="@{trip.status}"-->
+                    <!--                        android:layout_width="1dp"-->
+                    <!--                        android:layout_height="1dp"-->
+                    <!--                        android:onClick="@{() -> clickListener.onClick(trip)}"-->
+                    <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        tools:layout_conversion_absoluteHeight="48dp"-->
+                    <!--                        tools:layout_conversion_absoluteWidth="93dp" />-->
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
