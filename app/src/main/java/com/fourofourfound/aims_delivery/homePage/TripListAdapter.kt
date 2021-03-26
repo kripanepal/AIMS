@@ -1,12 +1,17 @@
 package com.fourofourfound.aims_delivery.homePage
 
+
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
 /**
@@ -17,6 +22,7 @@ import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
  * @constructor Create empty Trip list adapter
  */
 class TripListAdapter(
+    private val context: Context,
     private val clickListener: TripListListener,
     private val parentViewModel: HomePageViewModel
 ) : ListAdapter<Trip,
@@ -40,8 +46,8 @@ class TripListAdapter(
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
-        holder.bind(item, clickListener, parentViewModel)
-        holder.bind(getItem(position)!!, clickListener, parentViewModel)
+        holder.bind(context, item, clickListener, parentViewModel)
+        holder.bind(context, getItem(position)!!, clickListener, parentViewModel)
     }
 
 
@@ -74,14 +80,34 @@ class TripListAdapter(
          * @param item the item being displayed in the recycler view
          * @param clickListener the clickHandler for the item being displayed
          */
-        fun bind(item: Trip, clickListener: TripListListener, parentViewModel: HomePageViewModel) {
+        fun bind(
+            context: Context,
+            item: Trip,
+            clickListener: TripListListener,
+            parentViewModel: HomePageViewModel
+        ) {
 
             //added a new binding
             binding.trip = item
             binding.clickListener = clickListener
+            var fuelInfo = mutableListOf<Fuel_with_info>()
 
-//      val productList = parentViewModel.getFuelTypes(item.tripId)
-//            binding.totalFuelTypes.text = productList?.get(0).toString()
+            val productList = parentViewModel.getFuelTypes(item.tripId)
+            if (productList != null) {
+                for (each in productList) {
+                    var sourceName = parentViewModel.getSourceName(each, item.tripId)
+                    var siteCount = parentViewModel.getSiteCount(each, item.tripId)
+
+                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount)
+
+                    fuelInfo.add(fuelWithInfo)
+                }
+            }
+            val list: List<String> = (productList?.map { it } ?: null) as List<String>
+
+            val arrayAdapter = ArrayAdapter(context, R.layout.fuel_summary_view, list)
+
+            binding.totalFuelTypes.adapter = arrayAdapter
 
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
@@ -90,6 +116,9 @@ class TripListAdapter(
                     else View.VISIBLE
                 }
             }
+
+            val adapter = FuelSummaryAdapter(context, fuelInfo)
+            binding.totalFuelTypes.adapter = adapter
 
             binding.executePendingBindings()
         }

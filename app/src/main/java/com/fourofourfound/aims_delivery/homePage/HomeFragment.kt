@@ -131,7 +131,7 @@ class HomePage : Fragment() {
      */
     private fun setUpRecyclerView() {
         //adapter for the recycler view
-        val adapter = TripListAdapter(TripListListener { trip ->
+        val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
 
             //set up the behaviour of button on the item being displayed
             if (trip.status == "COMPLETED") findNavController().navigate(

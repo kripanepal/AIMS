@@ -58,5 +58,25 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         return toReturn
     }
 
+    fun getSourceName(fuelType: String, tripId: String): String {
+        var toReturn: String
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                toReturn = database.tripListDao.getFuelSource(fuelType, tripId)
+            }
+        }
+        return toReturn
+    }
+
+    fun getSiteCount(fuelType: String, tripId: String): Int {
+        var toReturn: Int
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                toReturn = database.tripListDao.getSiteCount(fuelType, tripId)
+            }
+        }
+        return toReturn
+    }
+
 
 }

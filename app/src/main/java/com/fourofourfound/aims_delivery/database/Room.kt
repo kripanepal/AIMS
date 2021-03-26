@@ -49,6 +49,11 @@ interface TripListDao {
     @Query("select distinct productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
     fun getAllProductsForTrip(tripId: String): List<String>
 
+    @Query("select destinationName from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Source'and tripId =:tripId")
+    fun getFuelSource(productDesc: String, tripId: String): String
+
+    @Query("select count(wayPointTypeDescription) from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Site Container' and tripId =:tripId")
+    fun getSiteCount(productDesc: String, tripId: String): Int
 
     @Query("select * from  DatabaseTrip  where tripId=:tripId ")
     fun getTripById(tripId: String): DatabaseTrip?

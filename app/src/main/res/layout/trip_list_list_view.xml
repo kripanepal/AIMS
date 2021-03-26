@@ -104,8 +104,8 @@
                     <Button
                         android:id="@+id/showDetailsBtn"
                         textBasedOnStatus="@{trip.status}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="1dp"
+                        android:layout_height="1dp"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +113,7 @@
                         tools:layout_conversion_absoluteHeight="48dp"
                         tools:layout_conversion_absoluteWidth="93dp" />
 
-                    <TextView
+                    <ListView
                         android:id="@+id/totalFuelTypes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/view"
-                        app:layout_constraintVertical_bias="0.479" />
+                        app:layout_constraintVertical_bias="0.479"></ListView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
