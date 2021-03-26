@@ -16,7 +16,10 @@ import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
  * @property clickListener click handler for a button  for each trip
  * @constructor Create empty Trip list adapter
  */
-class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<Trip,
+class TripListAdapter(
+    private val clickListener: TripListListener,
+    private val parentViewModel: HomePageViewModel
+) : ListAdapter<Trip,
         TripListAdapter.ViewHolder>(TripsDiffCallBack()) {
 
 
@@ -37,8 +40,8 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
-        holder.bind(item, clickListener)
-        holder.bind(getItem(position)!!, clickListener)
+        holder.bind(item, clickListener, parentViewModel)
+        holder.bind(getItem(position)!!, clickListener, parentViewModel)
     }
 
 
@@ -71,11 +74,14 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
          * @param item the item being displayed in the recycler view
          * @param clickListener the clickHandler for the item being displayed
          */
-        fun bind(item: Trip, clickListener: TripListListener) {
+        fun bind(item: Trip, clickListener: TripListListener, parentViewModel: HomePageViewModel) {
 
             //added a new binding
             binding.trip = item
             binding.clickListener = clickListener
+
+//      val productList = parentViewModel.getFuelTypes(item.tripId)
+//            binding.totalFuelTypes.text = productList?.get(0).toString()
 
             //makes the nested view expandable
             binding.cardView.setOnClickListener {

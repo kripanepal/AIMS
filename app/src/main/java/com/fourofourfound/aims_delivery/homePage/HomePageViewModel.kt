@@ -7,6 +7,7 @@ import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -48,8 +49,8 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getFuelTypes(tripId: String): List<String>? {
-        var toReturn: List<String>? = null
-        viewModelScope.launch {
+        var toReturn: List<String>?
+        runBlocking {
             withContext(Dispatchers.IO) {
                 toReturn = database.tripListDao.getAllProductsForTrip(tripId)
             }

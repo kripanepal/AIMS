@@ -102,8 +102,7 @@ class TripListRepository(private val database: TripListDatabse) {
                         }
                     }
                 } catch (e: Exception) {
-                    //TODO check ID spelling on actual JSON
-                    Log.i("AAAAAAAAAAAAA", e.message.toString())
+
                 }
 
 

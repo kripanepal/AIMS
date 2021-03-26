@@ -137,7 +137,7 @@ class HomePage : Fragment() {
             if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             )
-        })
+        }, viewModel)
 
         binding.tripList.adapter = adapter
 

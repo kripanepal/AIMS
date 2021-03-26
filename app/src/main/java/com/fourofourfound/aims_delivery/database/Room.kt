@@ -46,7 +46,7 @@ interface TripListDao {
     @Query("select * from  DatabaseTrip ")
     fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
 
-    @Query("select productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
+    @Query("select distinct productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
     fun getAllProductsForTrip(tripId: String): List<String>
 
 
