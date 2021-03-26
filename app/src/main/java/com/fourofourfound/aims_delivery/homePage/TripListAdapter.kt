@@ -90,7 +90,7 @@ class TripListAdapter(
             binding.clickListener = clickListener
             var fuelInfo = mutableListOf<Fuel_with_info>()
 
-            //fuelInfo.add( Fuel_with_info("Fuel Type", "Source", "Site Count"))
+            fuelInfo.add(Fuel_with_info("Fuel Type", "Source", "#Site"))
 
             val productList = parentViewModel.getFuelTypes(item.tripId)
             if (productList != null) {

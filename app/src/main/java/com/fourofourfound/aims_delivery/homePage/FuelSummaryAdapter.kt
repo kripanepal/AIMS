@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.homePage
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +17,9 @@ class FuelSummaryAdapter(private val dataSet: Array<Fuel_with_info>) :
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val fuelType: TextView
-        val fuelSource: TextView
-        val siteCount: TextView
-
-        init {
-            // Define click listener for the ViewHolder's View.
-            fuelType = view.findViewById(R.id.fuel_type)
-            fuelSource = view.findViewById(R.id.fuel_source)
-            siteCount = view.findViewById(R.id.site_count)
-        }
+        val fuelType: TextView = view.findViewById(R.id.fuel_type)
+        val fuelSource: TextView = view.findViewById(R.id.fuel_source)
+        val siteCount: TextView = view.findViewById(R.id.site_count)
     }
 
     // Create new views (invoked by the layout manager)
@@ -45,6 +39,12 @@ class FuelSummaryAdapter(private val dataSet: Array<Fuel_with_info>) :
         viewHolder.fuelType.text = dataSet[position].fuel_type
         viewHolder.fuelSource.text = dataSet[position].fuel_source
         viewHolder.siteCount.text = dataSet[position].site_count
+
+        if (position == 0) {
+            viewHolder.fuelType.setTypeface(null, Typeface.BOLD)
+            viewHolder.fuelSource.setTypeface(null, Typeface.BOLD)
+            viewHolder.siteCount.setTypeface(null, Typeface.BOLD)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
