@@ -41,9 +41,7 @@ data class SourceOrSite(
     var requestedQty: Int? = null,
     var uom: String? = null,
     var fill: String = "",
-
-
-    val status: String = "NOT_STARTED",
+    var status: String,
 
     ) : Parcelable
 

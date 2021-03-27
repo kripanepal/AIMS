@@ -18,7 +18,7 @@ import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
-class LoadInfoFragment  : Fragment(){
+class LoadInfoFragment : Fragment() {
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -43,7 +43,10 @@ class LoadInfoFragment  : Fragment(){
 
         adapter.data = currentTrip.sourceOrSite
 
-
+        sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
+        {
+            adapter.data = it.sourceOrSite
+        }
         startTripOnClick(currentTrip)
         return binding.root
     }
@@ -91,11 +94,18 @@ class LoadInfoFragment  : Fragment(){
      * redirect the user to delivery page for a specific trip
      */
     private fun startTripOnClick(currentTrip: Trip) {
+        var notCompletedList = currentTrip.sourceOrSite.filter {
+            it.status != "COMPLETED"
+        }
+        var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
+
         binding.startNavigation.setOnClickListener {
-//            if(sharedViewModel.selectedTrip.value != currentTrip){
+            if (sharedViewModel.selectedTrip.value != currentTrip) {
                 sharedViewModel.selectedTrip.value = currentTrip
-                showStartTripDialog(currentTrip.sourceOrSite[0])
-//            }
+                showStartTripDialog(sortedList[0])
+            } else {
+                markTripStart(sortedList[0])
+            }
         }
     }
 }

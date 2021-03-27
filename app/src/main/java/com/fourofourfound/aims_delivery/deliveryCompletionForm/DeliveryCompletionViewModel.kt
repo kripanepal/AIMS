@@ -13,7 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DeliveryCompletionViewModel(val application: Application, currentSourceOrSite: SourceOrSite) : ViewModel() {
+class DeliveryCompletionViewModel(
+    val application: Application,
+    val currentSourceOrSite: SourceOrSite
+) : ViewModel() {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
@@ -59,5 +62,14 @@ class DeliveryCompletionViewModel(val application: Application, currentSourceOrS
         doneSubmitting.value = false
     }
 
+    fun markDeliveryCompleted(tripId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                tripListRepository.markDeliveryCompleted(tripId, currentSourceOrSite.seqNum)
+            }
 
+        }
+
+
+    }
 }
