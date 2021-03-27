@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -136,7 +137,14 @@ class HomePage : Fragment() {
             //set up the behaviour of button on the item being displayed
             if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
-            )
+            ) else {
+                Log.i("AAAAAAA", "Here")
+                findNavController().navigate(
+                    HomePageDirections.actionHomePageToLoadInfoFragment(
+                        trip
+                    )
+                )
+            }
         }, viewModel)
 
         binding.tripList.adapter = adapter

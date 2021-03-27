@@ -115,6 +115,8 @@ class TripListAdapter(
             binding.nestedTripDetailsListView.adapter = adapter
 
             binding.executePendingBindings()
+
+
         }
     }
 

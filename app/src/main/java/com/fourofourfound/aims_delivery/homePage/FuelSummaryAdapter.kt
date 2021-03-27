@@ -40,6 +40,7 @@ class FuelSummaryAdapter(private val dataSet: Array<Fuel_with_info>) :
         viewHolder.fuelSource.text = dataSet[position].fuel_source
         viewHolder.siteCount.text = dataSet[position].site_count
 
+
         if (position == 0) {
             viewHolder.fuelType.setTypeface(null, Typeface.BOLD)
             viewHolder.fuelSource.setTypeface(null, Typeface.BOLD)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_navigation"
     app:startDestination="@id/homePage">
 
@@ -16,6 +17,9 @@
         <action
             android:id="@+id/action_homePage_to_completedDeliveryFragment"
             app:destination="@id/completedDeliveryFragment" />
+        <action
+            android:id="@+id/action_homePage_to_loadInfoFragment"
+            app:destination="@id/loadInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/completedDeliveryFragment"
@@ -29,4 +33,13 @@
         android:id="@+id/loginFragment"
         android:name="com.fourofourfound.aims_delivery.login.LoginFragment"
         android:label="LoginFragment" />
+    <fragment
+        android:id="@+id/loadInfoFragment"
+        android:name="com.fourofourfound.aims_delivery.loadInformation.LoadInfoFragment"
+        android:label="load_information"
+        tools:layout="@layout/load_information">
+        <argument
+            android:name="trip"
+            app:argType="com.fourofourfound.aims_delivery.domain.Trip" />
+    </fragment>
 </navigation>
