@@ -97,6 +97,9 @@ class LoadInfoFragment : Fragment() {
         var notCompletedList = currentTrip.sourceOrSite.filter {
             it.status != "COMPLETED"
         }
+        if (notCompletedList.isEmpty()) {
+            binding.startNavigation.visibility = View.GONE
+        }
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
 
         binding.startNavigation.setOnClickListener {

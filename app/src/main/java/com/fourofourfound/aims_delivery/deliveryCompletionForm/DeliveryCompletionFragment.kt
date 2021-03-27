@@ -58,8 +58,6 @@ class DeliveryCompletionFragment : Fragment() {
                 //TODO need to manage this
                 sharedViewModel.selectedSourceOrSite.value!!.status = "COMPLETED"
                 sharedViewModel.selectedSourceOrSite.value = null
-
-
             }
         }
         return binding.root
