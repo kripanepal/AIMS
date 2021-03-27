@@ -33,26 +33,27 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/tripStartBottom"
+                        android:id="@+id/tripStatusImage"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:visibility="@{trip.completed?View.VISIBLE:View.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        visibilityBasedOnStatus="@{trip.status}"
+
                         app:srcCompat="@drawable/trip_done_icon" />
 
                     <TextView
                         android:id="@+id/tripListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{trip.name}"
+                        android:text="@{trip.tripId}"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/tripImage"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/tripImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,11 +67,12 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cardViewNestedView"
-                    android:visibility="gone"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <View
+                        android:id="@+id/view"
                         android:layout_width="0dp"
                         android:layout_height="2dp"
                         android:background="#c0c0c0"
@@ -78,19 +80,40 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Button
-                        android:id="@+id/button"
+                    <TextView
+                        android:id="@+id/tripSpecialInstructions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{trip.completed?View.VISIBLE:View.GONE}"
-                        android:onClick="@{() -> clickListener.onClick(trip)}"
-                        android:text="Show details"
+                        android:layout_marginTop="14dp"
+                        android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
+                        app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
+                        app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/nestedTripDetailsListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view" />
+
+                    <Button
+                        android:id="@+id/showDetailsBtn"
+                        textBasedOnStatus="@{trip.status}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> clickListener.onClick(trip)}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         tools:layout_conversion_absoluteHeight="48dp"
                         tools:layout_conversion_absoluteWidth="93dp" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 

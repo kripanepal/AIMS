@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,7 @@ class HomePage : Fragment() {
         //navigate user to login screen if user is not logged in
         if (!sharedViewModel.userLoggedIn.value!!) {
             findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
+            return binding.root
         }
 
         //initialize viewModel and assign value to the viewModel in xml file
@@ -121,7 +123,6 @@ class HomePage : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.fetchTripFromNetwork()
             if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
-
         }
     }
 
@@ -131,18 +132,26 @@ class HomePage : Fragment() {
      */
     private fun setUpRecyclerView() {
         //adapter for the recycler view
-        val adapter = TripListAdapter(TripListListener { trip ->
+        val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
 
             //set up the behaviour of button on the item being displayed
-            if (trip.completed) findNavController().navigate(
+            if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
-            )
-        })
+            ) else {
+                Log.i("AAAAAAA", "Here")
+                findNavController().navigate(
+                    HomePageDirections.actionHomePageToLoadInfoFragment(
+                        trip
+                    )
+                )
+            }
+        }, viewModel)
 
         binding.tripList.adapter = adapter
 
+
         //observe for any changes on the trips and inform that to the user
-        viewModel.tripList.observe(viewLifecycleOwner) {
+        viewModel.tripList?.observe(viewLifecycleOwner) {
             //TODO new trip was added or modified. Need to send the notification to the user
             adapter.submitList(it)
         }
@@ -154,29 +163,11 @@ class HomePage : Fragment() {
      */
     private fun startTripOnClick() {
         binding.btnStartTrip.setOnClickListener {
-
-            //If the user selects Start Trip and there is no trip available, prevents the app from crashing
-            if(!viewModel.tripList.value.isNullOrEmpty()) {
-                viewModel.tripList.value?.get(0)?.let {
-                    val tripToStart = it
-
-                    if (!tripToStart.completed)
-                        showStartTripDialog(tripToStart)
-                }
+            viewModel.tripList?.value?.get(0)?.let {
+                val tripToStart = it
+                if (tripToStart.status !== "COMPLETED")
+                    showStartTripDialog(tripToStart)
             }
-            else {
-                CustomDialogBuilder(
-                    requireContext(),
-                    "There are currently no trips available",
-                    null,
-                    "Ok",
-                    null,
-                    null,
-                    null,
-                    true
-                ).builder.show()
-            }
-
         }
     }
 

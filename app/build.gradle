@@ -161,5 +161,13 @@ dependencies {
     //loading animation
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+    compile 'com.squareup.retrofit2:converter-gson:2.5.0'
+
+
+
+
+
 
 }
