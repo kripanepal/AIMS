@@ -46,7 +46,8 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
      */
     fun markTripAsCompleted() {
         viewModelScope.launch {
-            tripListRepository.markTripCompleted(currentTrip.value!!._id, true)
+            //TODO change status of trips
+            tripListRepository.changeTripStatus(currentTrip.value!!.tripId, "COMPLETED")
             _tripCompleted.value = true
 
         }

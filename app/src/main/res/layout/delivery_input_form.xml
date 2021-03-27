@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/lightgrey_rectangularbox">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout1"
+        android:layout_width="384dp"
+        android:layout_height="195dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.592"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/bill_of_lading"
+            android:layout_width="212dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="number"
+            android:text="Bill Of Lading:"
+
+            app:layout_constraintBottom_toTopOf="@+id/start_date"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/start_date"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/start_date"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="date"
+            android:text="Start Date:"
+
+            app:layout_constraintBottom_toTopOf="@+id/start_time"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/end_date"
+            app:layout_constraintTop_toBottomOf="@+id/bill_of_lading" />
+
+        <EditText
+            android:id="@+id/end_date"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="date"
+            android:text="End Date:"
+
+            app:layout_constraintBottom_toTopOf="@+id/end_time"
+            app:layout_constraintLeft_toRightOf="@+id/start_date"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bill_of_lading" />
+
+        <EditText
+            android:id="@+id/start_time"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="time"
+            android:text="Start Time"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/end_time"
+            app:layout_constraintTop_toBottomOf="@+id/start_date" />
+
+        <EditText
+            android:id="@+id/end_time"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="time"
+            android:text="End Time"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/start_time"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/end_date" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
+        android:background="@drawable/darkgrey_rectangularbox"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1">
+
+
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/small_input_box"
+            app:layout_constraintRight_toLeftOf="@+id/editTextNumberDecimal"
+            />
+
+        <EditText
+            android:id="@+id/editTextNumberDecimal"
+            android:layout_width="130dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="numberDecimal"
+
+            android:text="Net Quantity:"
+            app:layout_constraintLeft_toRightOf="@id/spinner"
+            app:layout_constraintRight_toLeftOf="@id/editTextNumberDecimal2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextNumberDecimal2"
+            android:layout_width="130dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/small_input_box"
+            android:ems="10"
+            android:inputType="numberDecimal"
+
+            android:text="Gross Quantity:"
+            app:layout_constraintLeft_toRightOf="@id/editTextNumberDecimal"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/darkgrey_rectangularbox"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/textview1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trailer Fuel Level"
+            android:layout_margin="8dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/before1"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/after1"
+            app:layout_constraintTop_toBottomOf="@+id/textview1" />
+
+        <EditText
+            android:id="@+id/after1"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+            app:layout_constraintTop_toBottomOf="@+id/textview1"
+            app:layout_constraintLeft_toRightOf="@+id/before1"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/textview2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Site Container Fuel Level"
+           android:layout_margin="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/before1"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <EditText
+            android:id="@+id/before2"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+
+            app:layout_constraintTop_toBottomOf="@+id/textview2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/after2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <EditText
+            android:id="@+id/after2"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:background="@drawable/small_input_box"
+
+            app:layout_constraintTop_toBottomOf="@+id/textview2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/before2"/>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="408dp"
+        android:layout_height="156dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <TextView
+            android:id="@+id/textview3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Signature:"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/signature"
+            app:layout_constraintStart_toStartOf="@id/signature"
+            />
+
+        <EditText
+            android:id="@+id/signature"
+            android:layout_width="400dp"
+            android:layout_height="100dp"
+            android:background="@drawable/small_input_box"
+            app:layout_constraintTop_toBottomOf="@id/textview3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

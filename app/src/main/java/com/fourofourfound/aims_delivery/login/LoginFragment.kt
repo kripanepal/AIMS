@@ -78,10 +78,14 @@ class LoginFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
         //checks if shared preferences already contains a user that is logged in
-        if(viewModel.checkUserLoggedIn()) {
-            findNavController().navigate(R.id.homePage)
-            sharedViewModel.userLoggedIn.value = true
-        }
+//        if(viewModel.checkUserLoggedIn()) {
+//            findNavController().navigate(R.id.homePage)
+//            sharedViewModel.userLoggedIn.value = true
+//        }
+
+        //TODO remove this
+        findNavController().navigate(R.id.homePage)
+        sharedViewModel.userLoggedIn.value = true
 
 
         //navigate to the homepage if valid authentication is provided

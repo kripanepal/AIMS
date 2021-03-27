@@ -1,11 +1,14 @@
 package com.fourofourfound.aims_delivery.homePage
 
+
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
@@ -16,13 +19,12 @@ import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
  * @property clickListener click handler for a button  for each trip
  * @constructor Create empty Trip list adapter
  */
-class TripListAdapter(private val clickListener: TripListListener) : ListAdapter<Trip,
+class TripListAdapter(
+    private val context: Context,
+    private val clickListener: TripListListener,
+    private val parentViewModel: HomePageViewModel
+) : ListAdapter<Trip,
         TripListAdapter.ViewHolder>(TripsDiffCallBack()) {
-
-    /**
-     * Data the list of trips that is used by the recycler view
-     */
-    var data = listOf<Trip>()
 
 
     /**
@@ -42,8 +44,8 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
-        holder.bind(item, clickListener)
-        holder.bind(getItem(position)!!, clickListener)
+        holder.bind(context, item, clickListener, parentViewModel)
+        holder.bind(context, getItem(position)!!, clickListener, parentViewModel)
     }
 
 
@@ -76,12 +78,31 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
          * @param item the item being displayed in the recycler view
          * @param clickListener the clickHandler for the item being displayed
          */
-        fun bind(item: Trip, clickListener: TripListListener) {
+        fun bind(
+            context: Context,
+            item: Trip,
+            clickListener: TripListListener,
+            parentViewModel: HomePageViewModel
+        ) {
 
             //added a new binding
             binding.trip = item
             binding.clickListener = clickListener
+            var fuelInfo = mutableListOf<Fuel_with_info>()
 
+            fuelInfo.add(Fuel_with_info("Fuel Type", "Source", "#Site"))
+
+            val productList = parentViewModel.getFuelTypes(item.tripId)
+            if (productList != null) {
+                for (each in productList) {
+                    var sourceName = parentViewModel.getSourceName(each, item.tripId)
+                    var siteCount = parentViewModel.getSiteCount(each, item.tripId)
+
+                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount.toString())
+
+                    fuelInfo.add(fuelWithInfo)
+                }
+            }
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
                 binding.cardViewNestedView.apply {
@@ -90,7 +111,12 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
                 }
             }
 
+            val adapter = FuelSummaryAdapter(fuelInfo.toTypedArray())
+            binding.nestedTripDetailsListView.adapter = adapter
+
             binding.executePendingBindings()
+
+
         }
     }
 
@@ -105,7 +131,7 @@ class TripListAdapter(private val clickListener: TripListListener) : ListAdapter
 
         override fun areItemsTheSame(oldItem: Trip, newItem: Trip): Boolean {
             //check for similar item
-            return oldItem._id == newItem._id
+            return oldItem.tripId == newItem.tripId
         }
 
         override fun areContentsTheSame(oldItem: Trip, newItem: Trip): Boolean {

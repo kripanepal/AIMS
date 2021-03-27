@@ -4,32 +4,20 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.load.DatabaseLoad
+import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
+import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.entities.trip.DatabaseTrip
-import com.fourofourfound.aims_delivery.database.relations.TripWithLoads
+import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 
 @Dao
 interface TripListDao {
-    @Query("select * from DatabaseTrip order by completed")
-    fun getTripList(): LiveData<List<DatabaseTrip>>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertTrips(vararg trip: DatabaseTrip)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertLoads(vararg trip: DatabaseLoad)
-
-    @Query("update DatabaseTrip set completed=:status where _id= :tripId")
-    fun markTripCompleted(tripId: String, status: Boolean)
+    @Query("update DatabaseTrip set status=:status where tripId= :tripId")
+    fun changeTripStatus(tripId: String, status: String)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
-
-    @Transaction
-    @Query("select * from DatabaseTrip where _id = :tripId")
-    fun getTripWithLoads(tripId: String): List<TripWithLoads>
-
 
     //Locations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -41,10 +29,44 @@ interface TripListDao {
     @Query("delete  from CustomDatabaseLocation")
     suspend fun deleteAllLocations()
 
+    //Dr.Smith Json
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSitesOrSource(vararg siteOrSource: DatabaseSourceOrSite)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrip(trip: DatabaseTrip)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTruck(truck: DatabaseTruck)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrailer(trailer: DatabaseTrailer)
+
+    @Transaction
+    @Query("select * from  DatabaseTrip ")
+    fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
+
+    @Query("select distinct productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
+    fun getAllProductsForTrip(tripId: String): List<String>
+
+    @Query("select destinationName from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Source'and tripId =:tripId")
+    fun getFuelSource(productDesc: String, tripId: String): String
+
+    @Query("select count(wayPointTypeDescription) from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Site Container' and tripId =:tripId")
+    fun getSiteCount(productDesc: String, tripId: String): Int
+
+    @Query("select * from  DatabaseTrip  where tripId=:tripId ")
+    fun getTripById(tripId: String): DatabaseTrip?
+
+
 }
 
 
-@Database(entities = [DatabaseTrip::class, CustomDatabaseLocation::class,DatabaseLoad::class], version = 1,exportSchema = false)
+@Database(
+    entities = [DatabaseTrailer::class, DatabaseTrip::class, DatabaseTruck::class, DatabaseSourceOrSite::class, CustomDatabaseLocation::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class TripListDatabse : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }
@@ -59,7 +81,8 @@ fun getDatabase(context: Context): TripListDatabse {
                 context.applicationContext,
                 TripListDatabse::class.java,
                 "trips"
-            ).build()
+            )
+                .build()
         }
     }
     return INSTANCE
