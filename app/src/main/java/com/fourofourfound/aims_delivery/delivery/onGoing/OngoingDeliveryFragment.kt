@@ -17,8 +17,6 @@ import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.source_or_site_info.*
-import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
 /**
@@ -115,7 +113,14 @@ class OngoingDeliveryFragment : Fragment() {
 
 
         binding.deliveryCompletedButton.setOnClickListener {
-            getTripCompletedDialogBox(requireContext()).show()
+            var navigateToForm = {
+                findNavController().navigate(
+                    OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
+                        currentSourceOrSite
+                    )
+                )
+            }
+            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
         }
         return binding.root
     }

@@ -8,10 +8,26 @@
         android:id="@+id/ongoingDeliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment"
 
-        android:label="Current Trip" />
+        android:label="Current Trip">
+        <action
+            android:id="@+id/action_ongoingDeliveryFragment_to_deliveryCompletionFragment"
+            app:destination="@id/deliveryCompletionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigationFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment"
-        android:label="Navigation" />
+        android:label="Navigation">
+        <action
+            android:id="@+id/action_navigationFragment_to_deliveryCompletionFragment"
+            app:destination="@id/deliveryCompletionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryCompletionFragment"
+        android:name="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment"
+        android:label="DeliveryCompletionFragment">
+        <argument
+            android:name="sourceOrSite"
+            app:argType="com.fourofourfound.aims_delivery.domain.SourceOrSite" />
+    </fragment>
 
 </navigation>
