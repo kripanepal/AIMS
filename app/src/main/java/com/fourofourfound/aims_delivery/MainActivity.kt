@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -156,8 +157,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        currentNavController?.value?.navigateUp()
-    }
+        if (currentNavController?.value?.currentDestination?.id == R.id.homePage) {
+            super.onBackPressed()
+        } else {
+            navController.navigateUp()
+        }
 
+    }
 }
