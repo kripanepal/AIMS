@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.loadInformation
+package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

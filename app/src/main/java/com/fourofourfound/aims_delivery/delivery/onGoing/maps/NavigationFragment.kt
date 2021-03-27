@@ -18,6 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
@@ -203,7 +205,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
-                navigationManager.simulate(route!!, 50)
+                navigationManager.simulate(route!!, 100)
                 map.tilt = 70f
             }
             val alertDialog = alertDialogBuilder.create()
@@ -330,10 +332,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.activeRoute = null
         removeListeners()
         lifecycleScope.launchWhenResumed {
-            findNavController().navigateUp()
+            //TODO inform dispatcher about destination reached
+            getTripCompletedDialogBox(requireContext()).show()
         }
     }
-
 
     private fun meterPerSecToMilesPerHour(speed: Double): Int {
         return (speed * 2.23694).toInt()

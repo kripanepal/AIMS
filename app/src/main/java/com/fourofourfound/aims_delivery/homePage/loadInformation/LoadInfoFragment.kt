@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.loadInformation
+package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -92,10 +92,10 @@ class LoadInfoFragment  : Fragment(){
      */
     private fun startTripOnClick(currentTrip: Trip) {
         binding.startNavigation.setOnClickListener {
-            if(sharedViewModel.selectedTrip.value != currentTrip){
+//            if(sharedViewModel.selectedTrip.value != currentTrip){
                 sharedViewModel.selectedTrip.value = currentTrip
                 showStartTripDialog(currentTrip.sourceOrSite[0])
-            }
+//            }
         }
     }
 }

@@ -13,9 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.source_or_site_info.*
+import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
 /**
@@ -77,6 +80,7 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
+
         //viewModel used by this fragment
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -96,7 +100,23 @@ class OngoingDeliveryFragment : Fragment() {
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
+        var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
+        binding.sourceOrSite = currentSourceOrSite
+        binding.currentTrip = sharedViewModel.selectedTrip.value
+        binding.sourceOrSiteInfo.apply {
+
+            sourceOrSiteName.text = currentSourceOrSite.destinationName
+            address.text = currentSourceOrSite.address1
+            productDesc.text = currentSourceOrSite.productDesc
+            productQty.text = currentSourceOrSite.requestedQty.toString() + " " + currentSourceOrSite.uom
+
+        }
+
+
+        binding.deliveryCompletedButton.setOnClickListener {
+            getTripCompletedDialogBox(requireContext()).show()
+        }
         return binding.root
     }
 
@@ -143,6 +163,7 @@ class OngoingDeliveryFragment : Fragment() {
             false
         ).builder.show()
     }
+
 
 
 }

@@ -35,7 +35,7 @@
         android:label="LoginFragment" />
     <fragment
         android:id="@+id/loadInfoFragment"
-        android:name="com.fourofourfound.aims_delivery.loadInformation.LoadInfoFragment"
+        android:name="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment"
         android:label="load_information"
         tools:layout="@layout/load_information">
         <argument

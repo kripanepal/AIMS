@@ -8,44 +8,92 @@
         <variable
             name="viewModel"
             type="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryViewModel" />
+
+        <variable
+            name="sourceOrSite"
+            type="com.fourofourfound.aims_delivery.domain.SourceOrSite" />
+
+        <variable
+            name="currentTrip"
+            type="com.fourofourfound.aims_delivery.domain.Trip" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment">
 
         <!-- TODO: Update blank fragment layout -->
 
-        <Button
-            android:id="@+id/trip_complete_btn"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/wayPoint_type"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{()->viewModel.markTripAsCompleted()}"
-            android:text="Mark as completed"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="@{sourceOrSite.waypointTypeDescription}"
+            android:textFontWeight="20"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/delivery_page_trip_id"
-            android:layout_width="wrap_content"
+            android:id="@+id/trip_id"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.currentTrip.tripId}"
-            app:layout_constraintBottom_toTopOf="@+id/trip_complete_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@{currentTrip.tripId}" />
 
-
-        <Button
-            android:id="@+id/startNavigation"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/trip_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Navigation"
-            app:layout_constraintBottom_toTopOf="@+id/trip_complete_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="@{currentTrip.tripName}" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/trip_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{currentTrip.tripDate}" />
+
+        <include
+            android:id="@+id/sourceOrSiteInfo"
+            layout="@layout/source_or_site_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/siteContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{sourceOrSite.siteContainerDescription}" />
+
+        <TextView
+            android:id="@+id/load_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{sourceOrSite.fill}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/delivery_completed_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:text="Reached" />
+
+
+            <Button
+                android:id="@+id/startNavigation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:text="Navigate" />
+
+        </LinearLayout>
+    </LinearLayout>
 </layout>
