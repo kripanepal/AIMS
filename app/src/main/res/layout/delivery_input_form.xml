@@ -12,6 +12,16 @@
         android:background="@drawable/lightgrey_rectangularbox">
 
 
+        <TextView
+            android:id="@+id/signatuer_placeholder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Signature"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
