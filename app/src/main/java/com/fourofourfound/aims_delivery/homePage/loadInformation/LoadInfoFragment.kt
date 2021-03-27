@@ -98,6 +98,7 @@ class LoadInfoFragment : Fragment() {
             it.status != "COMPLETED"
         }
         if (notCompletedList.isEmpty()) {
+            viewModel.markTripAsCompleted(sharedViewModel.selectedTrip.value!!.tripId)
             binding.startNavigation.visibility = View.GONE
         }
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
