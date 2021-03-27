@@ -17,10 +17,10 @@
         <!-- TODO: Update blank fragment layout -->
 
         <Button
-            android:id="Logout"
+            android:id="@+id/logout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/logout_button"
+            android:text="Logout"
             android:translationX="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
