@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
@@ -45,6 +46,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
     private var fetchingDataInProgress = false
+    private lateinit var sourceOrSite: SourceOrSite
 
     /**
      * Shared view model
@@ -59,11 +61,13 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
-        if (sharedViewModel.selectedTrip.value === null) {
+        if (sharedViewModel.selectedTrip.value === null || sharedViewModel.selectedSourceOrSite.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
 
             return binding.root
         }
+
+        sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
@@ -130,7 +134,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
             routePlan.routeOptions = routeOptions
             val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
-            val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
+            val destination = RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
             routePlan.addWaypoint(startPoint)
             routePlan.addWaypoint(destination)
             coreRouter.calculateRoute(

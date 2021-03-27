@@ -6,14 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 class LoadInfoFragment  : Fragment(){
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,9 +30,7 @@ class LoadInfoFragment  : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
 
-
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
-
         val currentTrip = tripFragmentArgs.trip
 
         binding = DataBindingUtil.inflate(
@@ -37,6 +44,58 @@ class LoadInfoFragment  : Fragment(){
         adapter.data = currentTrip.sourceOrSite
 
 
+        startTripOnClick(currentTrip)
         return binding.root
+    }
+
+    /**
+     * Mark trip start
+     * Starts a worker to start sending location updates and  navigates the user to
+     * delivery page
+     * @param tripToStart
+     */
+    private fun markTripStart(sourceOrSite: SourceOrSite) {
+        sharedViewModel.selectedSourceOrSite.value = sourceOrSite
+        CustomWorkManager(requireContext()).apply {
+            //TODO need to call both methods
+            sendLocationAndUpdateTrips()
+            sendLocationOnetime()
+        }
+
+        //change the active tab to delivery tab
+        requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+    }
+
+    /**
+     * Show start trip dialog
+     *Displays the Dialog to make sure that user wants to start the trip
+     * On pressing yes, it also registers a worker which starts sending the
+     * user location every 15 minutes[default]
+     * @param tripToStart
+     */
+    private fun showStartTripDialog(sourceOrSite: SourceOrSite) {
+        CustomDialogBuilder(
+            requireContext(),
+            "Start a trip?",
+            null,
+            "Start now",
+            { markTripStart(sourceOrSite) },
+            "No",
+            null,
+            true
+        ).builder.show()
+    }
+
+    /**
+     * Start trip on click
+     * redirect the user to delivery page for a specific trip
+     */
+    private fun startTripOnClick(currentTrip: Trip) {
+        binding.startNavigation.setOnClickListener {
+            if(sharedViewModel.selectedTrip.value != currentTrip){
+                sharedViewModel.selectedTrip.value = currentTrip
+                showStartTripDialog(currentTrip.sourceOrSite[0])
+            }
+        }
     }
 }
