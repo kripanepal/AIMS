@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.network
 
 import android.util.Log
+import com.fourofourfound.aims_delivery.database.entities.DatabaseForm
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.domain.UserLoginInfo
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -50,6 +51,9 @@ interface UserService {
 
     @GET("/alltrips")
     suspend fun getAllTrips(): TripResponse
+
+    @POST("/form")
+    fun sendFormData(@Body form:DatabaseForm)
 }
 
 /**

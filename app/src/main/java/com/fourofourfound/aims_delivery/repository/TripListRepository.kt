@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
+import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
 import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
@@ -154,6 +151,21 @@ class TripListRepository(private val database: TripListDatabse) {
                 database.tripListDao.insertLocation(customLocation)
             } catch (e: Exception) {
             }
+        }
+    }
+
+    suspend fun sendFormData(formToSubmit: DatabaseForm) {
+        withContext(Dispatchers.IO) {
+            try { MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
+
+            } catch (e: Exception) {
+                try {
+                    database.tripListDao.insertFormData(formToSubmit)
+                } catch (e: Exception) {
+                }
+            }
+
+
         }
     }
 }

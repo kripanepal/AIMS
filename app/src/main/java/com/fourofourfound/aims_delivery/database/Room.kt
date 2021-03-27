@@ -4,10 +4,7 @@ package com.fourofourfound.aims_delivery.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
+import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
 
@@ -58,12 +55,15 @@ interface TripListDao {
     @Query("select * from  DatabaseTrip  where tripId=:tripId ")
     fun getTripById(tripId: String): DatabaseTrip?
 
+    @Insert
+    fun insertFormData(formData: DatabaseForm)
+
 
 }
 
 
 @Database(
-    entities = [DatabaseTrailer::class, DatabaseTrip::class, DatabaseTruck::class, DatabaseSourceOrSite::class, CustomDatabaseLocation::class],
+    entities = [DatabaseTrailer::class, DatabaseTrip::class, DatabaseTruck::class, DatabaseSourceOrSite::class, CustomDatabaseLocation::class, DatabaseForm::class],
     version = 1,
     exportSchema = false
 )

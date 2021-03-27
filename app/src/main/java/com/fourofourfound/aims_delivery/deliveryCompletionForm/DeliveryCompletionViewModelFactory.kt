@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
@@ -10,12 +11,12 @@ import com.fourofourfound.aims_delivery.domain.SourceOrSite
  * @property trip the trip which is assigned to the viewModel
  * @constructor Create empty Completed delivery view model factory
  */
-class DeliveryCompletionViewModelFactory(private val currentSourceOrSite: SourceOrSite) : ViewModelProvider.Factory {
+class DeliveryCompletionViewModelFactory(private val application: Application,private val currentSourceOrSite: SourceOrSite) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
         //check if object is of type ScoreViewModel
         if (modelClass.isAssignableFrom(DeliveryCompletionViewModel::class.java)) {
-            return DeliveryCompletionViewModel(currentSourceOrSite) as T
+            return DeliveryCompletionViewModel(application, currentSourceOrSite) as T
         }
         throw IllegalArgumentException("Unknown view model class")
     }

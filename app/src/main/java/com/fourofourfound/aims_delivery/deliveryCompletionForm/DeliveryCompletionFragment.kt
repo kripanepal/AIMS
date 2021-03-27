@@ -38,11 +38,14 @@ class DeliveryCompletionFragment : Fragment() {
 
 
         binding = DataBindingUtil.inflate(inflater, R.layout.delivery_input_form, container, false)
-        viewModelFactory = DeliveryCompletionViewModelFactory(sharedViewModel.selectedSourceOrSite.value!!)
+        viewModelFactory = DeliveryCompletionViewModelFactory(requireActivity().application ,sharedViewModel.selectedSourceOrSite.value!!)
 
         //getting a view model from a factory
         viewModel = ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
+        binding.submitBtn.setOnClickListener {
+            viewModel.submitForm()
+        }
         return binding.root
     }
 
