@@ -87,8 +87,8 @@
                         android:layout_marginTop="14dp"
                         android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
+                        app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
 
                     <androidx.recyclerview.widget.RecyclerView
