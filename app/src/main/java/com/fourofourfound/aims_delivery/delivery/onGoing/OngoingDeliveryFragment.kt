@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,8 +66,13 @@ class OngoingDeliveryFragment : Fragment() {
     ): View? {
 
         //return if no this is not an ongoing delivery
-        if (sharedViewModel.selectedTrip.value == null) {
+        if (sharedViewModel.selectedTrip.value == null ) {
             showNoTripSelectedDialog()
+            return view
+        }
+
+        if (sharedViewModel.selectedSourceOrSite.value == null ) {
+           requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
             return view
         }
 
@@ -78,7 +84,11 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
-
+        if(sharedViewModel.selectedSourceOrSite.value == null)
+        {
+            findNavController().navigateUp()
+            return null
+        }
         //viewModel used by this fragment
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -98,6 +108,9 @@ class OngoingDeliveryFragment : Fragment() {
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
+
+
+
         var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
         binding.sourceOrSite = currentSourceOrSite

@@ -28,6 +28,8 @@ class DeliveryCompletionViewModel(val application: Application, currentSourceOrS
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
 
+    val doneSubmitting = MutableLiveData(false)
+
     fun submitForm() {
         var formToSubmit = DatabaseForm(
             billOfLadingNumber,
@@ -48,9 +50,14 @@ class DeliveryCompletionViewModel(val application: Application, currentSourceOrS
                 tripListRepository.sendFormData(formToSubmit)
             }
 
+            doneSubmitting.value = true
+
         }
     }
 
+    fun doneNavigating() {
+        doneSubmitting.value = false
+    }
 
 
 }
