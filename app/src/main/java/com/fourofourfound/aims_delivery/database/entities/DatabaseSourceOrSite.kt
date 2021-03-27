@@ -26,6 +26,7 @@ data class DatabaseSourceOrSite(
     var uom: String? = null,
     var fill: String = "",
     var truckId: Int,
-    var trailerId: Int
+    var trailerId: Int,
+    var status: String = "NOT_STARTED"
 )
 

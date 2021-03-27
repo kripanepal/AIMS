@@ -2,6 +2,10 @@ package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.database.getDatabase
+import com.fourofourfound.aims_delivery.repository.TripListRepository
+import kotlinx.coroutines.launch
 
 /**
  * Home page view model
@@ -12,6 +16,16 @@ import androidx.lifecycle.AndroidViewModel
  */
 class LoadInfoViewModel(application: Application) : AndroidViewModel(application) {
 
+    val database = getDatabase(application)
+    private val tripListRepository = TripListRepository(database)
 
+    fun markTripAsCompleted(tripId: String) {
+        viewModelScope.launch {
+            //TODO change status of trips
+            tripListRepository.changeTripStatus(tripId, "COMPLETED")
+
+
+        }
+    }
 
 }

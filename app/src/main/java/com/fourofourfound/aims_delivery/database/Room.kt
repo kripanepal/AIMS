@@ -58,6 +58,12 @@ interface TripListDao {
     @Insert
     fun insertFormData(formData: DatabaseForm)
 
+    @Query("update DatabaseSourceOrSite set status = 'COMPLETED' where seqNum=:seqNum and tripId =:tripId")
+    fun markDeliveryCompleted(tripId: String, seqNum: Int)
+
+    @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
+    fun getSourceOrSite(tripId: String, seqNum: Int): DatabaseSourceOrSite
+
 
 }
 

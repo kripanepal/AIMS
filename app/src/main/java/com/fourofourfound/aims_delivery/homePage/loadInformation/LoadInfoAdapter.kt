@@ -30,6 +30,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
+
         holder.itemView.sourceOrSiteInfo.apply {
             sourceOrSiteName.text = item.destinationName
             address.text = item.address1
@@ -50,6 +51,10 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 text = item.siteContainerDescription
                 visibility = View.VISIBLE
             }
+        }
+
+        if (item.status == "COMPLETED") {
+            holder.itemView.completedImage.visibility = View.VISIBLE
         }
     }
 

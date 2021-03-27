@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryViewModel
-import com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryViewModelFactory
-import com.fourofourfound.aims_delivery.homePage.HomePageDirections
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.DeliveryInputFormBinding
@@ -36,8 +32,6 @@ class DeliveryCompletionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
-
         if(sharedViewModel.selectedSourceOrSite.value == null)
         {
             findNavController().navigateUp()
@@ -57,10 +51,13 @@ class DeliveryCompletionFragment : Fragment() {
         viewModel.doneSubmitting.observe(viewLifecycleOwner)
         {
             if(it) {
-               sharedViewModel.selectedSourceOrSite.value = null
+                findNavController().popBackStack(R.id.ongoingDeliveryFragment, false);
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
                 viewModel.doneNavigating()
-
+                viewModel.markDeliveryCompleted(sharedViewModel.selectedTrip.value!!.tripId)
+                //TODO need to manage this
+                sharedViewModel.selectedSourceOrSite.value!!.status = "COMPLETED"
+                sharedViewModel.selectedSourceOrSite.value = null
             }
         }
         return binding.root
@@ -69,7 +66,6 @@ class DeliveryCompletionFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(DeliveryCompletionViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

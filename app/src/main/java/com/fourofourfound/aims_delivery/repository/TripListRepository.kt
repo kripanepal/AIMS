@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.*
@@ -23,11 +22,13 @@ import kotlinx.coroutines.withContext
  */
 class TripListRepository(private val database: TripListDatabse) {
 
-    val updating = MutableLiveData(false)
+
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
     val trips: LiveData<List<Trip>>? = Transformations.map(tripsFromDatabase) {
+        Log.i("AAAAAAAAAAAA", "DATA CHANGED")
         it.asDomainModel()
     }
+
 
 
     /**
@@ -91,6 +92,12 @@ class TripListRepository(private val database: TripListDatabse) {
                                 trip.status = status
                             }
 
+                            var savedSourceOrSite =
+                                database.tripListDao.getSourceOrSite(tripId, seqNum)
+                            savedSourceOrSite?.apply {
+                                sourceOrSite.status = savedSourceOrSite.status
+                            }
+
                             //todo delete all records before adding after if, not here
                             database.tripListDao.insertTruck(truck)
                             database.tripListDao.insertTrailer(trailer)
@@ -99,10 +106,7 @@ class TripListRepository(private val database: TripListDatabse) {
                         }
                     }
                 } catch (e: Exception) {
-
                 }
-
-
         }
     }
 
@@ -166,6 +170,13 @@ class TripListRepository(private val database: TripListDatabse) {
             }
 
 
+        }
+    }
+
+    fun markDeliveryCompleted(tripId: String, seqNum: Int) {
+        try {
+            database.tripListDao.markDeliveryCompleted(tripId, seqNum)
+        } catch (e: Exception) {
         }
     }
 }
