@@ -4,7 +4,6 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
-
 }
 apply plugin: 'org.jetbrains.dokka-android'
 
@@ -13,7 +12,20 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
+    packagingOptions {
+        exclude '/lib/armeabi-v7a/libNanumGothicFontPkg.so'
+        exclude '/lib/armeabi-v7a/libLohitIndicFontPkg.so'
+        exclude '/lib/armeabi-v7a/libChineseFontPkg.so'
+    }
 
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a'
+            universalApk true
+        }
+    }
     defaultConfig {
         applicationId "com.fourofourfound.aimsdelivery"
         minSdkVersion 23
@@ -22,16 +34,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-
     }
-
-
 
     buildTypes {
         release {
             minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), "proguard-rules.pro"
+
         }
     }
     compileOptions {
@@ -69,8 +78,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(name: 'HERE-sdk', ext: 'aar')
+    implementation files('libs/HERE-sdk.aar')
 
     // Navigation
     implementation "android.arch.navigation:navigation-fragment-ktx:$version_navigation"
