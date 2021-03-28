@@ -19,7 +19,9 @@
         android:label="Navigation">
         <action
             android:id="@+id/action_navigationFragment_to_deliveryCompletionFragment"
-            app:destination="@id/deliveryCompletionFragment" />
+            app:destination="@id/deliveryCompletionFragment"
+            app:popUpTo="@id/navigationFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/deliveryCompletionFragment"

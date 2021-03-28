@@ -332,6 +332,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         removeListeners()
         lifecycleScope.launchWhenResumed {
             var navigateToForm = {
+                (activity as AppCompatActivity?)!!.supportActionBar!!.show()
                 findNavController().navigate(
                     NavigationFragmentDirections.actionNavigationFragmentToDeliveryCompletionFragment(
                         sourceOrSite
