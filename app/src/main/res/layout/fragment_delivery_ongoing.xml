@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="@{sourceOrSite.fill}" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
             android:layout_weight="1"
@@ -83,7 +83,6 @@
                 android:id="@+id/delivery_completed_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|bottom"
                 android:text="Reached" />
 
 
@@ -91,9 +90,10 @@
                 android:id="@+id/startNavigation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
                 android:text="Navigate" />
 
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </layout>
