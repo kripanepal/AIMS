@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -97,9 +98,7 @@ class TripListAdapter(
                 for (each in productList) {
                     var sourceName = parentViewModel.getSourceName(each, item.tripId)
                     var siteCount = parentViewModel.getSiteCount(each, item.tripId)
-
                     var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount.toString())
-
                     fuelInfo.add(fuelWithInfo)
                 }
             }
@@ -110,13 +109,9 @@ class TripListAdapter(
                     else View.VISIBLE
                 }
             }
-
             val adapter = FuelSummaryAdapter(fuelInfo.toTypedArray())
             binding.nestedTripDetailsListView.adapter = adapter
-
             binding.executePendingBindings()
-
-
         }
     }
 

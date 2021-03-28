@@ -130,12 +130,11 @@ class HomePage : Fragment() {
     private fun setUpRecyclerView() {
         //adapter for the recycler view
         val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
-
             //set up the behaviour of button on the item being displayed
             if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             ) else {
-                Log.i("AAAAAAA", "Here")
+                Log.i("AAAAAAA", trip.sourceOrSite.size.toString())
                 findNavController().navigate(
                     HomePageDirections.actionHomePageToLoadInfoFragment(
                         trip

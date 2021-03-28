@@ -157,7 +157,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (currentNavController?.value?.currentDestination?.id == R.id.homePage) {
+        var topLevelId = listOf(R.id.homePage,R.id.ongoingDeliveryFragment,R.id.settingsFragment)
+        if ((currentNavController?.value?.currentDestination?.id) in topLevelId ){
             super.onBackPressed()
         } else {
             navController.navigateUp()

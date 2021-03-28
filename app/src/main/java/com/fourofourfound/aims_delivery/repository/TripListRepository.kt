@@ -25,7 +25,7 @@ class TripListRepository(private val database: TripListDatabse) {
 
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
     val trips: LiveData<List<Trip>>? = Transformations.map(tripsFromDatabase) {
-        Log.i("AAAAAAAAAAAA", "DATA CHANGED")
+
         it.asDomainModel()
     }
 
