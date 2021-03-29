@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
@@ -125,51 +126,80 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             val coreRouter = CoreRouter()
             val routePlan = RoutePlan()
             val routeOptions = RouteOptions()
-            routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
-            //TODO need to change these parameters
-            routeOptions.routeType = RouteOptions.Type.SHORTEST
-            routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
-                .setTruckLength(25.25f)
-                .setTruckHeight(2.6f).truckTrailersCount = 1
-            routeOptions.routeCount = 1
+            coreRouter.connectivity = CoreRouter.Connectivity.DEFAULT
+            Log.i("AAAAAAAAAAA", sharedViewModel.internetConnection.value.toString())
+            if (sharedViewModel.internetConnection.value == false) {
+                CustomDialogBuilder(
+                    requireContext(),
+                    "No Internet Connection",
+                    "Route results may not be accurate without internet connection",
+                    "Continue",
+                    {
+                        routeOptions.transportMode = RouteOptions.TransportMode.CAR
+                        createRoute(routeOptions, routePlan, coreRouter)
+                    },
+                    "Cancel Navigation",
+                    { findNavController().navigateUp() },
+                    false
+                ).builder.show()
+            } else {
+                //TODO need to change these parameters
+                routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
+                routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
+                    .setTruckLength(25.25f)
+                    .setTruckHeight(2.6f).truckTrailersCount = 1
+                createRoute(routeOptions, routePlan, coreRouter)
+            }
 
-            routePlan.routeOptions = routeOptions
-            val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
-            val destination = RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
-            routePlan.addWaypoint(startPoint)
-            routePlan.addWaypoint(destination)
-            coreRouter.calculateRoute(
-                routePlan,
-                object : Router.Listener<List<RouteResult>, RoutingError> {
-                    override fun onProgress(i: Int) {}
-                    override fun onCalculateRouteFinished(
-                        routeResults: List<RouteResult>?,
-                        routingError: RoutingError
-                    ) {
-                        if (routingError == RoutingError.NONE) {
-                            if (routeResults!![0].route != null) {
-                                route = routeResults[0].route
-                                sharedViewModel.activeRoute = routeResults[0].route
-                                onRouteCalculated()
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Error:route results returned is not valid",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                findNavController().navigateUp()
-                            }
+        }
+    }
+
+    private fun createRoute(
+        routeOptions: RouteOptions,
+        routePlan: RoutePlan,
+        coreRouter: CoreRouter
+    ) {
+        routeOptions.routeType = RouteOptions.Type.SHORTEST
+
+        routeOptions.routeCount = 1
+
+        routePlan.routeOptions = routeOptions
+        val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
+        val destination =
+            RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
+        routePlan.addWaypoint(startPoint)
+        routePlan.addWaypoint(destination)
+        coreRouter.calculateRoute(
+            routePlan,
+            object : Router.Listener<List<RouteResult>, RoutingError> {
+                override fun onProgress(i: Int) {}
+                override fun onCalculateRouteFinished(
+                    routeResults: List<RouteResult>?,
+                    routingError: RoutingError
+                ) {
+                    if (routingError == RoutingError.NONE) {
+                        if (routeResults!![0].route != null) {
+                            route = routeResults[0].route
+                            sharedViewModel.activeRoute = routeResults[0].route
+                            onRouteCalculated()
                         } else {
                             Toast.makeText(
                                 context,
-                                "Error:route calculation returned error code: $routingError",
+                                "Error:route results returned is not valid",
                                 Toast.LENGTH_LONG
                             ).show()
                             findNavController().navigateUp()
                         }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Error:route calculation returned error code: $routingError",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        findNavController().navigateUp()
                     }
-                })
-        }
+                }
+            })
     }
 
     private fun onRouteCalculated() {

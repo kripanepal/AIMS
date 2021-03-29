@@ -6,7 +6,7 @@
 
         <variable
             name="state"
-            type="String" />
+            type="com.here.android.mpa.odml.MapPackage" />
 
         <variable
             name="clickHandler"
@@ -20,10 +20,11 @@
         android:orientation="horizontal">
 
         <TextView
+            android:onClick="@{() -> clickHandler.onClick(state)}"
             android:id="@+id/stateName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{state}"
+            android:text="@{state.englishTitle}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

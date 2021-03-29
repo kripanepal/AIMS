@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aimsdelivery.databinding.StateListViewBinding
+import com.here.android.mpa.odml.MapPackage
 
-class MapDownloaderAdapter(private val clickListener: StateClickHandler) : ListAdapter<String,
+class MapDownloaderAdapter(private val clickListener: StateClickHandler) : ListAdapter<MapPackage,
         MapDownloaderAdapter.ViewHolder>(StateDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,27 +32,26 @@ class MapDownloaderAdapter(private val clickListener: StateClickHandler) : ListA
         }
 
 
-        fun bind(item: String, clickListener: StateClickHandler) {
+        fun bind(item: MapPackage, clickListener: StateClickHandler) {
             binding.state = item
             binding.clickHandler = clickListener
             binding.executePendingBindings()
         }
     }
 
-    class StateDiffCallBack : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-            return oldItem == newItem
+    class StateDiffCallBack : DiffUtil.ItemCallback<MapPackage>() {
+        override fun areItemsTheSame(oldItem: MapPackage, newItem: MapPackage): Boolean {
+            return oldItem.englishTitle == newItem.englishTitle
         }
 
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItem: MapPackage, newItem: MapPackage): Boolean {
+            return oldItem.equals(newItem)
         }
     }
 }
 
-
-class StateClickHandler(val clickListener: (state: String) -> Unit) {
-    fun onClick(state: String) {
+class StateClickHandler(val clickListener: (state: MapPackage) -> Unit) {
+    fun onClick(state: MapPackage) {
         clickListener(state)
     }
 }

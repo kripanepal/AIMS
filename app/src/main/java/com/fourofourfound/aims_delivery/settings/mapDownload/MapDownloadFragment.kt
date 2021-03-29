@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -38,7 +37,7 @@ class MapDownloadFragment : Fragment() {
             inflater, R.layout.fragment_map_download, container, false
         )
         listAdapter = MapDownloaderAdapter(StateClickHandler { state ->
-            //TODO handle item click
+            onListItemClicked(state)
         })
         binding.stateRecyclerView.adapter = listAdapter
 
@@ -77,6 +76,7 @@ class MapDownloadFragment : Fragment() {
 
     private val listener: MapLoader.Listener = object : MapLoader.Listener {
         override fun onProgress(p0: Int) {
+            Log.i("AAAAAAAA", p0.toString())
         }
 
         override fun onInstallationSize(l: Long, l1: Long) {}
@@ -173,19 +173,12 @@ class MapDownloadFragment : Fragment() {
     }
 
     private fun refreshListView(list: ArrayList<MapPackage>) {
-
-        var toSubmit: List<String> =
-            list.map {
-                it.englishTitle.toString()
-            }
-        Log.i("AAAAAAAAAAAAAAA", toSubmit.toString())
-        listAdapter.submitList(toSubmit)
+        listAdapter.submitList(list)
         currentMapPackageList = list
     }
 
     // Handles the click action on map list item.
-    fun onListItemClicked(l: ListView?, v: View?, position: Int, id: Long) {
-        val clickedMapPackage: MapPackage = currentMapPackageList[position]
+    fun onListItemClicked(clickedMapPackage: MapPackage) {
         val children = clickedMapPackage.children
         if (children.size > 0) {
             // Children map packages exist.Show them on the screen.

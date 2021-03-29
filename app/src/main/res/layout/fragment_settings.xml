@@ -22,8 +22,15 @@
             android:id="@+id/logout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"
-          />
+            android:text="Logout" />
+
+        <Button
+            android:id="@+id/takeToDownloadMapPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:text="Download Maps" />
 
     </FrameLayout>
 </layout>
