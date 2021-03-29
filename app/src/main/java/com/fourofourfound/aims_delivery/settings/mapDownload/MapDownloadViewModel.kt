@@ -16,6 +16,8 @@ class MapDownloadViewModel : ViewModel() {
     }
 
     var loading = MutableLiveData(true)
+    var mapDownloading = MutableLiveData(false)
+    var mapDownloadingPercentage = MutableLiveData(0)
 
     var displayMessages = MutableLiveData<String>();
 
