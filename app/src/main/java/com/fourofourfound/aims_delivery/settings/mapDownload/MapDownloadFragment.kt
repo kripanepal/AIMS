@@ -1,9 +1,12 @@
 package com.fourofourfound.aims_delivery.settings.mapDownload
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -25,6 +28,9 @@ class MapDownloadFragment : Fragment() {
     lateinit var listAdapter: MapDownloaderAdapter
     lateinit var binding: FragmentMapDownloadBinding
     lateinit var viewModel: MapDownloadViewModel
+    lateinit var progressBar: ProgressBar
+    lateinit var progressText: TextView
+    lateinit var dialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +68,12 @@ class MapDownloadFragment : Fragment() {
 
         }
 
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setCancelable(false)
+        builder.setView(R.layout.map_downloading_dialog)
+        builder.setNegativeButton("Hide") { _, _ -> viewModel.loading.value = true }
+        dialog = builder.create()
+        dialog.setTitle("Downloading")
         return binding.root
 
     }
@@ -89,6 +101,9 @@ class MapDownloadFragment : Fragment() {
     private val listener: MapLoader.Listener = object : MapLoader.Listener {
         override fun onProgress(p0: Int) {
             binding.downloadProgressBar.progress = p0
+            progressBar.progress = p0
+            progressText.text = getString(R.string.text_with_percentage, p0)
+            if (p0 == 100) dialog.hide()
 
         }
 
@@ -177,6 +192,7 @@ class MapDownloadFragment : Fragment() {
     }
 
     private fun refreshListView(list: ArrayList<MapPackage>) {
+        viewModel.loading.value = false
         viewModel.setPackageList(list)
     }
 
@@ -190,7 +206,10 @@ class MapDownloadFragment : Fragment() {
                 idList.add(clickedMapPackage.id)
                 if (clickedMapPackage.installationState == MapPackage.InstallationState.INSTALLED) {
                     uninstallMapPackage(idList)
-                } else installMapPackage(idList)
+                } else {
+                    dialog.setMessage(clickedMapPackage.englishTitle)
+                    installMapPackage(idList)
+                }
             }
         }
 
@@ -198,10 +217,12 @@ class MapDownloadFragment : Fragment() {
 
     private fun installMapPackage(idList: MutableList<Int>) {
         val success: Boolean = mapLoader.installMapPackages(idList)
+        dialog.show()
+        progressBar = dialog.requireViewById(R.id.mapDownloadingProgressBar)
+        progressText = dialog.findViewById(R.id.mapDownloadingText)
         if (!success)
             viewModel.displayMessages.value = "MapLoader is being busy with other operations"
         else {
-            viewModel.loading.value = true
             viewModel.displayMessages.value = "Downloading "
         }
 
