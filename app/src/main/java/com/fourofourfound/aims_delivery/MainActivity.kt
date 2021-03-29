@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -88,6 +87,8 @@ class MainActivity : AppCompatActivity() {
             navController = it
             setupActionBarWithNavController(it)
         })
+
+        bottomNavigationView.setOnNavigationItemReselectedListener {}
 
 
         currentNavController = controller
