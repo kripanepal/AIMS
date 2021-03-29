@@ -38,6 +38,6 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="3dp"
             android:visibility="gone"
-            app:srcCompat="@drawable/go_arrow" />
+            app:srcCompat="@android:drawable/ic_delete" />
     </RelativeLayout>
 </layout>
