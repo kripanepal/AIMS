@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.settings.mapDownload
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,40 +44,17 @@ class MapDownloadFragment : Fragment() {
         binding.stateRecyclerView.adapter = listAdapter
         viewModel = ViewModelProvider(this).get(MapDownloadViewModel::class.java)
         initMapEngine()
+        buildDownloadDialog()
+        observeActivePackage()
+        observeLoadingState()
+        observeToastMessages()
+        observeMapDownloadingState()
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setCancelable(false)
-        builder.setView(R.layout.map_downloading_dialog)
-        builder.setNegativeButton("Hide") { _, _ -> viewModel.loading.value = true }
-        dialog = builder.create()
-        dialog.setTitle("Downloading")
+        return binding.root
+    }
 
-
-        viewModel.packageList.observe(viewLifecycleOwner) {
-            if (it != null) {
-                listAdapter.submitList(it)
-            }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.downloadProgressBar.visibility = View.VISIBLE
-            } else {
-                binding.downloadProgressBar.visibility = View.GONE
-            }
-        }
-
-        viewModel.displayMessages.observe(viewLifecycleOwner)
-        {
-            if (!it.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                viewModel.displayMessages.value = null
-            }
-
-        }
-
+    private fun observeMapDownloadingState() {
         viewModel.mapDownloading.observe(viewLifecycleOwner) {
-            Log.i("HHHHHHHH", it.toString())
             if (it) {
                 dialog.show()
                 progressBar = dialog.requireViewById(R.id.mapDownloadingProgressBar)
@@ -86,30 +62,52 @@ class MapDownloadFragment : Fragment() {
 
                 viewModel.mapDownloadingPercentage.observe(viewLifecycleOwner)
                 { progress ->
-                    Log.i("HHHHHHHH", progress.toString())
                     progressBar.progress = progress
                     progressText.text = getString(R.string.text_with_percentage, progress)
-
                 }
-
             }
         }
+    }
 
+    private fun observeToastMessages() {
+        viewModel.displayMessages.observe(viewLifecycleOwner)
+        {
+            if (!it.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.displayMessages.value = null
+            }
+        }
+    }
 
-        return binding.root
+    private fun observeLoadingState() {
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it) binding.downloadProgressBar.visibility = View.VISIBLE
+            else binding.downloadProgressBar.visibility = View.GONE
 
+        }
+    }
+
+    private fun observeActivePackage() {
+        viewModel.packageList.observe(viewLifecycleOwner) {
+            if (it != null) listAdapter.submitList(it)
+        }
+    }
+
+    private fun buildDownloadDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setCancelable(false)
+        builder.setView(R.layout.map_downloading_dialog)
+        builder.setNegativeButton("Hide") { _, _ -> viewModel.loading.value = true }
+        dialog = builder.create()
+        dialog.setTitle("Downloading")
     }
 
     private fun initMapEngine() {
-
         MapEngine.getInstance().init(
             ApplicationContext(requireActivity())
         ) { error ->
-            if (error == OnEngineInitListener.Error.NONE)
-                getMapPackages()
-            else {
-                viewModel.displayMessages.value = "Something went wrong"
-            }
+            if (error == OnEngineInitListener.Error.NONE) getMapPackages()
+            else viewModel.displayMessages.value = "Something went wrong"
         }
     }
 
@@ -127,37 +125,28 @@ class MapDownloadFragment : Fragment() {
 
         override fun onInstallationSize(l: Long, l1: Long) {}
         override fun onGetMapPackagesComplete(rootMapPackage: MapPackage?, resultCode: ResultCode) {
-            if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
+            if (resultCode == ResultCode.OPERATION_SUCCESSFUL) findUsaStates(rootMapPackage)
+            else if (resultCode == ResultCode.OPERATION_BUSY) mapLoader.mapPackages
 
-                findUsaStates(rootMapPackage)
-
-            } else if (resultCode == ResultCode.OPERATION_BUSY) {
-                mapLoader.mapPackages
-            }
         }
 
         override fun onCheckForUpdateComplete(
             updateAvailable: Boolean, current: String?, update: String?,
             resultCode: ResultCode
         ) {
-
             if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
                 if (updateAvailable) {
                     // Update the map if there is a new version available
                     val success: Boolean = mapLoader.performMapDataUpdate()
-                    if (!success) {
-                        viewModel.displayMessages.value =
-                            "MapLoader is being busy with other operations"
-                    } else {
-                        viewModel.displayMessages.value =
-                            "Starting map update from current version:$current to $update"
-                    }
-                } else {
-                    viewModel.displayMessages.value == "Current map version: $current is the latest"
-                }
-            } else if (resultCode == ResultCode.OPERATION_BUSY) {
-                mapLoader.checkForMapDataUpdate()
-            }
+                    if (!success) viewModel.displayMessages.value =
+                        "MapLoader is being busy with other operations"
+                    else viewModel.displayMessages.value =
+                        "Starting map update from current version:$current to $update"
+
+                } else viewModel.displayMessages.value == "Current map version: $current is the latest"
+
+            } else if (resultCode == ResultCode.OPERATION_BUSY) mapLoader.checkForMapDataUpdate()
+
         }
 
         override fun onPerformMapDataUpdateComplete(
@@ -193,9 +182,9 @@ class MapDownloadFragment : Fragment() {
             if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
                 viewModel.displayMessages.value = "Uninstallation is completed"
                 findUsaStates(rootMapPackage)
-            } else if (resultCode == ResultCode.OPERATION_CANCELLED) {
-                viewModel.displayMessages.value = "Uninstallation is cancelled..."
-            }
+            } else if (resultCode == ResultCode.OPERATION_CANCELLED) viewModel.displayMessages.value =
+                "Uninstallation is cancelled..."
+
             viewModel.loading.value = false
         }
     }
@@ -204,9 +193,7 @@ class MapDownloadFragment : Fragment() {
         for (continent in rootMapPackage!!.children) {
             if (continent.id == 8) {
                 for (country in continent.children) {
-                    if (country.id === 1000) {
-                        refreshListView(ArrayList(country.children))
-                    }
+                    if (country.id === 1000) refreshListView(ArrayList(country.children))
                 }
             }
         }
@@ -233,13 +220,12 @@ class MapDownloadFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun installMapPackage(idList: MutableList<Int>) {
         val success: Boolean = mapLoader.installMapPackages(idList)
-        if (!success)
-            viewModel.displayMessages.value = "MapLoader is being busy with other operations"
+        if (!success) viewModel.displayMessages.value =
+            "MapLoader is being busy with other operations"
         else {
             viewModel.mapDownloading.value = true
             viewModel.displayMessages.value = "Downloading "
@@ -266,7 +252,5 @@ class MapDownloadFragment : Fragment() {
             null,
             true
         ).builder.show()
-
-
     }
 }
