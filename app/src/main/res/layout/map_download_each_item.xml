@@ -2,32 +2,42 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <data>
 
-        <variable
-            name="state"
-            type="com.here.android.mpa.odml.MapPackage" />
+        <import type="android.view.View" />
 
         <variable
-            name="clickHandler"
-            type="com.fourofourfound.aims_delivery.settings.mapDownload.StateClickHandler" />
+            name="currentItem"
+            type="com.here.android.mpa.odml.MapPackage" />
+
 
     </data>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:onClick="@{() -> clickHandler.onClick(state)}"
-            android:id="@+id/stateName"
+            android:id="@+id/packageList"
+            android:layout_marginVertical="10dp"
+            android:text="@{currentItem.englishTitle}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{state.englishTitle}"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="3dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/go_arrow" />
+    </RelativeLayout>
 </layout>

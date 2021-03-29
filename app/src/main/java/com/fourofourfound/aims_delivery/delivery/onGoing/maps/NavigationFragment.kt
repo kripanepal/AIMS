@@ -65,7 +65,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
         if (sharedViewModel.selectedTrip.value === null || sharedViewModel.selectedSourceOrSite.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
-
             return binding.root
         }
 
@@ -120,7 +119,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         }
     }
 
-
     private fun createRoute() {
         if (route == null) {
             val coreRouter = CoreRouter()
@@ -150,7 +148,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     .setTruckHeight(2.6f).truckTrailersCount = 1
                 createRoute(routeOptions, routePlan, coreRouter)
             }
-
         }
     }
 
@@ -183,19 +180,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                             sharedViewModel.activeRoute = routeResults[0].route
                             onRouteCalculated()
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Error:route results returned is not valid",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
                             findNavController().navigateUp()
                         }
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Error:route calculation returned error code: $routingError",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()
                         findNavController().navigateUp()
                     }
                 }

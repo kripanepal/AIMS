@@ -1,15 +1,17 @@
 package com.fourofourfound.aims_delivery.settings.mapDownload
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.fourofourfound.aimsdelivery.databinding.StateListViewBinding
+import com.fourofourfound.aimsdelivery.databinding.MapDownloadEachItemBinding
 import com.here.android.mpa.odml.MapPackage
 
-class MapDownloaderAdapter(private val clickListener: StateClickHandler) : ListAdapter<MapPackage,
-        MapDownloaderAdapter.ViewHolder>(StateDiffCallBack()) {
+class MapDownloaderAdapter(private val clickListener: CurrentItemClickHandler) :
+    ListAdapter<MapPackage,
+            MapDownloaderAdapter.ViewHolder>(CurrentItemDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -21,37 +23,48 @@ class MapDownloaderAdapter(private val clickListener: StateClickHandler) : ListA
         holder.bind(getItem(position)!!, clickListener)
     }
 
-    class ViewHolder private constructor(var binding: StateListViewBinding) :
+    class ViewHolder private constructor(var binding: MapDownloadEachItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 var layoutInflater = LayoutInflater.from(parent.context)
-                val binding = StateListViewBinding.inflate(layoutInflater, parent, false)
+                val binding = MapDownloadEachItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
 
 
-        fun bind(item: MapPackage, clickListener: StateClickHandler) {
-            binding.state = item
-            binding.clickHandler = clickListener
+        fun bind(item: MapPackage, clickListener: CurrentItemClickHandler) {
+            binding.currentItem = item
+            if (item.installationState == MapPackage.InstallationState.INSTALLED) {
+                binding.imageView.visibility = View.VISIBLE
+                binding.imageView.setOnClickListener {
+                    clickListener.onClick(item)
+                }
+            } else {
+
+                binding.imageView.visibility = View.GONE
+                binding.packageList.setOnClickListener {
+                    clickListener.onClick(item)
+                }
+            }
             binding.executePendingBindings()
         }
     }
 
-    class StateDiffCallBack : DiffUtil.ItemCallback<MapPackage>() {
+    class CurrentItemDiffCallBack : DiffUtil.ItemCallback<MapPackage>() {
         override fun areItemsTheSame(oldItem: MapPackage, newItem: MapPackage): Boolean {
-            return oldItem.englishTitle == newItem.englishTitle
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: MapPackage, newItem: MapPackage): Boolean {
-            return oldItem.equals(newItem)
+            return oldItem.installationState == newItem.installationState
         }
     }
 }
 
-class StateClickHandler(val clickListener: (state: MapPackage) -> Unit) {
-    fun onClick(state: MapPackage) {
-        clickListener(state)
+class CurrentItemClickHandler(val clickListener: (currentItem: MapPackage) -> Unit) {
+    fun onClick(currentItem: MapPackage) {
+        clickListener(currentItem)
     }
 }
