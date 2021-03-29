@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.settings.mapDownload
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,15 @@ class MapDownloadFragment : Fragment() {
                 binding.downloadProgressBar.visibility = View.GONE
             }
         }
-        Log.i("AAAAAAAAAAAAAAA", viewModel.packageList.value.toString())
+
+        viewModel.displayMessages.observe(viewLifecycleOwner)
+        {
+            if (!it.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.displayMessages.value = null
+            }
+
+        }
 
         return binding.root
 
@@ -67,17 +74,7 @@ class MapDownloadFragment : Fragment() {
             if (error == OnEngineInitListener.Error.NONE)
                 getMapPackages()
             else {
-
-                CustomDialogBuilder(
-                    requireActivity(),
-                    "Error",
-                    "Something Went Wrong",
-                    "OK",
-                    null,
-                    null,
-                    null,
-                    true
-                ).builder.show()
+                viewModel.displayMessages.value = "Something went wrong"
             }
         }
     }
@@ -116,24 +113,14 @@ class MapDownloadFragment : Fragment() {
                     // Update the map if there is a new version available
                     val success: Boolean = mapLoader.performMapDataUpdate()
                     if (!success) {
-                        Toast.makeText(
-                            requireActivity(),
-                            "MapLoader is being busy with other operations",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        viewModel.displayMessages.value =
+                            "MapLoader is being busy with other operations"
                     } else {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Starting map update from current version:$current to $update",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        viewModel.displayMessages.value =
+                            "Starting map update from current version:$current to $update"
                     }
                 } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        "Current map version: $current is the latest",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    viewModel.displayMessages.value == "Current map version: $current is the latest"
                 }
             } else if (resultCode == ResultCode.OPERATION_BUSY) {
                 mapLoader.checkForMapDataUpdate()
@@ -145,8 +132,7 @@ class MapDownloadFragment : Fragment() {
             resultCode: ResultCode
         ) {
             if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
-                Toast.makeText(requireActivity(), "Map update is completed", Toast.LENGTH_SHORT)
-                    .show()
+                viewModel.displayMessages.value = "Map update is completed"
                 refreshListView(ArrayList(rootMapPackage!!.children))
             }
         }
@@ -156,14 +142,11 @@ class MapDownloadFragment : Fragment() {
             resultCode: ResultCode
         ) {
             if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
-                Toast.makeText(requireActivity(), "Installation is completed", Toast.LENGTH_SHORT)
-                    .show()
+                viewModel.displayMessages.value = "Installation is completed"
                 findUsaStates(rootMapPackage)
-            } else if (resultCode == ResultCode.OPERATION_CANCELLED) Toast.makeText(
-                requireActivity(),
-                "Installation is cancelled...",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            } else if (resultCode == ResultCode.OPERATION_CANCELLED)
+                viewModel.displayMessages.value = "Installation is cancelled..."
             viewModel.loading.value = false
         }
 
@@ -172,15 +155,10 @@ class MapDownloadFragment : Fragment() {
             resultCode: ResultCode
         ) {
             if (resultCode == ResultCode.OPERATION_SUCCESSFUL) {
-                Toast.makeText(requireActivity(), "Uninstallation is completed", Toast.LENGTH_SHORT)
-                    .show()
+                viewModel.displayMessages.value = "Uninstallation is completed"
                 findUsaStates(rootMapPackage)
             } else if (resultCode == ResultCode.OPERATION_CANCELLED) {
-                Toast.makeText(
-                    requireActivity(),
-                    "Uninstallation is cancelled...",
-                    Toast.LENGTH_SHORT
-                ).show()
+                viewModel.displayMessages.value = "Uninstallation is cancelled..."
             }
             viewModel.loading.value = false
         }
@@ -203,36 +181,29 @@ class MapDownloadFragment : Fragment() {
     }
 
     private fun onListItemClicked(clickedMapPackage: MapPackage) {
-        val children = clickedMapPackage.children
-        if (children.size > 0) {
-            refreshListView(ArrayList(children))
-        } else {
-
-            val idList: MutableList<Int> = ArrayList()
-            idList.add(clickedMapPackage.id)
-            if (clickedMapPackage.installationState == MapPackage.InstallationState.INSTALLED) uninstallMapPackage(
-                idList
-            )
-            else installMapPackage(idList, clickedMapPackage)
+        if (!viewModel.loading.value!!) {
+            val children = clickedMapPackage.children
+            if (children.size > 0) {
+                refreshListView(ArrayList(children))
+            } else {
+                val idList: MutableList<Int> = ArrayList()
+                idList.add(clickedMapPackage.id)
+                if (clickedMapPackage.installationState == MapPackage.InstallationState.INSTALLED) {
+                } else installMapPackage(idList, clickedMapPackage)
+            }
         }
+
     }
 
     private fun installMapPackage(idList: MutableList<Int>, clickedMapPackage: MapPackage) {
         val success: Boolean = mapLoader.installMapPackages(idList)
-        if (!success) Toast.makeText(
-            requireActivity(),
-            "MapLoader is being busy with other operations",
-            Toast.LENGTH_SHORT
-        ).show()
+
+
+        if (!success)
+            viewModel.displayMessages.value = "MapLoader is being busy with other operations"
         else {
-
-
             viewModel.loading.value = true
-            Toast.makeText(
-                requireActivity(),
-                "Downloading " + clickedMapPackage.title,
-                Toast.LENGTH_SHORT
-            ).show()
+            viewModel.displayMessages.value = "Downloading "
         }
 
     }
@@ -241,12 +212,9 @@ class MapDownloadFragment : Fragment() {
         val runUninstalling = {
             viewModel.loading.value = true
             val success: Boolean = mapLoader.uninstallMapPackages(idList)
-            if (!success) Toast.makeText(
-                requireActivity(),
-                "MapLoader is being busy with other operations",
-                Toast.LENGTH_SHORT
-            ).show()
-            else Toast.makeText(requireActivity(), "Uninstalling...", Toast.LENGTH_SHORT).show()
+            if (!success)
+                viewModel.displayMessages.value = "MapLoader is being busy with other operations"
+            else viewModel.displayMessages.value = "Uninstalling..."
         }
 
         CustomDialogBuilder(

@@ -15,7 +15,9 @@ class MapDownloadViewModel : ViewModel() {
         _packageList.value = newPackageList
     }
 
-    var loading = MutableLiveData<Boolean>()
+    var loading = MutableLiveData(false)
+
+    var displayMessages = MutableLiveData<String>();
 
 
 }
