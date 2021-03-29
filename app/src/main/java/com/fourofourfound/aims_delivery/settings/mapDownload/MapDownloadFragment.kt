@@ -189,16 +189,15 @@ class MapDownloadFragment : Fragment() {
                 val idList: MutableList<Int> = ArrayList()
                 idList.add(clickedMapPackage.id)
                 if (clickedMapPackage.installationState == MapPackage.InstallationState.INSTALLED) {
-                } else installMapPackage(idList, clickedMapPackage)
+                    uninstallMapPackage(idList)
+                } else installMapPackage(idList)
             }
         }
 
     }
 
-    private fun installMapPackage(idList: MutableList<Int>, clickedMapPackage: MapPackage) {
+    private fun installMapPackage(idList: MutableList<Int>) {
         val success: Boolean = mapLoader.installMapPackages(idList)
-
-
         if (!success)
             viewModel.displayMessages.value = "MapLoader is being busy with other operations"
         else {
