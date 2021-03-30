@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import kotlinx.coroutines.Dispatchers
@@ -33,8 +32,6 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
      */
     override fun onReceive(context: Context, intent: Intent) {
         if (isNetworkConnected(context)) {
-            Log.i("Sending", "CONNECTED")
-
             //launch a coroutine to in the IO thread
             GlobalScope.launch(Dispatchers.IO) {
 

@@ -30,6 +30,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:id="@+id/cardViewMainView"
+                    android:layout_margin="10dp"
                     android:layout_height="wrap_content">
 
                     <ImageView
@@ -47,7 +48,7 @@
                         android:id="@+id/tripListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{trip.tripId}"
+                        android:text="@{trip.tripName}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tripImage"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -88,7 +89,6 @@
                         android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
-                        app:layout_constraintEnd_toEndOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -101,15 +101,14 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/view" />
 
-                    <Button
-                        android:id="@+id/showDetailsBtn"
-                        textBasedOnStatus="@{trip.status}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageView
+                        android:id="@+id/showDetailsImg"
+                        android:src="@drawable/go_arrow"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         tools:layout_conversion_absoluteHeight="48dp"
                         tools:layout_conversion_absoluteWidth="93dp" />
 

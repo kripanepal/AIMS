@@ -3,9 +3,9 @@ package com.fourofourfound.aims_delivery.shared_view_models
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
-import com.here.android.mpa.routing.Route
 
 /**
  * Shared View Model
@@ -19,8 +19,9 @@ import com.here.android.mpa.routing.Route
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
     var userLoggedIn = MutableLiveData(false)
     var isLocationBroadcastReceiverInitialized: Boolean = false
-    var activeRoute: Route? = null
+    var activeRoute: com.here.android.mpa.routing.Route? = null
     var selectedTrip = MutableLiveData<Trip>()
+    var selectedSourceOrSite = MutableLiveData<SourceOrSite>()
     val internetConnection = CheckInternetConnection(application)
 
 }

@@ -57,7 +57,8 @@ fun List<DatabaseTripsWithInfo>.asDomainModel(): List<Trip> {
                         productDesc,
                         requestedQty,
                         uom,
-                        fill
+                        fill,
+                        status
                     )
                     listOfSourceAndSite.add(sourceOrSite)
                 }

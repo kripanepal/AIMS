@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
@@ -45,6 +47,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     lateinit var geoBoundingBox: GeoBoundingBox
     var route: Route? = null
     private var fetchingDataInProgress = false
+    private lateinit var sourceOrSite: SourceOrSite
 
     /**
      * Shared view model
@@ -59,11 +62,12 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
-        if (sharedViewModel.selectedTrip.value === null) {
+        if (sharedViewModel.selectedTrip.value === null || sharedViewModel.selectedSourceOrSite.value === null) {
             findNavController().navigate(R.id.ongoingDeliveryFragment)
-
             return binding.root
         }
+
+        sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
@@ -108,63 +112,79 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     mapFragment.positionIndicator?.isVisible = true
                     createRoute()
                 }
-            } else {
-                Log.i("AAAA", error.toString())
             }
         }
     }
-
 
     private fun createRoute() {
         if (route == null) {
             val coreRouter = CoreRouter()
             val routePlan = RoutePlan()
             val routeOptions = RouteOptions()
-            routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
-            //TODO need to change these parameters
-            routeOptions.routeType = RouteOptions.Type.SHORTEST
-            routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
-                .setTruckLength(25.25f)
-                .setTruckHeight(2.6f).truckTrailersCount = 1
-            routeOptions.routeCount = 1
+            coreRouter.connectivity = CoreRouter.Connectivity.DEFAULT
+            if (sharedViewModel.internetConnection.value == false) {
+                CustomDialogBuilder(
+                    requireContext(),
+                    "No Internet Connection",
+                    "Route results may not be accurate without internet connection",
+                    "Continue",
+                    {
+                        routeOptions.transportMode = RouteOptions.TransportMode.CAR
+                        createRoute(routeOptions, routePlan, coreRouter)
+                    },
+                    "Cancel Navigation",
+                    { findNavController().navigateUp() },
+                    false
+                ).builder.show()
+            } else {
+                //TODO need to change these parameters
+                routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
+                routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
+                    .setTruckLength(25.25f)
+                    .setTruckHeight(2.6f).truckTrailersCount = 1
+                createRoute(routeOptions, routePlan, coreRouter)
+            }
+        }
+    }
 
-            routePlan.routeOptions = routeOptions
-            val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
-            val destination = RouteWaypoint(GeoCoordinate(32.52568, -92.04272))
-            routePlan.addWaypoint(startPoint)
-            routePlan.addWaypoint(destination)
-            coreRouter.calculateRoute(
-                routePlan,
-                object : Router.Listener<List<RouteResult>, RoutingError> {
-                    override fun onProgress(i: Int) {}
-                    override fun onCalculateRouteFinished(
-                        routeResults: List<RouteResult>?,
-                        routingError: RoutingError
-                    ) {
-                        if (routingError == RoutingError.NONE) {
-                            if (routeResults!![0].route != null) {
-                                route = routeResults[0].route
-                                sharedViewModel.activeRoute = routeResults[0].route
-                                onRouteCalculated()
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Error:route results returned is not valid",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                findNavController().navigateUp()
-                            }
+    private fun createRoute(
+        routeOptions: RouteOptions,
+        routePlan: RoutePlan,
+        coreRouter: CoreRouter
+    ) {
+        routeOptions.routeType = RouteOptions.Type.SHORTEST
+
+        routeOptions.routeCount = 1
+
+        routePlan.routeOptions = routeOptions
+        val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
+        val destination =
+            RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
+        routePlan.addWaypoint(startPoint)
+        routePlan.addWaypoint(destination)
+        coreRouter.calculateRoute(
+            routePlan,
+            object : Router.Listener<List<RouteResult>, RoutingError> {
+                override fun onProgress(i: Int) {}
+                override fun onCalculateRouteFinished(
+                    routeResults: List<RouteResult>?,
+                    routingError: RoutingError
+                ) {
+                    if (routingError == RoutingError.NONE) {
+                        if (routeResults!![0].route != null) {
+                            route = routeResults[0].route
+                            sharedViewModel.activeRoute = routeResults[0].route
+                            onRouteCalculated()
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Error:route calculation returned error code: $routingError",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
                             findNavController().navigateUp()
                         }
+                    } else {
+                        Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()
+                        findNavController().navigateUp()
                     }
-                })
-        }
+                }
+            })
     }
 
     private fun onRouteCalculated() {
@@ -199,7 +219,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
-                navigationManager.simulate(route!!, 50)
+                navigationManager.simulate(route!!, 100)
                 map.tilt = 70f
             }
             val alertDialog = alertDialogBuilder.create()
@@ -326,10 +346,18 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.activeRoute = null
         removeListeners()
         lifecycleScope.launchWhenResumed {
-            findNavController().navigateUp()
+            var navigateToForm = {
+                (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+                findNavController().navigate(
+                    NavigationFragmentDirections.actionNavigationFragmentToDeliveryCompletionFragment(
+                        sourceOrSite
+                    )
+                )
+            }
+            //TODO inform dispatcher about destination reached
+            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
         }
     }
-
 
     private fun meterPerSecToMilesPerHour(speed: Double): Int {
         return (speed * 2.23694).toInt()
@@ -355,7 +383,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
                 changeNextManeuverTexts()
-                Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
                 viewModel.nextManeuverArrow.value =
                     routeNameToImageMapper(navigationManager.nextManeuver?.icon)
             }

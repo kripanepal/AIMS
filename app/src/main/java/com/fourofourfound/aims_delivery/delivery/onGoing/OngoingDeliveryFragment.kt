@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -64,8 +66,13 @@ class OngoingDeliveryFragment : Fragment() {
     ): View? {
 
         //return if no this is not an ongoing delivery
-        if (sharedViewModel.selectedTrip.value == null) {
+        if (sharedViewModel.selectedTrip.value == null ) {
             showNoTripSelectedDialog()
+            return view
+        }
+
+        if (sharedViewModel.selectedSourceOrSite.value == null ) {
+           requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
             return view
         }
 
@@ -77,6 +84,11 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
+        if(sharedViewModel.selectedSourceOrSite.value == null)
+        {
+            findNavController().navigateUp()
+            return null
+        }
         //viewModel used by this fragment
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -97,6 +109,32 @@ class OngoingDeliveryFragment : Fragment() {
             findNavController().navigate(R.id.navigationFragment)
         }
 
+
+
+        var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
+
+        binding.sourceOrSite = currentSourceOrSite
+        binding.currentTrip = sharedViewModel.selectedTrip.value
+        binding.sourceOrSiteInfo.apply {
+
+            sourceOrSiteName.text = currentSourceOrSite.destinationName
+            address.text = currentSourceOrSite.address1
+            productDesc.text = currentSourceOrSite.productDesc
+            productQty.text = currentSourceOrSite.requestedQty.toString() + " " + currentSourceOrSite.uom
+
+        }
+
+
+        binding.deliveryCompletedButton.setOnClickListener {
+            var navigateToForm = {
+                findNavController().navigate(
+                    OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
+                        currentSourceOrSite
+                    )
+                )
+            }
+            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
+        }
         return binding.root
     }
 
@@ -143,6 +181,7 @@ class OngoingDeliveryFragment : Fragment() {
             false
         ).builder.show()
     }
+
 
 
 }

@@ -88,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(it)
         })
 
+        bottomNavigationView.setOnNavigationItemReselectedListener {}
+
 
         currentNavController = controller
     }
@@ -156,8 +158,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        currentNavController?.value?.navigateUp()
-    }
+        var topLevelId = listOf(R.id.homePage,R.id.ongoingDeliveryFragment,R.id.settingsFragment)
+        if ((currentNavController?.value?.currentDestination?.id) in topLevelId ){
+            super.onBackPressed()
+        } else {
+            navController.navigateUp()
+        }
 
+    }
 }

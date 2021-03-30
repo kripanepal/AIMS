@@ -1,14 +1,9 @@
 package com.fourofourfound.aims_delivery.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrailer
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
-import com.fourofourfound.aims_delivery.database.entities.DatabaseTruck
+import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
 import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
@@ -26,11 +21,13 @@ import kotlinx.coroutines.withContext
  */
 class TripListRepository(private val database: TripListDatabse) {
 
-    val updating = MutableLiveData(false)
+
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
     val trips: LiveData<List<Trip>>? = Transformations.map(tripsFromDatabase) {
+
         it.asDomainModel()
     }
+
 
 
     /**
@@ -45,7 +42,6 @@ class TripListRepository(private val database: TripListDatabse) {
 
             } catch (e: Exception) {
                 //todo need to do actual error handling
-                Log.i("AAAAAAAAAAAAA", e.message.toString())
             }
 
 
@@ -94,6 +90,12 @@ class TripListRepository(private val database: TripListDatabse) {
                                 trip.status = status
                             }
 
+                            var savedSourceOrSite =
+                                database.tripListDao.getSourceOrSite(tripId, seqNum)
+                            savedSourceOrSite?.apply {
+                                sourceOrSite.status = savedSourceOrSite.status
+                            }
+
                             //todo delete all records before adding after if, not here
                             database.tripListDao.insertTruck(truck)
                             database.tripListDao.insertTrailer(trailer)
@@ -102,10 +104,7 @@ class TripListRepository(private val database: TripListDatabse) {
                         }
                     }
                 } catch (e: Exception) {
-
                 }
-
-
         }
     }
 
@@ -154,6 +153,28 @@ class TripListRepository(private val database: TripListDatabse) {
                 database.tripListDao.insertLocation(customLocation)
             } catch (e: Exception) {
             }
+        }
+    }
+
+    suspend fun sendFormData(formToSubmit: DatabaseForm) {
+        withContext(Dispatchers.IO) {
+            try { MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
+
+            } catch (e: Exception) {
+                try {
+                    database.tripListDao.insertFormData(formToSubmit)
+                } catch (e: Exception) {
+                }
+            }
+
+
+        }
+    }
+
+    fun markDeliveryCompleted(tripId: String, seqNum: Int) {
+        try {
+            database.tripListDao.markDeliveryCompleted(tripId, seqNum)
+        } catch (e: Exception) {
         }
     }
 }

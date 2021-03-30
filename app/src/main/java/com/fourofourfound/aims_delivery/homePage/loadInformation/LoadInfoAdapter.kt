@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.loadInformation
+package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.item_view.view.*
+import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
 class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
@@ -29,11 +30,17 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.itemView.sourceOrSiteName.text = item.destinationName
-        holder.itemView.address.text = item.address1
-        holder.itemView.product_desc.text = item.productDesc
-        holder.itemView.product_qty.text = item.requestedQty.toString() + " " + item.uom
+
+        holder.itemView.sourceOrSiteInfo.apply {
+            sourceOrSiteName.text = item.destinationName
+            address.text = item.address1
+            product_desc.text = item.productDesc
+            product_qty.text = item.requestedQty.toString() + " " + item.uom
+
+        }
+
         holder.itemView.load_notes.text = item.fill
+
 
         if (item.waypointTypeDescription != "Source") {
             holder.itemView.container_name.apply {
@@ -44,6 +51,10 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 text = item.siteContainerDescription
                 visibility = View.VISIBLE
             }
+        }
+
+        if (item.status == "COMPLETED") {
+            holder.itemView.completedImage.visibility = View.VISIBLE
         }
     }
 

@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
-import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -81,7 +77,7 @@ class HomePage : Fragment() {
         binding.lifecycleOwner = this
 
 
-        startTripOnClick()
+
         setUpRecyclerView()
         setUpSwipeToRefresh()
         registerBroadCastReceiver()
@@ -133,12 +129,10 @@ class HomePage : Fragment() {
     private fun setUpRecyclerView() {
         //adapter for the recycler view
         val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
-
             //set up the behaviour of button on the item being displayed
             if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             ) else {
-                Log.i("AAAAAAA", "Here")
                 findNavController().navigate(
                     HomePageDirections.actionHomePageToLoadInfoFragment(
                         trip
@@ -157,19 +151,7 @@ class HomePage : Fragment() {
         }
     }
 
-    /**
-     * Start trip on click
-     * redirect the user to delivery page for a specific trip
-     */
-    private fun startTripOnClick() {
-        binding.btnStartTrip.setOnClickListener {
-            viewModel.tripList?.value?.get(0)?.let {
-                val tripToStart = it
-                if (tripToStart.status !== "COMPLETED")
-                    showStartTripDialog(tripToStart)
-            }
-        }
-    }
+
 
     /**
      * On destroy view
@@ -181,25 +163,7 @@ class HomePage : Fragment() {
     }
 
 
-    /**
-     * Show start trip dialog
-     *Displays the Dialog to make sure that user wants to start the trip
-     * On pressing yes, it also registers a worker which starts sending the
-     * user location every 15 minutes[default]
-     * @param tripToStart
-     */
-    private fun showStartTripDialog(tripToStart: Trip) {
-        CustomDialogBuilder(
-            requireContext(),
-            "Start a trip?",
-            null,
-            "Start now",
-            { markTripStart(tripToStart) },
-            "No",
-            null,
-            true
-        ).builder.show()
-    }
+
 
 
     /**
@@ -210,23 +174,7 @@ class HomePage : Fragment() {
         BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
     }
 
-    /**
-     * Mark trip start
-     * Starts a worker to start sending location updates and  navigates the user to
-     * delivery page
-     * @param tripToStart
-     */
-    private fun markTripStart(tripToStart: Trip) {
-        sharedViewModel.selectedTrip.value = (tripToStart)
-        CustomWorkManager(requireContext()).apply {
-            //TODO need to call both methods
-            sendLocationAndUpdateTrips()
-            sendLocationOnetime()
-        }
 
-        //change the active tab to delivery tab
-        requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
-    }
 }
 
 

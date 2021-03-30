@@ -1,0 +1,38 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.fourofourfound.aims_delivery.settings.mapDownload.MapDownloadFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stateRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:backgroundTint="@color/white"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="20dp">
+
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/downloadProgressBar"
+            style="@style/SpinKitView.Large.WanderingCubes"
+            android:layout_width="200dp"
+            android:layout_marginHorizontal="25dp"
+            android:visibility="gone"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

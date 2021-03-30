@@ -1,262 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/lightgrey_rectangularbox">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionViewModel" />
+    </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout1"
-        android:layout_width="384dp"
-        android:layout_height="195dp"
+    <ScrollView
+        android:id="@+id/form_scroll_view"
+        android:fillViewport="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/lightgrey_rectangularbox">
 
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/bill_of_lading"
-            android:layout_width="212dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="number"
-            android:text="Bill Of Lading:"
-
-            app:layout_constraintBottom_toTopOf="@+id/start_date"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/start_date"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/start_date"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="date"
-            android:text="Start Date:"
-
-            app:layout_constraintBottom_toTopOf="@+id/start_time"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/end_date"
-            app:layout_constraintTop_toBottomOf="@+id/bill_of_lading" />
-
-        <EditText
-            android:id="@+id/end_date"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="date"
-            android:text="End Date:"
-
-            app:layout_constraintBottom_toTopOf="@+id/end_time"
-            app:layout_constraintLeft_toRightOf="@+id/start_date"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bill_of_lading" />
-
-        <EditText
-            android:id="@+id/start_time"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="time"
-            android:text="Start Time"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/end_time"
-            app:layout_constraintTop_toBottomOf="@+id/start_date" />
-
-        <EditText
-            android:id="@+id/end_time"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="time"
-            android:text="End Time"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/start_time"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/end_date" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="400dp"
-        android:layout_height="150dp"
-        android:background="@drawable/darkgrey_rectangularbox"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/form_parent_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signature_placeholder_container"
+                style="@style/textInputLayoutStyle"
+                android:layout_width="0dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@+id/submit_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="120dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/small_input_box"
-            app:layout_constraintRight_toLeftOf="@+id/editTextNumberDecimal"
-            />
+                <EditText
+                    android:id="@+id/signatuer_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
 
-        <EditText
-            android:id="@+id/editTextNumberDecimal"
-            android:layout_width="130dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="numberDecimal"
+                    android:text="Signature" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            android:text="Net Quantity:"
-            app:layout_constraintLeft_toRightOf="@id/spinner"
-            app:layout_constraintRight_toLeftOf="@id/editTextNumberDecimal2"
-            app:layout_constraintTop_toTopOf="parent" />
+            <Button
+                android:id="@+id/submit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit Form"
+                app:layout_constraintBottom_toBottomOf="@id/form_parent_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
-            android:id="@+id/editTextNumberDecimal2"
-            android:layout_width="130dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/small_input_box"
-            android:ems="10"
-            android:inputType="numberDecimal"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bill_of_lading_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            android:text="Gross Quantity:"
-            app:layout_constraintLeft_toRightOf="@id/editTextNumberDecimal"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
-        android:layout_width="400dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/darkgrey_rectangularbox"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        >
-
-        <TextView
-            android:id="@+id/textview1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Trailer Fuel Level"
-            android:layout_margin="8dp"
-
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/before1"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/after1"
-            app:layout_constraintTop_toBottomOf="@+id/textview1" />
-
-        <EditText
-            android:id="@+id/after1"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-            app:layout_constraintTop_toBottomOf="@+id/textview1"
-            app:layout_constraintLeft_toRightOf="@+id/before1"
-            app:layout_constraintRight_toRightOf="parent"
-            />
-
-        <TextView
-            android:id="@+id/textview2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Site Container Fuel Level"
-           android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/before1"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
-
-        <EditText
-            android:id="@+id/before2"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-
-            app:layout_constraintTop_toBottomOf="@+id/textview2"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/after2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
-        <EditText
-            android:id="@+id/after2"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:background="@drawable/small_input_box"
-
-            app:layout_constraintTop_toBottomOf="@+id/textview2"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/before2"/>
+                <EditText
+                    android:id="@+id/bill_of_lading"
+                    style="@style/editTextInputLayout"
+                    android:hint="Bill of Lading Number" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_desc_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@id/bill_of_lading_container">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout4"
-        android:layout_width="408dp"
-        android:layout_height="156dp"
+                <EditText
+                    android:text="@={viewModel.productDesc}"
+                    android:id="@+id/product_desc"
+                    style="@style/editTextInputLayout"
+                    android:hint="Product" />
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        >
-        <TextView
-            android:id="@+id/textview3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Customer Signature:"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/signature"
-            app:layout_constraintStart_toStartOf="@id/signature"
-            />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/signature"
-            android:layout_width="400dp"
-            android:layout_height="100dp"
-            android:background="@drawable/small_input_box"
-            app:layout_constraintTop_toBottomOf="@id/textview3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/start_time_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/end_time_container"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@id/product_desc_container">
+
+                <EditText
+                    android:id="@+id/start_time"
+                    style="@style/editTextInputLayout"
+                    android:hint="Start Time" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/end_time_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/start_time_container"
+
+                app:layout_constraintTop_toBottomOf="@id/product_desc_container">
+
+                <EditText
+                    android:id="@+id/end_time"
+                    style="@style/editTextInputLayout"
+                    android:hint="End Time" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/start_date_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/end_time_container"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@id/end_time_container">
+
+                <EditText
+                    android:id="@+id/start_date"
+                    style="@style/editTextInputLayout"
+                    android:hint="Start Date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/end_date_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/start_date_container"
+
+                app:layout_constraintTop_toBottomOf="@id/end_time_container">
+
+                <EditText
+                    android:id="@+id/end_date"
+                    style="@style/editTextInputLayout"
+                    android:hint="End Date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/gross_qty_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/net_qty_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/end_date_container">
+
+                <EditText
+                    android:text="@={viewModel.grossQty}"
+                    android:id="@+id/gross_qty"
+                    style="@style/editTextInputLayout"
+                    android:hint="Gross Quantity" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/net_qty_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gross_qty_container"
+                app:layout_constraintTop_toBottomOf="@id/end_date_container">
+
+                <EditText
+                    android:text="@={viewModel.netQty}"
+                    android:id="@+id/net_qty"
+                    style="@style/editTextInputLayout"
+                    android:hint="Net Quantity" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/trailer_begin_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/trailer_end_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/net_qty_container">
+
+                <EditText
+                    android:text="@={viewModel.trailerBeginReading}"
+                    android:id="@+id/trailer_begin"
+                    style="@style/editTextInputLayout"
+                    android:hint="Trailer begin reading" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/trailer_end_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/trailer_begin_container"
+                app:layout_constraintTop_toBottomOf="@id/net_qty_container">
+
+                <EditText
+                    android:text="@={viewModel.trailerEndReading}"
+
+                    android:id="@+id/trailer_end"
+                    style="@style/editTextInputLayout"
+                    android:hint="Trailer end reading" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/comments_container"
+                style="@style/textInputLayoutStyle"
+                app:hintTextColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/signature_placeholder_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trailer_end_container"
+                app:layout_constraintVertical_bias="0.0">
+
+                <EditText
+                    android:text="@={viewModel.comments}"
+
+                    android:id="@+id/comments"
+                    style="@style/editTextInputLayout"
+                    android:hint="Comments" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
 
 

@@ -17,4 +17,8 @@
         <item>PREMIUM</item>
         <item>DIESEL</item>
     </string-array>
+
+    <!--    format %-->
+    <string name="text_with_percentage">%1$d%%</string>
+
 </resources>
