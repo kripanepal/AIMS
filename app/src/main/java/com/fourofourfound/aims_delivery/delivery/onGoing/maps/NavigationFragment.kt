@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,8 +112,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     mapFragment.positionIndicator?.isVisible = true
                     createRoute()
                 }
-            } else {
-                Log.i("AAAA", error.toString())
             }
         }
     }
@@ -125,7 +122,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             val routePlan = RoutePlan()
             val routeOptions = RouteOptions()
             coreRouter.connectivity = CoreRouter.Connectivity.DEFAULT
-            Log.i("AAAAAAAAAAA", sharedViewModel.internetConnection.value.toString())
             if (sharedViewModel.internetConnection.value == false) {
                 CustomDialogBuilder(
                     requireContext(),
@@ -387,7 +383,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         object : NewInstructionEventListener() {
             override fun onNewInstructionEvent() {
                 changeNextManeuverTexts()
-                Log.i("AAAAAAAA", (navigationManager.nextManeuver?.icon).toString())
                 viewModel.nextManeuverArrow.value =
                     routeNameToImageMapper(navigationManager.nextManeuver?.icon)
             }

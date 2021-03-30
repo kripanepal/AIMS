@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.delivery.completed
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +48,6 @@ class CompletedDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        Log.i("AAAAAAAAAAAA", "AAAAAAAAA")
         // Get args using by navArgs property delegate
         val tripFragmentArgs by navArgs<CompletedDeliveryFragmentArgs>()
 

@@ -11,6 +11,14 @@
             name="currentItem"
             type="com.here.android.mpa.odml.MapPackage" />
 
+        <variable
+            name="clickListener"
+            type="com.fourofourfound.aims_delivery.settings.mapDownload.CurrentItemClickHandler" />
+
+        <variable
+            name="mapPackage"
+            type="com.here.android.mpa.odml.MapPackage" />
+
 
     </data>
 
@@ -27,6 +35,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -43,8 +52,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
-                android:visibility="gone"
-                app:srcCompat="@android:drawable/ic_delete" />
+                imageBasedOnStatus="@{currentItem}"
+                android:onClick="@{() -> clickListener.onClick(currentItem)}" />
+
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

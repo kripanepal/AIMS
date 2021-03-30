@@ -57,6 +57,7 @@ class MapDownloadFragment : Fragment() {
         viewModel.mapDownloading.observe(viewLifecycleOwner) {
             if (it) {
                 dialog.show()
+                binding.downloadProgressBar.visibility = View.GONE
                 progressBar = dialog.requireViewById(R.id.mapDownloadingProgressBar)
                 progressText = dialog.findViewById(R.id.mapDownloadingText)
 
@@ -89,7 +90,8 @@ class MapDownloadFragment : Fragment() {
 
     private fun observeActivePackage() {
         viewModel.packageList.observe(viewLifecycleOwner) {
-            if (it != null) listAdapter.submitList(it)
+            if (it != null) listAdapter.submitList(it.toList())
+
         }
     }
 
@@ -193,7 +195,9 @@ class MapDownloadFragment : Fragment() {
         for (continent in rootMapPackage!!.children) {
             if (continent.id == 8) {
                 for (country in continent.children) {
-                    if (country.id === 1000) refreshListView(ArrayList(country.children))
+                    if (country.id === 1000) {
+                        refreshListView(ArrayList(country.children))
+                    }
                 }
             }
         }

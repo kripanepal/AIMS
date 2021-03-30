@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,7 +133,6 @@ class HomePage : Fragment() {
             if (trip.status == "COMPLETED") findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
             ) else {
-                Log.i("AAAAAAA", trip.sourceOrSite.size.toString())
                 findNavController().navigate(
                     HomePageDirections.actionHomePageToLoadInfoFragment(
                         trip

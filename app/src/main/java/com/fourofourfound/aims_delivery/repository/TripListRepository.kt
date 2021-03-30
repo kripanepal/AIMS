@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
@@ -43,7 +42,6 @@ class TripListRepository(private val database: TripListDatabse) {
 
             } catch (e: Exception) {
                 //todo need to do actual error handling
-                Log.i("AAAAAAAAAAAAA", e.message.toString())
             }
 
 
