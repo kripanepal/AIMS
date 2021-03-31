@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/deliveryCompletionFragment"
         android:name="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment"
-        android:label="DeliveryCompletionFragment">
+        android:label="Form">
         <argument
             android:name="sourceOrSite"
             app:argType="com.fourofourfound.aims_delivery.domain.SourceOrSite" />

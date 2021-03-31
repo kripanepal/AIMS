@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/mapDownloadFragment"
         android:name="com.fourofourfound.aims_delivery.settings.mapDownload.MapDownloadFragment"
-        android:label="fragment_map_download"
+        android:label="Download Maps"
         tools:layout="@layout/fragment_map_download" />
 </navigation>
