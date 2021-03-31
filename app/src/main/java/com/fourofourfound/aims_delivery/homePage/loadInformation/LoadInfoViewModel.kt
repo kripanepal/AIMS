@@ -19,7 +19,7 @@ class LoadInfoViewModel(application: Application) : AndroidViewModel(application
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-    fun markTripAsCompleted(tripId: String) {
+    fun markTripAsCompleted(tripId: Int) {
         viewModelScope.launch {
             //TODO change status of trips
             tripListRepository.changeTripStatus(tripId, "COMPLETED")

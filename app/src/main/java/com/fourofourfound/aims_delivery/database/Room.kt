@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.relations.DatabaseTripsWithInfo
+import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
 
 @Dao
 interface TripListDao {
     @Query("update DatabaseTrip set status=:status where tripId= :tripId")
-    fun changeTripStatus(tripId: String, status: String)
+    fun changeTripStatus(tripId: Int, status: String)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
@@ -39,37 +39,49 @@ interface TripListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrailer(trailer: DatabaseTrailer)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFuel(fuel: DatabaseFuel)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocation(location: DatabaseLocation)
+
+
     @Transaction
     @Query("select * from  DatabaseTrip ")
-    fun getAllTrip(): LiveData<List<DatabaseTripsWithInfo>>
+    fun getAllTrip(): LiveData<List<TripWithInfo>>
 
-    @Query("select distinct productDesc from  DatabaseSourceOrSite where tripId=:tripId ")
-    fun getAllProductsForTrip(tripId: String): List<String>
 
-    @Query("select destinationName from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Source'and tripId =:tripId")
-    fun getFuelSource(productDesc: String, tripId: String): String
+    fun getAllProductsForTrip(tripId: Int): List<String> = listOf("AA")
 
-    @Query("select count(wayPointTypeDescription) from DatabaseSourceOrSite where productDesc =:productDesc and wayPointTypeDescription='Site Container' and tripId =:tripId")
-    fun getSiteCount(productDesc: String, tripId: String): Int
+    fun getFuelSource(productDesc: String, tripId: Int): String = "AA"
+
+    fun getSiteCount(productDesc: String, tripId: Int): Int = 2
 
     @Query("select * from  DatabaseTrip  where tripId=:tripId ")
-    fun getTripById(tripId: String): DatabaseTrip?
+    fun getTripById(tripId: Int): DatabaseTrip?
 
     @Insert
     fun insertFormData(formData: DatabaseForm)
 
     @Query("update DatabaseSourceOrSite set status = 'COMPLETED' where seqNum=:seqNum and tripId =:tripId")
-    fun markDeliveryCompleted(tripId: String, seqNum: Int)
+    fun markDeliveryCompleted(tripId: Int, seqNum: Int)
 
     @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
-    fun getSourceOrSite(tripId: String, seqNum: Int): DatabaseSourceOrSite
+    fun getSourceOrSite(tripId: Int, seqNum: Int): DatabaseSourceOrSite
 
 
 }
 
 
 @Database(
-    entities = [DatabaseTrailer::class, DatabaseTrip::class, DatabaseTruck::class, DatabaseSourceOrSite::class, CustomDatabaseLocation::class, DatabaseForm::class],
+    entities = [DatabaseTrailer::class,
+        DatabaseTrip::class,
+        DatabaseTruck::class,
+        DatabaseSourceOrSite::class,
+        CustomDatabaseLocation::class,
+        DatabaseForm::class,
+        DatabaseFuel::class,
+        DatabaseLocation::class],
     version = 1,
     exportSchema = false
 )

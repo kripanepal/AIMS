@@ -1,13 +1,10 @@
 package com.fourofourfound.aims_delivery.repository
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.relations.asDomainModel
-import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
-import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +20,11 @@ class TripListRepository(private val database: TripListDatabse) {
 
 
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
-    val trips: LiveData<List<Trip>>? = Transformations.map(tripsFromDatabase) {
+    val trips = Transformations.map(tripsFromDatabase)
+    {
 
-        it.asDomainModel()
+        null
     }
-
 
 
     /**
@@ -40,72 +37,105 @@ class TripListRepository(private val database: TripListDatabse) {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 saveTrips(tripLists.data.resultSet1)
 
-            } catch (e: Exception) {
-                //todo need to do actual error handling
+            } catch (e: Exception) { //todo need to do actual error handling
             }
-
-
         }
     }
 
     private suspend fun saveTrips(list: List<NetworkTrip>) {
         withContext(Dispatchers.IO) {
-            if (tripsFromDatabase.value?.asNetworkModel() != list)
-                try {
-                    for (each in list) {
-                        each.apply {
-                            var truck = DatabaseTruck(truckId, truckCode, truckDesc, tripId)
-                            var trailer =
-                                DatabaseTrailer(trailerId, trailerCode, trailerDesc, truckId)
-                            var sourceOrSite = DatabaseSourceOrSite(
-                                tripId,
-                                seqNum,
-                                waypointTypeDescription,
-                                latitude,
-                                longitude,
-                                destinationCode,
-                                destinationName,
-                                siteContainerCode,
-                                siteContainerDescription,
-                                address1,
-                                city,
-                                stateAbbrev,
-                                postalCode,
-                                delReqNum,
-                                delReqLineNum,
-                                productId,
-                                productCode,
-                                productDesc,
-                                requestedQty,
-                                uom,
-                                fill,
-                                truckId,
-                                trailerId
-                            )
+            try {
+                for (each in list) {
+                    each.apply {
+                        var savedTrip = database.tripListDao.getTripById(tripId)
+                        var trip = DatabaseTrip(tripId, tripName, tripDate)
+                        savedTrip?.apply { trip.status = status }
 
-                            var savedTrip = database.tripListDao.getTripById(tripId)
+                        var truck = DatabaseTruck(truckId, truckCode, truckDesc)
+                        var trailer = DatabaseTrailer(trailerId, trailerCode, trailerDesc)
+                        var fuel = DatabaseFuel(productId, productCode, productDesc)
+                        var location = DatabaseLocation(
+                            address1,
+                            address2,
+                            city,
+                            stateAbbrev,
+                            postalCode,
+                            latitude,
+                            longitude,
+                            destinationCode,
+                            destinationName
+                        )
+                        var sourceOrSite = DatabaseSourceOrSite(
+                            tripId,
+                            truckId,
+                            trailerId,
+                            productId!!,
+                            destinationCode,
+                            seqNum,
+                            waypointTypeDescription,
+                            siteContainerCode,
+                            siteContainerDescription,
+                            delReqNum,
+                            delReqLineNum,
+                            requestedQty,
+                            uom,
+                            fill
+                        )
 
-                            var trip = DatabaseTrip(tripId, tripName, tripDate)
-                            savedTrip?.apply {
-                                trip.status = status
-                            }
 
-                            var savedSourceOrSite =
-                                database.tripListDao.getSourceOrSite(tripId, seqNum)
-                            savedSourceOrSite?.apply {
-                                sourceOrSite.status = savedSourceOrSite.status
-                            }
+                        var savedSourceOrSite = database.tripListDao.getSourceOrSite(tripId, seqNum)
+                        savedSourceOrSite?.apply { sourceOrSite.status = savedSourceOrSite.status }
 
-                            //todo delete all records before adding after if, not here
-                            database.tripListDao.insertTruck(truck)
-                            database.tripListDao.insertTrailer(trailer)
-                            database.tripListDao.insertSitesOrSource(sourceOrSite)
-                            database.tripListDao.insertTrip(trip)
-                        }
+                        //todo delete all records before adding after if, not here
+                        database.tripListDao.insertTruck(truck)
+                        database.tripListDao.insertTrailer(trailer)
+                        database.tripListDao.insertTrip(trip)
+                        database.tripListDao.insertFuel(fuel)
+                        database.tripListDao.insertLocation(location)
+                        database.tripListDao.insertSitesOrSource(sourceOrSite)
+
+
+//                        trip = DatabaseTrip(160, "A-160", "DATE")
+//                        location = DatabaseLocation(
+//                            "ADDR!",
+//                            "addr2",
+//                            "Monroe",
+//                            "LA",
+//                            71203,
+//                            94.12,
+//                            -112.15,
+//                            "DESTCODE",
+//                            "DESTDESC"
+//                        )
+//                        sourceOrSite = DatabaseSourceOrSite(
+//                            160,
+//                            4,
+//                            3,
+//                            759,
+//                            "DESTCODE",
+//                            0,
+//                            "Source",
+//                            "SITE CODE",
+//                            "SITE DESC",
+//                            20,
+//                            20,
+//                            5000,
+//                            "GAL",
+//                            "FILL"
+//                        )
+//
+//                        database.tripListDao.insertTrip(trip)
+//                        database.tripListDao.insertLocation(location)
+//                        database.tripListDao.insertSitesOrSource(sourceOrSite)
                     }
-                } catch (e: Exception) {
                 }
+            } catch (e: Exception) {
+                Log.i("AAAAAAAAAA", e.stackTraceToString())
+
+            }
         }
+
+
     }
 
     /**
@@ -115,7 +145,7 @@ class TripListRepository(private val database: TripListDatabse) {
      * @param tripId The id of the trip
      * @param status The status of the trip
      */
-    suspend fun changeTripStatus(tripId: String, status: String) {
+    suspend fun changeTripStatus(tripId: Int, status: String) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
@@ -158,7 +188,8 @@ class TripListRepository(private val database: TripListDatabse) {
 
     suspend fun sendFormData(formToSubmit: DatabaseForm) {
         withContext(Dispatchers.IO) {
-            try { MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
+            try {
+                MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
 
             } catch (e: Exception) {
                 try {
@@ -171,7 +202,7 @@ class TripListRepository(private val database: TripListDatabse) {
         }
     }
 
-    fun markDeliveryCompleted(tripId: String, seqNum: Int) {
+    fun markDeliveryCompleted(tripId: Int, seqNum: Int) {
         try {
             database.tripListDao.markDeliveryCompleted(tripId, seqNum)
         } catch (e: Exception) {

@@ -62,7 +62,7 @@ class DeliveryCompletionViewModel(
         doneSubmitting.value = false
     }
 
-    fun markDeliveryCompleted(tripId: String) {
+    fun markDeliveryCompleted(tripId: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 tripListRepository.markDeliveryCompleted(tripId, currentSourceOrSite.seqNum)

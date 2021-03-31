@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class Trip(
 
     var truckInfo: TruckInfo,
-    var tripId: String,
+    var tripId: Int,
     var tripName: String,
     var tripDate: String,
     var sourceOrSite: List<SourceOrSite>,

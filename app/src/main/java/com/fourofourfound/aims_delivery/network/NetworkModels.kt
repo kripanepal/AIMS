@@ -21,7 +21,7 @@ import com.google.gson.annotations.SerializedName
         var trailerDesc: String,
 
         @SerializedName("TripId")
-        var tripId: String,
+        var tripId: Int,
 
         @SerializedName("TripName")
         var tripName: String,
@@ -50,6 +50,9 @@ import com.google.gson.annotations.SerializedName
         @SerializedName("Address1")
         var address1: String,
 
+        @SerializedName("Address2")
+        var address2: String,
+
         @SerializedName("City")
         var city: String,
 
@@ -72,19 +75,19 @@ import com.google.gson.annotations.SerializedName
         var delReqLineNum: Int? = null,
 
         @SerializedName("ProductId")
-        var productId: Int? = null,
+        var productId: Int = 0,
 
         @SerializedName("ProductCode")
-        var productCode: String? = null,
+        var productCode: String = "NOT PROVIDED",
 
         @SerializedName("ProductDesc")
-        var productDesc: String? = null,
+        var productDesc: String = "NOT PROVIDED",
 
         @SerializedName("RequestedQty")
-        var requestedQty: Int? = null,
+        var requestedQty: Int = 0,
 
         @SerializedName("UOM")
-        var uom: String? = null,
+        var uom: String? = "NOT PROVIDED",
 
         @SerializedName("Fill")
         var fill: String = "",

@@ -55,6 +55,7 @@ class HomePage : Fragment() {
     lateinit var viewModel: HomePageViewModel
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,8 +82,8 @@ class HomePage : Fragment() {
         setUpRecyclerView()
         setUpSwipeToRefresh()
         registerBroadCastReceiver()
-
         setUpToolBar()
+
 
         return binding.root
     }
@@ -131,8 +132,12 @@ class HomePage : Fragment() {
         val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
             //set up the behaviour of button on the item being displayed
             if (trip.status == "COMPLETED") findNavController().navigate(
-                HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
-            ) else {
+                HomePageDirections.actionHomePageToCompletedDeliveryFragment(
+                    trip
+                )
+            )
+            else {
+
                 findNavController().navigate(
                     HomePageDirections.actionHomePageToLoadInfoFragment(
                         trip
@@ -145,12 +150,15 @@ class HomePage : Fragment() {
 
 
         //observe for any changes on the trips and inform that to the user
-        viewModel.tripList?.observe(viewLifecycleOwner) {
-            //TODO new trip was added or modified. Need to send the notification to the user
-            adapter.submitList(it)
-        }
+//        viewModel.tripList?.observe(viewLifecycleOwner) {
+//            //TODO new trip was added or modified. Need to send the notification to the user
+//            for(trip in it)
+//            {
+//                Log.i("AAAAAAAAA",trip.sourceOrSite.size.toString())
+//            }
+//            adapter.submitList(it)
+//        }
     }
-
 
 
     /**
@@ -161,9 +169,6 @@ class HomePage : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 
 
     /**

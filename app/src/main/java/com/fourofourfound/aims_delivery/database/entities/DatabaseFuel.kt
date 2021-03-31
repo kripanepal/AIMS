@@ -4,10 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class DatabaseTrip(
+data class DatabaseFuel(
     @PrimaryKey
-    var tripId: Int,
-    var tripName: String,
-    var tripDate: String,
-    var status: String = "NOT_STARTED"
+    val productId: Int = 759,
+    val productCode: String? = "NOT PROVIDED",
+    val productDesc: String
 )

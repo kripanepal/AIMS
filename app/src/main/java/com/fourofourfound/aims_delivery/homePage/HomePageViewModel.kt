@@ -28,7 +28,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
      * List of trip that is a to be displayed
      */
     val tripList = tripListRepository.trips
-    val updating = MutableLiveData(false)
+    private val updating = MutableLiveData(false)
     init {
         fetchTripFromNetwork()
     }
@@ -49,7 +49,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
     }
 
-    fun getFuelTypes(tripId: String): List<String>? {
+    fun getFuelTypes(tripId: Int): List<String>? {
         var toReturn: List<String>?
         runBlocking {
             withContext(Dispatchers.IO) {
@@ -59,7 +59,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         return toReturn
     }
 
-    fun getSourceName(fuelType: String, tripId: String): String {
+    fun getSourceName(fuelType: String, tripId: Int): String {
         var toReturn: String
         runBlocking {
             withContext(Dispatchers.IO) {
@@ -69,7 +69,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
         return toReturn
     }
 
-    fun getSiteCount(fuelType: String, tripId: String): Int {
+    fun getSiteCount(fuelType: String, tripId: Int): Int {
         var toReturn: Int
         runBlocking {
             withContext(Dispatchers.IO) {
