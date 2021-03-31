@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,9 +152,6 @@ class HomePage : Fragment() {
         //observe for any changes on the trips and inform that to the user
         viewModel.tripList?.observe(viewLifecycleOwner) {
             //TODO new trip was added or modified. Need to send the notification to the user
-            for (trip in it) {
-                Log.i("AAAAAAAAA", trip.sourceOrSite.size.toString())
-            }
             adapter.submitList(it)
         }
     }

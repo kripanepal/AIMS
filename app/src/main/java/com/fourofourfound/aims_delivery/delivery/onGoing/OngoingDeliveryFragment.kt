@@ -113,7 +113,6 @@ class OngoingDeliveryFragment : Fragment() {
 
 
         var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
         binding.sourceOrSite = currentSourceOrSite
         binding.currentTrip = sharedViewModel.selectedTrip.value
         binding.sourceOrSiteInfo.apply {
