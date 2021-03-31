@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabse
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.relations.asDomainModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,7 @@ class TripListRepository(private val database: TripListDatabse) {
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
     val trips = Transformations.map(tripsFromDatabase)
     {
-
-        null
+        it.asDomainModel()
     }
 
 
@@ -69,7 +69,7 @@ class TripListRepository(private val database: TripListDatabse) {
                             tripId,
                             truckId,
                             trailerId,
-                            productId!!,
+                            productId,
                             destinationCode,
                             seqNum,
                             waypointTypeDescription,

@@ -32,17 +32,17 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
         val item = data[position]
 
         holder.itemView.sourceOrSiteInfo.apply {
-            sourceOrSiteName.text = item.destinationName
-            address.text = item.address1
-            product_desc.text = item.productDesc
-            product_qty.text = item.requestedQty.toString() + " " + item.uom
+            sourceOrSiteName.text = item.location.destinationName
+            address.text = item.location.address1
+            product_desc.text = item.productInfo.productDesc
+            product_qty.text = item.productInfo.requestedQty.toString() + " " + item.productInfo.uom
 
         }
 
-        holder.itemView.load_notes.text = item.fill
+        holder.itemView.load_notes.text = item.productInfo.fill
 
 
-        if (item.waypointTypeDescription != "Source") {
+        if (item.wayPointTypeDescription != "Source") {
             holder.itemView.container_name.apply {
                 text = item.siteContainerCode
                 visibility = View.VISIBLE

@@ -16,9 +16,9 @@ data class DatabaseSourceOrSite(
     var siteContainerDescription: String? = null,
     var delReqNum: Int? = null,
     var delReqLineNum: Int? = null,
-    var requestedQty: Int? = null,
-    var uom: String? = null,
-    var fill: String? = "",
+    var requestedQty: Int = 0,
+    var uom: String = "NOT PROVIDED",
+    var fill: String = "",
 
     var status: String = "NOT_STARTED"
 )

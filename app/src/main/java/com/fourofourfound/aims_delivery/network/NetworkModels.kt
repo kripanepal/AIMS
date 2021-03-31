@@ -51,7 +51,7 @@ import com.google.gson.annotations.SerializedName
         var address1: String,
 
         @SerializedName("Address2")
-        var address2: String,
+        var address2: String?,
 
         @SerializedName("City")
         var city: String,
@@ -87,7 +87,7 @@ import com.google.gson.annotations.SerializedName
         var requestedQty: Int = 0,
 
         @SerializedName("UOM")
-        var uom: String? = "NOT PROVIDED",
+        var uom: String = "NOT PROVIDED",
 
         @SerializedName("Fill")
         var fill: String = "",

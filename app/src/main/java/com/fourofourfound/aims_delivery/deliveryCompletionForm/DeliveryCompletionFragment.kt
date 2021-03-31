@@ -32,6 +32,7 @@ class DeliveryCompletionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+
         if(sharedViewModel.selectedSourceOrSite.value == null)
         {
             findNavController().navigateUp()

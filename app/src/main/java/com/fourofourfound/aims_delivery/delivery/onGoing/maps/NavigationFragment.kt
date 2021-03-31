@@ -159,7 +159,12 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         routePlan.routeOptions = routeOptions
         val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
         val destination =
-            RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
+            RouteWaypoint(
+                GeoCoordinate(
+                    sourceOrSite.location.latitude,
+                    sourceOrSite.location.longitude
+                )
+            )
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
         coreRouter.calculateRoute(

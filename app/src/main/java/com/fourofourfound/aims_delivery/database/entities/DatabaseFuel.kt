@@ -8,5 +8,5 @@ data class DatabaseFuel(
     @PrimaryKey
     val productId: Int = 759,
     val productCode: String? = "NOT PROVIDED",
-    val productDesc: String
+    val productDesc: String = "NOT PROVIDED"
 )

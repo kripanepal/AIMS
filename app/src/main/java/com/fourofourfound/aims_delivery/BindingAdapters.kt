@@ -35,3 +35,9 @@ fun setStatusBasedText(view: TextView, deliveryStatus: String) {
         view.text = "Show Details"
     }
 }
+
+
+@BindingAdapter("setIntAsString")
+fun setTextAsString(view: TextView, int: Int) {
+    view.text = int.toString()
+}

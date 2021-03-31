@@ -32,7 +32,13 @@ data class DestinationWithInfo(
         parentColumn = "tripId",
         entityColumn = "tripId",
     )
-    val trip: DatabaseTrip
+    val trip: DatabaseTrip,
+
+    @Relation(
+        parentColumn = "truckId",
+        entityColumn = "truckId",
+    )
+    val truck: DatabaseTruck,
 
 
-)
+    )

@@ -67,6 +67,7 @@ class LoadInfoFragment : Fragment() {
 
         //change the active tab to delivery tab
         requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+
     }
 
     /**
