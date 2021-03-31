@@ -59,7 +59,7 @@ data class DestinationLocation(
 
 @Parcelize
 data class ProductInfo(
-    var productId: Int? = null,
+    var productId: Int,
     var productCode: String? = null,
     var productDesc: String? = null,
     var requestedQty: Int? = null,

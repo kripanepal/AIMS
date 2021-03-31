@@ -53,7 +53,7 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
                         delReqLineNum,
                         productId,
                         each.product.productCode!!,
-                        each.product.productDesc,
+                        each.product.productDesc!!,
                         requestedQty,
                         uom,
                         fill
@@ -78,7 +78,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
         listOfSourceAndSite = mutableListOf()
         for (destination in it.destinationInfo) {
             productInfo = ProductInfo(
-                destination.fuel.productId,
+                destination.fuel.productId!!,
                 destination.fuel.productCode,
                 destination.fuel.productDesc,
                 destination.sourceOrSite.requestedQty,

@@ -2,7 +2,7 @@ package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
 import androidx.lifecycle.Transformations
-import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
  * @property database the database to be used
  * @constructor Create empty Trip list repository
  */
-class TripListRepository(private val database: TripListDatabse) {
+class TripListRepository(private val database: TripListDatabase) {
 
 
     private val tripsFromDatabase = database.tripListDao.getAllTrip()
@@ -36,7 +36,6 @@ class TripListRepository(private val database: TripListDatabse) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 saveTrips(tripLists.data.resultSet1)
-
             } catch (e: Exception) { //todo need to do actual error handling
             }
         }
@@ -94,39 +93,38 @@ class TripListRepository(private val database: TripListDatabse) {
                         database.tripListDao.insertLocation(location)
                         database.tripListDao.insertSitesOrSource(sourceOrSite)
 
+                        trip = DatabaseTrip(160, "A-160", "DATE")
+                        location = DatabaseLocation(
+                            "ADDR!",
+                            "addr2",
+                            "Monroe",
+                            "LA",
+                            71203,
+                            94.12,
+                            -112.15,
+                            "DESTCODE",
+                            "DESTDESC"
+                        )
+                        sourceOrSite = DatabaseSourceOrSite(
+                            160,
+                            4,
+                            3,
+                            759,
+                            "DESTCODE",
+                            0,
+                            "Source",
+                            "SITE CODE",
+                            "SITE DESC",
+                            20,
+                            20,
+                            5000,
+                            "GAL",
+                            "FILL"
+                        )
 
-//                        trip = DatabaseTrip(160, "A-160", "DATE")
-//                        location = DatabaseLocation(
-//                            "ADDR!",
-//                            "addr2",
-//                            "Monroe",
-//                            "LA",
-//                            71203,
-//                            94.12,
-//                            -112.15,
-//                            "DESTCODE",
-//                            "DESTDESC"
-//                        )
-//                        sourceOrSite = DatabaseSourceOrSite(
-//                            160,
-//                            4,
-//                            3,
-//                            759,
-//                            "DESTCODE",
-//                            0,
-//                            "Source",
-//                            "SITE CODE",
-//                            "SITE DESC",
-//                            20,
-//                            20,
-//                            5000,
-//                            "GAL",
-//                            "FILL"
-//                        )
-//
-//                        database.tripListDao.insertTrip(trip)
-//                        database.tripListDao.insertLocation(location)
-//                        database.tripListDao.insertSitesOrSource(sourceOrSite)
+                        database.tripListDao.insertTrip(trip)
+                        database.tripListDao.insertLocation(location)
+                        database.tripListDao.insertSitesOrSource(sourceOrSite)
                     }
                 }
             } catch (e: Exception) {

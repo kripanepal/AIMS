@@ -63,34 +63,34 @@ import com.google.gson.annotations.SerializedName
         var postalCode: Int,
 
         @SerializedName("SiteContainerCode")
-        var siteContainerCode: String? = null,
+        var siteContainerCode: String?,
 
         @SerializedName("SiteContainerDescription")
-        var siteContainerDescription: String? = null,
+        var siteContainerDescription: String?,
 
         @SerializedName("DelReqNum")
-        var delReqNum: Int? = null,
+        var delReqNum: Int?,
 
         @SerializedName("DelReqLineNum")
-        var delReqLineNum: Int? = null,
+        var delReqLineNum: Int?,
 
         @SerializedName("ProductId")
-        var productId: Int = 0,
+        var productId: Int,
 
         @SerializedName("ProductCode")
-        var productCode: String = "NOT PROVIDED",
+        var productCode: String?,
 
         @SerializedName("ProductDesc")
-        var productDesc: String = "NOT PROVIDED",
+        var productDesc: String?,
 
         @SerializedName("RequestedQty")
-        var requestedQty: Int = 0,
+        var requestedQty: Int,
 
         @SerializedName("UOM")
-        var uom: String = "NOT PROVIDED",
+        var uom: String,
 
         @SerializedName("Fill")
-        var fill: String = "",
+        var fill: String,
     )
 
 

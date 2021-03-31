@@ -8,7 +8,6 @@ import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -49,35 +48,6 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
     }
 
-    fun getFuelTypes(tripId: Int): List<String>? {
-        var toReturn: List<String>?
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                toReturn = database.tripListDao.getAllProductsForTrip(tripId)
-            }
-        }
-        return toReturn
-    }
-
-    fun getSourceName(fuelType: String, tripId: Int): String {
-        var toReturn: String
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                toReturn = database.tripListDao.getFuelSource(fuelType, tripId)
-            }
-        }
-        return toReturn
-    }
-
-    fun getSiteCount(fuelType: String, tripId: Int): Int {
-        var toReturn: Int
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                toReturn = database.tripListDao.getSiteCount(fuelType, tripId)
-            }
-        }
-        return toReturn
-    }
 
 
 }

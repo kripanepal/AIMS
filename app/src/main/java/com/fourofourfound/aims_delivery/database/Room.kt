@@ -51,12 +51,6 @@ interface TripListDao {
     fun getAllTrip(): LiveData<List<TripWithInfo>>
 
 
-    fun getAllProductsForTrip(tripId: Int): List<String> = listOf("AA")
-
-    fun getFuelSource(productDesc: String, tripId: Int): String = "AA"
-
-    fun getSiteCount(productDesc: String, tripId: Int): Int = 2
-
     @Query("select * from  DatabaseTrip  where tripId=:tripId ")
     fun getTripById(tripId: Int): DatabaseTrip?
 
@@ -68,6 +62,7 @@ interface TripListDao {
 
     @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
     fun getSourceOrSite(tripId: Int, seqNum: Int): DatabaseSourceOrSite
+
 
 
 }
@@ -85,19 +80,19 @@ interface TripListDao {
     version = 1,
     exportSchema = false
 )
-abstract class TripListDatabse : RoomDatabase() {
+abstract class TripListDatabase : RoomDatabase() {
     abstract val tripListDao: TripListDao
 }
 
 @Volatile
-private lateinit var INSTANCE: TripListDatabse
+private lateinit var INSTANCE: TripListDatabase
 
-fun getDatabase(context: Context): TripListDatabse {
-    synchronized(TripListDatabse::class.java) {
+fun getDatabase(context: Context): TripListDatabase {
+    synchronized(TripListDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(
                 context.applicationContext,
-                TripListDatabse::class.java,
+                TripListDatabase::class.java,
                 "trips"
             )
                 .build()

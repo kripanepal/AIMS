@@ -44,8 +44,8 @@ class TripListAdapter(
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
-        holder.bind(context, item, clickListener, parentViewModel)
-        holder.bind(context, getItem(position)!!, clickListener, parentViewModel)
+        holder.bind(item, clickListener)
+        holder.bind(getItem(position)!!, clickListener)
     }
 
 
@@ -78,28 +78,36 @@ class TripListAdapter(
          * @param item the item being displayed in the recycler view
          * @param clickListener the clickHandler for the item being displayed
          */
-        fun bind(
-            context: Context,
-            item: Trip,
-            clickListener: TripListListener,
-            parentViewModel: HomePageViewModel
-        ) {
-
-            //added a new binding
+        fun bind(item: Trip, clickListener: TripListListener) {
+            //add a new binding
             binding.trip = item
             binding.clickListener = clickListener
             var fuelInfo = mutableListOf<Fuel_with_info>()
-
             fuelInfo.add(Fuel_with_info("Fuel Type", "Source", "#Site"))
 
-            val productList = parentViewModel.getFuelTypes(item.tripId)
+            //get  lists of all product types for that trip
+            val productList = HashSet<Int>(item.sourceOrSite.size)
+            for (destination in item.sourceOrSite) productList.add(destination.productInfo.productId!!)
+
             if (productList != null) {
-                for (each in productList) {
-                    var sourceName = parentViewModel.getSourceName(each, item.tripId)
-                    var siteCount = parentViewModel.getSiteCount(each, item.tripId)
-                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount.toString())
+                for (product in productList) {
+
+                    //find all sources  for each fuel type
+                    val sourceList = item.sourceOrSite.filter {
+                        (it.wayPointTypeDescription == "Source") && (it.productInfo.productId == product)
+                    }
+
+                    //order the source by seq number
+                    var firstElement = sourceList.sortedWith(compareBy { it.seqNum })[0]
+                    val numberOfSites = item.sourceOrSite.size - sourceList.size
+                    val productName = firstElement.productInfo.productDesc
+                    var sourceName =
+                        if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
+                    var fuelWithInfo =
+                        Fuel_with_info(productName!!, sourceName, numberOfSites.toString())
                     fuelInfo.add(fuelWithInfo)
                 }
+
             }
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
