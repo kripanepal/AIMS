@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
+import com.fourofourfound.aims_delivery.database.utilClasses.FuelWithInfo
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
@@ -82,8 +82,8 @@ class TripListAdapter(
             //add a new binding
             binding.trip = item
             binding.clickListener = clickListener
-            var fuelInfo = mutableListOf<Fuel_with_info>()
-            fuelInfo.add(Fuel_with_info("Fuel Type", "Source", "#Site"))
+            var fuelInfo = mutableListOf<FuelWithInfo>()
+            fuelInfo.add(FuelWithInfo("Fuel Type", "Source", "#Site"))
 
             //get  lists of all product types for that trip
             val productList = HashSet<Int>(item.sourceOrSite.size)
@@ -104,7 +104,7 @@ class TripListAdapter(
                     var sourceName =
                         if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
                     var fuelWithInfo =
-                        Fuel_with_info(productName!!, sourceName, numberOfSites.toString())
+                        FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
                     fuelInfo.add(fuelWithInfo)
                 }
 

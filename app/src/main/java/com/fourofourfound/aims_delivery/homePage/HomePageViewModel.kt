@@ -44,10 +44,5 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
             }
             updating.value = false
         }
-
-
     }
-
-
-
 }

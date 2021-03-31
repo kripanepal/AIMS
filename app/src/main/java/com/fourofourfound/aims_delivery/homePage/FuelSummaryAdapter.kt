@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
+import com.fourofourfound.aims_delivery.database.utilClasses.FuelWithInfo
 import com.fourofourfound.aimsdelivery.R
 
-class FuelSummaryAdapter(private val dataSet: Array<Fuel_with_info>) :
+class FuelSummaryAdapter(private val dataSet: Array<FuelWithInfo>) :
     RecyclerView.Adapter<FuelSummaryAdapter.ViewHolder>() {
 
     /**

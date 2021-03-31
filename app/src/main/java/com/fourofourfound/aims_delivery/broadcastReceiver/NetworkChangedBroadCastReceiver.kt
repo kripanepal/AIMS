@@ -39,13 +39,13 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
                 val database = getDatabase(context)
 
                 //get saved location from the database
-                database.tripListDao.getSavedLocation().apply {
+                database.locationDao.getSavedLocation().apply {
                     try {
                         //send the data to the dispatcher
                         MakeNetworkCall.retrofitService.sendLocation(this)
 
                         //delete contents of location table as only latest location is required
-                        database.tripListDao.deleteAllLocations()
+                        database.locationDao.deleteAllLocations()
                     } catch (e: Exception) {
                     }
                 }

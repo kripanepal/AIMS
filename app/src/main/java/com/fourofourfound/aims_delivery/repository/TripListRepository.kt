@@ -18,14 +18,11 @@ import kotlinx.coroutines.withContext
  * @constructor Create empty Trip list repository
  */
 class TripListRepository(private val database: TripListDatabase) {
-
-
-    private val tripsFromDatabase = database.tripListDao.getAllTrip()
+    private val tripsFromDatabase = database.tripDao.getAllTrip()
     val trips = Transformations.map(tripsFromDatabase)
     {
         it.asDomainModel()
     }
-
 
     /**
      * Refresh trips
@@ -46,7 +43,7 @@ class TripListRepository(private val database: TripListDatabase) {
             try {
                 for (each in list) {
                     each.apply {
-                        var savedTrip = database.tripListDao.getTripById(tripId)
+                        var savedTrip = database.tripDao.getTripById(tripId)
                         var trip = DatabaseTrip(tripId, tripName, tripDate)
                         savedTrip?.apply { trip.status = status }
 
@@ -82,16 +79,17 @@ class TripListRepository(private val database: TripListDatabase) {
                         )
 
 
-                        var savedSourceOrSite = database.tripListDao.getSourceOrSite(tripId, seqNum)
+                        var savedSourceOrSite =
+                            database.destinationDao.getDestination(tripId, seqNum)
                         savedSourceOrSite?.apply { sourceOrSite.status = savedSourceOrSite.status }
 
                         //todo delete all records before adding after if, not here
-                        database.tripListDao.insertTruck(truck)
-                        database.tripListDao.insertTrailer(trailer)
-                        database.tripListDao.insertTrip(trip)
-                        database.tripListDao.insertFuel(fuel)
-                        database.tripListDao.insertLocation(location)
-                        database.tripListDao.insertSitesOrSource(sourceOrSite)
+                        database.tripDao.insertTruck(truck)
+                        database.tripDao.insertTrailer(trailer)
+                        database.tripDao.insertTrip(trip)
+                        database.tripDao.insertFuel(fuel)
+                        database.tripDao.insertLocation(location)
+                        database.destinationDao.insertDestination(sourceOrSite)
 
                         trip = DatabaseTrip(160, "A-160", "DATE")
                         location = DatabaseLocation(
@@ -122,9 +120,9 @@ class TripListRepository(private val database: TripListDatabase) {
                             "FILL"
                         )
 
-                        database.tripListDao.insertTrip(trip)
-                        database.tripListDao.insertLocation(location)
-                        database.tripListDao.insertSitesOrSource(sourceOrSite)
+                        database.tripDao.insertTrip(trip)
+                        database.tripDao.insertLocation(location)
+                        database.destinationDao.insertDestination(sourceOrSite)
                     }
                 }
             } catch (e: Exception) {
@@ -147,7 +145,7 @@ class TripListRepository(private val database: TripListDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                database.tripListDao.changeTripStatus(tripId, status)
+                database.tripDao.changeTripStatus(tripId, status)
             } catch (e: Exception) {
 
             }
@@ -163,7 +161,7 @@ class TripListRepository(private val database: TripListDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                database.tripListDao.deleteAllTrips()
+                database.tripDao.deleteAllTrips()
             } catch (e: Exception) {
 
             }
@@ -178,7 +176,7 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
         withContext(Dispatchers.IO) {
             try {
-                database.tripListDao.insertLocation(customLocation)
+                database.locationDao.insertLocation(customLocation)
             } catch (e: Exception) {
             }
         }
@@ -191,18 +189,17 @@ class TripListRepository(private val database: TripListDatabase) {
 
             } catch (e: Exception) {
                 try {
-                    database.tripListDao.insertFormData(formToSubmit)
+                    database.formDao.insertFormData(formToSubmit)
                 } catch (e: Exception) {
                 }
             }
-
 
         }
     }
 
     fun markDeliveryCompleted(tripId: Int, seqNum: Int) {
         try {
-            database.tripListDao.markDeliveryCompleted(tripId, seqNum)
+            database.destinationDao.markDeliveryCompleted(tripId, seqNum)
         } catch (e: Exception) {
         }
     }
