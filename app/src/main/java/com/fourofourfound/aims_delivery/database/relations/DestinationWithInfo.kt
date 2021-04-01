@@ -9,7 +9,6 @@ data class DestinationWithInfo(
     @Relation(
         parentColumn = "productId",
         entityColumn = "productId",
-        entity = DatabaseFuel::class
     )
     val product: DatabaseFuel,
     @Relation(

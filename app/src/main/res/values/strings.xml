@@ -21,4 +21,11 @@
     <!--    format %-->
     <string name="text_with_percentage">%1$d%%</string>
 
+
+    <plurals name="numberOfTripsAvailable">
+        <item quantity="one">%d trip available.</item>
+        <item quantity="other">%d trips available.</item>
+    </plurals>
+
+
 </resources>
