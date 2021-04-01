@@ -6,16 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class DatabaseFuel(
     @PrimaryKey
-    var productId: Int?,
-    var productCode: String?,
-    var productDesc: String?
-) {
-    init {
-        if (productId == null) productId = 759
-        if (productCode == null) productCode = "NOT PROVIDED"
-        if (productDesc == null) productDesc = "NOT PROVIDED"
-
-        //TODO TEMP FIX NEED TO CHANGE
-        if (productId == 0) productId = 759
-    }
-}
+    val productId: Int = 759,
+    val productCode: String? = "NOT PROVIDED",
+    val productDesc: String? = "NOT PROVIDED"
+)

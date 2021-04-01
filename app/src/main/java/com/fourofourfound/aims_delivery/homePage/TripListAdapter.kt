@@ -91,21 +91,22 @@ class TripListAdapter(
 
             if (productList != null) {
                 for (product in productList) {
-
                     //find all sources  for each fuel type
                     val sourceList = item.sourceOrSite.filter {
                         (it.wayPointTypeDescription == "Source") && (it.productInfo.productId == product)
                     }
 
-                    //order the source by seq number
-                    var firstElement = sourceList.sortedWith(compareBy { it.seqNum })[0]
-                    val numberOfSites = item.sourceOrSite.size - sourceList.size
-                    val productName = firstElement.productInfo.productDesc
-                    var sourceName =
-                        if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
-                    var fuelWithInfo =
-                        FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
-                    fuelInfo.add(fuelWithInfo)
+                    if (sourceList.isNotEmpty()) {
+                        //order the source by seq number
+                        var firstElement = sourceList.sortedWith(compareBy { it.seqNum })[0]
+                        val numberOfSites = item.sourceOrSite.size - sourceList.size
+                        val productName = firstElement.productInfo.productDesc
+                        var sourceName =
+                            if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
+                        var fuelWithInfo =
+                            FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
+                        fuelInfo.add(fuelWithInfo)
+                    }
                 }
 
             }
