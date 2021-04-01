@@ -6,6 +6,7 @@ import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
+import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +32,8 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun refreshTrips() {
         withContext(Dispatchers.IO) {
             try {
-                val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                saveTrips(tripLists.data.resultSet1)
+                val tripLists = MakeNetworkCall.retrofitService.getAllTrips().data.resultSet1
+                if (tripsFromDatabase.value?.asNetworkModel() != tripLists) saveTrips(tripLists)
             } catch (e: Exception) { //todo need to do actual error handling
             }
         }
