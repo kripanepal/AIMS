@@ -1,14 +1,18 @@
 package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
 import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
+import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,11 +23,17 @@ import kotlinx.coroutines.withContext
  * @constructor Create empty Trip list repository
  */
 class TripListRepository(private val database: TripListDatabase) {
-    private val tripsFromDatabase = database.tripDao.getAllTrip()
-    val trips = Transformations.map(tripsFromDatabase)
-    {
-        it.asDomainModel()
+    private lateinit var tripsFromDatabase: LiveData<List<TripWithInfo>>
+    var trips: LiveData<List<Trip>>
+
+    init {
+        val tripsFromDatabase = database.tripDao.getAllTrip()
+        trips = Transformations.map(tripsFromDatabase)
+        {
+            it.asDomainModel()
+        }
     }
+
 
     /**
      * Refresh trips
@@ -33,7 +43,9 @@ class TripListRepository(private val database: TripListDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips().data.resultSet1
-                if (tripsFromDatabase.value?.asNetworkModel() != tripLists) saveTrips(tripLists)
+                if (tripsFromDatabase.value?.asNetworkModel() != tripLists) {
+                    saveTrips(tripLists)
+                }
             } catch (e: Exception) { //todo need to do actual error handling
             }
         }
@@ -46,7 +58,9 @@ class TripListRepository(private val database: TripListDatabase) {
                     each.apply {
                         var savedTrip = database.tripDao.getTripById(tripId)
                         var trip = DatabaseTrip(tripId, tripName, tripDate)
-                        savedTrip?.apply { trip.status = status }
+                        savedTrip?.apply {
+                            trip.status = status
+                        }
 
                         var truck = DatabaseTruck(truckId, truckCode, truckDesc)
                         var trailer = DatabaseTrailer(trailerId, trailerCode, trailerDesc)
@@ -142,7 +156,7 @@ class TripListRepository(private val database: TripListDatabase) {
      * @param tripId The id of the trip
      * @param status The status of the trip
      */
-    suspend fun changeTripStatus(tripId: Int, status: String) {
+    suspend fun changeTripStatus(tripId: Int, status: StatusEnum) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher

@@ -14,6 +14,7 @@ import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -96,7 +97,7 @@ class LoadInfoFragment : Fragment() {
      */
     private fun startTripOnClick(currentTrip: Trip) {
         var notCompletedList = currentTrip.sourceOrSite.filter {
-            it.status != "COMPLETED"
+            it.status != StatusEnum.COMPLETED
         }
         if (notCompletedList.isEmpty()) {
             viewModel.markTripAsCompleted(sharedViewModel.selectedTrip.value!!.tripId)

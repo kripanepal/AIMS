@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.launch
 
 /**
@@ -47,7 +48,7 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     fun markTripAsCompleted() {
         viewModelScope.launch {
             //TODO change status of trips
-            tripListRepository.changeTripStatus(currentTrip.value!!.tripId, "COMPLETED")
+            tripListRepository.changeTripStatus(currentTrip.value!!.tripId, StatusEnum.COMPLETED)
             _tripCompleted.value = true
 
         }

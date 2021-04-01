@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -131,13 +132,12 @@ class HomePage : Fragment() {
         //adapter for the recycler view
         val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
             //set up the behaviour of button on the item being displayed
-            if (trip.status == "COMPLETED") findNavController().navigate(
+            if (trip.status == StatusEnum.COMPLETED) findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(
                     trip
                 )
             )
             else {
-
                 findNavController().navigate(
                     HomePageDirections.actionHomePageToLoadInfoFragment(
                         trip

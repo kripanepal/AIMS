@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.DeliveryInputFormBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -57,7 +58,7 @@ class DeliveryCompletionFragment : Fragment() {
                 viewModel.doneNavigating()
                 viewModel.markDeliveryCompleted(sharedViewModel.selectedTrip.value!!.tripId)
                 //TODO need to manage this
-                sharedViewModel.selectedSourceOrSite.value!!.status = "COMPLETED"
+                sharedViewModel.selectedSourceOrSite.value!!.status = StatusEnum.COMPLETED
                 sharedViewModel.selectedSourceOrSite.value = null
             }
         }

@@ -5,12 +5,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.fourofourfound.aims_delivery.database.daos.DestinationDao
 import com.fourofourfound.aims_delivery.database.daos.FormDao
 import com.fourofourfound.aims_delivery.database.daos.LocationDao
 import com.fourofourfound.aims_delivery.database.daos.TripDao
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
 
 
 @Database(
@@ -25,11 +27,13 @@ import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabas
     version = 1,
     exportSchema = false
 )
+@TypeConverters(StatusConverter::class)
 abstract class TripListDatabase : RoomDatabase() {
     abstract val tripDao: TripDao
     abstract val locationDao: LocationDao
     abstract val formDao: FormDao
     abstract val destinationDao: DestinationDao
+
 }
 
 @Volatile

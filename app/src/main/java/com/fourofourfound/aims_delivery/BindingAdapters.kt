@@ -4,13 +4,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.odml.MapPackage
 
 
 @BindingAdapter("visibilityBasedOnStatus")
-fun setVisibility(view: View, deliveryStatus: String) {
-    if (deliveryStatus == "COMPLETED") {
+fun setVisibility(view: View, deliveryStatus: StatusEnum) {
+    if (deliveryStatus == StatusEnum.COMPLETED) {
         view.visibility = View.VISIBLE
     } else {
         view.visibility = View.GONE

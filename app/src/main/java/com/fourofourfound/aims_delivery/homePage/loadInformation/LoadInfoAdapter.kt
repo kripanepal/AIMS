@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.item_view.view.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
@@ -53,7 +54,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
             }
         }
 
-        if (item.status == "COMPLETED") {
+        if (item.status == StatusEnum.COMPLETED) {
             holder.itemView.completedImage.visibility = View.VISIBLE
         }
     }

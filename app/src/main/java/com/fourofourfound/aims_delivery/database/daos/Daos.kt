@@ -5,6 +5,7 @@ import androidx.room.*
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 
 @Dao
 interface LocationDao {
@@ -45,7 +46,7 @@ interface DestinationDao {
 @Dao
 interface TripDao {
     @Query("update DatabaseTrip set status=:status where tripId= :tripId")
-    fun changeTripStatus(tripId: Int, status: String)
+    fun changeTripStatus(tripId: Int, status: StatusEnum)
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
@@ -68,11 +69,11 @@ interface TripDao {
 
 
     @Transaction
-    @Query("select * from  DatabaseTrip ")
+    @Query("select * from  DatabaseTrip order by status desc ")
     fun getAllTrip(): LiveData<List<TripWithInfo>>
 
 
-    @Query("select * from  DatabaseTrip  where tripId=:tripId ")
+    @Query("select * from  DatabaseTrip  where tripId=:tripId")
     fun getTripById(tripId: Int): DatabaseTrip?
 
 }
