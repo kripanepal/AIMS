@@ -11,7 +11,7 @@
         android:fontFamily="@font/teko_semibold"
         android:paddingBottom="5dp"
         android:textColor="@color/Aims_Orange"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:textStyle="bold" />
 
     <TextView
