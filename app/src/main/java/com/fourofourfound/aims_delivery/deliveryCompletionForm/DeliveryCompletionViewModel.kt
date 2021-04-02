@@ -31,7 +31,7 @@ class DeliveryCompletionViewModel(
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
 
-    val doneSubmitting = MutableLiveData(false)
+    val doneFilling = MutableLiveData(false)
 
     fun submitForm() {
         var formToSubmit = DatabaseForm(
@@ -53,13 +53,13 @@ class DeliveryCompletionViewModel(
                 tripListRepository.sendFormData(formToSubmit)
             }
 
-            doneSubmitting.value = true
+            doneFilling.value = true
 
         }
     }
 
     fun doneNavigating() {
-        doneSubmitting.value = false
+        doneFilling.value = false
     }
 
     fun markDeliveryCompleted(tripId: Int) {
