@@ -21,7 +21,8 @@
             android:layout_gravity="center"
             android:layout_marginVertical="10dp"
             android:backgroundTint="#10F09325"
-            app:cardCornerRadius="4dp">
+            app:cardCornerRadius="5dp"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"

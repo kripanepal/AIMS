@@ -8,7 +8,8 @@
         android:layout_height="wrap_content"
         app:cardElevation="10dp"
         app:cardCornerRadius="5dp"
-        android:layout_margin="10dp">
+        app:cardBackgroundColor="#F6F5F4"
+        android:layout_margin="15dp">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -34,6 +35,7 @@
                     android:id="@+id/container_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:visibility="gone" />
 
                 <TextView

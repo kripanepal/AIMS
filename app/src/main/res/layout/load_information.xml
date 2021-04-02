@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment">
-
+        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment"
+        android:background="#DCD4D0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pickup_list"
