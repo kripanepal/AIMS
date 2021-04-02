@@ -52,8 +52,8 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
                         delReqNum,
                         delReqLineNum,
                         productId,
-                        each.product.productCode!!,
-                        each.product.productDesc!!,
+                        each.fuel.productCode,
+                        each.fuel.productDesc,
                         requestedQty,
                         uom,
                         fill

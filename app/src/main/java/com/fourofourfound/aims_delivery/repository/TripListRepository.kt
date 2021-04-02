@@ -92,38 +92,7 @@ class TripListRepository(private val database: TripListDatabase) {
                         database.tripDao.insertLocation(location)
                         database.destinationDao.insertDestination(sourceOrSite)
 
-                        trip = DatabaseTrip(160, "A-160", "DATE")
-                        location = DatabaseLocation(
-                            "ADDR!",
-                            "addr2",
-                            "Monroe",
-                            "LA",
-                            71203,
-                            94.12,
-                            -112.15,
-                            "DESTCODE",
-                            "DESTDESC"
-                        )
-                        sourceOrSite = DatabaseSourceOrSite(
-                            160,
-                            4,
-                            3,
-                            759,
-                            "DESTCODE",
-                            0,
-                            "Source",
-                            "SITE CODE",
-                            "SITE DESC",
-                            20,
-                            20,
-                            5000,
-                            "GAL",
-                            "FILL"
-                        )
 
-                        database.tripDao.insertTrip(trip)
-                        database.tripDao.insertLocation(location)
-                        database.destinationDao.insertDestination(sourceOrSite)
                     }
                 }
             } catch (e: Exception) {

@@ -6,11 +6,7 @@ import com.fourofourfound.aims_delivery.database.entities.*
 
 data class DestinationWithInfo(
     @Embedded val sourceOrSite: DatabaseSourceOrSite,
-    @Relation(
-        parentColumn = "productId",
-        entityColumn = "productId",
-    )
-    val product: DatabaseFuel,
+
     @Relation(
         parentColumn = "destinationCode",
         entityColumn = "destinationCode",
