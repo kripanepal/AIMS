@@ -34,12 +34,12 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <EditText
-                    android:id="@+id/signatuer_placeholder"
+                    android:id="@+id/signature_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
 
-                    android:text="Signature" />
+                    android:hint="Signature" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
