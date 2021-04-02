@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp">
+        app:cardElevation="10dp"
+        app:cardCornerRadius="5dp"
+        android:layout_margin="10dp">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -19,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|start"
                 android:layout_margin="10dp"
-                android:layout_weight="1.8"
+                android:layout_weight="2.0"
                 android:orientation="vertical">
 
 

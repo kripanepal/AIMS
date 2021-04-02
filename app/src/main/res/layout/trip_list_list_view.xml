@@ -59,7 +59,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@android:drawable/btn_star_big_on"
+                        app:srcCompat="@drawable/ic_baseline_local_gas_station_24"
                         tools:srcCompat="@tools:sample/avatars" />
 
 
