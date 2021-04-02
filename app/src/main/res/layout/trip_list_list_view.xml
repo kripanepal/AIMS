@@ -102,7 +102,8 @@
 
                     <ImageView
                         android:id="@+id/showDetailsImg"
-                        android:src="@drawable/go_arrow"
+                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        android:paddingTop="10dp"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
