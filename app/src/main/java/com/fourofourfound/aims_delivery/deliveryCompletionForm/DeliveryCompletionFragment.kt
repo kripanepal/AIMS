@@ -68,12 +68,8 @@ class DeliveryCompletionFragment : Fragment() {
         builder.setView(R.layout.signature_pad_layout)
         var dialog = builder.create()
         dialog.setTitle("Signature")
-        dialog.setMessage("Sign below ")
         dialog.show()
-
-
         var signaturePad = dialog.findViewById<SignaturePad>(R.id.signature_pad)
-
         dialog.findViewById<Button>(R.id.signature_clear).setOnClickListener {
             signaturePad.clear()
         }

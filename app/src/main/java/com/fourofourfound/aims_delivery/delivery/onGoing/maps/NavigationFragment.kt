@@ -3,8 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,7 +127,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     "Route results may not be accurate without internet connection",
                     "Continue",
                     {
-                        routeOptions.transportMode = RouteOptions.TransportMode.CAR
+                        routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
                         createRoute(routeOptions, routePlan, coreRouter)
                     },
                     "Cancel Navigation",
@@ -203,10 +201,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun recenter() {
+        PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
+            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW)
+        }
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
-        Handler(Looper.getMainLooper()).postDelayed({
-            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
-        }, 2000)
+
     }
 
     private fun startNavigation() {
@@ -249,6 +248,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun addListeners() {
+        mapFragment.setOnTouchListener { v, _ ->
+            v.performClick()
+            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.NONE
+            false
+        }
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
