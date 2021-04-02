@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="20dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="#10F09325"
             app:cardCornerRadius="4dp">
 
             <LinearLayout
@@ -40,9 +41,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        visibilityBasedOnStatus="@{trip.status}"
-
-                        app:srcCompat="@drawable/trip_done_icon" />
+                        app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24" />
 
                     <TextView
                         android:id="@+id/tripListItem"
@@ -68,7 +67,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cardViewNestedView"
-
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 

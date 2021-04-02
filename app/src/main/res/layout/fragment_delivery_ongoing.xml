@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -31,7 +30,7 @@
             android:id="@+id/wayPoint_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{sourceOrSite.waypointTypeDescription}"
+            android:text="@{sourceOrSite.wayPointTypeDescription}"
             android:textFontWeight="20"
             android:textSize="25sp"
             android:textStyle="bold" />
@@ -40,7 +39,7 @@
             android:id="@+id/trip_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{currentTrip.tripId}" />
+            setIntAsString="@{currentTrip.tripId}" />
 
         <TextView
             android:id="@+id/trip_name"
@@ -70,7 +69,7 @@
             android:id="@+id/load_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{sourceOrSite.fill}" />
+            android:text="@{sourceOrSite.productInfo.fill}" />
 
         <RelativeLayout
             android:layout_width="match_parent"

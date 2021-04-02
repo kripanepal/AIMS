@@ -21,14 +21,14 @@ class DeliveryCompletionViewModel(
     private val tripListRepository = TripListRepository(database)
 
     val billOfLadingNumber = 4444
-    val productDesc = MutableLiveData(currentSourceOrSite.productDesc)
-    val grossQty = MutableLiveData(currentSourceOrSite.requestedQty.toString())
-    val netQty = MutableLiveData(currentSourceOrSite.requestedQty.toString())
-    val comments = MutableLiveData(currentSourceOrSite.fill)
+    val productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
+    val grossQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
+    val netQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
+    val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading =
-        MutableLiveData(currentSourceOrSite.requestedQty?.minus(100).toString())
+        MutableLiveData(currentSourceOrSite.productInfo.requestedQty?.minus(100).toString())
     val trailerEndReadingCalc =
-        Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.requestedQty!!
+        Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
 
     val doneSubmitting = MutableLiveData(false)
@@ -62,7 +62,7 @@ class DeliveryCompletionViewModel(
         doneSubmitting.value = false
     }
 
-    fun markDeliveryCompleted(tripId: String) {
+    fun markDeliveryCompleted(tripId: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 tripListRepository.markDeliveryCompleted(tripId, currentSourceOrSite.seqNum)

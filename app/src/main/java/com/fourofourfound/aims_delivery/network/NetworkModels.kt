@@ -21,7 +21,7 @@ import com.google.gson.annotations.SerializedName
         var trailerDesc: String,
 
         @SerializedName("TripId")
-        var tripId: String,
+        var tripId: Int,
 
         @SerializedName("TripName")
         var tripName: String,
@@ -50,6 +50,9 @@ import com.google.gson.annotations.SerializedName
         @SerializedName("Address1")
         var address1: String,
 
+        @SerializedName("Address2")
+        var address2: String?,
+
         @SerializedName("City")
         var city: String,
 
@@ -60,34 +63,34 @@ import com.google.gson.annotations.SerializedName
         var postalCode: Int,
 
         @SerializedName("SiteContainerCode")
-        var siteContainerCode: String? = null,
+        var siteContainerCode: String?,
 
         @SerializedName("SiteContainerDescription")
-        var siteContainerDescription: String? = null,
+        var siteContainerDescription: String?,
 
         @SerializedName("DelReqNum")
-        var delReqNum: Int? = null,
+        var delReqNum: Int?,
 
         @SerializedName("DelReqLineNum")
-        var delReqLineNum: Int? = null,
+        var delReqLineNum: Int?,
 
         @SerializedName("ProductId")
-        var productId: Int? = null,
+        var productId: Int,
 
         @SerializedName("ProductCode")
-        var productCode: String? = null,
+        var productCode: String?,
 
         @SerializedName("ProductDesc")
-        var productDesc: String? = null,
+        var productDesc: String?,
 
         @SerializedName("RequestedQty")
-        var requestedQty: Int? = null,
+        var requestedQty: Int,
 
         @SerializedName("UOM")
-        var uom: String? = null,
+        var uom: String,
 
         @SerializedName("Fill")
-        var fill: String = "",
+        var fill: String,
     )
 
 

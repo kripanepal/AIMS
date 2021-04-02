@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
+import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -55,6 +57,7 @@ class HomePage : Fragment() {
     lateinit var viewModel: HomePageViewModel
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,11 +84,28 @@ class HomePage : Fragment() {
         setUpRecyclerView()
         setUpSwipeToRefresh()
         registerBroadCastReceiver()
-
         setUpToolBar()
+        changeContainerVisibility()
 
         return binding.root
     }
+
+    private fun changeContainerVisibility() {
+        binding.completedTripListContainer.setOnClickListener {
+            toggleViewVisibility(completed_trip_list)
+
+        }
+
+        binding.currentTripListContainer.setOnClickListener {
+            toggleViewVisibility(current_trip_list)
+
+        }
+        binding.upcomingTripListContainer.setOnClickListener {
+            toggleViewVisibility(upcoming_trip_list)
+
+        }
+    }
+
 
     /**
      * Set Up Tool Bar
@@ -128,29 +148,64 @@ class HomePage : Fragment() {
      */
     private fun setUpRecyclerView() {
         //adapter for the recycler view
-        val adapter = TripListAdapter(requireContext(), TripListListener { trip ->
-            //set up the behaviour of button on the item being displayed
-            if (trip.status == "COMPLETED") findNavController().navigate(
-                HomePageDirections.actionHomePageToCompletedDeliveryFragment(trip)
-            ) else {
-                findNavController().navigate(
-                    HomePageDirections.actionHomePageToLoadInfoFragment(
-                        trip
-                    )
+        val currentTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+            findNavController().navigate(
+                HomePageDirections.actionHomePageToLoadInfoFragment(
+                    trip
                 )
-            }
+            )
         }, viewModel)
 
-        binding.tripList.adapter = adapter
+        //adapter for the recycler view
+        val upComingTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+            findNavController().navigate(
+                HomePageDirections.actionHomePageToLoadInfoFragment(
+                    trip
+                )
+            )
+
+        }, viewModel)
+
+        //adapter for the recycler view
+        val completedTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+            //set up the behaviour of button on the item being displayed
+            findNavController().navigate(
+                HomePageDirections.actionHomePageToCompletedDeliveryFragment(
+                    trip
+                )
+            )
+
+        }, viewModel)
+
+        binding.currentTripList.adapter = currentTripAdapter
+        binding.completedTripList.adapter = completedTripAdapter
+        binding.upcomingTripList.adapter = upComingTripAdapter
 
 
         //observe for any changes on the trips and inform that to the user
         viewModel.tripList?.observe(viewLifecycleOwner) {
             //TODO new trip was added or modified. Need to send the notification to the user
-            adapter.submitList(it)
+            //TODO new trip was added or modified. Need to send the notification to the user
+
+            it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
+                binding.ongoingTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                currentTripAdapter.submitList(this)
+            }
+
+            it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
+                binding.completedTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                completedTripAdapter.submitList(this)
+            }
+
+            it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
+                binding.upcomingTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                upComingTripAdapter.submitList(this)
+            }
         }
     }
-
 
 
     /**
@@ -161,9 +216,6 @@ class HomePage : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 
 
     /**

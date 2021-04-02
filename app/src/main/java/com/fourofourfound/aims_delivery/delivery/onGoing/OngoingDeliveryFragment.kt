@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,6 +88,8 @@ class OngoingDeliveryFragment : Fragment() {
             findNavController().navigateUp()
             return null
         }
+
+
         //viewModel used by this fragment
         val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -112,15 +113,15 @@ class OngoingDeliveryFragment : Fragment() {
 
 
         var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
         binding.sourceOrSite = currentSourceOrSite
         binding.currentTrip = sharedViewModel.selectedTrip.value
         binding.sourceOrSiteInfo.apply {
 
-            sourceOrSiteName.text = currentSourceOrSite.destinationName
-            address.text = currentSourceOrSite.address1
-            productDesc.text = currentSourceOrSite.productDesc
-            productQty.text = currentSourceOrSite.requestedQty.toString() + " " + currentSourceOrSite.uom
+            sourceOrSiteName.text = currentSourceOrSite.location.destinationName
+            address.text = currentSourceOrSite.location.address1
+            productDesc.text = currentSourceOrSite.productInfo.productDesc
+            productQty.text =
+                currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
 
         }
 
@@ -135,6 +136,7 @@ class OngoingDeliveryFragment : Fragment() {
             }
             getTripCompletedDialogBox(requireContext(), navigateToForm).show()
         }
+
         return binding.root
     }
 

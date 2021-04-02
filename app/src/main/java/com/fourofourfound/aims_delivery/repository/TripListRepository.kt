@@ -1,15 +1,14 @@
 package com.fourofourfound.aims_delivery.repository
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.Transformations
-import com.fourofourfound.aims_delivery.database.TripListDatabse
+import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
-import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
-import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,16 +18,12 @@ import kotlinx.coroutines.withContext
  * @property database the database to be used
  * @constructor Create empty Trip list repository
  */
-class TripListRepository(private val database: TripListDatabse) {
-
-
-    private val tripsFromDatabase = database.tripListDao.getAllTrip()
-    val trips: LiveData<List<Trip>>? = Transformations.map(tripsFromDatabase) {
-
+class TripListRepository(private val database: TripListDatabase) {
+    private val tripsFromDatabase = database.tripDao.getAllTrip()
+    val trips = Transformations.map(tripsFromDatabase)
+    {
         it.asDomainModel()
     }
-
-
 
     /**
      * Refresh trips
@@ -39,73 +34,74 @@ class TripListRepository(private val database: TripListDatabse) {
             try {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
                 saveTrips(tripLists.data.resultSet1)
-
-            } catch (e: Exception) {
-                //todo need to do actual error handling
+            } catch (e: Exception) { //todo need to do actual error handling
             }
-
-
         }
     }
 
     private suspend fun saveTrips(list: List<NetworkTrip>) {
         withContext(Dispatchers.IO) {
-            if (tripsFromDatabase.value?.asNetworkModel() != list)
-                try {
-                    for (each in list) {
-                        each.apply {
-                            var truck = DatabaseTruck(truckId, truckCode, truckDesc, tripId)
-                            var trailer =
-                                DatabaseTrailer(trailerId, trailerCode, trailerDesc, truckId)
-                            var sourceOrSite = DatabaseSourceOrSite(
-                                tripId,
-                                seqNum,
-                                waypointTypeDescription,
-                                latitude,
-                                longitude,
-                                destinationCode,
-                                destinationName,
-                                siteContainerCode,
-                                siteContainerDescription,
-                                address1,
-                                city,
-                                stateAbbrev,
-                                postalCode,
-                                delReqNum,
-                                delReqLineNum,
-                                productId,
-                                productCode,
-                                productDesc,
-                                requestedQty,
-                                uom,
-                                fill,
-                                truckId,
-                                trailerId
-                            )
+            try {
+                for (each in list) {
+                    each.apply {
+                        var savedTrip = database.tripDao.getTripById(tripId)
+                        var trip = DatabaseTrip(tripId, tripName, tripDate)
+                        savedTrip?.apply { trip.status = status }
 
-                            var savedTrip = database.tripListDao.getTripById(tripId)
+                        var truck = DatabaseTruck(truckId, truckCode, truckDesc)
+                        var trailer = DatabaseTrailer(trailerId, trailerCode, trailerDesc)
+                        var fuel = DatabaseFuel(productId, productCode, productDesc)
+                        var location = DatabaseLocation(
+                            address1,
+                            address2,
+                            city,
+                            stateAbbrev,
+                            postalCode,
+                            latitude,
+                            longitude,
+                            destinationCode,
+                            destinationName
+                        )
+                        var sourceOrSite = DatabaseSourceOrSite(
+                            tripId,
+                            truckId,
+                            trailerId,
+                            productId,
+                            destinationCode,
+                            seqNum,
+                            waypointTypeDescription,
+                            siteContainerCode,
+                            siteContainerDescription,
+                            delReqNum,
+                            delReqLineNum,
+                            requestedQty,
+                            uom,
+                            fill
+                        )
 
-                            var trip = DatabaseTrip(tripId, tripName, tripDate)
-                            savedTrip?.apply {
-                                trip.status = status
-                            }
 
-                            var savedSourceOrSite =
-                                database.tripListDao.getSourceOrSite(tripId, seqNum)
-                            savedSourceOrSite?.apply {
-                                sourceOrSite.status = savedSourceOrSite.status
-                            }
+                        var savedSourceOrSite =
+                            database.destinationDao.getDestination(tripId, seqNum)
+                        savedSourceOrSite?.apply { sourceOrSite.status = savedSourceOrSite.status }
 
-                            //todo delete all records before adding after if, not here
-                            database.tripListDao.insertTruck(truck)
-                            database.tripListDao.insertTrailer(trailer)
-                            database.tripListDao.insertSitesOrSource(sourceOrSite)
-                            database.tripListDao.insertTrip(trip)
-                        }
+                        //todo delete all records before adding after if, not here
+                        database.tripDao.insertTruck(truck)
+                        database.tripDao.insertTrailer(trailer)
+                        database.tripDao.insertTrip(trip)
+                        database.tripDao.insertFuel(fuel)
+                        database.tripDao.insertLocation(location)
+                        database.destinationDao.insertDestination(sourceOrSite)
+
+
                     }
-                } catch (e: Exception) {
                 }
+            } catch (e: Exception) {
+                Log.i("AAAAAAAAAA", e.stackTraceToString())
+
+            }
         }
+
+
     }
 
     /**
@@ -115,11 +111,11 @@ class TripListRepository(private val database: TripListDatabse) {
      * @param tripId The id of the trip
      * @param status The status of the trip
      */
-    suspend fun changeTripStatus(tripId: String, status: String) {
+    suspend fun changeTripStatus(tripId: Int, status: StatusEnum) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                database.tripListDao.changeTripStatus(tripId, status)
+                database.tripDao.changeTripStatus(tripId, status)
             } catch (e: Exception) {
 
             }
@@ -135,7 +131,7 @@ class TripListRepository(private val database: TripListDatabse) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                database.tripListDao.deleteAllTrips()
+                database.tripDao.deleteAllTrips()
             } catch (e: Exception) {
 
             }
@@ -150,7 +146,7 @@ class TripListRepository(private val database: TripListDatabse) {
     suspend fun saveLocationToDatabase(customLocation: CustomDatabaseLocation) {
         withContext(Dispatchers.IO) {
             try {
-                database.tripListDao.insertLocation(customLocation)
+                database.locationDao.insertLocation(customLocation)
             } catch (e: Exception) {
             }
         }
@@ -158,22 +154,22 @@ class TripListRepository(private val database: TripListDatabse) {
 
     suspend fun sendFormData(formToSubmit: DatabaseForm) {
         withContext(Dispatchers.IO) {
-            try { MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
+            try {
+                MakeNetworkCall.retrofitService.sendFormData(formToSubmit)
 
             } catch (e: Exception) {
                 try {
-                    database.tripListDao.insertFormData(formToSubmit)
+                    database.formDao.insertFormData(formToSubmit)
                 } catch (e: Exception) {
                 }
             }
 
-
         }
     }
 
-    fun markDeliveryCompleted(tripId: String, seqNum: Int) {
+    fun markDeliveryCompleted(tripId: Int, seqNum: Int) {
         try {
-            database.tripListDao.markDeliveryCompleted(tripId, seqNum)
+            database.destinationDao.markDeliveryCompleted(tripId, seqNum)
         } catch (e: Exception) {
         }
     }

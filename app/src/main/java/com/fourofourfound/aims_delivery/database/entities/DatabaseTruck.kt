@@ -9,5 +9,4 @@ data class DatabaseTruck(
     var truckId: Int,
     var truckCode: String,
     var truckDesc: String,
-    val tripId: String
 )

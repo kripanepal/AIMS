@@ -2,14 +2,13 @@ package com.fourofourfound.aims_delivery.homePage
 
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.fourofourfound.aims_delivery.database.utilClasses.Fuel_with_info
+import com.fourofourfound.aims_delivery.database.utilClasses.FuelWithInfo
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
@@ -45,8 +44,8 @@ class TripListAdapter(
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
-        holder.bind(context, item, clickListener, parentViewModel)
-        holder.bind(context, getItem(position)!!, clickListener, parentViewModel)
+        holder.bind(item, clickListener)
+        holder.bind(getItem(position)!!, clickListener)
     }
 
 
@@ -79,28 +78,37 @@ class TripListAdapter(
          * @param item the item being displayed in the recycler view
          * @param clickListener the clickHandler for the item being displayed
          */
-        fun bind(
-            context: Context,
-            item: Trip,
-            clickListener: TripListListener,
-            parentViewModel: HomePageViewModel
-        ) {
-
-            //added a new binding
+        fun bind(item: Trip, clickListener: TripListListener) {
+            //add a new binding
             binding.trip = item
             binding.clickListener = clickListener
-            var fuelInfo = mutableListOf<Fuel_with_info>()
+            var fuelInfo = mutableListOf<FuelWithInfo>()
+            fuelInfo.add(FuelWithInfo("Fuel Type", "Source", "#Site"))
 
-            fuelInfo.add(Fuel_with_info("Fuel Type", "Source", "#Site"))
+            //get  lists of all product types for that trip
+            val productList = HashSet<Int>(item.sourceOrSite.size)
+            for (destination in item.sourceOrSite) productList.add(destination.productInfo.productId!!)
 
-            val productList = parentViewModel.getFuelTypes(item.tripId)
             if (productList != null) {
-                for (each in productList) {
-                    var sourceName = parentViewModel.getSourceName(each, item.tripId)
-                    var siteCount = parentViewModel.getSiteCount(each, item.tripId)
-                    var fuelWithInfo = Fuel_with_info(each, sourceName, siteCount.toString())
-                    fuelInfo.add(fuelWithInfo)
+                for (product in productList) {
+                    //find all sources  for each fuel type
+                    val sourceList = item.sourceOrSite.filter {
+                        (it.wayPointTypeDescription == "Source") && (it.productInfo.productId == product)
+                    }
+
+                    if (sourceList.isNotEmpty()) {
+                        //order the source by seq number
+                        var firstElement = sourceList.sortedWith(compareBy { it.seqNum })[0]
+                        val numberOfSites = item.sourceOrSite.size - sourceList.size
+                        val productName = firstElement.productInfo.productDesc
+                        var sourceName =
+                            if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
+                        var fuelWithInfo =
+                            FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
+                        fuelInfo.add(fuelWithInfo)
+                    }
                 }
+
             }
             //makes the nested view expandable
             binding.cardView.setOnClickListener {

@@ -155,11 +155,15 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         routeOptions.routeType = RouteOptions.Type.SHORTEST
 
         routeOptions.routeCount = 1
-
         routePlan.routeOptions = routeOptions
         val startPoint = RouteWaypoint(GeoCoordinate(currentLatitude, currentLongitude))
         val destination =
-            RouteWaypoint(GeoCoordinate(sourceOrSite.latitude, sourceOrSite.longitude))
+            RouteWaypoint(
+                GeoCoordinate(
+                    sourceOrSite.location.latitude,
+                    sourceOrSite.location.longitude
+                )
+            )
         routePlan.addWaypoint(startPoint)
         routePlan.addWaypoint(destination)
         coreRouter.calculateRoute(
@@ -237,7 +241,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
      *This method brings views to screen which are only required during navigation
      */
     private fun changeViewsVisibility() {
-        binding.speedInfoContainer.visibility = View.VISIBLE
         binding.destinationReached.visibility = View.VISIBLE
         binding.mapRecenterBtn.visibility = View.VISIBLE
         binding.deliveryProgress.visibility = View.VISIBLE
@@ -364,19 +367,20 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun updateSpeedTexts(currentSpeed: Double, currentSpeedLimit: Double) {
-        val currentSpeedLimitText: String = if (currentSpeedLimit > 0) {
-            meterPerSecToMilesPerHour(currentSpeedLimit).toString()
-        } else "N/A"
-
-        binding.currentSpeedLimit.text = currentSpeedLimitText
-        binding.currentSpeed.text = meterPerSecToMilesPerHour(currentSpeed).toString()
-
-        if (currentSpeed > currentSpeedLimit && currentSpeedLimit > 0) {
-            binding.speedInfoContainer.setBackgroundResource(R.color.Red)
+        if (currentSpeedLimit > 0) {
+            binding.speedInfoContainer.visibility = View.VISIBLE
+            val currentSpeedLimitText = meterPerSecToMilesPerHour(currentSpeedLimit).toString()
+            binding.currentSpeedLimit.text = currentSpeedLimitText
+            binding.currentSpeed.text = meterPerSecToMilesPerHour(currentSpeed).toString()
+            if (currentSpeed > currentSpeedLimit && currentSpeedLimit > 0) {
+                binding.speedInfoContainer.setBackgroundResource(R.color.Red)
+            } else {
+                binding.speedInfoContainer.setBackgroundResource(R.color.white)
+            }
         } else {
-            binding.speedInfoContainer.setBackgroundResource(R.color.Green)
-            Maneuver.Action.END
+            binding.speedInfoContainer.visibility = View.GONE
         }
+
     }
 
     private val instructListener: NewInstructionEventListener =

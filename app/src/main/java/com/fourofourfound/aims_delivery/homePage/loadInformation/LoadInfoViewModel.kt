@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.launch
 
 /**
@@ -19,10 +20,10 @@ class LoadInfoViewModel(application: Application) : AndroidViewModel(application
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-    fun markTripAsCompleted(tripId: String) {
+    fun markTripAsCompleted(tripId: Int) {
         viewModelScope.launch {
             //TODO change status of trips
-            tripListRepository.changeTripStatus(tripId, "COMPLETED")
+            tripListRepository.changeTripStatus(tripId, StatusEnum.COMPLETED)
 
 
         }
