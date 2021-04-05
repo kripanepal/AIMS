@@ -8,17 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Login fragment
@@ -74,18 +72,11 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-        requireActivity().bottom_navigation.visibility = View.GONE
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-
         //checks if shared preferences already contains a user that is logged in
-//        if(viewModel.checkUserLoggedIn()) {
-//            findNavController().navigate(R.id.homePage)
-//            sharedViewModel.userLoggedIn.value = true
-//        }
-
-        //TODO remove this
-        findNavController().navigate(R.id.homePage)
-        sharedViewModel.userLoggedIn.value = true
+        if (viewModel.checkUserLoggedIn()) {
+            findNavController().navigate(R.id.homePage)
+            sharedViewModel.userLoggedIn.value = true
+        }
 
 
         //navigate to the homepage if valid authentication is provided
@@ -183,6 +174,18 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        hideBottomNavigation(requireActivity())
+        hideActionBar(requireActivity())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        showBottomNavigation(requireActivity())
+        showActionBar(requireActivity())
     }
 
 }

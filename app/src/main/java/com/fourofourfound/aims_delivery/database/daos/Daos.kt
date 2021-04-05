@@ -34,8 +34,8 @@ interface DestinationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDestination(vararg siteOrSource: DatabaseSourceOrSite)
 
-    @Query("update DatabaseSourceOrSite set status = 'COMPLETED' where seqNum=:seqNum and tripId =:tripId")
-    fun markDeliveryCompleted(tripId: Int, seqNum: Int)
+    @Query("update DatabaseSourceOrSite set status = :status where seqNum=:seqNum and tripId =:tripId")
+    fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum)
 
     @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
     fun getDestination(tripId: Int, seqNum: Int): DatabaseSourceOrSite

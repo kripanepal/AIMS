@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,8 @@ import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
+import com.fourofourfound.aims_delivery.utils.hideActionBar
+import com.fourofourfound.aims_delivery.utils.showActionBar
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
@@ -66,8 +67,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         }
 
         sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -354,7 +353,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         removeListeners()
         lifecycleScope.launchWhenResumed {
             var navigateToForm = {
-                (activity as AppCompatActivity?)!!.supportActionBar!!.show()
                 findNavController().navigate(
                     NavigationFragmentDirections.actionNavigationFragmentToDeliveryCompletionFragment(
                         sourceOrSite
@@ -423,6 +421,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     override fun onPause() {
         super.onPause()
         MapEngine.getInstance().onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        hideActionBar(requireActivity())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        showActionBar(requireActivity())
     }
 }
 

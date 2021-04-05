@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,10 +45,6 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    /**
-     * Shared pref this is used to store key value pair to the file system
-     */
-    private val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
 
     /**
@@ -70,10 +65,6 @@ class OngoingDeliveryFragment : Fragment() {
             return view
         }
 
-        if (sharedViewModel.selectedSourceOrSite.value == null ) {
-           requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-            return view
-        }
 
         //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
@@ -102,10 +93,10 @@ class OngoingDeliveryFragment : Fragment() {
         {
             it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
         }
+
         if (sharedViewModel.activeRoute !== null) binding.startNavigation.text =
             "Continue Navigation"
 
-        observeTripCompletion(viewModel)
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
@@ -141,27 +132,8 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
 
-    /**
-     * Observe trip completion
-     * observe the viewModel to know when the trip is completed
-     * @param viewModel the view Model where the information about the trip is present
-     */
-    private fun observeTripCompletion(viewModel: OngoingDeliveryViewModel) {
-        viewModel.tripCompleted.observe(viewLifecycleOwner) {
-            if (it) {
-                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-                sharedViewModel.selectedTrip.value = null
-                viewModel.doneNavigatingToHomePage()
-            }
-        }
-    }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
-            ?.apply()
-    }
 
     /**
      * Show no trip selected dialog
@@ -183,7 +155,5 @@ class OngoingDeliveryFragment : Fragment() {
             false
         ).builder.show()
     }
-
-
 
 }

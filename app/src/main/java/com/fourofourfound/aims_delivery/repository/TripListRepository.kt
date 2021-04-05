@@ -167,9 +167,9 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    fun markDeliveryCompleted(tripId: Int, seqNum: Int) {
+    fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
         try {
-            database.destinationDao.markDeliveryCompleted(tripId, seqNum)
+            database.destinationDao.updateDeliveryStatus(tripId, seqNum, status)
         } catch (e: Exception) {
         }
     }

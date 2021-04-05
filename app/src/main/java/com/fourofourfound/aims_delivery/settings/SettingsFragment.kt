@@ -64,11 +64,11 @@ class SettingsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         //checks if the user is logged in
-        binding.logoutBtn.setOnClickListener {
+        binding.logoutView.setOnClickListener {
             logoutUser()
         }
 
-        binding.takeToDownloadMapPage.setOnClickListener {
+        binding.downloadMaps.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_mapDownloadFragment)
         }
 

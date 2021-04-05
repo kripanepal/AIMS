@@ -20,10 +20,15 @@ class LoadInfoViewModel(application: Application) : AndroidViewModel(application
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-    fun markTripAsCompleted(tripId: Int) {
+    /**
+     * Mark trip as completed
+     *This function is called whenever the user marks any trip as completed
+     * Local database is updated to reflect this change
+     */
+    fun changeTripStatus(tripId: Int, status: StatusEnum) {
         viewModelScope.launch {
             //TODO change status of trips
-            tripListRepository.changeTripStatus(tripId, StatusEnum.COMPLETED)
+            tripListRepository.changeTripStatus(tripId, status)
 
 
         }

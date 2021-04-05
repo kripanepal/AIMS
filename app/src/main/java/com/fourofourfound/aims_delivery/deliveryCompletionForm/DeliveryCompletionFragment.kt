@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
+import com.fourofourfound.aims_delivery.utils.showBottomNavigation
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.DeliveryInputFormBinding
 import com.github.gcacace.signaturepad.views.SignaturePad
@@ -53,13 +55,10 @@ class DeliveryCompletionFragment : Fragment() {
             ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
         binding.submitBtn.setOnClickListener {
-            viewModel.submitForm()
+            showSignatureDialog()
         }
 
-        viewModel.doneFilling.observe(viewLifecycleOwner)
-        {
-            if (it) showSignatureDialog()
-        }
+
         return binding.root
     }
 
@@ -69,6 +68,8 @@ class DeliveryCompletionFragment : Fragment() {
         var dialog = builder.create()
         dialog.setTitle("Signature")
         dialog.show()
+
+
         var signaturePad = dialog.findViewById<SignaturePad>(R.id.signature_pad)
         dialog.findViewById<Button>(R.id.signature_clear).setOnClickListener {
             signaturePad.clear()
@@ -77,12 +78,18 @@ class DeliveryCompletionFragment : Fragment() {
             //TODO need to save the captured image bitmap in the database
             val signatureBitMap = signaturePad.signatureBitmap
             dialog.cancel()
+            viewModel.submitForm()
+            viewModel.updateDeliveryStatus(
+                sharedViewModel.selectedTrip.value!!.tripId,
+                StatusEnum.COMPLETED
+            )
+
+            sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
+                StatusEnum.COMPLETED
             findNavController().popBackStack(R.id.ongoingDeliveryFragment, false);
             requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-            viewModel.doneNavigating()
-            viewModel.markDeliveryCompleted(sharedViewModel.selectedTrip.value!!.tripId)
+
             //TODO need to manage this
-            sharedViewModel.selectedSourceOrSite.value!!.status = StatusEnum.COMPLETED
             sharedViewModel.selectedSourceOrSite.value = null
         }
     }
@@ -92,4 +99,15 @@ class DeliveryCompletionFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(DeliveryCompletionViewModel::class.java)
     }
 
+    override fun onStart() {
+        super.onStart()
+        hideBottomNavigation(requireActivity())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        showBottomNavigation(requireActivity())
+    }
+
 }
+
