@@ -83,7 +83,6 @@ class DeliveryCompletionFragment : Fragment() {
                 sharedViewModel.selectedTrip.value!!.tripId,
                 StatusEnum.COMPLETED
             )
-
             sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
                 StatusEnum.COMPLETED
             findNavController().popBackStack(R.id.ongoingDeliveryFragment, false);

@@ -54,9 +54,9 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
             }
         }
 
-        if (item.status == StatusEnum.COMPLETED) {
-            holder.itemView.completedImage.visibility = View.VISIBLE
-        }
+        holder.itemView.statusImage.setImageResource(if (item.status == StatusEnum.ONGOING) R.drawable.end else R.drawable.trip_done_icon)
+
+
     }
 
 

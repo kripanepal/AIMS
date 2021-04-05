@@ -12,7 +12,7 @@ data class Trip(
     var tripName: String,
     var tripDate: String,
     var sourceOrSite: List<SourceOrSite>,
-    val status: StatusEnum? = StatusEnum.NOT_STARTED,
+    var status: StatusEnum? = StatusEnum.NOT_STARTED,
 ) : Parcelable
 
 @Parcelize

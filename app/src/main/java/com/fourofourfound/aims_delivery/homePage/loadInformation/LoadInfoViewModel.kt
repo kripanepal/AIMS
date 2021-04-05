@@ -30,6 +30,14 @@ class LoadInfoViewModel(application: Application) : AndroidViewModel(application
             //TODO change status of trips
             tripListRepository.changeTripStatus(tripId, status)
 
+        }
+    }
+
+    fun changeDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
+        viewModelScope.launch {
+            //TODO change status of trips
+            tripListRepository.updateDeliveryStatus(tripId, seqNum, status)
+
 
         }
     }

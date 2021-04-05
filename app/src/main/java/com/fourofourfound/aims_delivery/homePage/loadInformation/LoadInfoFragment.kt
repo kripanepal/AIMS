@@ -41,10 +41,10 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         adapter.data = currentTrip.sourceOrSite
 
-
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
             if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite
+
         }
 
         startTripOnClick(currentTrip)
@@ -68,9 +68,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      * @param tripToStart
      */
     private fun markTripStart(sourceOrSite: SourceOrSite, currentTrip: Trip) {
+        currentTrip.status = StatusEnum.ONGOING
+        sourceOrSite.status = StatusEnum.ONGOING
         sharedViewModel.selectedTrip.value = currentTrip
         sharedViewModel.selectedSourceOrSite.value = sourceOrSite
         viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
+        viewModel.changeDeliveryStatus(currentTrip.tripId, sourceOrSite.seqNum, StatusEnum.ONGOING)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
             sendLocationAndUpdateTrips()
@@ -120,6 +123,13 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         }
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
 
+        setUpClickListener(currentTrip, sortedList)
+    }
+
+    private fun setUpClickListener(
+        currentTrip: Trip,
+        sortedList: List<SourceOrSite>
+    ) {
         binding.startNavigation.setOnClickListener {
             if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
                 showStartTripDialog(sortedList[0], currentTrip)

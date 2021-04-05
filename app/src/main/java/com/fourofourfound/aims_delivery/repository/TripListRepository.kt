@@ -167,7 +167,7 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
+    suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
         try {
             database.destinationDao.updateDeliveryStatus(tripId, seqNum, status)
         } catch (e: Exception) {

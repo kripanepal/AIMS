@@ -48,13 +48,11 @@
 
             <ImageView
 
-                android:id="@+id/completedImage"
+                android:id="@+id/statusImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="right|end|center"
-                android:layout_weight="0.2"
-                android:src="@drawable/trip_done_icon"
-                android:visibility="gone" />
+                android:layout_weight="0.2" />
 
         </LinearLayout>
 
