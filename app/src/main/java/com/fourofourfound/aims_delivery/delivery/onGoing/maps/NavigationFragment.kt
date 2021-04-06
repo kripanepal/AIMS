@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aims_delivery.utils.hideActionBar
 import com.fourofourfound.aims_delivery.utils.showActionBar
 import com.fourofourfound.aimsdelivery.R
@@ -352,15 +351,17 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.activeRoute = null
         removeListeners()
         lifecycleScope.launchWhenResumed {
-            var navigateToForm = {
-                findNavController().navigate(
-                    NavigationFragmentDirections.actionNavigationFragmentToDeliveryCompletionFragment(
-                        sourceOrSite
-                    )
-                )
-            }
             //TODO inform dispatcher about destination reached
-            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
+            CustomDialogBuilder(
+                requireContext(),
+                "Show Details",
+                "Go back to the details page",
+                "OK",
+                { findNavController().navigateUp() },
+                "Cancel",
+                null,
+                false
+            ).builder.show()
         }
     }
 

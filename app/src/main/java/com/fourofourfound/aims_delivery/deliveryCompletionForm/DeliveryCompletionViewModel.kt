@@ -42,13 +42,17 @@ class DeliveryCompletionViewModel(
         var formToSubmit = DatabaseForm(
             billOfLadingNumber,
             productDesc.value.toString(),
-            "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH)} ${
+            "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
                 startDate.get(
                     Calendar.DAY_OF_MONTH
                 )
             }",
             startTime.get(Calendar.HOUR_OF_DAY).toString() + " " + startTime.get(Calendar.MINUTE),
-            "${endDate.get(Calendar.YEAR)} ${endDate.get(Calendar.MONTH)} ${endDate.get(Calendar.DAY_OF_MONTH)}",
+            "${endDate.get(Calendar.YEAR)} ${endDate.get(Calendar.MONTH).plus(1)} ${
+                endDate.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            }",
             endTime.get(Calendar.HOUR_OF_DAY).toString() + " " + endTime.get(Calendar.MINUTE),
             Integer.parseInt(grossQty.value),
             Integer.parseInt(netQty.value),
@@ -57,7 +61,6 @@ class DeliveryCompletionViewModel(
             comments.value!!
 
         )
-
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

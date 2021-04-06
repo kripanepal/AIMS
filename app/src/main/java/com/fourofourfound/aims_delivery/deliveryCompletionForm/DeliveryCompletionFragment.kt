@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
@@ -56,6 +57,9 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             container,
             false
         )
+
+        val tripFragmentArgs by navArgs<DeliveryCompletionFragmentArgs>()
+
         viewModelFactory = DeliveryCompletionViewModelFactory(
             requireActivity().application,
             sharedViewModel.selectedSourceOrSite.value!!
@@ -68,6 +72,11 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         binding.submitBtn.setOnClickListener {
             showSignatureDialog()
         }
+
+        viewModel.startTime = tripFragmentArgs.startDateAndTime
+        viewModel.endTime = tripFragmentArgs.endDateAndTime
+
+
         getTime(binding.startTime, binding.startTimeContainer, requireContext())
         getTime(binding.endTime, binding.endTimeContainer, requireContext())
         getDate(binding.startDate, binding.startDateContainer, requireContext())

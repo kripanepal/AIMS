@@ -2,9 +2,11 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,6 +18,7 @@ import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 /**
@@ -45,7 +48,7 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-
+    lateinit var startDateAndTime: Calendar
 
     /**
      * On create view
@@ -117,11 +120,21 @@ class OngoingDeliveryFragment : Fragment() {
         }
 
 
-        binding.deliveryCompletedButton.setOnClickListener {
+        binding.startFilling.setOnClickListener {
+            startDateAndTime = Calendar.getInstance()
+            it.visibility = View.GONE
+            binding.endFilling.visibility = View.VISIBLE
+            binding.startNavigation.visibility = View.GONE
+        }
+
+        binding.endFilling.setOnClickListener {
+            val endDateAndTime = Calendar.getInstance()
+            Log.i("Tyamcheck", endDateAndTime.get(Calendar.SECOND).toString())
+
             var navigateToForm = {
                 findNavController().navigate(
                     OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
-                        currentSourceOrSite
+                        currentSourceOrSite, startDateAndTime, endDateAndTime
                     )
                 )
             }
@@ -131,8 +144,11 @@ class OngoingDeliveryFragment : Fragment() {
         return binding.root
     }
 
-
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            sharedViewModel.selectedTrip.value!!.tripName
+    }
 
 
     /**

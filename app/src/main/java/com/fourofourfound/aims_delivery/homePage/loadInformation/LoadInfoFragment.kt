@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    lateinit var currentTrip: Trip
 
 
     override fun onCreateView(
@@ -29,7 +31,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     ): View? {
 
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
-        val currentTrip = tripFragmentArgs.trip
+        currentTrip = tripFragmentArgs.trip
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.load_information, container, false
@@ -43,12 +45,18 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
-            if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite
+            it?.apply { if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite }
+
 
         }
 
         startTripOnClick(currentTrip)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
     }
 
     /**
