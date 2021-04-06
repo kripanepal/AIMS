@@ -154,14 +154,16 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         }
 
         textInputLayout.setEndIconOnClickListener {
-            it
             DatePickerDialog(
                 context,
                 dateSetListener,
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            ).also { picker ->
+                picker.datePicker.maxDate = System.currentTimeMillis()
+                picker.show()
+            }
             false
         }
     }

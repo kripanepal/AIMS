@@ -86,7 +86,7 @@ class TripListRepository(private val database: TripListDatabase) {
 
                         //todo delete all records before adding after if, not here
                         database.tripDao.insertTruck(truck)
-                        database.tripDao.insertTrailer(trailer)
+                        database.trailerDao.insertTrailer(trailer)
                         database.tripDao.insertTrip(trip)
                         database.tripDao.insertFuel(fuel)
                         database.tripDao.insertLocation(location)
@@ -170,6 +170,13 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
         try {
             database.destinationDao.updateDeliveryStatus(tripId, seqNum, status)
+        } catch (e: Exception) {
+        }
+    }
+
+    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Int) {
+        try {
+            database.trailerDao.updateTrailerFuel(trailerId, fuelQuantity)
         } catch (e: Exception) {
         }
     }

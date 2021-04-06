@@ -2,9 +2,12 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.fourofourfound.aims_delivery.domain.Trip
+import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.database.getDatabase
+import com.fourofourfound.aims_delivery.repository.TripListRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Ongoing delivery view model
@@ -15,21 +18,17 @@ import com.fourofourfound.aims_delivery.domain.Trip
  * @param application the ApplicationContext used to create the viewModel
  */
 class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(application) {
+    val database = getDatabase(application)
+    private val tripListRepository = TripListRepository(database)
 
-    //information about the current trip being delivered
-    private val _currentTrip = MutableLiveData<Trip>()
-    val currentTrip: LiveData<Trip>
-        get() = _currentTrip
+    fun updateFuelInfo(trailerId: Int, fuelQuantity: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                tripListRepository.updateTrailerFuel(trailerId, fuelQuantity)
+            }
 
-
-
-    fun setCurrentTrip(trip: Trip) {
-        _currentTrip.value = trip
+        }
     }
-
-
-
-
 
 
 }

@@ -42,7 +42,8 @@ data class TruckInfo(
 data class TrailerInfo(
     var trailerId: Int,
     var trailerCode: String,
-    var trailerDesc: String
+    var trailerDesc: String,
+    var fuelQuantity: Int = 0
 ) : Parcelable
 
 

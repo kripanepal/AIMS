@@ -18,7 +18,6 @@ fun getLocationPermissionsToBeChecked(): MutableList<String> {
         mutableListOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-
             )
     }
 }

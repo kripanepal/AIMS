@@ -9,5 +9,6 @@ data class DatabaseTrailer(
     var trailerId: Int,
     var trailerCode: String,
     var trailerDesc: String,
+    var fuelQuantity: Int = 0
 )
 

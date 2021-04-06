@@ -99,7 +99,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
                 )
             }
             destination.trailer.apply {
-                trailerInfo = TrailerInfo(trailerId, trailerCode, trailerDesc)
+                trailerInfo = TrailerInfo(trailerId, trailerCode, trailerDesc, fuelQuantity)
             }
 
             destination.truck.apply {

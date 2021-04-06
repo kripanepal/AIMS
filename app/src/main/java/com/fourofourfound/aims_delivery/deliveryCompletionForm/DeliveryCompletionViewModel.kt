@@ -28,7 +28,7 @@ class DeliveryCompletionViewModel(
     val netQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading =
-        MutableLiveData(currentSourceOrSite.productInfo.requestedQty?.minus(100).toString())
+        MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity.toString())
     private val trailerEndReadingCalc =
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
