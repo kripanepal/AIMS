@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.content.Intent
-import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.*
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.hideActionBar
+import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 
@@ -48,11 +49,6 @@ class LoginFragment : Fragment() {
      */
     private val binding get() = _binding!!
 
-    /**
-     * Loading animation
-     * Animations that are used to display when user is being authenticated
-     */
-    private lateinit var loadingAnimation: AnimationDrawable
 
     /**
      * View model
@@ -64,6 +60,7 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
 
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         _binding = FragmentLoginBinding.inflate(inflater)
@@ -176,16 +173,11 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
         hideBottomNavigation(requireActivity())
         hideActionBar(requireActivity())
+        super.onResume()
     }
 
-    override fun onStop() {
-        super.onStop()
-        showBottomNavigation(requireActivity())
-        showActionBar(requireActivity())
-    }
 
 }

@@ -108,7 +108,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             )
             sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
                 StatusEnum.COMPLETED
-            findNavController().popBackStack(R.id.ongoingDeliveryFragment, false);
+            findNavController().popBackStack(R.id.ongoingDeliveryFragment, false)
             requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
             //TODO need to manage this

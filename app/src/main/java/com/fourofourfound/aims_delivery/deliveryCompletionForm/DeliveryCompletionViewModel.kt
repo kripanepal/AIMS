@@ -32,10 +32,10 @@ class DeliveryCompletionViewModel(
     private val trailerEndReadingCalc =
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
-    var startTime = Calendar.getInstance()
-    var endTime = Calendar.getInstance()
-    var startDate = Calendar.getInstance()
-    var endDate = Calendar.getInstance()
+    var startTime: Calendar = Calendar.getInstance()
+    var endTime: Calendar = Calendar.getInstance()
+    var startDate: Calendar = Calendar.getInstance()
+    var endDate: Calendar = Calendar.getInstance()
 
 
     fun submitForm() {

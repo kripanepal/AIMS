@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
@@ -122,6 +123,13 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
 
         setUpClickListener(currentTrip, sortedList)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!sharedViewModel.userLoggedIn.value!!) {
+            findNavController().navigateUp()
+        }
     }
 
     private fun setUpClickListener(
