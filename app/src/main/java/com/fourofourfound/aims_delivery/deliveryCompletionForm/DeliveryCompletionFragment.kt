@@ -1,13 +1,16 @@
 package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,11 +19,14 @@ import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
 import com.fourofourfound.aims_delivery.utils.showBottomNavigation
 import com.fourofourfound.aimsdelivery.R
-import com.fourofourfound.aimsdelivery.databinding.DeliveryInputFormBinding
+import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBinding
 import com.github.gcacace.signaturepad.views.SignaturePad
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-class DeliveryCompletionFragment : Fragment() {
+class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
 
     /**
      * Shared view model
@@ -28,7 +34,7 @@ class DeliveryCompletionFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var binding: DeliveryInputFormBinding
+    private lateinit var binding: FragmentDeliveryInputFormBinding
     private lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
 
@@ -44,7 +50,12 @@ class DeliveryCompletionFragment : Fragment() {
             return null
         }
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.delivery_input_form, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_delivery_input_form,
+            container,
+            false
+        )
         viewModelFactory = DeliveryCompletionViewModelFactory(
             requireActivity().application,
             sharedViewModel.selectedSourceOrSite.value!!
@@ -57,7 +68,10 @@ class DeliveryCompletionFragment : Fragment() {
         binding.submitBtn.setOnClickListener {
             showSignatureDialog()
         }
-
+        getTime(binding.startTime, binding.startTimeContainer, requireContext())
+        getTime(binding.endTime, binding.endTimeContainer, requireContext())
+        getDate(binding.startDate, binding.startDateContainer, requireContext())
+        getDate(binding.endDate, binding.endDateContainer, requireContext())
 
         return binding.root
     }
@@ -92,6 +106,57 @@ class DeliveryCompletionFragment : Fragment() {
             sharedViewModel.selectedSourceOrSite.value = null
         }
     }
+
+    fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+
+        val cal =
+            if (textView.id == binding.startTime.id) viewModel.startTime else viewModel.endTime
+
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+            cal.set(Calendar.HOUR_OF_DAY, hour)
+            cal.set(Calendar.MINUTE, minute)
+
+            textView.text = SimpleDateFormat("HH:mm").format(cal.time)
+        }
+        textInputLayout.setEndIconOnClickListener {
+            it
+            TimePickerDialog(
+                context,
+                timeSetListener,
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
+                false
+            ).show()
+            false
+        }
+    }
+
+    fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+
+        val cal =
+            if (textView.id == binding.startDate.id) viewModel.startDate else viewModel.endDate
+
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            cal.set(Calendar.YEAR, year)
+            cal.set(Calendar.MONTH, month)
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            textView.text = SimpleDateFormat("yyyy:MM:dd").format(cal.time)
+
+        }
+
+        textInputLayout.setEndIconOnClickListener {
+            it
+            DatePickerDialog(
+                context,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            ).show()
+            false
+        }
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

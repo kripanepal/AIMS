@@ -7,6 +7,8 @@ import androidx.databinding.BindingAdapter
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.odml.MapPackage
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @BindingAdapter("visibilityBasedOnStatus")
@@ -41,4 +43,14 @@ fun setStatusBasedText(view: TextView, deliveryStatus: String) {
 @BindingAdapter("setIntAsString")
 fun setTextAsString(view: TextView, int: Int) {
     view.text = int.toString()
+}
+
+@BindingAdapter("setCalendarTime")
+fun setCalendarTime(view: TextView, cal: Calendar) {
+    view.text = SimpleDateFormat("HH:mm").format(cal.time)
+}
+
+@BindingAdapter("setCalendarDate")
+fun setCalendarDate(view: TextView, cal: Calendar) {
+    view.text = SimpleDateFormat("yyyy:MM:dd").format(cal.time)
 }

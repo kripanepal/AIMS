@@ -51,16 +51,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        hideBottomNavigation(requireActivity())
-    }
-
-    override fun onStop() {
-        super.onStop()
-        showBottomNavigation(requireActivity())
-    }
-
     /**
      * Mark trip start
      * Starts a worker to start sending location updates and  navigates the user to

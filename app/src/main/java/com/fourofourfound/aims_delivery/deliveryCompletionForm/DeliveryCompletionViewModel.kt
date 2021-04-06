@@ -13,6 +13,7 @@ import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class DeliveryCompletionViewModel(
     val application: Application,
@@ -31,22 +32,32 @@ class DeliveryCompletionViewModel(
     private val trailerEndReadingCalc =
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
+    var startTime = Calendar.getInstance()
+    var endTime = Calendar.getInstance()
+    var startDate = Calendar.getInstance()
+    var endDate = Calendar.getInstance()
 
 
     fun submitForm() {
         var formToSubmit = DatabaseForm(
             billOfLadingNumber,
             productDesc.value.toString(),
-            "123",
-            "123",
-            "123",
-            "123",
+            "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH)} ${
+                startDate.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            }",
+            startTime.get(Calendar.HOUR_OF_DAY).toString() + " " + startTime.get(Calendar.MINUTE),
+            "${endDate.get(Calendar.YEAR)} ${endDate.get(Calendar.MONTH)} ${endDate.get(Calendar.DAY_OF_MONTH)}",
+            endTime.get(Calendar.HOUR_OF_DAY).toString() + " " + endTime.get(Calendar.MINUTE),
             Integer.parseInt(grossQty.value),
             Integer.parseInt(netQty.value),
             Integer.parseInt(trailerBeginReading.value),
             Integer.parseInt(trailerEndReading.value),
             comments.value!!
+
         )
+
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
