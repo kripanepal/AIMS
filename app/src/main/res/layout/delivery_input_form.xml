@@ -15,7 +15,8 @@
         android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/lightgrey_rectangularbox">
+
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/form_parent_view"
