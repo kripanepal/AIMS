@@ -19,9 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginVertical="10dp"
-            android:backgroundTint="#10F09325"
-            app:cardCornerRadius="4dp">
+            android:layout_marginVertical="15dp"
+            android:backgroundTint="@color/Antique_white"
+            android:fadingEdgeLength="5dp"
+            app:cardCornerRadius="5dp"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +61,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@android:drawable/btn_star_big_on"
+                        app:srcCompat="@drawable/ic_baseline_local_gas_station_24"
                         tools:srcCompat="@tools:sample/avatars" />
 
 
@@ -73,19 +75,21 @@
 
                     <View
                         android:id="@+id/view"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
+                        android:layout_margin="5dp"
                         android:layout_height="2dp"
                         android:background="#c0c0c0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
 
                     <TextView
                         android:id="@+id/tripSpecialInstructions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
                         android:text="SPECIAL INSTRUCTIONS PLACE HOLDER"
+                        android:layout_margin="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
@@ -94,6 +98,8 @@
                         android:id="@+id/nestedTripDetailsListView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +108,8 @@
 
                     <ImageView
                         android:id="@+id/showDetailsImg"
-                        android:src="@drawable/go_arrow"
+                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        android:paddingTop="10dp"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
