@@ -12,7 +12,7 @@ data class Trip(
     var tripName: String,
     var tripDate: String,
     var sourceOrSite: List<SourceOrSite>,
-    val status: StatusEnum? = StatusEnum.NOT_STARTED,
+    var status: StatusEnum? = StatusEnum.NOT_STARTED,
 ) : Parcelable
 
 @Parcelize
@@ -42,7 +42,8 @@ data class TruckInfo(
 data class TrailerInfo(
     var trailerId: Int,
     var trailerCode: String,
-    var trailerDesc: String
+    var trailerDesc: String,
+    var fuelQuantity: Int = 0
 ) : Parcelable
 
 

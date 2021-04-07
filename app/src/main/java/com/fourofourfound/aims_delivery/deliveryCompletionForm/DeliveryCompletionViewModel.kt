@@ -9,43 +9,57 @@ import com.fourofourfound.aims_delivery.database.entities.DatabaseForm
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class DeliveryCompletionViewModel(
     val application: Application,
-    val currentSourceOrSite: SourceOrSite
+    private val currentSourceOrSite: SourceOrSite
 ) : ViewModel() {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-    val billOfLadingNumber = 4444
+    private val billOfLadingNumber = 4444
     val productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
     val grossQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
     val netQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading =
-        MutableLiveData(currentSourceOrSite.productInfo.requestedQty?.minus(100).toString())
-    val trailerEndReadingCalc =
+        MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity.toString())
+    private val trailerEndReadingCalc =
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
+    var startTime: Calendar = Calendar.getInstance()
+    var endTime: Calendar = Calendar.getInstance()
+    var startDate: Calendar = Calendar.getInstance()
+    var endDate: Calendar = Calendar.getInstance()
 
-    val doneSubmitting = MutableLiveData(false)
 
     fun submitForm() {
         var formToSubmit = DatabaseForm(
             billOfLadingNumber,
             productDesc.value.toString(),
-            "123",
-            "123",
-            "123",
-            "123",
+            "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
+                startDate.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            }",
+            startTime.get(Calendar.HOUR_OF_DAY).toString() + " " + startTime.get(Calendar.MINUTE),
+            "${endDate.get(Calendar.YEAR)} ${endDate.get(Calendar.MONTH).plus(1)} ${
+                endDate.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            }",
+            endTime.get(Calendar.HOUR_OF_DAY).toString() + " " + endTime.get(Calendar.MINUTE),
             Integer.parseInt(grossQty.value),
             Integer.parseInt(netQty.value),
             Integer.parseInt(trailerBeginReading.value),
             Integer.parseInt(trailerEndReading.value),
             comments.value!!
+
         )
 
         viewModelScope.launch {
@@ -53,23 +67,15 @@ class DeliveryCompletionViewModel(
                 tripListRepository.sendFormData(formToSubmit)
             }
 
-            doneSubmitting.value = true
-
         }
     }
 
-    fun doneNavigating() {
-        doneSubmitting.value = false
-    }
 
-    fun markDeliveryCompleted(tripId: Int) {
+    fun updateDeliveryStatus(tripId: Int, status: StatusEnum) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                tripListRepository.markDeliveryCompleted(tripId, currentSourceOrSite.seqNum)
+                tripListRepository.updateDeliveryStatus(tripId, currentSourceOrSite.seqNum, status)
             }
-
         }
-
-
     }
 }

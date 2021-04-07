@@ -64,11 +64,11 @@ class SettingsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         //checks if the user is logged in
-        binding.logoutBtn.setOnClickListener {
+        binding.logoutView.setOnClickListener {
             logoutUser()
         }
 
-        binding.takeToDownloadMapPage.setOnClickListener {
+        binding.downloadMaps.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_mapDownloadFragment)
         }
 
@@ -84,9 +84,10 @@ class SettingsFragment : Fragment() {
         sharedViewModel.userLoggedIn.value = false
         sharedViewModel.activeRoute = null
         sharedViewModel.selectedTrip.value = (null)
+        viewModel.logoutUser()
         NavigationManager.getInstance()?.stop()
         MapEngine.getInstance().onPause()
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-        viewModel.logoutUser()
+
     }
 }

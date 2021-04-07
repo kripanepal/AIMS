@@ -14,6 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#DCD4D0"
         tools:context="com.fourofourfound.aims_delivery.homePage.HomePage">
 
         <!-- TODO: Update blank fragment layout -->
@@ -34,91 +35,121 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:id="@+id/current_trip_list_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="15dp"
+                    app:cardBackgroundColor="#F6F5F4"
+                    app:cardElevation="10dp"
+                    app:cardCornerRadius="5dp"
+
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Current Trip"
-                        android:textSize="25sp" />
+                        android:layout_margin="10dp"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/ongoing_trip_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No Ongoing  Trip" />
+                        android:text="No Ongoing  Trip"
+                        android:textColor="@color/Aims_Orange"
+                        android:paddingTop="50dp"
+                        android:layout_margin="10dp"
+                        android:textSize="15sp"
+                        />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/current_trip_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="80dp"
+                        android:layout_margin="10dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:id="@+id/upcoming_trip_list_container"
-
+                    app:cardBackgroundColor="#F6F5F4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="15dp"
+                    app:cardElevation="10dp"
+                    app:cardCornerRadius="5dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Upcoming Trips"
-                        android:textSize="25sp" />
+                        android:layout_margin="10dp"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/upcoming_trip_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No trips available" />
+                        android:textSize="15dp"
+                        android:paddingTop="50dp"
+                        android:layout_margin="10dp"
+                        android:text="No trips available"
+                        android:textColor="@color/Aims_Orange"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/upcoming_trip_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="80dp"
+                        android:layout_margin="10dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:id="@+id/completed_trip_list_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="15dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:cardElevation="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardBackgroundColor="#F6F5F4">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Completed Trips"
-                        android:textSize="25sp" />
+                        android:textSize="20sp"
+                        android:layout_margin="10dp"/>
 
                     <TextView
                         android:id="@+id/completed_trip_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="50dp"
+                        android:layout_margin="10dp"
+                        android:textColor="@color/Aims_Orange"
                         android:text="No completed trips data available" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/completed_trip_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="80dp"
+                        android:layout_margin="10dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+                </androidx.cardview.widget.CardView>
 
-                </LinearLayout>
             </LinearLayout>
 
 

@@ -3,20 +3,25 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 /**
@@ -46,11 +51,12 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    /**
-     * Shared pref this is used to store key value pair to the file system
-     */
-    private val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+    lateinit var startDateAndTime: Calendar
+    lateinit var endDateAndTime: Calendar
 
+    lateinit var viewModel: OngoingDeliveryViewModel
+
+    lateinit var currentSourceOrSite: SourceOrSite
 
     /**
      * On create view
@@ -70,10 +76,6 @@ class OngoingDeliveryFragment : Fragment() {
             return view
         }
 
-        if (sharedViewModel.selectedSourceOrSite.value == null ) {
-           requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-            return view
-        }
 
         //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
@@ -91,77 +93,105 @@ class OngoingDeliveryFragment : Fragment() {
 
 
         //viewModel used by this fragment
-        val viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        //sets current trip to trip from the sharedViewModel
-        sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
-        {
-            it?.let { viewModel.setCurrentTrip(sharedViewModel.selectedTrip.value!!) }
-        }
+
         if (sharedViewModel.activeRoute !== null) binding.startNavigation.text =
             "Continue Navigation"
 
-        observeTripCompletion(viewModel)
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
 
 
 
-        var currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-        binding.sourceOrSite = currentSourceOrSite
-        binding.currentTrip = sharedViewModel.selectedTrip.value
-        binding.sourceOrSiteInfo.apply {
+        sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
+        {
+            currentSourceOrSite = it
+            binding.sourceOrSite = currentSourceOrSite
+            binding.currentTrip = sharedViewModel.selectedTrip.value
+            binding.sourceOrSiteInfo.apply {
+                sourceOrSiteName.text = currentSourceOrSite.location.destinationName
+                address.text = currentSourceOrSite.location.address1
+                productDesc.text = currentSourceOrSite.productInfo.productDesc
+                productQty.text =
+                    currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
 
-            sourceOrSiteName.text = currentSourceOrSite.location.destinationName
-            address.text = currentSourceOrSite.location.address1
-            productDesc.text = currentSourceOrSite.productInfo.productDesc
-            productQty.text =
-                currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
-
+            }
         }
 
 
-        binding.deliveryCompletedButton.setOnClickListener {
+
+        binding.startFilling.setOnClickListener {
+            showFuelConfirmDialog(requireContext())
+
+        }
+
+        binding.endFilling.setOnClickListener {
+            endDateAndTime = Calendar.getInstance()
+
             var navigateToForm = {
                 findNavController().navigate(
                     OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
-                        currentSourceOrSite
+                        currentSourceOrSite, startDateAndTime, endDateAndTime
                     )
                 )
             }
-            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
+            CustomDialogBuilder(
+                requireContext(),
+                "Filling Complete",
+                "Fill the form now.",
+                "Ok",
+                navigateToForm,
+                "Cancel",
+                null,
+                false
+            ).builder.show()
         }
 
         return binding.root
     }
 
-
-    /**
-     * Observe trip completion
-     * observe the viewModel to know when the trip is completed
-     * @param viewModel the view Model where the information about the trip is present
-     */
-    private fun observeTripCompletion(viewModel: OngoingDeliveryViewModel) {
-        viewModel.tripCompleted.observe(viewLifecycleOwner) {
-            if (it) {
-                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-                sharedViewModel.selectedTrip.value = null
-                viewModel.doneNavigatingToHomePage()
-            }
+    private fun showFuelConfirmDialog(context: Context) {
+        val input = EditText(context)
+        sharedViewModel.selectedSourceOrSite.value?.trailerInfo?.fuelQuantity?.let {
+            input.setText(it.toString())
         }
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        val alert = AlertDialog.Builder(context)
+            .setTitle("Confirm Fuel Quantity")
+            .setView(input)
+            .setMessage("Please enter/confirm the trailer fuel quantity")
+            .setPositiveButton("Submit") { dialog, _ ->
+                viewModel.updateFuelInfo(
+                    currentSourceOrSite.trailerInfo.trailerId,
+                    Integer.parseInt(input.text.toString())
+                )
+                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
+                    Integer.parseInt(input.text.toString())
+                startDateAndTime = Calendar.getInstance()
+                binding.startFilling.visibility = View.GONE
+                binding.endFilling.visibility = View.VISIBLE
+                binding.startNavigation.visibility = View.GONE
+                dialog.cancel()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }.create()
+
+        alert.show()
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        sharedPref?.edit()?.putString("currentTrip", sharedViewModel.selectedTrip.toString())
-            ?.apply()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title =
+            sharedViewModel.selectedTrip.value!!.tripName
     }
+
 
     /**
      * Show no trip selected dialog
@@ -183,7 +213,4 @@ class OngoingDeliveryFragment : Fragment() {
             false
         ).builder.show()
     }
-
-
-
 }

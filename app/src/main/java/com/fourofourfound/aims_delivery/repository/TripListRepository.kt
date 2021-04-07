@@ -6,6 +6,7 @@ import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.asDomainModel
+import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import com.fourofourfound.aims_delivery.utils.StatusEnum
@@ -32,8 +33,9 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun refreshTrips() {
         withContext(Dispatchers.IO) {
             try {
-                val tripLists = MakeNetworkCall.retrofitService.getAllTrips()
-                saveTrips(tripLists.data.resultSet1)
+                val tripLists = MakeNetworkCall.retrofitService.getAllTrips().data.resultSet1
+                if (tripsFromDatabase.value?.asNetworkModel() != tripLists)
+                    saveTrips(tripLists)
             } catch (e: Exception) { //todo need to do actual error handling
             }
         }
@@ -86,7 +88,7 @@ class TripListRepository(private val database: TripListDatabase) {
 
                         //todo delete all records before adding after if, not here
                         database.tripDao.insertTruck(truck)
-                        database.tripDao.insertTrailer(trailer)
+                        database.trailerDao.insertTrailer(trailer)
                         database.tripDao.insertTrip(trip)
                         database.tripDao.insertFuel(fuel)
                         database.tripDao.insertLocation(location)
@@ -167,9 +169,16 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    fun markDeliveryCompleted(tripId: Int, seqNum: Int) {
+    suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
         try {
-            database.destinationDao.markDeliveryCompleted(tripId, seqNum)
+            database.destinationDao.updateDeliveryStatus(tripId, seqNum, status)
+        } catch (e: Exception) {
+        }
+    }
+
+    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Int) {
+        try {
+            database.trailerDao.updateTrailerFuel(trailerId, fuelQuantity)
         } catch (e: Exception) {
         }
     }

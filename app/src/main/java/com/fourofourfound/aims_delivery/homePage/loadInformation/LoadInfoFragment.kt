@@ -4,25 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
-class LoadInfoFragment : Fragment() {
+class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    lateinit var currentTrip: Trip
 
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class LoadInfoFragment : Fragment() {
     ): View? {
 
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
-        val currentTrip = tripFragmentArgs.trip
+        currentTrip = tripFragmentArgs.trip
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.load_information, container, false
@@ -46,10 +46,18 @@ class LoadInfoFragment : Fragment() {
 
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
-            adapter.data = it.sourceOrSite
+            it?.apply { if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite }
+
+
         }
+
         startTripOnClick(currentTrip)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
     }
 
     /**
@@ -58,8 +66,13 @@ class LoadInfoFragment : Fragment() {
      * delivery page
      * @param tripToStart
      */
-    private fun markTripStart(sourceOrSite: SourceOrSite) {
+    private fun markTripStart(sourceOrSite: SourceOrSite, currentTrip: Trip) {
+        currentTrip.status = StatusEnum.ONGOING
+        sourceOrSite.status = StatusEnum.ONGOING
+        sharedViewModel.selectedTrip.value = currentTrip
         sharedViewModel.selectedSourceOrSite.value = sourceOrSite
+        viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
+        viewModel.changeDeliveryStatus(currentTrip.tripId, sourceOrSite.seqNum, StatusEnum.ONGOING)
         CustomWorkManager(requireContext()).apply {
             //TODO need to call both methods
             sendLocationAndUpdateTrips()
@@ -78,13 +91,13 @@ class LoadInfoFragment : Fragment() {
      * user location every 15 minutes[default]
      * @param tripToStart
      */
-    private fun showStartTripDialog(sourceOrSite: SourceOrSite) {
+    private fun showStartTripDialog(sourceOrSite: SourceOrSite, currentTrip: Trip) {
         CustomDialogBuilder(
             requireContext(),
             "Start a trip?",
             null,
             "Start now",
-            { markTripStart(sourceOrSite) },
+            { markTripStart(sourceOrSite, currentTrip) },
             "No",
             null,
             true
@@ -99,18 +112,35 @@ class LoadInfoFragment : Fragment() {
         var notCompletedList = currentTrip.sourceOrSite.filter {
             it.status != StatusEnum.COMPLETED
         }
+
         if (notCompletedList.isEmpty()) {
-            viewModel.markTripAsCompleted(sharedViewModel.selectedTrip.value!!.tripId)
+            viewModel.changeTripStatus(
+                sharedViewModel.selectedTrip.value!!.tripId,
+                StatusEnum.COMPLETED
+            )
             binding.startNavigation.visibility = View.GONE
         }
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
 
+        setUpClickListener(currentTrip, sortedList)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!sharedViewModel.userLoggedIn.value!!) {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun setUpClickListener(
+        currentTrip: Trip,
+        sortedList: List<SourceOrSite>
+    ) {
         binding.startNavigation.setOnClickListener {
-            if (sharedViewModel.selectedTrip.value != currentTrip) {
-                sharedViewModel.selectedTrip.value = currentTrip
-                showStartTripDialog(sortedList[0])
+            if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
+                showStartTripDialog(sortedList[0], currentTrip)
             } else {
-                markTripStart(sortedList[0])
+                markTripStart(sortedList[0], currentTrip)
             }
         }
     }

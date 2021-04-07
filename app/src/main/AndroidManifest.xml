@@ -36,7 +36,8 @@
             android:value="InHaoHQ4jAyXbIKgXtzLbdSosuRaWuE1Tuu96BU/FmAFoiisD1JbfWAuhtwg+50PiP5Xr7utcfJaRKp0O8k2m5F9IuQk/RA5V2zYuc7CCCUt6+Xi3M+o1vrAhuSny6ZYIIr8+xpq7Pc1fHed4N6hq4atp6EPpk0zfXP+VFOUiszeuskoJv1hQuEn+gG8WHCGylBJQUGjyfQiC5j7TiIpjpIVm9van0cmczRDCHhEGuDX5lZdSfjiImBmhN5LMWwjbBnpW/nsAJIpNxVL+KEHUZncMAgcjaDb6HIEa/d6yS0h+TfFGFGO2PCNHPFiJhp2GSt4TpZRqkJ6QcNealuNq9HLT7q1EDgKaG6XfCxfFXNAio6Zdcf590WC5Eb7yoO33KARSDcOD9lGuvGuokfpXC+dPdHneXDzFGBjgRhGK4JgkMcg1x/V2CJXZSPJU/N3XI5wR7nVLVRYhEWlMNG7VqjjU0x4I8A1Sy/XQRXOSAUwAW0YM6TV2z3q954H61kphA/GyTYMCE485S/9vJW7pWR/OWzr44Y0WXsls7x6r56FE+FzThP8rPouYfOs6PiaesNlYsPjS/v7vp8JPUKlYtooJJlGY/uxsUgaZlMstPfM2fs6M+ImDYjcHQREXW/GQM8KmxFbKWu03udYaiZepEiE2PCocTKSMTh2Qp3sSQI=" />
         <activity
             android:name="com.fourofourfound.aims_delivery.MainActivity"
-            android:theme="@style/Aims_delivery.NoActionBar">
+            android:theme="@style/Aims_delivery.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

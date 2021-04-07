@@ -23,5 +23,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     var selectedTrip = MutableLiveData<Trip>()
     var selectedSourceOrSite = MutableLiveData<SourceOrSite>()
     val internetConnection = CheckInternetConnection(application)
+    val loading = MutableLiveData(false)
 
 }

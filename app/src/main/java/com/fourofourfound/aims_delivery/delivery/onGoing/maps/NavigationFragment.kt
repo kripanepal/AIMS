@@ -3,13 +3,10 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.getTripCompletedDialogBox
+import com.fourofourfound.aims_delivery.utils.hideActionBar
+import com.fourofourfound.aims_delivery.utils.showActionBar
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
@@ -68,8 +66,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         }
 
         sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -129,7 +125,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     "Route results may not be accurate without internet connection",
                     "Continue",
                     {
-                        routeOptions.transportMode = RouteOptions.TransportMode.CAR
+                        routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
                         createRoute(routeOptions, routePlan, coreRouter)
                     },
                     "Cancel Navigation",
@@ -203,10 +199,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun recenter() {
+        PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
+            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW)
+        }
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
-        Handler(Looper.getMainLooper()).postDelayed({
-            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
-        }, 2000)
+
     }
 
     private fun startNavigation() {
@@ -249,6 +246,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun addListeners() {
+        mapFragment.setOnTouchListener { v, _ ->
+            v.performClick()
+            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.NONE
+            false
+        }
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
@@ -349,16 +351,17 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.activeRoute = null
         removeListeners()
         lifecycleScope.launchWhenResumed {
-            var navigateToForm = {
-                (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-                findNavController().navigate(
-                    NavigationFragmentDirections.actionNavigationFragmentToDeliveryCompletionFragment(
-                        sourceOrSite
-                    )
-                )
-            }
             //TODO inform dispatcher about destination reached
-            getTripCompletedDialogBox(requireContext(), navigateToForm).show()
+            CustomDialogBuilder(
+                requireContext(),
+                "Show Details",
+                "Go back to the details page",
+                "OK",
+                { findNavController().navigateUp() },
+                "Cancel",
+                null,
+                false
+            ).builder.show()
         }
     }
 
@@ -419,6 +422,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     override fun onPause() {
         super.onPause()
         MapEngine.getInstance().onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        hideActionBar(requireActivity())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        showActionBar(requireActivity())
     }
 }
 

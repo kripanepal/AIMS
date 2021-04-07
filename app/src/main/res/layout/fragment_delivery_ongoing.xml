@@ -79,10 +79,10 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/delivery_completed_button"
+                android:id="@+id/start_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reached" />
+                android:text="Start Filling" />
 
 
             <Button
@@ -92,6 +92,15 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="1dp"
                 android:text="Navigate" />
+
+            <Button
+                android:id="@+id/end_filling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/startNavigation"
+                android:layout_toEndOf="@+id/start_filling"
+                android:text="End Filling"
+                android:visibility="gone" />
 
         </RelativeLayout>
     </LinearLayout>

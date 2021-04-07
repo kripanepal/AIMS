@@ -23,8 +23,17 @@ interface LocationDao {
 @Dao
 interface FormDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFormData(formData: DatabaseForm)
+}
+
+@Dao
+interface TrailerDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrailer(trailer: DatabaseTrailer)
+
+    @Query("update DatabaseTrailer set fuelQuantity =:fuelQuantity where trailerId =:trailerId")
+    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Int)
 }
 
 @Dao
@@ -34,8 +43,8 @@ interface DestinationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDestination(vararg siteOrSource: DatabaseSourceOrSite)
 
-    @Query("update DatabaseSourceOrSite set status = 'COMPLETED' where seqNum=:seqNum and tripId =:tripId")
-    fun markDeliveryCompleted(tripId: Int, seqNum: Int)
+    @Query("update DatabaseSourceOrSite set status = :status where seqNum=:seqNum and tripId =:tripId")
+    suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum)
 
     @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
     fun getDestination(tripId: Int, seqNum: Int): DatabaseSourceOrSite
@@ -58,8 +67,6 @@ interface TripDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTruck(truck: DatabaseTruck)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrailer(trailer: DatabaseTrailer)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFuel(fuel: DatabaseFuel)

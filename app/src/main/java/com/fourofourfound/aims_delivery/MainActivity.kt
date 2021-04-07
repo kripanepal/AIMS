@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity() {
 
 
         initializeToolBar()
+        sharedViewModel.loading.observe(this) {
+            findViewById<View>(R.id.main_loading).also { view ->
+                view.visibility = if (it) View.VISIBLE else View.GONE
+            }
+
+        }
 
     }
 
