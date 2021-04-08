@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment"
-        android:background="@color/card_background_color">
+        android:background="?attr/colorSecondaryVariant">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pickup_list"

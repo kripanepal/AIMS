@@ -7,7 +7,7 @@
        style="@style/cardView"
         app:cardElevation="10dp"
         app:cardCornerRadius="5dp"
-        app:cardBackgroundColor="@color/card_color"
+        app:cardBackgroundColor="?attr/colorSecondary"
         >
 
         <LinearLayout
