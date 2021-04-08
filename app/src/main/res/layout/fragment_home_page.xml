@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#DCD4D0"
+        android:background="?attr/colorSecondaryVariant"
         tools:context="com.fourofourfound.aims_delivery.homePage.HomePage">
 
         <!-- TODO: Update blank fragment layout -->
@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="15dp"
-                    app:cardBackgroundColor="#F6F5F4"
+                    app:cardBackgroundColor="?attr/colorSecondary"
                     app:cardElevation="10dp"
                     app:cardCornerRadius="5dp"
 
@@ -50,6 +50,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Current Trip"
+
                         android:layout_margin="10dp"
                         android:textSize="20sp" />
 
@@ -77,7 +78,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/upcoming_trip_list_container"
-                    app:cardBackgroundColor="#F6F5F4"
+                    app:cardBackgroundColor="?attr/colorSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="15dp"
@@ -122,7 +123,7 @@
                     android:orientation="vertical"
                     app:cardElevation="10dp"
                     app:cardCornerRadius="5dp"
-                    app:cardBackgroundColor="#F6F5F4">
+                    app:cardBackgroundColor="?attr/colorSecondary">
 
                     <TextView
                         android:layout_width="match_parent"

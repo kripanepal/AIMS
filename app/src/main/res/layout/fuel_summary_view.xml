@@ -12,7 +12,8 @@
         android:layout_marginHorizontal="4dp"
         android:layout_marginBottom="8dp"
         android:gravity="left"
-        android:text="FuelType" />
+        android:text="FuelType"
+        android:textColor="?attr/colorPrimary"/>
 
     <TextView
         android:id="@+id/fuel_source"
@@ -20,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
         android:gravity="left"
-        android:text="FuelSource" />
+        android:text="FuelSource"
+        android:textColor="?attr/colorPrimary"/>
 
     <TextView
         android:id="@+id/site_count"
@@ -28,5 +30,7 @@
         android:layout_weight="0.5"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textColor="?attr/colorPrimary"
+        />
 </LinearLayout>
