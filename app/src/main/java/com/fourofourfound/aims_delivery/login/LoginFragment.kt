@@ -14,8 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.hideActionBar
-import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 
@@ -171,12 +169,6 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        hideBottomNavigation(requireActivity())
-        hideActionBar(requireActivity())
-        super.onResume()
     }
 
 

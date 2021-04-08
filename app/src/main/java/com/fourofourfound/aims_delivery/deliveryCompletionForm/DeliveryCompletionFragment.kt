@@ -17,8 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.StatusEnum
-import com.fourofourfound.aims_delivery.utils.hideBottomNavigation
-import com.fourofourfound.aims_delivery.utils.showBottomNavigation
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBinding
 import com.github.gcacace.signaturepad.views.SignaturePad
@@ -174,15 +172,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         viewModel = ViewModelProvider(this).get(DeliveryCompletionViewModel::class.java)
     }
 
-    override fun onStart() {
-        super.onStart()
-        hideBottomNavigation(requireActivity())
-    }
 
-    override fun onStop() {
-        super.onStop()
-        showBottomNavigation(requireActivity())
-    }
 
 }
 

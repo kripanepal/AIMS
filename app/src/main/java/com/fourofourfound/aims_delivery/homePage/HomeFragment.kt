@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.*
+import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
+import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -224,8 +226,6 @@ class HomePage : Fragment() {
     override fun onStart() {
         super.onStart()
         BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
-        showBottomNavigation(requireActivity())
-        showActionBar(requireActivity())
     }
 
 

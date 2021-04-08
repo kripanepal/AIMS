@@ -3,6 +3,8 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.hideActionBar
-import com.fourofourfound.aims_delivery.utils.showActionBar
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.here.android.mpa.common.*
@@ -46,6 +46,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     var route: Route? = null
     private var fetchingDataInProgress = false
     private lateinit var sourceOrSite: SourceOrSite
+    private val timeoutHandler = Handler(Looper.getMainLooper())
+
 
     /**
      * Shared view model
@@ -72,18 +74,14 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         binding.mapRecenterBtn.setOnClickListener { recenter() }
         binding.destinationReached.setOnClickListener { destinationReached() }
         sharedViewModel.activeRoute?.apply { route = this }
-        initializeMap()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().bottom_navigation.visibility =
-            if (resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE)
-                View.GONE
-            else View.VISIBLE
-
+        initializeMap()
     }
+
 
     private fun initializeMap() {
         binding.progressBarContainer.visibility = View.VISIBLE
@@ -246,11 +244,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun addListeners() {
-        mapFragment.setOnTouchListener { v, _ ->
-            v.performClick()
-            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.NONE
-            false
-        }
+        setMapTouchListener()
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
@@ -259,6 +253,21 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
 
         setUpVoiceNavigation()
+    }
+
+    private fun setMapTouchListener() {
+        mapFragment.setOnTouchListener { v, _ ->
+            v.performClick()
+            timeoutHandler.removeCallbacksAndMessages(null);
+            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.NONE
+            timeoutHandler.postDelayed({
+                navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
+                timeoutHandler.postDelayed({
+                    navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
+                }, 1500)
+            }, 3000)
+            false
+        }
     }
 
     private fun removeListeners() {
@@ -417,6 +426,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         if (::navigationManager.isInitialized) {
             navigationManager.resume()
         }
+        requireActivity().bottom_navigation.visibility =
+            if (resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE)
+                View.GONE
+            else View.VISIBLE
     }
 
     override fun onPause() {
@@ -424,15 +437,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         MapEngine.getInstance().onPause()
     }
 
-    override fun onStart() {
-        super.onStart()
-        hideActionBar(requireActivity())
-    }
 
-    override fun onStop() {
-        super.onStop()
-        showActionBar(requireActivity())
-    }
 }
 
 
