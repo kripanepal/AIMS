@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
@@ -135,11 +136,15 @@ class OngoingDeliveryFragment : Fragment() {
             endDateAndTime = Calendar.getInstance()
 
             var navigateToForm = {
-                findNavController().navigate(
-                    OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
-                        currentSourceOrSite, startDateAndTime, endDateAndTime
-                    )
-                )
+                var formDialog = DeliveryCompletionFragment();
+                // Supply num input as an argument.
+                // Supply num input as an argument.
+                val args = Bundle()
+                args.putSerializable("startDateAndTime", startDateAndTime)
+                args.putSerializable("endDateAndTime", endDateAndTime)
+                args.putParcelable("currentSourceOrSite", currentSourceOrSite)
+                formDialog.arguments = args
+                formDialog.show(childFragmentManager, "Form")
             }
             CustomDialogBuilder(
                 requireContext(),

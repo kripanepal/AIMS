@@ -16,13 +16,7 @@
     <fragment
         android:id="@+id/navigationFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment"
-        android:label="Navigation">
-        <action
-            android:id="@+id/action_navigationFragment_to_deliveryCompletionFragment"
-            app:destination="@id/deliveryCompletionFragment"
-            app:popUpTo="@id/navigationFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        android:label="Navigation" />
     <fragment
         android:id="@+id/deliveryCompletionFragment"
         android:name="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment"

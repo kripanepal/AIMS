@@ -14,7 +14,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
+class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
     /**
      * Shared view model
@@ -37,6 +36,11 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.Aims_delivery);
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +53,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             return null
         }
 
+
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_delivery_input_form,
@@ -56,7 +61,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             false
         )
 
-        val tripFragmentArgs by navArgs<DeliveryCompletionFragmentArgs>()
 
         viewModelFactory = DeliveryCompletionViewModelFactory(
             requireActivity().application,
@@ -71,9 +75,11 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             showSignatureDialog()
         }
 
-        viewModel.startTime = tripFragmentArgs.startDateAndTime
-        viewModel.endTime = tripFragmentArgs.endDateAndTime
-
+        viewModel.startTime = arguments?.getSerializable("startDateAndTime") as Calendar
+        viewModel.endTime = arguments?.getSerializable("endDateAndTime") as Calendar
+        binding.toolbar.title =
+            sharedViewModel.selectedSourceOrSite.value!!.location.destinationName
+        binding.toolbar.setNavigationOnClickListener { dialog?.let { dl -> onDismiss(dl) } }
 
         getTime(binding.startTime, binding.startTimeContainer, requireContext())
         getTime(binding.endTime, binding.endTimeContainer, requireContext())
@@ -83,13 +89,13 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         return binding.root
     }
 
+
     private fun showSignatureDialog() {
         val builder = AlertDialog.Builder(requireContext(), android.R.style.Theme_DeviceDefault)
         builder.setView(R.layout.signature_pad_layout)
         var dialog = builder.create()
         dialog.setTitle("Signature")
         dialog.show()
-
 
         var signaturePad = dialog.findViewById<SignaturePad>(R.id.signature_pad)
         dialog.findViewById<Button>(R.id.signature_clear).setOnClickListener {
