@@ -4,7 +4,7 @@
     <style name="textInputLayoutStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColorHint">@color/black</item>
+        <item name="android:textColorHint">?attr/colorOnPrimary</item>
     </style>
 
     <style name="editTextInputLayout">
@@ -13,7 +13,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:drawableTint">@color/design_default_color_primary</item>
         <item name="android:inputType">number</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:layout_margin">5dp</item>
     </style>
 

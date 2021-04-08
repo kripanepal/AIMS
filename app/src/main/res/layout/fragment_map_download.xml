@@ -25,7 +25,7 @@
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/downloadProgressBar"
             app:SpinKit_Color="@color/Aims_Orange"
-            style="@style/SpinKitView.Large.WanderingCubes"
+            style="@style/SpinKitView.Large.Circle"
             android:layout_width="200dp"
             android:layout_marginHorizontal="25dp"
             android:visibility="gone"

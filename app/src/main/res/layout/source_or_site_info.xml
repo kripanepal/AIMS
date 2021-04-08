@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:paddingBottom="5dp"
-        android:textColor="@color/Aims_brown"
+        android:textColor="@color/Aims_light_orange"
         android:textSize="15dp"
         android:textStyle="italic" />
 

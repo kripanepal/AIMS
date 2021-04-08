@@ -36,7 +36,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bill_of_lading_container"
                 style="@style/textInputLayoutStyle"
-                app:hintTextColor="@color/black"
+                app:hintTextColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -51,7 +51,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/product_desc_container"
                 style="@style/textInputLayoutStyle"
-                app:hintTextColor="@color/black"
+                app:hintTextColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
 
