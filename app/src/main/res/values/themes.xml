@@ -9,7 +9,7 @@
         <item name="colorSecondary">@color/card_color</item>
         <item name="colorSecondaryVariant">@color/card_background_color</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="colorAccent">#FCF4E8</item>
+        <item name="colorAccent">#EAE8E5</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>

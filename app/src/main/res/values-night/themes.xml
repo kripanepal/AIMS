@@ -1,6 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Aims_delivery" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Aims_delivery" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/Aims_Orange</item>
         <item name="colorPrimaryVariant">@color/Aims_light_orange</item>
@@ -14,14 +13,13 @@
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
     </style>
+
 
     <style name="Aims_delivery.splash_skin" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_image</item>
         <item name="android:statusBarColor">@color/Aims_Orange</item>
-
 
     </style>
 </resources>

@@ -26,6 +26,7 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="?attr/colorSecondary"
                 app:cardCornerRadius="5dp"
+
                 app:cardElevation="10dp">
 
                 <TextView

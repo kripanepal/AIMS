@@ -27,8 +27,8 @@
     <color name="card_color">#F6F5F4</color>
     <color name="card_background_color">#DCD4D0</color>
 
-    <color name="LightBlack_card_color">#202020</color>
-    <color name="ExtraLightblack_card_color">#404040</color>
+    <color name="LightBlack_card_color">#393838</color>
+    <color name="ExtraLightblack_card_color">#5E5D5D</color>
 
 
 </resources>
