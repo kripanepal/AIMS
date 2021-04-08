@@ -5,11 +5,12 @@
         <item name="colorPrimary">@color/Aims_Orange</item>
         <item name="colorPrimaryVariant">@color/Aims_light_orange</item>
         <item name="colorOnPrimary">@color/black</item>
+        <item name="color">#EAE8E5</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/card_color</item>
         <item name="colorSecondaryVariant">@color/card_background_color</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="colorAccent">#EAE8E5</item>
+        <item name="colorAccent">@color/Aims_Orange</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
