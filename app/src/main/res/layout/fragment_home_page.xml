@@ -17,14 +17,11 @@
         android:background="?attr/colorSecondaryVariant"
         tools:context="com.fourofourfound.aims_delivery.homePage.HomePage">
 
-        <!-- TODO: Update blank fragment layout -->
-
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="15dp"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,78 +36,75 @@
                     android:id="@+id/current_trip_list_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="15dp"
+                    android:layout_marginVertical="@dimen/card_vertical_margin"
                     app:cardBackgroundColor="?attr/colorSecondary"
-                    app:cardElevation="10dp"
-                    app:cardCornerRadius="5dp"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
 
-                    android:orientation="vertical">
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Current Trip"
+                        android:layout_margin="@dimen/margin_all_sides_10"
+                        android:orientation="vertical">
 
-                        android:layout_margin="10dp"
-                        android:textSize="20sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Current Trip"
+                            android:textSize="@dimen/text_size_large" />
 
-                    <TextView
-                        android:id="@+id/ongoing_trip_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No Ongoing  Trip"
-                        android:textColor="@color/Aims_Orange"
-                        android:paddingTop="50dp"
-                        android:layout_margin="10dp"
-                        android:textSize="15sp"
-                        />
+                        <TextView
+                            android:id="@+id/ongoing_trip_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Aims_Orange"
+                            android:textSize="@dimen/text_size_medium" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/current_trip_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="80dp"
-                        android:layout_margin="10dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/current_trip_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+
+                    </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/upcoming_trip_list_container"
-                    app:cardBackgroundColor="?attr/colorSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="15dp"
-                    app:cardElevation="10dp"
-                    app:cardCornerRadius="5dp"
-                    android:orientation="vertical">
+                    android:layout_marginVertical="@dimen/card_vertical_margin"
+                    app:cardBackgroundColor="?attr/colorSecondary"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Upcoming Trips"
-                        android:layout_margin="10dp"
-                        android:textSize="20sp" />
+                        android:layout_margin="@dimen/margin_all_sides_10"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/upcoming_trip_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="15dp"
-                        android:paddingTop="50dp"
-                        android:layout_margin="10dp"
-                        android:text="No trips available"
-                        android:textColor="@color/Aims_Orange"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Upcoming Trips"
+                            android:textSize="@dimen/text_size_large" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/upcoming_trip_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="80dp"
-                        android:layout_margin="10dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        <TextView
+                            android:id="@+id/upcoming_trip_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Aims_Orange"
+                            android:textSize="@dimen/text_size_medium" />
 
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/upcoming_trip_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -119,35 +113,36 @@
                     android:id="@+id/completed_trip_list_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="15dp"
-                    android:orientation="vertical"
-                    app:cardElevation="10dp"
-                    app:cardCornerRadius="5dp"
-                    app:cardBackgroundColor="?attr/colorSecondary">
+                    android:layout_marginVertical="@dimen/card_vertical_margin"
+                    app:cardBackgroundColor="?attr/colorSecondary"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Completed Trips"
-                        android:textSize="20sp"
-                        android:layout_margin="10dp"/>
+                        android:layout_margin="@dimen/margin_all_sides_10"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/completed_trip_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="50dp"
-                        android:layout_margin="10dp"
-                        android:textColor="@color/Aims_Orange"
-                        android:text="No completed trips data available" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Completed Trips"
+                            android:textSize="@dimen/text_size_large" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/completed_trip_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="80dp"
-                        android:layout_margin="10dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        <TextView
+                            android:id="@+id/completed_trip_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Aims_Orange"
+                            android:textSize="@dimen/text_size_medium" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/completed_trip_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 

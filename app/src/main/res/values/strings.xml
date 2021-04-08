@@ -20,6 +20,7 @@
 
     <!--    format %-->
     <string name="text_with_percentage">%1$d%%</string>
+    <string name="no_internet_connection_text">No internet connection</string>
 
 
     <plurals name="numberOfTripsAvailable">

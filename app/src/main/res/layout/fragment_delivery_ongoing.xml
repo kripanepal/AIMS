@@ -20,34 +20,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/app_horizontal_margin"
         android:orientation="vertical"
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryFragment">
 
-        <!-- TODO: Update blank fragment layout -->
 
         <TextView
             android:id="@+id/wayPoint_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{sourceOrSite.wayPointTypeDescription}"
-            android:textFontWeight="20"
-            android:textSize="25sp"
+            android:textSize="@dimen/text_size_xl"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/trip_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            setIntAsString="@{currentTrip.tripId}" />
 
         <TextView
             android:id="@+id/trip_name"
             android:layout_width="match_parent"
+            android:textSize="@dimen/text_size_medium"
             android:layout_height="wrap_content"
             android:text="@{currentTrip.tripName}" />
 
         <TextView
+            android:textSize="@dimen/text_size_medium"
             android:id="@+id/trip_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,12 +54,14 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:textSize="@dimen/text_size_medium"
             android:id="@+id/siteContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{sourceOrSite.siteContainerDescription}" />
 
         <TextView
+            android:textSize="@dimen/text_size_medium"
             android:id="@+id/load_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,7 +69,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dip"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="horizontal">
@@ -90,7 +86,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="1dp"
                 android:text="Navigate" />
 
             <Button
