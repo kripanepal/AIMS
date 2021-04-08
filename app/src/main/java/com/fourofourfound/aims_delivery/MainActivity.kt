@@ -12,8 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
-import com.fourofourfound.aims_delivery.utils.setupWithNavController
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -34,24 +33,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Aims_delivery)
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         locationPermissionUtil = BackgroundLocationPermissionUtil(this)
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         changeInternetConnectionText()
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar()
-        } // Else, need to wait for onRestoreInstanceState
-
-
+        if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
+
+
+    }
+
+    private fun observeLoading() {
         sharedViewModel.loading.observe(this) {
             findViewById<View>(R.id.main_loading).also { view ->
                 view.visibility = if (it) View.VISIBLE else View.GONE
             }
-
         }
+    }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        observeLoading()
     }
 
     /**
@@ -91,13 +95,24 @@ class MainActivity : AppCompatActivity() {
 
         controller.observe(this, Observer {
             navController = it
+
+            navController.addOnDestinationChangedListener { controller, destination, arguments ->
+                var noActionBar = listOf(R.id.loginFragment, R.id.navigationFragment)
+                var noBottomNavigation = listOf(R.id.loginFragment, R.id.deliveryCompletionFragment)
+
+                if (destination.id in noActionBar) hideActionBar(this)
+                else showActionBar(this)
+                if (destination.id in noBottomNavigation) hideBottomNavigation(this)
+                else showBottomNavigation(this)
+
+            }
             setupActionBarWithNavController(it)
         })
 
         bottomNavigationView.setOnNavigationItemReselectedListener {}
-
-
         currentNavController = controller
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -146,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         if (currentNavController?.value?.currentDestination?.id != R.id.loginFragment) {
             locationPermissionUtil.onPermissionSelected()
         }
+
     }
 
     /**
@@ -164,7 +180,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        var topLevelId = listOf(R.id.homePage,R.id.ongoingDeliveryFragment,R.id.settingsFragment)
+        var topLevelId = listOf(
+            R.id.homePage,
+            R.id.ongoingDeliveryFragment,
+            R.id.settingsFragment,
+            R.id.loginFragment
+        )
         if ((currentNavController?.value?.currentDestination?.id) in topLevelId ){
             super.onBackPressed()
         } else {

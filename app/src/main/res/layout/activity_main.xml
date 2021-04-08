@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-    </data>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/aa"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.fourofourfound.aims_delivery.MainActivity">
 
         <TextView
@@ -20,9 +12,9 @@
             android:layout_height="wrap_content"
             android:background="@color/Aims_light_orange"
             android:gravity="center"
-            android:text="No internet connection"
+            android:text="@string/no_internet_connection_text"
             android:visibility="gone"
-            android:textColor="#FF0000"
+            android:textColor="@color/Red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +22,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/no_internet" />
@@ -54,6 +46,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:defaultNavHost="true"
+            android:layout_marginHorizontal="@dimen/app_horizontal_margin"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -63,7 +56,7 @@
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/main_loading"
-            style="@style/SpinKitView.Large.RotatingCircle"
+            style="@style/SpinKitView.ThreeBounce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:SpinKit_Color="@color/Aims_Orange"
@@ -75,4 +68,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</layout>

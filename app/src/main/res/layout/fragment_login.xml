@@ -39,7 +39,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="32dp"
                 android:contentDescription="AIMS Logo"
-                android:src="@drawable/aims_logo"
+                android:src="@drawable/ic_aims_logo"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -147,9 +147,10 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.github.ybq.android.spinkit.SpinKitView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/spin_kit"
-                    style="@style/SpinKitView.Large.Circle"
+                    style="@style/SpinKitView.ThreeBounce"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
