@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
     /**
@@ -76,22 +77,35 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         initializeViewModelVariables()
         setUpDialogActionBar()
         viewDateAndTime()
+
         return binding.root
     }
 
     private fun verifyInput(): Boolean {
-        if (viewModel.billOfLadingNumber == 4444) binding.billOfLading.error =
-            "Bill of lading cannot be empty"
-        if (viewModel.productDesc.value!!.isEmpty()) binding.billOfLading.error =
-            "Product cannot be null"
-        if (viewModel.grossQty.value!!.isEmpty()) binding.grossQty.error =
-            "Gross quantity cannot be null"
-        if (viewModel.netQty.value!!.isEmpty()) binding.netQty.error = "Net quantity cannot be null"
-        if (viewModel.trailerBeginReading.value!!.isEmpty()) binding.trailerBegin.error =
-            "Trailer reading  cannot be null"
-        if (viewModel.trailerEndReading.value!!.isEmpty()) binding.trailerEnd.error =
-            "Product cannot be null"
+        viewModel.apply {
+            if (billOfLadingNumber == 4444) binding.billOfLading.error =
+                "Bill of lading cannot be empty"
+            if (productDesc.value!!.isEmpty()) binding.billOfLading.error =
+                "Product cannot be empty"
+            if (grossQty.value!!.isEmpty()) binding.grossQty.error =
+                "Gross quantity cannot be empty"
+            if (netQty.value!!.isEmpty()) binding.netQty.error = "Net quantity cannot be empty"
+            if (trailerBeginReading.value!!.isEmpty()) binding.trailerBegin.error =
+                "Trailer reading  cannot be null"
+            if (viewModel.trailerEndReading.value!!.isEmpty()) binding.trailerEnd.error =
+                "Product cannot be null"
+            if (startDate.timeInMillis > endDate.timeInMillis) showDateTimeError("date")
+
+            if (startTime.timeInMillis > endTime.timeInMillis) showDateTimeError("time")
+        }
+
         return false
+    }
+
+    private fun showDateTimeError(error: String) {
+        binding.errorText.text = "End $error cannot be greater than start $error"
+        binding.errorText.visibility = View.VISIBLE
+        binding.formScrollView.scrollTo(0, binding.formScrollView.top)
     }
 
 

@@ -32,12 +32,21 @@
                 android:paddingStart="6dp"
                 android:paddingEnd="16dp"
                 app:contentInsetStartWithNavigation="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/bill_of_lading_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:navigationIcon="@drawable/ic_arrow_back" />
 
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/Red"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
             <Button
                 android:id="@+id/submit_btn"
@@ -56,7 +65,7 @@
                 app:hintTextColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar">
+                app:layout_constraintTop_toBottomOf="@id/error_text">
 
                 <EditText
                     android:id="@+id/bill_of_lading"
