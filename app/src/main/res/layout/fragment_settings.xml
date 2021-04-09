@@ -18,18 +18,10 @@
             android:id="@+id/download_maps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp">
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="?attr/colorSecondary"
-                app:cardCornerRadius="5dp"
-
-                app:cardElevation="10dp">
-
-                <TextView
+            <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -39,8 +31,11 @@
                     android:drawableStart="@drawable/ic_baseline_download_24"
                     android:textSize="25sp" />
 
-            </androidx.cardview.widget.CardView>
-
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/dark_grey"
+                android:layout_margin="10dp"/>
 
         </LinearLayout>
 
@@ -48,17 +43,10 @@
             android:id="@+id/logout_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp">
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="?attr/colorSecondary"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="10dp">
-
-                <TextView
+            <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -68,13 +56,11 @@
                     android:drawableStart="@drawable/ic_baseline_logout_24"
                     android:textSize="25sp" />
 
-            </androidx.cardview.widget.CardView>
-
-
-
-
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/dark_grey"
+                android:layout_margin="10dp"/>
         </LinearLayout>
-
-
     </LinearLayout>
 </layout>

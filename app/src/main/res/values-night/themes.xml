@@ -4,12 +4,13 @@
         <item name="colorPrimary">@color/Aims_Orange</item>
         <item name="colorPrimaryVariant">@color/Aims_light_orange</item>
         <item name="colorOnPrimary">@color/light_grey</item>
+        <item name="color">@color/ExtraLightblack_card_color</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/LightBlack_card_color</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorAccent">@color/ExtraLightblack_card_color</item>
+        <item name="colorAccent">@color/Aims_Orange</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
