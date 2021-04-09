@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.getDatabase
@@ -8,6 +9,7 @@ import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 /**
  * Ongoing delivery view model
@@ -21,6 +23,11 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
+    lateinit var startDateAndTime: Calendar
+    lateinit var endDateAndTime: Calendar
+
+    var fillingStarted = false
+
     fun updateFuelInfo(trailerId: Int, fuelQuantity: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -30,5 +37,8 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
         }
     }
 
-
+    override fun onCleared() {
+        super.onCleared()
+        Log.i("LLLLLL", "LLLLLL")
+    }
 }

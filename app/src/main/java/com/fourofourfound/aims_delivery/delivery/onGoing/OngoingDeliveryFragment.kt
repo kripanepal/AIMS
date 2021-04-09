@@ -51,10 +51,6 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    lateinit var startDateAndTime: Calendar
-    lateinit var endDateAndTime: Calendar
-
     lateinit var viewModel: OngoingDeliveryViewModel
 
     lateinit var currentSourceOrSite: SourceOrSite
@@ -72,7 +68,7 @@ class OngoingDeliveryFragment : Fragment() {
     ): View? {
 
         //return if no this is not an ongoing delivery
-        if (sharedViewModel.selectedTrip.value == null ) {
+        if (sharedViewModel.selectedTrip.value == null) {
             showNoTripSelectedDialog()
             return view
         }
@@ -86,8 +82,7 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
-        if(sharedViewModel.selectedSourceOrSite.value == null)
-        {
+        if (sharedViewModel.selectedSourceOrSite.value == null) {
             findNavController().navigateUp()
             return null
         }
@@ -101,47 +96,37 @@ class OngoingDeliveryFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-        if (sharedViewModel.activeRoute !== null) binding.startNavigation.text =
-            "Continue Navigation"
+        if (sharedViewModel.activeRoute !== null) {
+            binding.startNavigation.text =
+                "Continue Navigation"
+            binding.startFilling.visibility = View.GONE
+        }
 
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
         }
 
+        if (viewModel.fillingStarted) fuelingStartViews()
 
+        return binding.root
+    }
 
-        sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
-        {
-            currentSourceOrSite = it
-            binding.sourceOrSite = currentSourceOrSite
-            binding.currentTrip = sharedViewModel.selectedTrip.value
-            binding.sourceOrSiteInfo.apply {
-                sourceOrSiteName.text = currentSourceOrSite.location.destinationName
-                address.text = currentSourceOrSite.location.address1
-                productDesc.text = currentSourceOrSite.productInfo.productDesc
-                productQty.text =
-                    currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
-
-            }
-        }
-
-
-
+    private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
+            viewModel.fillingStarted = true
             showFuelConfirmDialog(requireContext())
-
         }
+    }
 
+    private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
-            endDateAndTime = Calendar.getInstance()
+            viewModel.endDateAndTime = Calendar.getInstance()
 
             var navigateToForm = {
                 var formDialog = DeliveryCompletionFragment();
-                // Supply num input as an argument.
-                // Supply num input as an argument.
                 val args = Bundle()
-                args.putSerializable("startDateAndTime", startDateAndTime)
-                args.putSerializable("endDateAndTime", endDateAndTime)
+                args.putSerializable("startDateAndTime", viewModel.startDateAndTime)
+                args.putSerializable("endDateAndTime", viewModel.endDateAndTime)
                 args.putParcelable("currentSourceOrSite", currentSourceOrSite)
                 formDialog.arguments = args
                 formDialog.show(childFragmentManager, "Form")
@@ -157,8 +142,24 @@ class OngoingDeliveryFragment : Fragment() {
                 false
             ).builder.show()
         }
+    }
 
-        return binding.root
+    private fun observeDestination() {
+        sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
+        {
+            it?.apply {
+                currentSourceOrSite = it
+                binding.sourceOrSite = currentSourceOrSite
+                binding.currentTrip = sharedViewModel.selectedTrip.value
+                binding.sourceOrSiteInfo.apply {
+                    sourceOrSiteName.text = currentSourceOrSite.location.destinationName
+                    address.text = currentSourceOrSite.location.address1
+                    productDesc.text = currentSourceOrSite.productInfo.productDesc
+                    productQty.text =
+                        currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
+                }
+            }
+        }
     }
 
     private fun showFuelConfirmDialog(context: Context) {
@@ -178,10 +179,8 @@ class OngoingDeliveryFragment : Fragment() {
                 )
                 sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
                     Integer.parseInt(input.text.toString())
-                startDateAndTime = Calendar.getInstance()
-                binding.startFilling.visibility = View.GONE
-                binding.endFilling.visibility = View.VISIBLE
-                binding.startNavigation.visibility = View.GONE
+                viewModel.startDateAndTime = Calendar.getInstance()
+                fuelingStartViews()
                 dialog.cancel()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -191,10 +190,20 @@ class OngoingDeliveryFragment : Fragment() {
         alert.show()
     }
 
+    private fun fuelingStartViews() {
+        binding.startFilling.visibility = View.GONE
+        binding.endFilling.visibility = View.VISIBLE
+        binding.startNavigation.visibility = View.GONE
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title =
             sharedViewModel.selectedTrip.value!!.tripName
+
+        observeDestination()
+        observeStartFueling()
+        observeEndFueling()
     }
 
 
@@ -203,7 +212,6 @@ class OngoingDeliveryFragment : Fragment() {
      *Returns an AlertDialog object to inform that no Ongoing Trip is present
      */
     private fun showNoTripSelectedDialog() {
-
         val takeToHomeScreen =
             { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
 

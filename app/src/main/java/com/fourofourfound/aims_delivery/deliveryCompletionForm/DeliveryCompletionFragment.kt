@@ -39,14 +39,12 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Aims_delivery);
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
         if (sharedViewModel.selectedSourceOrSite.value == null) {
             findNavController().navigateUp()
@@ -61,7 +59,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
             false
         )
 
-
         viewModelFactory = DeliveryCompletionViewModelFactory(
             requireActivity().application,
             sharedViewModel.selectedSourceOrSite.value!!
@@ -72,21 +69,50 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
             ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
         binding.submitBtn.setOnClickListener {
-            showSignatureDialog()
+            if (verifyInput())
+                showSignatureDialog()
         }
 
+        initializeViewModelVariables()
+        setUpDialogActionBar()
+        viewDateAndTime()
+        return binding.root
+    }
+
+    private fun verifyInput(): Boolean {
+        if (viewModel.billOfLadingNumber == 4444) binding.billOfLading.error =
+            "Bill of lading cannot be empty"
+        if (viewModel.productDesc.value!!.isEmpty()) binding.billOfLading.error =
+            "Product cannot be null"
+        if (viewModel.grossQty.value!!.isEmpty()) binding.grossQty.error =
+            "Gross quantity cannot be null"
+        if (viewModel.netQty.value!!.isEmpty()) binding.netQty.error = "Net quantity cannot be null"
+        if (viewModel.trailerBeginReading.value!!.isEmpty()) binding.trailerBegin.error =
+            "Trailer reading  cannot be null"
+        if (viewModel.trailerEndReading.value!!.isEmpty()) binding.trailerEnd.error =
+            "Product cannot be null"
+        return false
+    }
+
+
+    private fun initializeViewModelVariables() {
         viewModel.startTime = arguments?.getSerializable("startDateAndTime") as Calendar
         viewModel.endTime = arguments?.getSerializable("endDateAndTime") as Calendar
-        binding.toolbar.title =
-            sharedViewModel.selectedSourceOrSite.value!!.location.destinationName
-        binding.toolbar.setNavigationOnClickListener { dialog?.let { dl -> onDismiss(dl) } }
 
+
+    }
+
+    private fun viewDateAndTime() {
         getTime(binding.startTime, binding.startTimeContainer, requireContext())
         getTime(binding.endTime, binding.endTimeContainer, requireContext())
         getDate(binding.startDate, binding.startDateContainer, requireContext())
         getDate(binding.endDate, binding.endDateContainer, requireContext())
+    }
 
-        return binding.root
+    private fun setUpDialogActionBar() {
+        binding.toolbar.title =
+            sharedViewModel.selectedSourceOrSite.value!!.location.destinationName
+        binding.toolbar.setNavigationOnClickListener { dialog?.let { dl -> onDismiss(dl) } }
     }
 
 
@@ -112,7 +138,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
             )
             sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
                 StatusEnum.COMPLETED
-            findNavController().popBackStack(R.id.ongoingDeliveryFragment, false)
+            findNavController().popBackStack(R.id.ongoingDeliveryFragment, true)
             requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
             //TODO need to manage this
@@ -120,7 +146,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         }
     }
 
-    fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+    private fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
             if (textView.id == binding.startTime.id) viewModel.startTime else viewModel.endTime
@@ -144,7 +170,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         }
     }
 
-    fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+    private fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
             if (textView.id == binding.startDate.id) viewModel.startDate else viewModel.endDate
@@ -173,10 +199,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
     }
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DeliveryCompletionViewModel::class.java)
-    }
 
 
 

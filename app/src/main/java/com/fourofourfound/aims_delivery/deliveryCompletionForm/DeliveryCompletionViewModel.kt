@@ -22,20 +22,22 @@ class DeliveryCompletionViewModel(
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-    private val billOfLadingNumber = 4444
+
+    val billOfLadingNumber = 4444
     val productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
     val grossQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
     val netQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading =
         MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity.toString())
-    private val trailerEndReadingCalc =
+    val trailerEndReadingCalc =
         Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
     var startDate: Calendar = Calendar.getInstance()
     var endDate: Calendar = Calendar.getInstance()
+
 
 
     fun submitForm() {
@@ -78,4 +80,6 @@ class DeliveryCompletionViewModel(
             }
         }
     }
+
+
 }
