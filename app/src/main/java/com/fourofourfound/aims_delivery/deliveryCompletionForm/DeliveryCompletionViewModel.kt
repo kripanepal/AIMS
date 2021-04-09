@@ -23,26 +23,26 @@ class DeliveryCompletionViewModel(
     private val tripListRepository = TripListRepository(database)
 
 
-    val billOfLadingNumber = 4444
+    val billOfLadingNumber = MutableLiveData<Int>(null)
     val productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
-    val grossQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
-    val netQty = MutableLiveData(currentSourceOrSite.productInfo.requestedQty.toString())
+    val grossQty: MutableLiveData<Int> =
+        MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
+    val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
-    val trailerBeginReading =
-        MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity.toString())
+    val trailerBeginReading: MutableLiveData<Int> =
+        MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity)
     val trailerEndReadingCalc =
-        Integer.parseInt(trailerBeginReading.value) - currentSourceOrSite.productInfo.requestedQty!!
-    val trailerEndReading = MutableLiveData(trailerEndReadingCalc.toString())
+        trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
+    val trailerEndReading: MutableLiveData<Int> = MutableLiveData(trailerEndReadingCalc)
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
     var startDate: Calendar = Calendar.getInstance()
     var endDate: Calendar = Calendar.getInstance()
 
 
-
     fun submitForm() {
         var formToSubmit = DatabaseForm(
-            billOfLadingNumber,
+            billOfLadingNumber.value!!,
             productDesc.value.toString(),
             "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
                 startDate.get(
@@ -56,10 +56,10 @@ class DeliveryCompletionViewModel(
                 )
             }",
             endTime.get(Calendar.HOUR_OF_DAY).toString() + " " + endTime.get(Calendar.MINUTE),
-            Integer.parseInt(grossQty.value),
-            Integer.parseInt(netQty.value),
-            Integer.parseInt(trailerBeginReading.value),
-            Integer.parseInt(trailerEndReading.value),
+            grossQty.value!!,
+            netQty.value!!,
+            trailerBeginReading.value!!,
+            trailerEndReading.value!!,
             comments.value!!
 
         )

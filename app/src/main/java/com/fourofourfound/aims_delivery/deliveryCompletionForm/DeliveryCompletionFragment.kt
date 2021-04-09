@@ -5,10 +5,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -83,29 +85,65 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
     private fun verifyInput(): Boolean {
         viewModel.apply {
-            if (billOfLadingNumber == 4444) binding.billOfLading.error =
-                "Bill of lading cannot be empty"
-            if (productDesc.value!!.isEmpty()) binding.billOfLading.error =
-                "Product cannot be empty"
-            if (grossQty.value!!.isEmpty()) binding.grossQty.error =
-                "Gross quantity cannot be empty"
-            if (netQty.value!!.isEmpty()) binding.netQty.error = "Net quantity cannot be empty"
-            if (trailerBeginReading.value!!.isEmpty()) binding.trailerBegin.error =
-                "Trailer reading  cannot be null"
-            if (viewModel.trailerEndReading.value!!.isEmpty()) binding.trailerEnd.error =
-                "Product cannot be null"
-            if (startDate.timeInMillis > endDate.timeInMillis) showDateTimeError("date")
+            Log.i("Lading", billOfLadingNumber.value.toString())
 
-            if (startTime.timeInMillis > endTime.timeInMillis) showDateTimeError("time")
+            if (billOfLadingNumber.value == null || billOfLadingNumber.value!! < 0) return showGeneralErrors(
+                binding.billOfLading,
+                "Bill of lading cannot be empty"
+            )
+
+            if (productDesc.value!!.isEmpty()) return showGeneralErrors(
+                binding.billOfLading,
+                "Product cannot be empty"
+            )
+            if (grossQty.value!! < 0) return showGeneralErrors(
+                binding.grossQty,
+                "Gross quantity cannot be empty"
+            )
+            if (netQty.value!! < 0) return showGeneralErrors(
+                binding.netQty,
+                "Net quantity cannot be empty"
+            )
+            if (trailerBeginReading.value!! < 0) return showGeneralErrors(
+                binding.trailerBegin,
+                "Trailer reading  cannot be empty"
+            )
+            if (viewModel.trailerEndReading.value!! < 0) return showGeneralErrors(
+                binding.trailerEnd,
+                "Product cannot be empty"
+            )
+            if (startDate.timeInMillis > endDate.timeInMillis) return showDateTimeError("date")
+
+            if (startTime.timeInMillis > endTime.timeInMillis) return showDateTimeError("time")
+
+            if ((trailerBeginReading.value!! > trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
+                return showGeneralErrors(
+                    binding.trailerEnd,
+                    "Begin reading is greater than end reading"
+                )
+            }
+
+            if ((trailerBeginReading.value!! < trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription != "Source") {
+                return showGeneralErrors(
+                    binding.trailerEnd,
+                    "End reading is greater than begin reading"
+                )
+            }
         }
 
+        return true
+    }
+
+    fun showGeneralErrors(view: EditText, error: String): Boolean {
+        view.error = error
         return false
     }
 
-    private fun showDateTimeError(error: String) {
+    private fun showDateTimeError(error: String): Boolean {
         binding.errorText.text = "End $error cannot be greater than start $error"
         binding.errorText.visibility = View.VISIBLE
         binding.formScrollView.scrollTo(0, binding.formScrollView.top)
+        return false
     }
 
 
@@ -211,9 +249,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
             false
         }
     }
-
-
-
 
 
 }

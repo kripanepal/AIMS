@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionViewModel" />
@@ -70,7 +69,8 @@
                 <EditText
                     android:id="@+id/bill_of_lading"
                     style="@style/editTextInputLayout"
-                    android:hint="Bill of Lading Number" />
+                    android:hint="Bill of Lading Number"
+                    android:text="@={viewModel.billOfLadingNumber}" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -251,8 +251,8 @@
 
                 <EditText
                     android:id="@+id/comments"
-
                     style="@style/editTextInputLayout"
+                    android:inputType="text"
                     android:hint="Comments"
                     android:text="@={viewModel.comments}" />
 
