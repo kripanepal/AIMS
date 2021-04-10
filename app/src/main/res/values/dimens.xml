@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="app_horizontal_margin">10dp</dimen>
+    <dimen name="app_horizontal_margin">12dp</dimen>
     <dimen name="card_elevation">10dp</dimen>
-    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="card_vertical_margin">15dp</dimen>
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="margin_all_sides_10">10dp</dimen>
