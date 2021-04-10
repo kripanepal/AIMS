@@ -8,4 +8,5 @@
     <dimen name="margin_all_sides_10">10dp</dimen>
     <dimen name="text_size_medium">15sp</dimen>
     <dimen name="text_size_xl">25sp</dimen>
+    <dimen name="text_size_small">10sp</dimen>
 </resources>
