@@ -56,7 +56,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
 
         holder.itemView.statusImage.apply {
             if (item.status == StatusEnum.ONGOING)
-                setImageResource(R.drawable.end)
+                setImageResource(R.drawable.ongoing)
             else if (item.status == StatusEnum.COMPLETED) setImageResource(R.drawable.trip_done_icon)
         }
 
