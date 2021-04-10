@@ -79,7 +79,27 @@ class SettingsFragment : Fragment() {
             showDialog()
         }
 
+        binding.about.setOnClickListener {
+            showAboutDialog()
+        }
+
         return binding.root
+    }
+
+    private fun showAboutDialog() {
+        val dialogView = LayoutInflater.from(context).inflate(
+            R.layout.about_dialog, null
+        )
+        CustomDialogBuilder(
+            requireContext(),
+            "About",
+            null,
+            "Done",
+            null,
+            null,
+            null,
+            false
+        ).builder.setView(dialogView).show()
     }
 
     /**
