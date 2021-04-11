@@ -89,28 +89,28 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
             if (billOfLadingNumber.value == null || billOfLadingNumber.value!! < 0) return showGeneralErrors(
                 binding.billOfLading,
-                "Bill of lading cannot be empty"
+                "Invalid Bill of Lading"
             )
 
             if (productDesc.value!!.isEmpty()) return showGeneralErrors(
                 binding.billOfLading,
-                "Product cannot be empty"
+                "Invalid Product"
             )
             if (grossQty.value!! < 0) return showGeneralErrors(
                 binding.grossQty,
-                "Gross quantity cannot be empty"
+                "Invalid Gross quantity"
             )
             if (netQty.value!! < 0) return showGeneralErrors(
                 binding.netQty,
-                "Net quantity cannot be empty"
+                "Invalid Net quantity"
             )
             if (trailerBeginReading.value!! < 0) return showGeneralErrors(
                 binding.trailerBegin,
-                "Trailer reading  cannot be empty"
+                "Invalid Trailer reading"
             )
             if (viewModel.trailerEndReading.value!! < 0) return showGeneralErrors(
                 binding.trailerEnd,
-                "Product cannot be empty"
+                "Invalid Product"
             )
             if (startDate.timeInMillis > endDate.timeInMillis) return showDateTimeError("date")
 
