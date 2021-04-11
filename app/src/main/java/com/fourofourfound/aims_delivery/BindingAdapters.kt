@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.odml.MapPackage
@@ -54,3 +55,21 @@ fun setCalendarTime(view: TextView, cal: Calendar) {
 fun setCalendarDate(view: TextView, cal: Calendar) {
     view.text = SimpleDateFormat("yyyy:MM:dd").format(cal.time)
 }
+
+@BindingAdapter("android:text")
+fun setText(view: TextView, value: Int?) {
+    if (value == null)
+        view.text = "-1"
+    else
+        view.text = value.toString()
+
+}
+
+@InverseBindingAdapter(attribute = "android:text")
+fun getText(view: TextView): Int {
+    var value = view.text.toString()
+    if (!isInteger(value)) return -1
+    return value.toInt()
+}
+
+fun isInteger(str: String?) = str?.toIntOrNull()?.let { true } ?: false

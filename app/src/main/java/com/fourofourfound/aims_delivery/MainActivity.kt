@@ -1,7 +1,11 @@
 package com.fourofourfound.aims_delivery
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,7 +18,9 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
+import com.github.ybq.android.spinkit.style.CubeGrid
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 /**
  * Main activity
@@ -29,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
     lateinit var sharedViewModel: SharedViewModel
     private var currentNavController: LiveData<NavController>? = null
-
+    lateinit var dialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,17 +47,31 @@ class MainActivity : AppCompatActivity() {
         changeInternetConnectionText()
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
-
+        createLoadingDialog()
 
     }
 
     private fun observeLoading() {
         sharedViewModel.loading.observe(this) {
-            findViewById<View>(R.id.main_loading).also { view ->
-                view.visibility = if (it) View.VISIBLE else View.GONE
-            }
+            if (it) dialog.show() else dialog.dismiss()
         }
     }
+
+    private fun createLoadingDialog() {
+        var builder = AlertDialog.Builder(this);
+        val progressBar = ProgressBar(this)
+        val cube = CubeGrid()
+        cube.color = getColor(R.color.Aims_Orange)
+        progressBar.indeterminateDrawable = cube
+        progressBar.setPadding(0, 50, 0, 50)
+        builder.setView(progressBar);
+        dialog = builder.create().apply {
+            setCancelable(false)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+
+    }
+
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -186,7 +206,7 @@ class MainActivity : AppCompatActivity() {
             R.id.settingsFragment,
             R.id.loginFragment
         )
-        if ((currentNavController?.value?.currentDestination?.id) in topLevelId ){
+        if ((currentNavController?.value?.currentDestination?.id) in topLevelId) {
             super.onBackPressed()
         } else {
             navController.navigateUp()

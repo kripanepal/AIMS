@@ -5,16 +5,15 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
@@ -25,7 +24,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
+
+class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
     /**
      * Shared view model
@@ -37,17 +37,21 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.Aims_delivery);
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-
         if (sharedViewModel.selectedSourceOrSite.value == null) {
             findNavController().navigateUp()
             return null
         }
+
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -55,8 +59,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             container,
             false
         )
-
-        val tripFragmentArgs by navArgs<DeliveryCompletionFragmentArgs>()
 
         viewModelFactory = DeliveryCompletionViewModelFactory(
             requireActivity().application,
@@ -68,20 +70,143 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
         binding.submitBtn.setOnClickListener {
-            showSignatureDialog()
+            if (verifyInput())
+                showSignatureDialog()
         }
 
-        viewModel.startTime = tripFragmentArgs.startDateAndTime
-        viewModel.endTime = tripFragmentArgs.endDateAndTime
+        initializeViewModelVariables()
+        setUpDialogActionBar()
+        viewDateAndTime()
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializeSpinner()
+    }
+
+    private fun initializeSpinner() {
+        viewModel.productList.observe(viewLifecycleOwner){
+            if(it!= null){
+                val products = viewModel.productList.value!!.toTypedArray()
+
+                // Initializing an ArrayAdapter
+                val adapter = ArrayAdapter(
+                    requireContext(), // Context
+                    android.R.layout.simple_spinner_item, // Layout
+                    products // Array
+                )
+
+                // Set the drop down view resource
+                adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+
+                // Finally, data bind the spinner object with adapter
+                binding.productDesc.adapter = adapter;
+
+                binding.productDesc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View,
+                        position: Int,
+                        id: Long
+                    ) {
+                        viewModel.productDesc = products[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun verifyInput(): Boolean {
+        viewModel.apply {
+            Log.i("Lading", billOfLadingNumber.value.toString())
+
+            if (billOfLadingNumber.value == null || billOfLadingNumber.value!! < 0) return showGeneralErrors(
+                binding.billOfLading,
+                "Invalid Bill of Lading"
+            )
+
+            if (productDesc.isNullOrEmpty()) return showGeneralErrors(
+                binding.billOfLading,
+                "Invalid Product"
+            )
+            if (grossQty.value!! < 0) return showGeneralErrors(
+                binding.grossQty,
+                "Invalid Gross quantity"
+            )
+            if (netQty.value!! < 0) return showGeneralErrors(
+                binding.netQty,
+                "Invalid Net quantity"
+            )
+            if (trailerBeginReading.value!! < 0) return showGeneralErrors(
+                binding.trailerBegin,
+                "Invalid Trailer reading"
+            )
+            if (viewModel.trailerEndReading.value!! < 0) return showGeneralErrors(
+                binding.trailerEnd,
+                "Invalid Product"
+            )
+            if (startDate.timeInMillis > endDate.timeInMillis) return showDateTimeError("date")
+
+            if (startTime.timeInMillis > endTime.timeInMillis) return showDateTimeError("time")
+
+            if ((trailerBeginReading.value!! > trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
+                return showGeneralErrors(
+                    binding.trailerEnd,
+                    "Begin reading is greater than end reading"
+                )
+            }
+
+            if ((trailerBeginReading.value!! < trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription != "Source") {
+                return showGeneralErrors(
+                    binding.trailerEnd,
+                    "End reading is greater than begin reading"
+                )
+            }
+        }
+
+        return true
+    }
+
+    fun showGeneralErrors(view: EditText, error: String): Boolean {
+        view.error = error
+        return false
+    }
+
+    private fun showDateTimeError(error: String): Boolean {
+        binding.errorText.text = "End $error cannot be greater than start $error"
+        binding.errorText.visibility = View.VISIBLE
+        binding.formScrollView.scrollTo(0, binding.formScrollView.top)
+        return false
+    }
 
 
+    private fun initializeViewModelVariables() {
+        viewModel.startTime = arguments?.getSerializable("startDateAndTime") as Calendar
+        viewModel.endTime = arguments?.getSerializable("endDateAndTime") as Calendar
+
+
+    }
+
+    private fun viewDateAndTime() {
         getTime(binding.startTime, binding.startTimeContainer, requireContext())
         getTime(binding.endTime, binding.endTimeContainer, requireContext())
         getDate(binding.startDate, binding.startDateContainer, requireContext())
         getDate(binding.endDate, binding.endDateContainer, requireContext())
-
-        return binding.root
     }
+
+    private fun setUpDialogActionBar() {
+        binding.toolbar.title =
+            sharedViewModel.selectedSourceOrSite.value!!.location.destinationName
+        binding.toolbar.setNavigationOnClickListener { dialog?.let { dl -> onDismiss(dl) } }
+    }
+
 
     private fun showSignatureDialog() {
         val builder = AlertDialog.Builder(requireContext(), android.R.style.Theme_DeviceDefault)
@@ -89,7 +214,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         var dialog = builder.create()
         dialog.setTitle("Signature")
         dialog.show()
-
 
         var signaturePad = dialog.findViewById<SignaturePad>(R.id.signature_pad)
         dialog.findViewById<Button>(R.id.signature_clear).setOnClickListener {
@@ -106,7 +230,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             )
             sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
                 StatusEnum.COMPLETED
-            findNavController().popBackStack(R.id.ongoingDeliveryFragment, false)
+            findNavController().popBackStack(R.id.ongoingDeliveryFragment, true)
             requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
             //TODO need to manage this
@@ -114,7 +238,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         }
     }
 
-    fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+    private fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
             if (textView.id == binding.startTime.id) viewModel.startTime else viewModel.endTime
@@ -138,7 +262,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
         }
     }
 
-    fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
+    private fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
             if (textView.id == binding.startDate.id) viewModel.startDate else viewModel.endDate
@@ -165,13 +289,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.Fragment() {
             false
         }
     }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DeliveryCompletionViewModel::class.java)
-    }
-
 
 
 }
