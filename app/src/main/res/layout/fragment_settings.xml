@@ -31,7 +31,7 @@
                     android:drawableStart="@drawable/ic_baseline_download_24"
                     android:textSize="25sp" />
 
-            <view
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/dark_grey"
@@ -56,7 +56,7 @@
                     android:drawableStart="@drawable/ic_baseline_logout_24"
                     android:textSize="25sp" />
 
-            <view
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/dark_grey"
