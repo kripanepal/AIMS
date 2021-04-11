@@ -90,7 +90,7 @@ class TripListRepository(private val database: TripListDatabase) {
                         database.tripDao.insertTruck(truck)
                         database.trailerDao.insertTrailer(trailer)
                         database.tripDao.insertTrip(trip)
-                        database.tripDao.insertFuel(fuel)
+                        database.productsDao.insertFuel(fuel)
                         database.tripDao.insertLocation(location)
                         database.destinationDao.insertDestination(sourceOrSite)
 
@@ -182,4 +182,5 @@ class TripListRepository(private val database: TripListDatabase) {
         } catch (e: Exception) {
         }
     }
+
 }

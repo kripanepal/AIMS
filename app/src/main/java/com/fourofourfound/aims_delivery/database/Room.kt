@@ -31,7 +31,7 @@ abstract class TripListDatabase : RoomDatabase() {
     abstract val formDao: FormDao
     abstract val destinationDao: DestinationDao
     abstract val trailerDao: TrailerDao
-
+    abstract val productsDao: ProductsDao
 }
 
 @Volatile

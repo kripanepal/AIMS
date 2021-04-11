@@ -73,38 +73,55 @@
                     android:text="@={viewModel.billOfLadingNumber}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/product_desc_container"
-                style="@style/textInputLayoutStyle"
-                app:hintTextColor="?attr/colorOnPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:weightSum="2"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bill_of_lading_container"
+                android:layout_margin="5dp"
+                android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select a product:"
+                android:textSize="@dimen/text_size_large"
+                app:hintTextColor="?attr/colorOnPrimary"
+                android:layout_weight="0.4"/>
 
-                app:layout_constraintTop_toBottomOf="@id/bill_of_lading_container">
+            <Spinner
+                android:id="@+id/product_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1.6"
+                android:background="@drawable/spinner_box"/>
 
-                <EditText
-                    android:id="@+id/product_desc"
-                    style="@style/editTextInputLayout"
-                    android:hint="Product"
-                    android:text="@={viewModel.productDesc}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
+            </LinearLayout>
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="#C4C4C4"
+                app:layout_constraintTop_toBottomOf="@id/product_desc_container"
+                />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_time_container"
                 style="@style/textInputLayoutStyle"
                 android:orientation="horizontal"
-                app:hintTextColor="@color/black"
                 app:endIconDrawable="@drawable/ic_clock"
-                app:layout_constraintEnd_toStartOf="@id/end_time_container"
                 app:endIconMode="custom"
-                app:layout_constraintStart_toStartOf="parent"
                 app:endIconTint="@color/Aims_Orange"
-                app:layout_constraintBottom_toTopOf="@id/start_date_container"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/end_time_container"
                 app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintTop_toBottomOf="@id/product_desc_container">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider">
 
                 <EditText
                     android:id="@+id/start_time"
@@ -119,13 +136,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/end_time_container"
                 style="@style/textInputLayoutStyle"
-                app:hintTextColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/start_time_container"
                 app:endIconDrawable="@drawable/ic_clock"
                 app:endIconMode="custom"
                 app:endIconTint="@color/Aims_Orange"
-                app:layout_constraintTop_toBottomOf="@id/product_desc_container">
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/start_time_container"
+                app:layout_constraintTop_toBottomOf="@id/divider">
 
                 <EditText
                     android:id="@+id/end_time"
@@ -140,12 +157,12 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_date_container"
                 style="@style/textInputLayoutStyle"
-                app:hintTextColor="@color/black"
-                app:layout_constraintEnd_toStartOf="@id/end_time_container"
-                app:layout_constraintStart_toStartOf="parent"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom"
                 app:endIconTint="@color/Aims_Orange"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/end_time_container"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/end_time_container">
 
                 <EditText
@@ -161,12 +178,12 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/end_date_container"
                 style="@style/textInputLayoutStyle"
-                app:hintTextColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/start_date_container"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom"
                 app:endIconTint="@color/Aims_Orange"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/start_date_container"
                 app:layout_constraintTop_toBottomOf="@id/end_time_container">
 
                 <EditText
@@ -252,8 +269,8 @@
                 <EditText
                     android:id="@+id/comments"
                     style="@style/editTextInputLayout"
-                    android:inputType="text"
                     android:hint="Comments"
+                    android:inputType="text"
                     android:text="@={viewModel.comments}" />
 
             </com.google.android.material.textfield.TextInputLayout>

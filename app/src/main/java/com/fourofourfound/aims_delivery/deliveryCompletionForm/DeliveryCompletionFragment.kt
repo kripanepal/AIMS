@@ -9,9 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -83,6 +81,48 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializeSpinner()
+    }
+
+    private fun initializeSpinner() {
+        viewModel.productList.observe(viewLifecycleOwner){
+            if(it!= null){
+                val products = viewModel.productList.value!!.toTypedArray()
+
+                // Initializing an ArrayAdapter
+                val adapter = ArrayAdapter(
+                    requireContext(), // Context
+                    android.R.layout.simple_spinner_item, // Layout
+                    products // Array
+                )
+
+                // Set the drop down view resource
+                adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+
+                // Finally, data bind the spinner object with adapter
+                binding.productDesc.adapter = adapter;
+
+                binding.productDesc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View,
+                        position: Int,
+                        id: Long
+                    ) {
+                        viewModel.productDesc = products[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            }
+        }
+
+    }
+
     private fun verifyInput(): Boolean {
         viewModel.apply {
             Log.i("Lading", billOfLadingNumber.value.toString())
@@ -92,7 +132,7 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
                 "Invalid Bill of Lading"
             )
 
-            if (productDesc.value!!.isEmpty()) return showGeneralErrors(
+            if (productDesc.isNullOrEmpty()) return showGeneralErrors(
                 binding.billOfLading,
                 "Invalid Product"
             )

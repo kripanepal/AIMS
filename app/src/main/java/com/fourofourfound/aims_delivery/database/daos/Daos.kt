@@ -68,8 +68,7 @@ interface TripDao {
     suspend fun insertTruck(truck: DatabaseTruck)
 
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFuel(fuel: DatabaseFuel)
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: DatabaseLocation)
@@ -83,4 +82,13 @@ interface TripDao {
     @Query("select * from  DatabaseTrip  where tripId=:tripId")
     fun getTripById(tripId: Int): DatabaseTrip?
 
+}
+
+@Dao
+interface ProductsDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFuel(fuel: DatabaseFuel)
+
+    @Query("select distinct productDesc from DatabaseFuel")
+    suspend fun getProducts(): List<String>
 }

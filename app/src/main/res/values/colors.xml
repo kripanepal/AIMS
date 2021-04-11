@@ -29,6 +29,6 @@
 
     <color name="LightBlack_card_color">#393838</color>
     <color name="ExtraLightblack_card_color">#5E5D5D</color>
-
+    <color name="Drop_down_color">#655858</color>
 
 </resources>
