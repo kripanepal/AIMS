@@ -1,15 +1,22 @@
 package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -78,7 +85,36 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         setUpDialogActionBar()
         viewDateAndTime()
 
+        binding.uploadImageBtn.setOnClickListener{
+            openCamera()
+        }
+
         return binding.root
+    }
+
+    private fun openCamera() {
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    (context as Activity?)!!,
+                    Manifest.permission.CAMERA
+                )
+            ) {
+            } else {
+                ActivityCompat.requestPermissions(
+                    (context as Activity?)!!, arrayOf(Manifest.permission.CAMERA), 1
+                )
+            }
+        }
+
+        val requestImageCapture = 1
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        startActivityForResult(takePictureIntent, requestImageCapture)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
