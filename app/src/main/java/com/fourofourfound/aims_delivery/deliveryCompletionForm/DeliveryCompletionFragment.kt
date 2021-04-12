@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,10 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragmentArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBinding
@@ -25,7 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
+class DeliveryCompletionFragment : Fragment() {
 
     /**
      * Shared view model
@@ -36,16 +41,13 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
     private lateinit var binding: FragmentDeliveryInputFormBinding
     private lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.Aims_delivery);
-    }
-
+    val args by navArgs<DeliveryCompletionFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        Log.i("CreateView", "I am here ")
 
         if (sharedViewModel.selectedSourceOrSite.value == null) {
             findNavController().navigateUp()
@@ -70,12 +72,11 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
             ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
         binding.submitBtn.setOnClickListener {
-            if (verifyInput())
+            //if (verifyInput())
                 showSignatureDialog()
         }
 
         initializeViewModelVariables()
-        setUpDialogActionBar()
         viewDateAndTime()
 
         return binding.root
@@ -84,11 +85,12 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
+
     }
 
     private fun initializeSpinner() {
-        viewModel.productList.observe(viewLifecycleOwner){
-            if(it!= null){
+        viewModel.productList.observe(viewLifecycleOwner) {
+            if (it != null) {
                 val products = viewModel.productList.value!!.toTypedArray()
 
                 // Initializing an ArrayAdapter
@@ -104,20 +106,21 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
                 // Finally, data bind the spinner object with adapter
                 binding.productDesc.adapter = adapter;
 
-                binding.productDesc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-                        viewModel.productDesc = products[position]
-                    }
+                binding.productDesc.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>,
+                            view: View,
+                            position: Int,
+                            id: Long
+                        ) {
+                            viewModel.productDesc = products[position]
+                        }
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        TODO("Not yet implemented")
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                            TODO("Not yet implemented")
+                        }
                     }
-                }
             }
         }
 
@@ -188,8 +191,8 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
 
 
     private fun initializeViewModelVariables() {
-        viewModel.startTime = arguments?.getSerializable("startDateAndTime") as Calendar
-        viewModel.endTime = arguments?.getSerializable("endDateAndTime") as Calendar
+        viewModel.startTime = args.startDateAndTime
+        viewModel.endTime = args.endDateAndTime
 
 
     }
@@ -199,12 +202,6 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         getTime(binding.endTime, binding.endTimeContainer, requireContext())
         getDate(binding.startDate, binding.startDateContainer, requireContext())
         getDate(binding.endDate, binding.endDateContainer, requireContext())
-    }
-
-    private fun setUpDialogActionBar() {
-        binding.toolbar.title =
-            sharedViewModel.selectedSourceOrSite.value!!.location.destinationName
-        binding.toolbar.setNavigationOnClickListener { dialog?.let { dl -> onDismiss(dl) } }
     }
 
 
@@ -219,23 +216,67 @@ class DeliveryCompletionFragment : androidx.fragment.app.DialogFragment() {
         dialog.findViewById<Button>(R.id.signature_clear).setOnClickListener {
             signaturePad.clear()
         }
-        dialog.findViewById<Button>(R.id.signature_done).setOnClickListener {
-            //TODO need to save the captured image bitmap in the database
-            val signatureBitMap = signaturePad.signatureBitmap
-            dialog.cancel()
-            viewModel.submitForm()
-            viewModel.updateDeliveryStatus(
-                sharedViewModel.selectedTrip.value!!.tripId,
-                StatusEnum.COMPLETED
-            )
-            sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
-                StatusEnum.COMPLETED
-            findNavController().popBackStack(R.id.ongoingDeliveryFragment, true)
-            requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
-            //TODO need to manage this
-            sharedViewModel.selectedSourceOrSite.value = null
+        //TODO TO REMOVE
+
+        dialog.findViewById<Button>(R.id.signature_done).setOnClickListener {
+
+            var beta = { //TODO need to save the captured image bitmap in the database
+                val signatureBitMap = signaturePad.signatureBitmap
+                dialog.cancel()
+                viewModel.submitForm()
+                viewModel.updateDeliveryStatus(
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    StatusEnum.COMPLETED
+                )
+                sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
+                    StatusEnum.COMPLETED
+                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+                dialog.dismiss()
+                findNavController().navigateUp()
+                //TODO need to manage this
+                sharedViewModel.selectedSourceOrSite.value = null
+            }
+
+            var time = Calendar.getInstance()
+
+            CustomDialogBuilder(
+                requireContext(),
+                "Sending Product Picked/Delivered Info",
+                String.format(
+                    "Time Stamp: %d-%d-%d %d:%d " +
+                            "\nDriver ID: %s " +
+                            "\nTrip ID: %d " +
+                            "\nDestination ID: %d "+
+                            "\nProduct ID: %s " +
+                            "\nStart Time: %d:%d " +
+                            "\nEnd Time: %d:%d " +
+                            "\nGross Qty: %d " +
+                            "\nNet Qty: %d",
+                    time.get(Calendar.YEAR),
+                    time.get(Calendar.MONTH),
+                    time.get(Calendar.DAY_OF_MONTH),
+                    time.get(Calendar.HOUR_OF_DAY),
+                    time.get(Calendar.MINUTE),
+                    sharedViewModel.driver.driver_id,
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    viewModel.destination.seqNum,
+                    viewModel.destination.productInfo.productId,
+                    viewModel.startTime.get(Calendar.HOUR_OF_DAY),
+                    viewModel.startTime.get(Calendar.MINUTE),
+                    viewModel.endTime.get(Calendar.HOUR_OF_DAY),
+                    viewModel.endTime.get(Calendar.MINUTE),
+                    viewModel.grossQty.value,
+                    viewModel.netQty.value
+                ),
+                "OK",
+                beta,
+                null,
+                null,
+                false
+            ).builder.show()
         }
+
     }
 
     private fun getTime(textView: TextView, textInputLayout: TextInputLayout, context: Context) {

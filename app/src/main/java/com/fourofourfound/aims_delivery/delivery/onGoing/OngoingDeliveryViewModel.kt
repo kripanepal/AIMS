@@ -22,7 +22,7 @@ import java.util.*
 class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(application) {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
-
+    var navigating = false
     lateinit var startDateAndTime: Calendar
     lateinit var endDateAndTime: Calendar
 

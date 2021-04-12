@@ -1,21 +1,22 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
@@ -54,6 +55,7 @@ class OngoingDeliveryFragment : Fragment() {
     lateinit var viewModel: OngoingDeliveryViewModel
 
     lateinit var currentSourceOrSite: SourceOrSite
+    lateinit var dialog: AlertDialog.Builder
 
     /**
      * On create view
@@ -66,13 +68,17 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        createDialog()
+        Log.i("CreateView", "Ongoing Delivery Fragment ma chau hami")
 
         //return if no this is not an ongoing delivery
-        if (sharedViewModel.selectedTrip.value == null) {
-            showNoTripSelectedDialog()
-            return view
+        if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
+            var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
+            goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
+                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+            }
+            return goback
         }
-
 
         //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
@@ -83,11 +89,16 @@ class OngoingDeliveryFragment : Fragment() {
         )
 
         if (sharedViewModel.selectedSourceOrSite.value == null) {
-            findNavController().navigateUp()
+            val takeToHomeScreen =
+                { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
+            dialog.setMessage("No destination selected. Please select a destination from the menu")
+            dialog.setTitle("No Destination")
+            dialog.setPositiveButton("Take me to trip list") { _, _ ->
+                takeToHomeScreen
+            }
+            dialog.create().show()
             return null
         }
-
-
         //viewModel used by this fragment
         viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -106,10 +117,11 @@ class OngoingDeliveryFragment : Fragment() {
             findNavController().navigate(R.id.navigationFragment)
         }
 
-        if (viewModel.fillingStarted) fuelingStartViews()
+
 
         return binding.root
     }
+
 
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
@@ -120,16 +132,17 @@ class OngoingDeliveryFragment : Fragment() {
 
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
+            Log.i("Clicking", "Cloclking")
             viewModel.endDateAndTime = Calendar.getInstance()
 
             var navigateToForm = {
-                var formDialog = DeliveryCompletionFragment();
-                val args = Bundle()
-                args.putSerializable("startDateAndTime", viewModel.startDateAndTime)
-                args.putSerializable("endDateAndTime", viewModel.endDateAndTime)
-                args.putParcelable("currentSourceOrSite", currentSourceOrSite)
-                formDialog.arguments = args
-                formDialog.show(childFragmentManager, "Form")
+                findNavController().navigate(
+                    OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
+                        currentSourceOrSite,
+                        viewModel.startDateAndTime,
+                        viewModel.endDateAndTime,
+                    )
+                )
             }
             CustomDialogBuilder(
                 requireContext(),
@@ -198,14 +211,26 @@ class OngoingDeliveryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title =
-            sharedViewModel.selectedTrip.value!!.tripName
 
-        observeDestination()
-        observeStartFueling()
-        observeEndFueling()
+
+        sharedViewModel.selectedTrip.value?.apply {
+            sharedViewModel.selectedSourceOrSite.value?.apply {
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    sharedViewModel.selectedTrip.value!!.tripName
+                observeDestination()
+                observeStartFueling()
+                observeEndFueling()
+            }
+        }
+
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dialog.create().hide()
+        dialog.create().cancel()
+        dialog.create().dismiss()
+    }
 
     /**
      * Show no trip selected dialog
@@ -214,16 +239,25 @@ class OngoingDeliveryFragment : Fragment() {
     private fun showNoTripSelectedDialog() {
         val takeToHomeScreen =
             { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
+        dialog.setMessage("No trip was selected. Please select a trip from the menu")
+        dialog.setTitle("No ongoing trip")
+        dialog.setPositiveButton("Take me to trip list") { _, _ ->
+            takeToHomeScreen
+        }
+        dialog.create().show()
 
-        CustomDialogBuilder(
+    }
+
+    fun createDialog() {
+        dialog = CustomDialogBuilder(
             requireContext(),
             "No ongoing trip",
             "No trip was selected. Please select a trip from the menu",
             "Take me to trip list",
-            takeToHomeScreen,
+            null,
             null,
             null,
             false
-        ).builder.show()
+        ).builder
     }
 }

@@ -91,6 +91,12 @@ import com.google.gson.annotations.SerializedName
 
         @SerializedName("Fill")
         var fill: String,
+
+        @SerializedName("DriverCode")
+        var driverCode: String = "",
+
+        @SerializedName("DriverName")
+        var driverName: String = "",
     )
 
 

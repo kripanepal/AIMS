@@ -1,6 +1,9 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +20,14 @@ import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+
 
 class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var currentTrip: Trip
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,21 +71,43 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      * @param tripToStart
      */
     private fun markTripStart(sourceOrSite: SourceOrSite, currentTrip: Trip) {
-        currentTrip.status = StatusEnum.ONGOING
-        sourceOrSite.status = StatusEnum.ONGOING
-        sharedViewModel.selectedTrip.value = currentTrip
-        sharedViewModel.selectedSourceOrSite.value = sourceOrSite
-        viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
-        viewModel.changeDeliveryStatus(currentTrip.tripId, sourceOrSite.seqNum, StatusEnum.ONGOING)
-        CustomWorkManager(requireContext()).apply {
-            //TODO need to call both methods
-            sendLocationAndUpdateTrips()
-            sendLocationOnetime()
+        var time = Calendar.getInstance()
+
+
+        viewModel.sendTripSelectedData()
+
+        //TODO REMOVE THIS
+        var beta = {
+            currentTrip.status = StatusEnum.ONGOING
+            sharedViewModel.selectedTrip.value = currentTrip
+            viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
+            CustomWorkManager(requireContext()).apply {
+                //TODO need to call both methods
+                sendLocationAndUpdateTrips()
+                sendLocationOnetime()
+            }
+            markDestinationStart(sourceOrSite)
+
         }
-
-        //change the active tab to delivery tab
-        requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
-
+        CustomDialogBuilder(
+            requireContext(),
+            "Sending Starting Data Trip",
+            String.format(
+                "Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s",
+                time.get(Calendar.YEAR),
+                time.get(Calendar.MONTH),
+                time.get(Calendar.DAY_OF_MONTH),
+                time.get(Calendar.HOUR_OF_DAY),
+                time.get(Calendar.MINUTE),
+                sharedViewModel.driver!!.driver_id,
+                currentTrip.tripId
+            ),
+            "Ok",
+            beta,
+            "No",
+            null,
+            true
+        ).builder.show()
     }
 
     /**
@@ -140,8 +166,46 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
                 showStartTripDialog(sortedList[0], currentTrip)
             } else {
-                markTripStart(sortedList[0], currentTrip)
+                markDestinationStart(sortedList[0])
             }
         }
+    }
+
+    private fun markDestinationStart(sourceOrSite: SourceOrSite) {
+        var time = Calendar.getInstance()
+        viewModel.sendDestinationSelectedData()
+
+        //TODO REMOVE THIS
+        var beta = {
+            sourceOrSite.status = StatusEnum.ONGOING
+            sharedViewModel.selectedSourceOrSite.value = sourceOrSite
+            viewModel.changeDeliveryStatus(
+                currentTrip.tripId,
+                sourceOrSite.seqNum,
+                StatusEnum.ONGOING
+            )
+            //change the active tab to delivery tab
+            requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+        }
+        CustomDialogBuilder(
+            requireContext(),
+            "Sending Starting Destination Info",
+            String.format(
+                "Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
+                time.get(Calendar.YEAR),
+                time.get(Calendar.MONTH),
+                time.get(Calendar.DAY_OF_MONTH),
+                time.get(Calendar.HOUR_OF_DAY),
+                time.get(Calendar.MINUTE),
+                sharedViewModel.driver.driver_id,
+                currentTrip.tripId,
+                sourceOrSite.seqNum
+            ),
+            "Ok",
+            beta,
+            "No",
+            null,
+            true
+        ).builder.show()
     }
 }

@@ -144,6 +144,11 @@ class HomePage : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.getDriver(requireActivity().application)
+    }
+
     /**
      * Set up recycler view
      *Sets up the recycler view to display the list of trips
