@@ -53,9 +53,7 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var viewModel: OngoingDeliveryViewModel
-
     lateinit var currentSourceOrSite: SourceOrSite
-    lateinit var dialog: AlertDialog.Builder
 
     /**
      * On create view
@@ -68,7 +66,6 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        createDialog()
         Log.i("CreateView", "Ongoing Delivery Fragment ma chau hami")
 
         //return if no this is not an ongoing delivery
@@ -88,17 +85,7 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
-        if (sharedViewModel.selectedSourceOrSite.value == null) {
-            val takeToHomeScreen =
-                { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
-            dialog.setMessage("No destination selected. Please select a destination from the menu")
-            dialog.setTitle("No Destination")
-            dialog.setPositiveButton("Take me to trip list") { _, _ ->
-                takeToHomeScreen
-            }
-            dialog.create().show()
-            return null
-        }
+
         //viewModel used by this fragment
         viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
@@ -125,14 +112,12 @@ class OngoingDeliveryFragment : Fragment() {
 
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
-            viewModel.fillingStarted = true
             showFuelConfirmDialog(requireContext())
         }
     }
 
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
-            Log.i("Clicking", "Cloclking")
             viewModel.endDateAndTime = Calendar.getInstance()
 
             var navigateToForm = {
@@ -144,7 +129,8 @@ class OngoingDeliveryFragment : Fragment() {
                     )
                 )
             }
-            CustomDialogBuilder(
+
+           val beta =  CustomDialogBuilder(
                 requireContext(),
                 "Filling Complete",
                 "Fill the form now.",
@@ -153,7 +139,48 @@ class OngoingDeliveryFragment : Fragment() {
                 "Cancel",
                 null,
                 false
+            )
+
+            var endTime = Calendar.getInstance()
+
+            CustomDialogBuilder(
+                requireContext(),
+                "Sending product delivery/pickup completed message",
+                String.format(
+                    "Time Stamp: %d-%d-%d %d:%d " +
+                            "\nDriver ID: %s " +
+                            "\nTrip ID: %d " +
+                            "\nDestination ID: %d "+
+                            "\nProduct ID: %s " +
+                            "\nStart Time: %d:%d " +
+                            "\nEnd Time: %d:%d " +
+                            "\nGross Qty: %d " +
+                            "\nNet Qty: %d",
+                    endTime.get(Calendar.YEAR),
+                    endTime.get(Calendar.MONTH),
+                    endTime.get(Calendar.DAY_OF_MONTH),
+                    endTime.get(Calendar.HOUR_OF_DAY),
+                    endTime.get(Calendar.MINUTE),
+                    sharedViewModel.driver.driver_id,
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    currentSourceOrSite.seqNum,
+                    currentSourceOrSite.productInfo.productId,
+                    viewModel.startDateAndTime.get(Calendar.HOUR_OF_DAY),
+                    viewModel.startDateAndTime.get(Calendar.MINUTE),
+                    viewModel.endDateAndTime.get(Calendar.HOUR_OF_DAY),
+                    viewModel.endDateAndTime.get(Calendar.MINUTE),
+                    1000,
+                    1000
+                ),
+
+                "Ok",
+                {  beta.builder.show() },
+                null,
+                null,
+                false
             ).builder.show()
+
+
         }
     }
 
@@ -222,42 +249,5 @@ class OngoingDeliveryFragment : Fragment() {
                 observeEndFueling()
             }
         }
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        dialog.create().hide()
-        dialog.create().cancel()
-        dialog.create().dismiss()
-    }
-
-    /**
-     * Show no trip selected dialog
-     *Returns an AlertDialog object to inform that no Ongoing Trip is present
-     */
-    private fun showNoTripSelectedDialog() {
-        val takeToHomeScreen =
-            { requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation }
-        dialog.setMessage("No trip was selected. Please select a trip from the menu")
-        dialog.setTitle("No ongoing trip")
-        dialog.setPositiveButton("Take me to trip list") { _, _ ->
-            takeToHomeScreen
-        }
-        dialog.create().show()
-
-    }
-
-    fun createDialog() {
-        dialog = CustomDialogBuilder(
-            requireContext(),
-            "No ongoing trip",
-            "No trip was selected. Please select a trip from the menu",
-            "Take me to trip list",
-            null,
-            null,
-            null,
-            false
-        ).builder
     }
 }

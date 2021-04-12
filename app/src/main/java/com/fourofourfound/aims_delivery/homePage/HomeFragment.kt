@@ -144,10 +144,7 @@ class HomePage : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.getDriver(requireActivity().application)
-    }
+
 
     /**
      * Set up recycler view
@@ -191,6 +188,7 @@ class HomePage : Fragment() {
 
         //observe for any changes on the trips and inform that to the user
         viewModel.tripList?.observe(viewLifecycleOwner) {
+            sharedViewModel.getDriver(requireActivity().application)
             //TODO new trip was added or modified. Need to send the notification to the user
             //TODO new trip was added or modified. Need to send the notification to the user
 

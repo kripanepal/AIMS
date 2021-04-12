@@ -46,9 +46,6 @@ class DeliveryCompletionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        Log.i("CreateView", "I am here ")
-
         if (sharedViewModel.selectedSourceOrSite.value == null) {
             findNavController().navigateUp()
             return null

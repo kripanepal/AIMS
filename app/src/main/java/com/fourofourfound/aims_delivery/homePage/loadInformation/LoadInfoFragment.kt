@@ -124,7 +124,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             null,
             "Start now",
             { markTripStart(sourceOrSite, currentTrip) },
-            "No",
+            null,
             null,
             true
         ).builder.show()
@@ -203,7 +203,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             ),
             "Ok",
             beta,
-            "No",
+            null,
             null,
             true
         ).builder.show()
