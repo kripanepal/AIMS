@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.repository.LocationRepository
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -62,11 +65,11 @@ class OngoingDeliveryFragment : Fragment() {
      * @param savedInstanceState any saved data from configuration changes
      * @return the view that is displayed dby this fragment
      */
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i("CreateView", "Ongoing Delivery Fragment ma chau hami")
 
         //return if no this is not an ongoing delivery
         if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
@@ -92,6 +95,7 @@ class OngoingDeliveryFragment : Fragment() {
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
 
         if (sharedViewModel.activeRoute !== null) {
@@ -131,15 +135,15 @@ class OngoingDeliveryFragment : Fragment() {
             }
 
            val beta =  CustomDialogBuilder(
-                requireContext(),
-                "Filling Complete",
-                "Fill the form now.",
-                "Ok",
-                navigateToForm,
-                "Cancel",
-                null,
-                false
-            )
+               requireContext(),
+               "Filling Complete",
+               "Fill the form now.",
+               "Ok",
+               navigateToForm,
+               "Cancel",
+               null,
+               false
+           )
 
             var endTime = Calendar.getInstance()
 
@@ -150,7 +154,7 @@ class OngoingDeliveryFragment : Fragment() {
                     "Time Stamp: %d-%d-%d %d:%d " +
                             "\nDriver ID: %s " +
                             "\nTrip ID: %d " +
-                            "\nDestination ID: %d "+
+                            "\nDestination ID: %d " +
                             "\nProduct ID: %s " +
                             "\nStart Time: %d:%d " +
                             "\nEnd Time: %d:%d " +
@@ -174,7 +178,7 @@ class OngoingDeliveryFragment : Fragment() {
                 ),
 
                 "Ok",
-                {  beta.builder.show() },
+                { beta.builder.show() },
                 null,
                 null,
                 false
@@ -237,8 +241,19 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.i("AAAAAA","AAYO")
         super.onViewCreated(view, savedInstanceState)
 
+        val locationRepository = LocationRepository(requireContext())
+        val destination = GeoCoordinates(currentSourceOrSite.location.latitude,currentSourceOrSite.location.longitude)
+        locationRepository.coordinates.observe(viewLifecycleOwner)
+        {
+            if(checkDistanceToDestination(it,destination) && !viewModel.destinationApproaching )
+            {
+                showDestinationApproachingDialog(requireContext())
+                viewModel.destinationApproaching = true
+            }
+        }
 
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
@@ -250,4 +265,5 @@ class OngoingDeliveryFragment : Fragment() {
             }
         }
     }
+
 }

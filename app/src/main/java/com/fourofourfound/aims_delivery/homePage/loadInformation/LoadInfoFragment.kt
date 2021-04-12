@@ -104,7 +104,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             ),
             "Ok",
             beta,
-            "No",
+            null,
             null,
             true
         ).builder.show()

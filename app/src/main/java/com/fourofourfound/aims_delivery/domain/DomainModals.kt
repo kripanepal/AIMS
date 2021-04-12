@@ -69,3 +69,5 @@ data class ProductInfo(
     var fill: String = "",
 ) : Parcelable
 
+
+data class GeoCoordinates(var latitude: Double,var longitude: Double)

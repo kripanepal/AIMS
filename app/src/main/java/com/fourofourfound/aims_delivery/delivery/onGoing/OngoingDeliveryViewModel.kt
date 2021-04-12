@@ -26,7 +26,7 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     lateinit var startDateAndTime: Calendar
     lateinit var endDateAndTime: Calendar
 
-    var fillingStarted = false
+    var destinationApproaching = false
 
     fun updateFuelInfo(trailerId: Int, fuelQuantity: Int) {
         viewModelScope.launch {
@@ -37,8 +37,5 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.i("LLLLLL", "LLLLLL")
-    }
+
 }

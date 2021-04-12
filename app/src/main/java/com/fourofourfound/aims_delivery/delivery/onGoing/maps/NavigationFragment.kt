@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryViewModel
+import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
+import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
+import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.repository.LocationRepository
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -47,6 +53,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private var fetchingDataInProgress = false
     private lateinit var sourceOrSite: SourceOrSite
     private val timeoutHandler = Handler(Looper.getMainLooper())
+    lateinit var parentViewModel: OngoingDeliveryViewModel
+
 
 
     /**
@@ -74,6 +82,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         binding.mapRecenterBtn.setOnClickListener { recenter() }
         binding.destinationReached.setOnClickListener { destinationReached() }
         sharedViewModel.activeRoute?.apply { route = this }
+        parentViewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
         return binding.root
     }
 
@@ -104,13 +113,13 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
                     navigationManager.setMap(map)
                     mapFragment.positionIndicator?.isVisible = true
-                    createRoute()
+                    checkAndCreateRoute()
                 }
             }
         }
     }
 
-    private fun createRoute() {
+    private fun checkAndCreateRoute() {
         if (route == null) {
             val coreRouter = CoreRouter()
             val routePlan = RoutePlan()
@@ -194,6 +203,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         map.zoomTo(geoBoundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_TILT)
         map.mapScheme = Map.Scheme.TRUCKNAV_DAY
         startNavigation()
+
+
+
+
+
     }
 
     private fun recenter() {
@@ -229,6 +243,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         }
         recenter()
         addListeners()
+
     }
 
     /**
@@ -251,7 +266,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         MapDataPrefetcher.getInstance().addListener(prefetchListener)
         PositioningManager.getInstance().addListener(WeakReference(positionLister))
         navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
-
         setUpVoiceNavigation()
     }
 
@@ -343,6 +357,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
 
+                if(!parentViewModel.destinationApproaching && navigationManager.destinationDistance<1000 && navigationManager.destinationDistance>10) {
+                    showDestinationApproachingDialog(requireContext())
+                    parentViewModel.destinationApproaching = true
+                }
 
             }
         }
@@ -439,6 +457,3 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
 
 }
-
-
-

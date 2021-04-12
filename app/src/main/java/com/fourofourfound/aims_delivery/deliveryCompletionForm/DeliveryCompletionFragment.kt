@@ -69,7 +69,7 @@ class DeliveryCompletionFragment : Fragment() {
             ViewModelProvider(this, viewModelFactory).get(DeliveryCompletionViewModel::class.java)
         binding.viewModel = viewModel
         binding.submitBtn.setOnClickListener {
-            //if (verifyInput())
+            if (verifyInput())
                 showSignatureDialog()
         }
 
