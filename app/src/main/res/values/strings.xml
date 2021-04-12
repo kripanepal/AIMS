@@ -2,7 +2,7 @@
     <string name="app_name">404 Found</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="provider_number">1111111111</string>
-    <string name="user_id_hint">User id</string>
+    <string name="user_id_hint">User ID</string>
     <string name="password_field_hint">Password</string>
     <string name="login_btn_text">Login</string>
     <string name="need_help_field_text">Need Help?</string>

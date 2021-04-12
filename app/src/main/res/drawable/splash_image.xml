@@ -4,7 +4,8 @@
     <item android:drawable="@drawable/background" />
     <item
         android:drawable="@drawable/ic_aims_logo"
-        android:gravity="center" />
+        android:gravity="center"
+        />
 
 
 </layer-list>
