@@ -1,9 +1,12 @@
 package com.fourofourfound.aims_delivery.homePage
 
+import android.app.Activity
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.database.entities.Driver
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +24,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
 
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
-
+    var driver: Driver? = null
     /**
      * Trip list
      * List of trip that is a to be displayed

@@ -23,7 +23,7 @@ class DeliveryCompletionViewModel(
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
 
-
+    val destination = currentSourceOrSite
     val billOfLadingNumber = MutableLiveData<Int>(null)
     var productDesc = "MutableLiveData(currentSourceOrSite.productInfo.productDesc)"
     val grossQty: MutableLiveData<Int> =

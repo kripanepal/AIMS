@@ -144,6 +144,8 @@ class HomePage : Fragment() {
         }
     }
 
+
+
     /**
      * Set up recycler view
      *Sets up the recycler view to display the list of trips
@@ -186,6 +188,7 @@ class HomePage : Fragment() {
 
         //observe for any changes on the trips and inform that to the user
         viewModel.tripList?.observe(viewLifecycleOwner) {
+            sharedViewModel.getDriver(requireActivity().application)
             //TODO new trip was added or modified. Need to send the notification to the user
             //TODO new trip was added or modified. Need to send the notification to the user
 
