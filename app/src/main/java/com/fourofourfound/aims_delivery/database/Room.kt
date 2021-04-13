@@ -18,7 +18,7 @@ import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
         DatabaseTruck::class,
         DatabaseSourceOrSite::class,
         CustomDatabaseLocation::class,
-        DatabaseForm::class,
+        DatabaseCompletionForm::class,
         DatabaseFuel::class,
         DatabaseLocation::class,
         Driver::class],

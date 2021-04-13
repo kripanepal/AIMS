@@ -24,7 +24,7 @@ interface LocationDao {
 interface FormDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFormData(formData: DatabaseForm)
+    fun insertFormData(formData: DatabaseCompletionForm)
 }
 
 @Dao

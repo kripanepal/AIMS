@@ -24,7 +24,6 @@
             android:layout_height="match_parent"
             android:fillViewport="true">
 
-
             <TextView
                 android:id="@+id/error_text"
                 android:layout_width="match_parent"
@@ -284,8 +283,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/site_container_readings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/comments_container"
+                visibilityBasedOnDestination="@{viewModel.currentSourceOrSite}"
+                android:layout_height="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/trailer_end_container">
@@ -300,7 +299,9 @@
                     <EditText
                         android:id="@+id/stick_reading_before"
                         style="@style/editTextInputLayout"
-                        android:hint="Stick Reading Before" />
+                        android:hint="Stick Reading Before"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.stickReadingBefore}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -313,7 +314,9 @@
                     <EditText
                         android:id="@+id/stick_reading_after"
                         style="@style/editTextInputLayout"
-                        android:hint="Stick Reading After" />
+                        android:hint="Stick Reading After"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.stickReadingAfter}" />/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -326,7 +329,9 @@
                     <EditText
                         android:id="@+id/meter_reading_before"
                         style="@style/editTextInputLayout"
-                        android:hint="Meter Reading Before" />
+                        android:hint="Meter Reading Before"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.meterReadingBefore}" />/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -339,18 +344,18 @@
                     <EditText
                         android:id="@+id/meter_reading_after"
                         style="@style/editTextInputLayout"
-                        android:hint="Meter Reading After" />
+                        android:hint="Meter Reading After"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.meterReadingAfter}" />/>
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/comments_container"
                 style="@style/textInputLayoutStyle"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/site_container_readings"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintTop_toBottomOf="@id/site_container_readings">
 
                 <EditText
                     android:id="@+id/comments"

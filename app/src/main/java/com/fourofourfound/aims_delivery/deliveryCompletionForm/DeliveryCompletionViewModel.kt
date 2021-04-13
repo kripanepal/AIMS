@@ -2,11 +2,10 @@ package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.DatabaseForm
+import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
@@ -18,7 +17,7 @@ import java.util.*
 
 class DeliveryCompletionViewModel(
     val application: Application,
-    private val currentSourceOrSite: SourceOrSite
+    val currentSourceOrSite: SourceOrSite
 ) : ViewModel() {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
@@ -40,9 +39,13 @@ class DeliveryCompletionViewModel(
     var startDate: Calendar = Calendar.getInstance()
     var endDate: Calendar = Calendar.getInstance()
     var productList = MutableLiveData<List<String>>()
+    var stickReadingBefore = MutableLiveData<Double>(null)
+    var stickReadingAfter = MutableLiveData<Double>(null)
+    var meterReadingBefore = MutableLiveData<Double>(null)
+    var meterReadingAfter = MutableLiveData<Double>(null)
 
     fun submitForm() {
-        var formToSubmit = DatabaseForm(
+        var formToSubmit = DatabaseCompletionForm(
             billOfLadingNumber.value,
             productDesc,
             "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
@@ -63,7 +66,12 @@ class DeliveryCompletionViewModel(
             trailerEndReading.value!!,
             comments.value!!,
             currentSourceOrSite.seqNum,
-            tripId
+            tripId,
+            stickReadingBefore.value,
+            stickReadingAfter.value,
+            meterReadingBefore.value,
+            meterReadingAfter.value
+
         )
 
         viewModelScope.launch {

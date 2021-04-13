@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
+import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.odml.MapPackage
@@ -62,7 +63,6 @@ fun setText(view: TextView, value: Int?) {
         view.text = "-1"
     else
         view.text = value.toString()
-
 }
 
 @InverseBindingAdapter(attribute = "android:text")
@@ -73,3 +73,26 @@ fun getText(view: TextView): Int {
 }
 
 fun isInteger(str: String?) = str?.toIntOrNull()?.let { true } ?: false
+
+@BindingAdapter("visibilityBasedOnDestination")
+fun visibilityBasedOnDestination(view: View, sourceOrSite: SourceOrSite) {
+    view.visibility =
+        if (sourceOrSite.wayPointTypeDescription == "Source") View.GONE else View.VISIBLE
+}
+
+@BindingAdapter("android:text")
+fun setTextValue(view: TextView, value: Double?) {
+    if (value == null)
+        view.text = ""
+    else
+        view.text = value.toString()
+}
+
+@InverseBindingAdapter(attribute = "android:text")
+fun getTextValue(view: TextView): Double? {
+    var value = view.text.toString()
+    if (!isDouble(value)) return null
+    return value.toDouble()
+}
+
+fun isDouble(str: String?) = str?.toDoubleOrNull()?.let { true } ?: false
