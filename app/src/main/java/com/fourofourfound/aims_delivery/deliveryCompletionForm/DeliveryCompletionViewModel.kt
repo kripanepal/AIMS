@@ -22,7 +22,7 @@ class DeliveryCompletionViewModel(
 ) : ViewModel() {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
-
+    var tripId = 0
     val destination = currentSourceOrSite
     val billOfLadingNumber = MutableLiveData<Int>(null)
     var productDesc = "MutableLiveData(currentSourceOrSite.productInfo.productDesc)"
@@ -43,7 +43,7 @@ class DeliveryCompletionViewModel(
 
     fun submitForm() {
         var formToSubmit = DatabaseForm(
-            billOfLadingNumber.value!!,
+            billOfLadingNumber.value,
             productDesc,
             "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
                 startDate.get(
@@ -61,8 +61,9 @@ class DeliveryCompletionViewModel(
             netQty.value!!,
             trailerBeginReading.value!!,
             trailerEndReading.value!!,
-            comments.value!!
-
+            comments.value!!,
+            currentSourceOrSite.seqNum,
+            tripId
         )
 
         viewModelScope.launch {

@@ -82,7 +82,7 @@ class DeliveryCompletionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
-
+        viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
     }
 
     private fun initializeSpinner() {
@@ -101,13 +101,13 @@ class DeliveryCompletionFragment : Fragment() {
                 adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
 
                 // Finally, data bind the spinner object with adapter
-                binding.productDesc.adapter = adapter;
+                binding.productDesc.adapter = adapter
 
                 binding.productDesc.onItemSelectedListener =
                     object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(
                             parent: AdapterView<*>,
-                            view: View,
+                            view: View?,
                             position: Int,
                             id: Long
                         ) {
@@ -125,13 +125,6 @@ class DeliveryCompletionFragment : Fragment() {
 
     private fun verifyInput(): Boolean {
         viewModel.apply {
-            Log.i("Lading", billOfLadingNumber.value.toString())
-
-            if (billOfLadingNumber.value == null || billOfLadingNumber.value!! < 0) return showGeneralErrors(
-                binding.billOfLading,
-                "Invalid Bill of Lading"
-            )
-
             if (productDesc.isNullOrEmpty()) return showGeneralErrors(
                 binding.billOfLading,
                 "Invalid Product"

@@ -27,16 +27,19 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_navigation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:clickable="true"
+            app:fabCustomSize="75dp"
+            android:backgroundTint="@color/Aims_Orange"
             app:layout_constraintBottom_toBottomOf="@+id/pickup_list"
             app:layout_constraintEnd_toEndOf="@+id/pickup_list"
             app:layout_constraintHorizontal_bias="0.914"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pickup_list"
             app:layout_constraintVertical_bias="0.918"
-            app:srcCompat="@drawable/ic_delivery" />
+            app:srcCompat="@drawable/ic_delivery"
+            app:maxImageSize="45dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

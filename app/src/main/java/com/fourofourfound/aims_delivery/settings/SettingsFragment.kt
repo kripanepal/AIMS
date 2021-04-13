@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.showStartCallDialog
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
 import com.here.android.mpa.common.MapEngine
@@ -76,7 +77,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.help.setOnClickListener {
-            showDialog()
+            showStartCallDialog(requireContext())
         }
 
         binding.about.setOnClickListener {
@@ -94,7 +95,7 @@ class SettingsFragment : Fragment() {
             requireContext(),
             "About",
             null,
-            "Done",
+            "Ok",
             null,
             null,
             null,
@@ -116,37 +117,5 @@ class SettingsFragment : Fragment() {
         MapEngine.getInstance().onPause()
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
-    }
-
-    /**
-     * Show dialog
-     *method to display the dialog with provider's number
-     */
-    private fun showDialog() {
-        val dialogView = LayoutInflater.from(context).inflate(
-            R.layout.contact_my_provider_dialog, null
-        )
-        CustomDialogBuilder(
-            requireContext(),
-            "Contact Info",
-            null,
-            "Call now",
-            { startCall() },
-            "Cancel",
-            null,
-            false
-        ).builder.setView(dialogView).show()
-    }
-
-    /**
-     * Start call
-     *Start an intent to start the call to a
-     * specific number
-     */
-    private fun startCall() {
-        val intent = Intent(Intent.ACTION_DIAL)
-        val phoneNumber = "tel:" + getString(R.string.provider_number)
-        intent.data = Uri.parse(phoneNumber)
-        startActivity(intent)
     }
 }
