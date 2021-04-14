@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -241,22 +240,28 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.i("AAAAAA","AAYO")
         super.onViewCreated(view, savedInstanceState)
-
-        val locationRepository = LocationRepository(requireContext())
-        val destination = GeoCoordinates(currentSourceOrSite.location.latitude,currentSourceOrSite.location.longitude)
-        locationRepository.coordinates.observe(viewLifecycleOwner)
-        {
-            if(checkDistanceToDestination(it,destination) && !viewModel.destinationApproaching )
-            {
-                showDestinationApproachingDialog(requireContext())
-                viewModel.destinationApproaching = true
-            }
-        }
 
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
+                val locationRepository = LocationRepository(requireContext())
+                val destination = GeoCoordinates(
+                    currentSourceOrSite.location.latitude,
+                    currentSourceOrSite.location.longitude
+                )
+                locationRepository.coordinates.observe(viewLifecycleOwner)
+                {
+                    if (checkDistanceToDestination(
+                            it,
+                            destination
+                        ) && !viewModel.destinationApproaching
+                    ) {
+                        showDestinationApproachingDialog(requireContext())
+                        viewModel.destinationApproaching = true
+                    }
+                }
+
+
                 (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
                 observeDestination()

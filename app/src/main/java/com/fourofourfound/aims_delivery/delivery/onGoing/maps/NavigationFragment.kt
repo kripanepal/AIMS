@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryViewModel
-import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
 import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
-import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
-import com.fourofourfound.aims_delivery.repository.LocationRepository
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -42,7 +38,6 @@ import kotlin.properties.Delegates
 class NavigationFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: FragmentNavigationBinding
-    var voiceId: Long = -1
     lateinit var map: Map
     lateinit var mapFragment: AndroidXMapFragment
     private var currentLatitude by Delegates.notNull<Double>()
@@ -184,11 +179,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                             onRouteCalculated()
                         } else {
                             Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
-                            findNavController().navigateUp()
+                            showErrorDialog()
                         }
                     } else {
                         Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()
-                        findNavController().navigateUp()
+                        showErrorDialog()
                     }
                 }
             })
@@ -375,8 +370,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     //Task to be done once destination is reached
     private fun destinationReached() {
-        sharedViewModel.activeRoute = null
-        removeListeners()
         lifecycleScope.launchWhenResumed {
             //TODO inform dispatcher about destination reached
             CustomDialogBuilder(
@@ -384,7 +377,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 "Show Details",
                 "Go back to the details page",
                 "OK",
-                { findNavController().navigateUp() },
+                {
+                    sharedViewModel.activeRoute = null
+                    removeListeners()
+                    findNavController().navigateUp()
+                },
                 "Cancel",
                 null,
                 false
@@ -431,10 +428,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         }
 
         navigationManager.afterNextManeuver?.roadName.apply {
-            if (this != null) viewModel.nextManeuverRoadName.value = this
-            else {
-                viewModel.nextManeuverRoadName.value = "Destination Ahead"
-            }
+            viewModel.nextManeuverRoadName.value = this ?: "Destination Ahead"
         }
     }
 
@@ -455,5 +449,18 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         MapEngine.getInstance().onPause()
     }
 
+    private fun showErrorDialog() {
+        CustomDialogBuilder(
+            requireContext(),
+            "Something Went Wrong",
+            "Please check you internet connection. Maps may not be available offline. \n\nYou can download maps for offline use in settings tab",
+            "Retry",
+            { initializeMap() },
+            "Go Back",
+            { findNavController().navigateUp() },
+            false
+        ).builder.show()
 
+
+    }
 }

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
-import kotlinx.android.synthetic.main.item_view.view.*
+import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
@@ -25,7 +25,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_view, parent, false)
+        val view = layoutInflater.inflate(R.layout.load_info_each_item, parent, false)
         return ViewHolder(view)
     }
 

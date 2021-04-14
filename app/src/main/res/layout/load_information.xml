@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_view" />
+            tools:listitem="@layout/load_info_each_item" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,7 +31,6 @@
             android:layout_height="75dp"
             android:clickable="true"
             app:fabCustomSize="75dp"
-            android:backgroundTint="@color/Aims_Orange"
             app:layout_constraintBottom_toBottomOf="@+id/pickup_list"
             app:layout_constraintEnd_toEndOf="@+id/pickup_list"
             app:layout_constraintHorizontal_bias="0.914"

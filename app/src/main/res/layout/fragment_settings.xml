@@ -18,46 +18,34 @@
         <TextView
             android:id="@+id/download_maps"
             style="@style/SettingsMenu"
-            android:drawableStart="@drawable/ic_baseline_download_24"
-            android:text="Download Maps" />
+            android:text="Download Maps"
+            app:drawableStartCompat="@drawable/ic_baseline_download_24" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
+        <View style="@style/divider" />
 
         <TextView
             android:id="@+id/help"
             style="@style/SettingsMenu"
-            android:drawableStart="@drawable/ic_baseline_help_outline_24"
-            android:text="Help" />
+            android:text="Help"
+            app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
+        <View style="@style/divider" />
 
         <TextView
             android:id="@+id/about"
             style="@style/SettingsMenu"
-            android:drawableStart="@drawable/ic_baseline_about_24"
-            android:text="About" />
+            android:text="About"
+            app:drawableStartCompat="@drawable/ic_baseline_about_24" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
+        <View style="@style/divider" />
 
         <TextView
             android:id="@+id/logout_view"
             style="@style/SettingsMenu"
-            android:drawableStart="@drawable/ic_baseline_logout_24"
-            android:text="Logout" />
+            android:text="Logout"
+            app:drawableStartCompat="@drawable/ic_baseline_logout_24" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
+        <View style="@style/divider" />
 
     </LinearLayout>
 </layout>

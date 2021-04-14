@@ -7,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.stringToDate
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.odml.MapPackage
 import java.text.SimpleDateFormat
@@ -96,3 +97,10 @@ fun getTextValue(view: TextView): Double? {
 }
 
 fun isDouble(str: String?) = str?.toDoubleOrNull()?.let { true } ?: false
+
+
+@BindingAdapter("stringToDate")
+fun stringToDateAdapter(view: TextView, value: String?) {
+    val converted = value?.let { stringToDate(it) }
+    view.text = if (converted.isNullOrEmpty()) "" else converted
+}

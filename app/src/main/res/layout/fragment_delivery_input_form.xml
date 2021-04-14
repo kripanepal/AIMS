@@ -77,24 +77,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
-                    android:text="Select a product:"
+                    android:text="Product:"
                     android:textSize="@dimen/text_size_large"
                     app:hintTextColor="?attr/colorOnPrimary" />
 
-                <Spinner
+                <AutoCompleteTextView
+                    android:background="@drawable/spinner_box"
                     android:id="@+id/product_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1.6"
-                    android:background="@drawable/spinner_box" />
+                    android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
+                    android:text="@={viewModel.productDesc}" />
 
             </LinearLayout>
 
+
             <View
                 android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#C4C4C4"
+                style="@style/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/product_desc_container" />
@@ -229,9 +230,7 @@
 
             <View
                 android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/colorOnSecondary"
+                style="@style/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/begin_filling" />
@@ -299,7 +298,7 @@
                     <EditText
                         android:id="@+id/stick_reading_before"
                         style="@style/editTextInputLayout"
-                        android:hint="Stick Reading Before"
+                        android:hint="Stick Begin Reading"
                         android:inputType="numberDecimal"
                         android:text="@={viewModel.stickReadingBefore}" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -314,7 +313,7 @@
                     <EditText
                         android:id="@+id/stick_reading_after"
                         style="@style/editTextInputLayout"
-                        android:hint="Stick Reading After"
+                        android:hint="Stick End Reading"
                         android:inputType="numberDecimal"
                         android:text="@={viewModel.stickReadingAfter}" />/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -329,7 +328,7 @@
                     <EditText
                         android:id="@+id/meter_reading_before"
                         style="@style/editTextInputLayout"
-                        android:hint="Meter Reading Before"
+                        android:hint="Meter Begin Reading"
                         android:inputType="numberDecimal"
                         android:text="@={viewModel.meterReadingBefore}" />/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -344,7 +343,7 @@
                     <EditText
                         android:id="@+id/meter_reading_after"
                         style="@style/editTextInputLayout"
-                        android:hint="Meter Reading After"
+                        android:hint="Meter End Reading"
                         android:inputType="numberDecimal"
                         android:text="@={viewModel.meterReadingAfter}" />/>
                 </com.google.android.material.textfield.TextInputLayout>

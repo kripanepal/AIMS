@@ -24,15 +24,15 @@ class DeliveryCompletionViewModel(
     var tripId = 0
     val destination = currentSourceOrSite
     val billOfLadingNumber = MutableLiveData<Int>(null)
-    var productDesc = "MutableLiveData(currentSourceOrSite.productInfo.productDesc)"
+    var productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
     val grossQty: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity)
-    val trailerEndReadingCalc =
-        trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
+    private val trailerEndReadingCalc =
+        if (currentSourceOrSite.wayPointTypeDescription == "Source") trailerBeginReading.value!! + currentSourceOrSite.productInfo.requestedQty!! else trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading: MutableLiveData<Int> = MutableLiveData(trailerEndReadingCalc)
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
@@ -47,7 +47,7 @@ class DeliveryCompletionViewModel(
     fun submitForm() {
         var formToSubmit = DatabaseCompletionForm(
             billOfLadingNumber.value,
-            productDesc,
+            productDesc.value!!,
             "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
                 startDate.get(
                     Calendar.DAY_OF_MONTH
@@ -96,7 +96,7 @@ class DeliveryCompletionViewModel(
 
     private fun getProducts() {
         viewModelScope.launch {
-                productList.value = database.productsDao.getProducts()
+            productList.value = database.productsDao.getProducts()
         }
     }
 

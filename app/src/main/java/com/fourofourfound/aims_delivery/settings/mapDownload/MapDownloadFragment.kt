@@ -31,6 +31,7 @@ class MapDownloadFragment : Fragment() {
     lateinit var progressBar: ProgressBar
     lateinit var progressText: TextView
     lateinit var dialog: AlertDialog
+    lateinit var overlayDialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,11 +57,11 @@ class MapDownloadFragment : Fragment() {
     private fun observeMapDownloadingState() {
         viewModel.mapDownloading.observe(viewLifecycleOwner) {
             if (it) {
+                dialog.setMessage(viewModel.currentlyDownloadingState)
                 dialog.show()
                 binding.downloadProgressBar.visibility = View.GONE
                 progressBar = dialog.requireViewById(R.id.mapDownloadingProgressBar)
                 progressText = dialog.findViewById(R.id.mapDownloadingText)
-
                 viewModel.mapDownloadingPercentage.observe(viewLifecycleOwner)
                 { progress ->
                     progressBar.progress = progress
@@ -99,6 +100,10 @@ class MapDownloadFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setCancelable(false)
         builder.setView(R.layout.map_downloading_dialog)
+        builder.setPositiveButton("Cancel") { _, _ ->
+            MapLoader.getInstance().cancelCurrentOperation()
+            viewModel.loading.value = true
+        }
         builder.setNegativeButton("Hide") { _, _ -> viewModel.loading.value = true }
         dialog = builder.create()
         dialog.setTitle("Downloading")
@@ -219,18 +224,18 @@ class MapDownloadFragment : Fragment() {
                 if (clickedMapPackage.installationState == MapPackage.InstallationState.INSTALLED) {
                     uninstallMapPackage(idList)
                 } else {
-                    dialog.setMessage(clickedMapPackage.englishTitle)
-                    installMapPackage(idList)
+                    installMapPackage(idList, clickedMapPackage.englishTitle)
                 }
             }
         }
     }
 
-    private fun installMapPackage(idList: MutableList<Int>) {
+    private fun installMapPackage(idList: MutableList<Int>, englishTitle: String?) {
         val success: Boolean = mapLoader.installMapPackages(idList)
         if (!success) viewModel.displayMessages.value =
             "MapLoader is being busy with other operations"
         else {
+            viewModel.currentlyDownloadingState = englishTitle.toString()
             viewModel.mapDownloading.value = true
             viewModel.displayMessages.value = "Downloading "
         }
