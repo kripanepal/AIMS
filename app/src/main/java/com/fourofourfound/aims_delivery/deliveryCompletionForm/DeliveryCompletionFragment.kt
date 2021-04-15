@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -111,8 +112,21 @@ class DeliveryCompletionFragment : Fragment() {
 
         val requestImageCapture = 1
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        startActivityForResult(takePictureIntent, requestImageCapture)
+        try {
+            startActivityForResult(takePictureIntent, requestImageCapture)
+        }
+        catch(e: ActivityNotFoundException) {
+            CustomDialogBuilder(
+                requireContext(),
+                "Error",
+                "No camera detected",
+            "OK",
+                null,
+                null,
+                null,
+                true
+            ).builder.show()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
