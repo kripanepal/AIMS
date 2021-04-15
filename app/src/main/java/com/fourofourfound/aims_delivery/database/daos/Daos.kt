@@ -92,3 +92,13 @@ interface ProductsDao {
     @Query("select distinct productDesc from DatabaseFuel")
     suspend fun getProducts(): List<String>
 }
+
+@Dao
+interface DriverDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDriver(driver: Driver)
+
+    @Query("select * from  Driver limit 1")
+    fun getDriver(): Driver?
+
+}

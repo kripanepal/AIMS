@@ -2,7 +2,7 @@
     <string name="app_name">404 Found</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="provider_number">1111111111</string>
-    <string name="user_id_hint">User id</string>
+    <string name="user_id_hint">User ID</string>
     <string name="password_field_hint">Password</string>
     <string name="login_btn_text">Login</string>
     <string name="need_help_field_text">Need Help?</string>
@@ -11,6 +11,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contact_my_provider_field_text_land">Need Help?</string>
+    <string name="driver_info_sharedpref">Driver-Info</string>
 
     <string-array name="Products">
         <item>UNLEADED</item>
@@ -21,6 +22,8 @@
     <!--    format %-->
     <string name="text_with_percentage">%1$d%%</string>
     <string name="no_internet_connection_text">No internet connection</string>
+    <string name="back_to_homescreen">Back To Homescreen</string>
+    <string name="no_trip_or_ongoing_destination">No trip or ongoing destination</string>
 
 
     <plurals name="numberOfTripsAvailable">

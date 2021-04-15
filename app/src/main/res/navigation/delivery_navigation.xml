@@ -30,6 +30,10 @@
         <argument
             android:name="endDateAndTime"
             app:argType="java.util.Calendar" />
+        <action
+            android:id="@+id/action_deliveryCompletionFragment_to_ongoingDeliveryFragment"
+            app:destination="@id/ongoingDeliveryFragment"
+            app:popUpTo="@id/ongoingDeliveryFragment" />
     </fragment>
 
 </navigation>

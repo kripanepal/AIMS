@@ -20,7 +20,8 @@ import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
         CustomDatabaseLocation::class,
         DatabaseForm::class,
         DatabaseFuel::class,
-        DatabaseLocation::class],
+        DatabaseLocation::class,
+        Driver::class],
     version = 1,
     exportSchema = false
 )
@@ -32,6 +33,7 @@ abstract class TripListDatabase : RoomDatabase() {
     abstract val destinationDao: DestinationDao
     abstract val trailerDao: TrailerDao
     abstract val productsDao: ProductsDao
+    abstract val driverDao: DriverDao
 }
 
 @Volatile
