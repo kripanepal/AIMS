@@ -17,11 +17,17 @@
             android:layout_margin="10dp"
             android:weightSum="2">
 
+            <ImageView
+                android:paddingRight="15dp"
+                android:id="@+id/destinationImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_source" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|start"
-                android:layout_margin="10dp"
                 android:layout_weight="2.0"
                 android:orientation="vertical">
 

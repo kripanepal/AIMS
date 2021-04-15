@@ -25,6 +25,7 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import java.util.*
 
 
@@ -201,6 +202,9 @@ class OngoingDeliveryFragment : Fragment() {
                     productQty.text =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
                 }
+                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(R.drawable.ic_source)
+                else binding.destinationImage.setImageResource(R.drawable.ic_site)
+
             }
         }
     }

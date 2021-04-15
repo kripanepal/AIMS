@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         controller.observe(this, Observer {
             navController = it
 
-            navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            navController.addOnDestinationChangedListener { _, destination, _ ->
                 var noActionBar = listOf(R.id.loginFragment, R.id.navigationFragment)
                 var noBottomNavigation = listOf(R.id.loginFragment, R.id.deliveryCompletionFragment)
 

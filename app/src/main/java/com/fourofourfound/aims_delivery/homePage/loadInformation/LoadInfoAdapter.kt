@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 text = item.siteContainerDescription
                 visibility = View.VISIBLE
             }
+            holder.itemView.destinationImage.setImageResource(R.drawable.ic_site)
         }
 
         holder.itemView.statusImage.apply {

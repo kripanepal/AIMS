@@ -11,189 +11,224 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.fourofourfound.aims_delivery.delivery.onGoing.maps.NavigationFragment">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/nextInfoContainer"
+            <RelativeLayout
+                android:id="@+id/nextInfoContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                app:layout_constraintBottom_toTopOf="@id/mapFragmentContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginHorizontal="14dp"
-            app:layout_constraintBottom_toTopOf="@id/mapFragmentContainer"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:imageResource="@{viewModel.nextManeuverArrow}" />
+
+                <TextView
+                    android:id="@+id/nextTurn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp"
+                    android:text="@{viewModel.nextManeuverDirection}" />
+
+                <TextView
+                    android:id="@+id/remainingDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nextRoad"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="0dp"
+                    android:text="@{viewModel.nextManeuverRoadName}" />
+
+                <TextView
+                    android:id="@+id/nextRoad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nextTurn"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="0dp"
+                    android:text="@{viewModel.nextManeuverRoadName}" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/mapFragmentContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nextInfoContainer"
+
+                >
+
+                <fragment
+                    android:id="@+id/mapfragment"
+                    class="com.here.android.mpa.mapping.AndroidXMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/deliveryProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/speedInfoContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="#FFFFFF"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/mapFragmentContainer"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/currentSpeedLimit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/currentSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:paddingHorizontal="4dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/currentSpeedLimit"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/speed_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/currentSpeed"
+                    android:paddingHorizontal="4dp"
+                    android:singleLine="true"
+                    android:text="mph"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/currentSpeed"
+                    app:layout_constraintStart_toStartOf="@+id/currentSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/currentSpeed" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:imageResource="@{viewModel.nextManeuverArrow}" />
-
-            <TextView
-                android:id="@+id/nextTurn"
-                android:text="@{viewModel.nextManeuverDirection}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="0dp" />
-
-            <TextView
-                android:id="@+id/remainingDistance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nextRoad"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="0dp"
-                android:text="@{viewModel.nextManeuverRoadName}" />
-
-            <TextView
-                android:id="@+id/nextRoad"
-                android:text="@{viewModel.nextManeuverRoadName}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nextTurn"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="0dp" />
-        </RelativeLayout>
-
-        <ProgressBar
-            android:id="@+id/deliveryProgress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mapFragmentContainer" />
-
-
-
-
-        <LinearLayout
-            android:id="@+id/mapFragmentContainer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/deliveryProgress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nextInfoContainer"
-
-            >
-
-            <fragment
-                android:id="@+id/mapfragment"
-                class="com.here.android.mpa.mapping.AndroidXMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/speedInfoContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="#FFFFFF"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/mapFragmentContainer"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <TextView
-                android:id="@+id/currentSpeedLimit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/border"
-                android:gravity="center"
-                android:padding="10dp"
-                android:paddingHorizontal="10dp"
-                android:text="N/A"
-                android:textColor="@color/black"
-                android:textSize="20sp"
+                android:id="@+id/mapRecenterBtn"
+                android:layout_width="36dp"
+                android:layout_height="43dp"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="25dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/recenter" />
+
+
+            <LinearLayout
+                android:id="@+id/progressBarContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:padding="2dp"
-                android:id="@+id/currentSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingHorizontal="4dp"
-                android:text="N/A"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@id/currentSpeedLimit"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/speed_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/currentSpeed"
-                android:paddingHorizontal="4dp"
-                android:singleLine="true"
-                android:text="mph"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="@id/currentSpeed"
-                app:layout_constraintStart_toStartOf="@+id/currentSpeed"
-                app:layout_constraintTop_toBottomOf="@+id/currentSpeed" />
+                app:layout_constraintTop_toTopOf="parent">
 
 
+                <ProgressBar
+                    android:id="@+id/routeProgressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <ImageView
-            android:id="@+id/mapRecenterBtn"
-            android:layout_width="36dp"
-            android:layout_height="43dp"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="25dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/recenter" />
-
-        <Button
-            android:id="@+id/destinationReached"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Reached"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/deliveryProgress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <LinearLayout
-            android:id="@+id/progressBarContainer"
-            android:layout_width="0dp"
+            android:id="@+id/draggableView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            app:behavior_peekHeight="50dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
+            <View
+                android:layout_marginBottom="25dp"
+                android:layout_width="80dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/Aims_Orange"
+                android:background="@drawable/rounded_corneres" />
 
-            <ProgressBar
-                android:id="@+id/routeProgressBar"
-                style="?android:attr/progressBarStyle"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSecondaryVariant"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <include
+                    android:id="@+id/destinationInfo"
+                    layout="@layout/source_or_site_info"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+
+                    android:id="@+id/destinationReached"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/destinationInfo"
+                    android:layout_margin="10dp"
+                    android:text="Reached"
+                    app:layout_constraintBottom_toBottomOf="@+id/destinationInfo"
+                    app:layout_constraintEnd_toEndOf="@+id/destinationInfo"
+                    app:layout_constraintTop_toTopOf="@+id/destinationInfo" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

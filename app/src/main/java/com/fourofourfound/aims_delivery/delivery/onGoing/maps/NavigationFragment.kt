@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
@@ -19,8 +20,10 @@ import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproach
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.isDarkModeOn
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
@@ -81,9 +84,26 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         return binding.root
     }
 
+    private fun setUpDraggableView() {
+        var bottomSheetBehaviorCallback =
+            object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) { recenter() }
+                override fun onStateChanged(bottomSheet: View, newState: Int) { recenter() } }
+        BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomSheetBehaviorCallback)
+        binding.destinationInfo.apply {
+            sourceOrSiteName.text = sourceOrSite.location.destinationName
+            address.text = sourceOrSite.location.address1
+            productDesc.text = sourceOrSite.productInfo.productDesc
+            val qty = "${sourceOrSite.productInfo.requestedQty} ${sourceOrSite.productInfo.uom}"
+            productQty.text = qty
+        }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeMap()
+        setUpDraggableView()
     }
 
 
@@ -198,11 +218,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         map.zoomTo(geoBoundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_TILT)
         map.mapScheme = Map.Scheme.TRUCKNAV_DAY
         startNavigation()
-
-
-
-
-
     }
 
     private fun recenter() {
@@ -218,17 +233,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         changeViewsVisibility()
         navigationManager.setMap(map)
         mapFragment.positionIndicator?.isVisible = true
+        if (isDarkModeOn(requireContext())) map.mapScheme = Map.Scheme.NORMAL_NIGHT
         if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
             val alertDialogBuilder = AlertDialog.Builder(context)
             alertDialogBuilder.setTitle("Navigation")
             alertDialogBuilder.setMessage("Choose Mode")
             alertDialogBuilder.setNegativeButton("Navigation") { _, _ ->
                 navigationManager.startNavigation(route!!)
-                map.tilt = 70f
             }
             alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
                 navigationManager.simulate(route!!, 100)
-                map.tilt = 70f
             }
             val alertDialog = alertDialogBuilder.create()
             alertDialogBuilder.setCancelable(false)
@@ -353,6 +367,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
 
                 if(!parentViewModel.destinationApproaching && navigationManager.destinationDistance<1000 && navigationManager.destinationDistance>10) {
+                    //TODO same context is unavailable when orientation changes
                     showDestinationApproachingDialog(requireContext())
                     parentViewModel.destinationApproaching = true
                 }
