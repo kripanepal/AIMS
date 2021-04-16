@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.VoiceCatalog
-import com.here.android.mpa.guidance.VoiceGuidanceOptions
 import com.here.android.mpa.guidance.VoicePackage
 import java.util.*
 
@@ -34,13 +33,15 @@ private fun NavigationFragment.downloading(
     voiceCatalog: VoiceCatalog
 ): Boolean {
     if (vPackage.isTts) {
-        voiceId = vPackage.id
+        var voiceId = vPackage.id
         voiceCatalog.downloadVoice(voiceId) { error ->
             if (error == VoiceCatalog.Error.NONE) {
                 // set the voice skin for use by navigation manager
-                val voiceGuidanceOptions: VoiceGuidanceOptions =
-                    navigationManager.voiceGuidanceOptions
-                voiceGuidanceOptions.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(voiceId)!!)
+                navigationManager.voiceGuidanceOptions.setVoiceSkin(
+                    voiceCatalog.getLocalVoiceSkin(
+                        voiceId
+                    )!!
+                )
                 navigationManager.naturalGuidanceMode =
                     EnumSet.allOf(NavigationManager.NaturalGuidanceMode::class.java)
             }

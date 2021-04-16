@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="viewModel"
-    type="com.fourofourfound.aims_delivery.settings.SettingsViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.fourofourfound.aims_delivery.settings.SettingsViewModel" />
     </data>
 
     <LinearLayout
@@ -14,104 +15,37 @@
         android:orientation="vertical"
         tools:context="com.fourofourfound.aims_delivery.settings.SettingsFragment">
 
-        <LinearLayout
+        <TextView
             android:id="@+id/download_maps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:orientation="horizontal">
+            style="@style/SettingsMenu"
+            android:text="Download Maps"
+            app:drawableStartCompat="@drawable/ic_baseline_download_24" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Download Maps"
-                android:paddingLeft="20dp"
-                android:gravity="left"
-                android:drawablePadding="20dp"
-                android:drawableStart="@drawable/ic_baseline_download_24"
-                android:textSize="20sp" />
+        <View style="@style/divider" />
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
-
-        <LinearLayout
-            android:id="@+id/logout_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Logout"
-                android:paddingLeft="20dp"
-                android:gravity="left"
-                android:drawablePadding="20dp"
-                android:drawableStart="@drawable/ic_baseline_logout_24"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
-
-        <LinearLayout
+        <TextView
             android:id="@+id/help"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:orientation="horizontal">
+            style="@style/SettingsMenu"
+            android:text="Help"
+            app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Help"
-                android:paddingLeft="20dp"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:drawableStart="@drawable/ic_baseline_help_outline_24"
-                android:textSize="20sp" />
-        </LinearLayout>
+        <View style="@style/divider" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color" />
-
-        <LinearLayout
+        <TextView
             android:id="@+id/about"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:orientation="horizontal">
+            style="@style/SettingsMenu"
+            android:text="About"
+            app:drawableStartCompat="@drawable/ic_baseline_about_24" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="About"
-                android:paddingLeft="20dp"
-                android:drawablePadding="20dp"
-                android:gravity="left"
-                android:drawableStart="@drawable/ic_baseline_about_24"
-                android:textSize="20sp" />
+        <View style="@style/divider" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/logout_view"
+            style="@style/SettingsMenu"
+            android:text="Logout"
+            app:drawableStartCompat="@drawable/ic_baseline_logout_24" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ExtraLightblack_card_color"/>
+        <View style="@style/divider" />
+
     </LinearLayout>
-
 </layout>

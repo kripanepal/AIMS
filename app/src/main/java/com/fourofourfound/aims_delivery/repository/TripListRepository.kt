@@ -1,7 +1,5 @@
 package com.fourofourfound.aims_delivery.repository
 
-import android.app.Activity
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabase
@@ -12,7 +10,6 @@ import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import com.fourofourfound.aims_delivery.utils.StatusEnum
-import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -165,7 +162,7 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    suspend fun sendFormData(formToSubmit: DatabaseForm) {
+    suspend fun sendFormData(formToSubmit: DatabaseCompletionForm) {
         withContext(Dispatchers.IO) {
             try {
                 MakeNetworkCall.retrofitService.sendFormData(formToSubmit)

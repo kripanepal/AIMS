@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,7 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import java.util.*
 
 
@@ -202,6 +202,9 @@ class OngoingDeliveryFragment : Fragment() {
                     productQty.text =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
                 }
+                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(R.drawable.ic_source)
+                else binding.destinationImage.setImageResource(R.drawable.ic_site)
+
             }
         }
     }
@@ -241,22 +244,28 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.i("AAAAAA","AAYO")
         super.onViewCreated(view, savedInstanceState)
-
-        val locationRepository = LocationRepository(requireContext())
-        val destination = GeoCoordinates(currentSourceOrSite.location.latitude,currentSourceOrSite.location.longitude)
-        locationRepository.coordinates.observe(viewLifecycleOwner)
-        {
-            if(checkDistanceToDestination(it,destination) && !viewModel.destinationApproaching )
-            {
-                showDestinationApproachingDialog(requireContext())
-                viewModel.destinationApproaching = true
-            }
-        }
 
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
+                val locationRepository = LocationRepository(requireContext())
+                val destination = GeoCoordinates(
+                    currentSourceOrSite.location.latitude,
+                    currentSourceOrSite.location.longitude
+                )
+                locationRepository.coordinates.observe(viewLifecycleOwner)
+                {
+                    if (checkDistanceToDestination(
+                            it,
+                            destination
+                        ) && !viewModel.destinationApproaching
+                    ) {
+                        showDestinationApproachingDialog(requireContext())
+                        viewModel.destinationApproaching = true
+                    }
+                }
+
+
                 (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
                 observeDestination()
