@@ -2,11 +2,10 @@ package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.DatabaseForm
+import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
@@ -18,33 +17,37 @@ import java.util.*
 
 class DeliveryCompletionViewModel(
     val application: Application,
-    private val currentSourceOrSite: SourceOrSite
+    val currentSourceOrSite: SourceOrSite
 ) : ViewModel() {
     val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
-
+    var tripId = 0
     val destination = currentSourceOrSite
     val billOfLadingNumber = MutableLiveData<Int>(null)
-    var productDesc = "MutableLiveData(currentSourceOrSite.productInfo.productDesc)"
+    var productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
     val grossQty: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
     val trailerBeginReading: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity)
-    val trailerEndReadingCalc =
-        trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
+    private val trailerEndReadingCalc =
+        if (currentSourceOrSite.wayPointTypeDescription == "Source") trailerBeginReading.value!! + currentSourceOrSite.productInfo.requestedQty!! else trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
     val trailerEndReading: MutableLiveData<Int> = MutableLiveData(trailerEndReadingCalc)
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
     var startDate: Calendar = Calendar.getInstance()
     var endDate: Calendar = Calendar.getInstance()
     var productList = MutableLiveData<List<String>>()
+    var stickReadingBefore = MutableLiveData<Double>(null)
+    var stickReadingAfter = MutableLiveData<Double>(null)
+    var meterReadingBefore = MutableLiveData<Double>(null)
+    var meterReadingAfter = MutableLiveData<Double>(null)
 
     fun submitForm() {
-        var formToSubmit = DatabaseForm(
-            billOfLadingNumber.value!!,
-            productDesc,
+        var formToSubmit = DatabaseCompletionForm(
+            billOfLadingNumber.value,
+            productDesc.value!!,
             "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
                 startDate.get(
                     Calendar.DAY_OF_MONTH
@@ -61,7 +64,13 @@ class DeliveryCompletionViewModel(
             netQty.value!!,
             trailerBeginReading.value!!,
             trailerEndReading.value!!,
-            comments.value!!
+            comments.value!!,
+            currentSourceOrSite.seqNum,
+            tripId,
+            stickReadingBefore.value,
+            stickReadingAfter.value,
+            meterReadingBefore.value,
+            meterReadingAfter.value
 
         )
 
@@ -87,7 +96,7 @@ class DeliveryCompletionViewModel(
 
     private fun getProducts() {
         viewModelScope.launch {
-                productList.value = database.productsDao.getProducts()
+            productList.value = database.productsDao.getProducts()
         }
     }
 

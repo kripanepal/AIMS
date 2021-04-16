@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/teko_semibold"
-        android:paddingBottom="5dp"
         android:textColor="@color/Aims_Orange"
         android:textSize="25dp"
         android:textStyle="bold" />
@@ -21,7 +20,7 @@
         android:fontFamily="sans-serif"
         android:paddingBottom="5dp"
         android:textColor="@color/Aims_light_orange"
-        android:textSize="15dp"
+        android:textSize="20dp"
         android:textStyle="italic" />
 
     <TextView

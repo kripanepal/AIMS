@@ -21,6 +21,7 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home_page.*
 
+
 /**
  * Home page
  * This fragment is responsible for displaying the list of trips that are available to the user
@@ -92,6 +93,7 @@ class HomePage : Fragment() {
         return binding.root
     }
 
+
     private fun changeContainerVisibility() {
         binding.completedTripListContainer.setOnClickListener {
             toggleViewVisibility(completed_trip_list)
@@ -145,12 +147,47 @@ class HomePage : Fragment() {
     }
 
 
-
     /**
      * Set up recycler view
      *Sets up the recycler view to display the list of trips
      */
     private fun setUpRecyclerView() {
+        val (currentTripAdapter, upComingTripAdapter, completedTripAdapter) = setUpAdapters()
+        //observe for any changes on the trips and inform that to the user
+        viewModel.tripList?.observe(viewLifecycleOwner) {
+            sharedViewModel.getDriver(requireActivity().application)
+            //TODO new trip was added or modified. Need to send the notification to the user
+            it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
+                binding.ongoingTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                currentTripAdapter.submitList(this)
+                if (this.isNotEmpty()) {
+                    var selectedTrip = this[0]
+                    sharedViewModel.selectedTrip.value = selectedTrip
+                    var selectedDestination =
+                        selectedTrip.sourceOrSite.find { each -> each.status == StatusEnum.ONGOING }
+                    if (selectedDestination != null) sharedViewModel.selectedSourceOrSite.value =
+                        selectedDestination
+
+                }
+
+            }
+
+            it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
+                binding.completedTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                completedTripAdapter.submitList(this)
+            }
+
+            it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
+                binding.upcomingTripMessage.text =
+                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                upComingTripAdapter.submitList(this)
+            }
+        }
+    }
+
+    private fun setUpAdapters(): Triple<TripListAdapter, TripListAdapter, TripListAdapter> {
         //adapter for the recycler view
         val currentTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
             findNavController().navigate(
@@ -184,32 +221,7 @@ class HomePage : Fragment() {
         binding.currentTripList.adapter = currentTripAdapter
         binding.completedTripList.adapter = completedTripAdapter
         binding.upcomingTripList.adapter = upComingTripAdapter
-
-
-        //observe for any changes on the trips and inform that to the user
-        viewModel.tripList?.observe(viewLifecycleOwner) {
-            sharedViewModel.getDriver(requireActivity().application)
-            //TODO new trip was added or modified. Need to send the notification to the user
-            //TODO new trip was added or modified. Need to send the notification to the user
-
-            it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
-                binding.ongoingTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                currentTripAdapter.submitList(this)
-            }
-
-            it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
-                binding.completedTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                completedTripAdapter.submitList(this)
-            }
-
-            it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
-                binding.upcomingTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                upComingTripAdapter.submitList(this)
-            }
-        }
+        return Triple(currentTripAdapter, upComingTripAdapter, completedTripAdapter)
     }
 
 

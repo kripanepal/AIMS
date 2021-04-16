@@ -33,4 +33,21 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="SettingsMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginVertical">@dimen/margin_all_sides_10</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?attr/colorOnSecondary</item>
+    </style>
+
 </resources>

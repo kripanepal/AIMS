@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.deliveryCompletionForm
 
 import android.Manifest
 import android.app.Activity
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +27,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragmentArgs
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.StatusEnum
@@ -132,36 +133,44 @@ class DeliveryCompletionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
-
+        viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initializeSpinner() {
         viewModel.productList.observe(viewLifecycleOwner) {
             if (it != null) {
                 val products = viewModel.productList.value!!.toTypedArray()
 
                 // Initializing an ArrayAdapter
-                val adapter = ArrayAdapter(
+                var adapter = ArrayAdapter(
                     requireContext(), // Context
                     android.R.layout.simple_spinner_item, // Layout
                     products // Array
                 )
 
+
                 // Set the drop down view resource
                 adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+                val autoCompleteTextView = binding.productDesc
 
                 // Finally, data bind the spinner object with adapter
-                binding.productDesc.adapter = adapter;
+                autoCompleteTextView.setAdapter(adapter)
+                autoCompleteTextView.threshold = 0
+                autoCompleteTextView.setOnTouchListener { _, event ->
+                    if (event != null) autoCompleteTextView.showDropDown()
+                    false
+                }
 
                 binding.productDesc.onItemSelectedListener =
                     object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(
                             parent: AdapterView<*>,
-                            view: View,
+                            view: View?,
                             position: Int,
                             id: Long
                         ) {
-                            viewModel.productDesc = products[position]
+                            viewModel.productDesc.value = products[position]
                         }
 
                         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -175,14 +184,7 @@ class DeliveryCompletionFragment : Fragment() {
 
     private fun verifyInput(): Boolean {
         viewModel.apply {
-            Log.i("Lading", billOfLadingNumber.value.toString())
-
-            if (billOfLadingNumber.value == null || billOfLadingNumber.value!! < 0) return showGeneralErrors(
-                binding.billOfLading,
-                "Invalid Bill of Lading"
-            )
-
-            if (productDesc.isNullOrEmpty()) return showGeneralErrors(
+            if (productDesc.value.isNullOrEmpty()) return showGeneralErrors(
                 binding.billOfLading,
                 "Invalid Product"
             )
@@ -200,7 +202,7 @@ class DeliveryCompletionFragment : Fragment() {
             )
             if (viewModel.trailerEndReading.value!! < 0) return showGeneralErrors(
                 binding.trailerEnd,
-                "Invalid Product"
+                "Invalid Trailer Reading"
             )
             if (startDate.timeInMillis > endDate.timeInMillis) return showDateTimeError("date")
 
@@ -294,7 +296,7 @@ class DeliveryCompletionFragment : Fragment() {
                     "Time Stamp: %d-%d-%d %d:%d " +
                             "\nDriver ID: %s " +
                             "\nTrip ID: %d " +
-                            "\nDestination ID: %d "+
+                            "\nDestination ID: %d " +
                             "\nProduct ID: %s " +
                             "\nStart Time: %d:%d " +
                             "\nEnd Time: %d:%d " +

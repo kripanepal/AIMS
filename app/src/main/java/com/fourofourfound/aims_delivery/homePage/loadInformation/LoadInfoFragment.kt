@@ -1,13 +1,12 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -51,8 +50,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
             it?.apply { if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite }
-
-
         }
 
         startTripOnClick(currentTrip)
@@ -61,6 +58,14 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.selectedSourceOrSite.value.apply {
+            var colorValue: Int = if (this == null)
+                ContextCompat.getColor(requireContext(), R.color.Green)
+            else
+                ContextCompat.getColor(requireContext(), R.color.Aims_Orange)
+            binding.startNavigation.backgroundTintList = ColorStateList.valueOf(colorValue)
+        }
+
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
     }
 
