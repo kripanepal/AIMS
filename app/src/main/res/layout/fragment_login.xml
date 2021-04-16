@@ -13,12 +13,13 @@
             type="com.fourofourfound.aims_delivery.login.LoginViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/loginPageMainView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
         android:orientation="vertical"
+        app:layoutDescription="@xml/fragment_login_xml_loginpagemainview_scene"
         tools:context="com.fourofourfound.aims_delivery.login.LoginFragment">
 
         <ImageView
@@ -27,17 +28,18 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
 
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-
             android:contentDescription="AIMS Logo"
-            android:src="@drawable/ic_aims_logo"/>
+            android:src="@drawable/ic_aims_logo"
+
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="475dp"
             android:background="@drawable/login_background"
+
             app:layout_constraintBottom_toBottomOf="parent"
             >
 
@@ -181,8 +183,7 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
         </layout>
