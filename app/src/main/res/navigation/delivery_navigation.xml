@@ -19,7 +19,7 @@
         android:label="Navigation" />
     <fragment
         android:id="@+id/deliveryCompletionFragment"
-        android:name="com.fourofourfound.aims_delivery.deliveryForms.deliveryCompletionForm.DeliveryCompletionFragment"
+        android:name="com.fourofourfound.aims_delivery.deliveryForms.finalForm.DeliveryCompletionFragment"
         android:label="Form">
         <argument
             android:name="sourceOrSite"

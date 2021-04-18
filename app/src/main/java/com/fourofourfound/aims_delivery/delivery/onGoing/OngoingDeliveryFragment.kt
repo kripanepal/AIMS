@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.deliveryForms.Pre_PostFilling.ReadingPrePostFilling
+import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.LocationRepository
@@ -23,6 +23,7 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.source_or_site_info.*
 import java.util.*
 
 
@@ -268,19 +269,17 @@ class OngoingDeliveryFragment : Fragment() {
                 (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
 
-                Log.i("AAAAAAAAA",(viewModel.destination != currentSourceOrSite).toString())
                 viewModel.destination?.also {
                     if(it != currentSourceOrSite)
                     {
                         viewModel.fillingEnded.value=false
                         viewModel.fillingStarted.value=false
                     }
-
                 }
+                viewModel.destination = currentSourceOrSite
                 if(viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
                 if(viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
                 observeDestination()
-                viewModel.destination = currentSourceOrSite
 
             }
         }

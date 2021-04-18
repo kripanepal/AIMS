@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.deliveryForms.deliveryCompletionForm
+package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
