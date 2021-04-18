@@ -38,7 +38,6 @@ class TripListRepository(private val database: TripListDatabase) {
                 val tripLists = MakeNetworkCall.retrofitService.getAllTrips().data.resultSet1
                 driverName = tripLists[0].driverName
                 driverCode = tripLists[0].driverCode
-                Log.i("drivername", driverName)
 
                 if (tripsFromDatabase.value?.asNetworkModel() != tripLists)
                     saveTrips(tripLists)
@@ -184,7 +183,7 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Int) {
+    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Double) {
         try {
             database.trailerDao.updateTrailerFuel(trailerId, fuelQuantity)
         } catch (e: Exception) {

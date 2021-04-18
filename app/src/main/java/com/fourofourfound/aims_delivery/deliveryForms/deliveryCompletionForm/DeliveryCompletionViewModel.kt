@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.deliveryCompletionForm
+package com.fourofourfound.aims_delivery.deliveryForms.deliveryCompletionForm
 
 
 import android.app.Application
@@ -29,11 +29,11 @@ class DeliveryCompletionViewModel(
         MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
-    val trailerBeginReading: MutableLiveData<Int> =
+    val trailerBeginReading: MutableLiveData<Double> =
         MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity)
     private val trailerEndReadingCalc =
         if (currentSourceOrSite.wayPointTypeDescription == "Source") trailerBeginReading.value!! + currentSourceOrSite.productInfo.requestedQty!! else trailerBeginReading.value!! - currentSourceOrSite.productInfo.requestedQty!!
-    val trailerEndReading: MutableLiveData<Int> = MutableLiveData(trailerEndReadingCalc)
+    val trailerEndReading: MutableLiveData<Double> = MutableLiveData(trailerEndReadingCalc)
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
     var startDate: Calendar = Calendar.getInstance()

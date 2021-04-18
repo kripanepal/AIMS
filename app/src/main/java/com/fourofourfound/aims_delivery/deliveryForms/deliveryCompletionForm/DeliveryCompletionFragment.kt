@@ -1,4 +1,4 @@
-package com.fourofourfound.aims_delivery.deliveryCompletionForm
+package com.fourofourfound.aims_delivery.deliveryForms.deliveryCompletionForm
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog

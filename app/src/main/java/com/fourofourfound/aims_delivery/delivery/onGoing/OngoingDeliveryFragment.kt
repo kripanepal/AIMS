@@ -2,21 +2,19 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
-import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.deliveryForms.Pre_PostFilling.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.LocationRepository
@@ -25,7 +23,6 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import java.util.*
 
 
@@ -55,8 +52,10 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    lateinit var viewModel: OngoingDeliveryViewModel
+    val viewModel: OngoingDeliveryViewModel by viewModels()
     lateinit var currentSourceOrSite: SourceOrSite
+
+
 
     /**
      * On create view
@@ -70,7 +69,6 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         //return if no this is not an ongoing delivery
         if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
@@ -89,14 +87,11 @@ class OngoingDeliveryFragment : Fragment() {
         )
 
 
-        //viewModel used by this fragment
-        viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
 
         if (sharedViewModel.activeRoute !== null) {
             binding.startNavigation.text =
@@ -108,15 +103,36 @@ class OngoingDeliveryFragment : Fragment() {
             findNavController().navigate(R.id.navigationFragment)
         }
 
-
-
         return binding.root
     }
 
 
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
-            showFuelConfirmDialog(requireContext())
+            val  preFillingDialog = ReadingPrePostFilling()
+
+            val args = Bundle()
+            args.putBoolean("isFilling", true)
+            args.putString("trailer", sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc)
+            args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+            preFillingDialog.arguments = args
+            preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+        }
+
+        viewModel.fillingStarted.observe(viewLifecycleOwner)
+        {
+            if(it)
+            {
+                viewModel.updateFuelInfo(
+                    currentSourceOrSite.trailerInfo.trailerId,
+                    viewModel.trailerReadingBegin.value!!
+                )
+                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
+                    viewModel.trailerReadingBegin.value!!.toDouble()
+                viewModel.startDateAndTime = Calendar.getInstance()
+                fuelingStartViews()
+            }
+
         }
     }
 
@@ -124,7 +140,29 @@ class OngoingDeliveryFragment : Fragment() {
         binding.endFilling.setOnClickListener {
             viewModel.endDateAndTime = Calendar.getInstance()
 
-            var navigateToForm = {
+            val  preFillingDialog = ReadingPrePostFilling()
+
+            val args = Bundle()
+            args.putBoolean("isFilling", false)
+            args.putString("trailer", sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc)
+            args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+            preFillingDialog.arguments = args
+            preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+
+            viewModel.fillingEnded.observe(viewLifecycleOwner)
+            {
+                if(it) showFormSendingData()
+            }
+        }
+    }
+
+    private fun getFormConfirmation(): CustomDialogBuilder {
+        return CustomDialogBuilder(
+            requireContext(),
+            "Filling Complete",
+            "Fill the form now.",
+            "Ok",
+            {
                 findNavController().navigate(
                     OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
                         currentSourceOrSite,
@@ -132,60 +170,55 @@ class OngoingDeliveryFragment : Fragment() {
                         viewModel.endDateAndTime,
                     )
                 )
-            }
 
-           val beta =  CustomDialogBuilder(
-               requireContext(),
-               "Filling Complete",
-               "Fill the form now.",
-               "Ok",
-               navigateToForm,
-               "Cancel",
-               null,
-               false
-           )
-
-            var endTime = Calendar.getInstance()
-
-            CustomDialogBuilder(
-                requireContext(),
-                "Sending product delivery/pickup completed message",
-                String.format(
-                    "Time Stamp: %d-%d-%d %d:%d " +
-                            "\nDriver ID: %s " +
-                            "\nTrip ID: %d " +
-                            "\nDestination ID: %d " +
-                            "\nProduct ID: %s " +
-                            "\nStart Time: %d:%d " +
-                            "\nEnd Time: %d:%d " +
-                            "\nGross Qty: %d " +
-                            "\nNet Qty: %d",
-                    endTime.get(Calendar.YEAR),
-                    endTime.get(Calendar.MONTH),
-                    endTime.get(Calendar.DAY_OF_MONTH),
-                    endTime.get(Calendar.HOUR_OF_DAY),
-                    endTime.get(Calendar.MINUTE),
-                    sharedViewModel.driver.driver_id,
-                    sharedViewModel.selectedTrip.value!!.tripId,
-                    currentSourceOrSite.seqNum,
-                    currentSourceOrSite.productInfo.productId,
-                    viewModel.startDateAndTime.get(Calendar.HOUR_OF_DAY),
-                    viewModel.startDateAndTime.get(Calendar.MINUTE),
-                    viewModel.endDateAndTime.get(Calendar.HOUR_OF_DAY),
-                    viewModel.endDateAndTime.get(Calendar.MINUTE),
-                    1000,
-                    1000
-                ),
-
-                "Ok",
-                { beta.builder.show() },
-                null,
-                null,
-                false
-            ).builder.show()
+            },
+            "Cancel",
+            null,
+            false
+        )
 
 
-        }
+    }
+
+    private fun showFormSendingData() {
+        var endTime = Calendar.getInstance()
+
+        CustomDialogBuilder(
+            requireContext(),
+            "Sending product delivery/pickup completed message",
+            String.format(
+                "Time Stamp: %d-%d-%d %d:%d " +
+                        "\nDriver ID: %s " +
+                        "\nTrip ID: %d " +
+                        "\nDestination ID: %d " +
+                        "\nProduct ID: %s " +
+                        "\nStart Time: %d:%d " +
+                        "\nEnd Time: %d:%d " +
+                        "\nGross Qty: %d " +
+                        "\nNet Qty: %d",
+                endTime.get(Calendar.YEAR),
+                endTime.get(Calendar.MONTH),
+                endTime.get(Calendar.DAY_OF_MONTH),
+                endTime.get(Calendar.HOUR_OF_DAY),
+                endTime.get(Calendar.MINUTE),
+                sharedViewModel.driver.driver_id,
+                sharedViewModel.selectedTrip.value!!.tripId,
+                currentSourceOrSite.seqNum,
+                currentSourceOrSite.productInfo.productId,
+                viewModel.startDateAndTime.get(Calendar.HOUR_OF_DAY),
+                viewModel.startDateAndTime.get(Calendar.MINUTE),
+                viewModel.endDateAndTime.get(Calendar.HOUR_OF_DAY),
+                viewModel.endDateAndTime.get(Calendar.MINUTE),
+                1000,
+                1000
+            ),
+
+            "Ok",
+            { getFormConfirmation().builder.show() },
+            null,
+            null,
+            false
+        ).builder.show()
     }
 
     private fun observeDestination() {
@@ -202,40 +235,15 @@ class OngoingDeliveryFragment : Fragment() {
                     productQty.text =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
                 }
-                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(R.drawable.ic_source)
-                else binding.destinationImage.setImageResource(R.drawable.ic_site)
-
-            }
-        }
-    }
-
-    private fun showFuelConfirmDialog(context: Context) {
-        val input = EditText(context)
-        sharedViewModel.selectedSourceOrSite.value?.trailerInfo?.fuelQuantity?.let {
-            input.setText(it.toString())
-        }
-        input.inputType = InputType.TYPE_CLASS_NUMBER
-        val alert = AlertDialog.Builder(context)
-            .setTitle("Confirm Fuel Quantity")
-            .setView(input)
-            .setMessage("Please enter/confirm the trailer fuel quantity")
-            .setPositiveButton("Submit") { dialog, _ ->
-                viewModel.updateFuelInfo(
-                    currentSourceOrSite.trailerInfo.trailerId,
-                    Integer.parseInt(input.text.toString())
+                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(
+                    R.drawable.ic_source
                 )
-                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
-                    Integer.parseInt(input.text.toString())
-                viewModel.startDateAndTime = Calendar.getInstance()
-                fuelingStartViews()
-                dialog.cancel()
+                else binding.destinationImage.setImageResource(R.drawable.ic_site)
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }.create()
-
-        alert.show()
+        }
     }
+
+
 
     private fun fuelingStartViews() {
         binding.startFilling.visibility = View.GONE
@@ -243,34 +251,56 @@ class OngoingDeliveryFragment : Fragment() {
         binding.startNavigation.visibility = View.GONE
     }
 
+    private fun fuelingEndViews()
+    {
+        binding.fillForm.visibility = View.VISIBLE
+        binding.fillForm.setOnClickListener {
+            getFormConfirmation().builder.show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
-                val locationRepository = LocationRepository(requireContext())
-                val destination = GeoCoordinates(
-                    currentSourceOrSite.location.latitude,
-                    currentSourceOrSite.location.longitude
-                )
-                locationRepository.coordinates.observe(viewLifecycleOwner)
-                {
-                    if (checkDistanceToDestination(
-                            it,
-                            destination
-                        ) && !viewModel.destinationApproaching
-                    ) {
-                        showDestinationApproachingDialog(requireContext())
-                        viewModel.destinationApproaching = true
-                    }
-                }
-
-
+                trackDestinationApproaching()
                 (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
+
+                Log.i("AAAAAAAAA",(viewModel.destination != currentSourceOrSite).toString())
+                viewModel.destination?.also {
+                    if(it != currentSourceOrSite)
+                    {
+                        viewModel.fillingEnded.value=false
+                        viewModel.fillingStarted.value=false
+                    }
+
+                }
+                if(viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
+                if(viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
                 observeDestination()
-                observeStartFueling()
-                observeEndFueling()
+                viewModel.destination = currentSourceOrSite
+
+            }
+        }
+    }
+
+    private fun trackDestinationApproaching() {
+        val locationRepository = LocationRepository(requireContext())
+        val destination = GeoCoordinates(
+            currentSourceOrSite.location.latitude,
+            currentSourceOrSite.location.longitude
+        )
+        locationRepository.coordinates.observe(viewLifecycleOwner)
+        {
+            if (checkDistanceToDestination(
+                    it,
+                    destination
+                ) && !viewModel.destinationApproaching
+            ) {
+                showDestinationApproachingDialog(requireContext())
+                viewModel.destinationApproaching = true
             }
         }
     }

@@ -131,6 +131,13 @@
                 android:text="End Filling"
                 android:visibility="gone" />
 
+            <Button
+                android:visibility="gone"
+                android:id="@+id/fillForm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fill Form" />
+
         </RelativeLayout>
     </LinearLayout>
 

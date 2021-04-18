@@ -33,7 +33,7 @@ interface TrailerDao {
     suspend fun insertTrailer(trailer: DatabaseTrailer)
 
     @Query("update DatabaseTrailer set fuelQuantity =:fuelQuantity where trailerId =:trailerId")
-    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Int)
+    suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Double)
 }
 
 @Dao
