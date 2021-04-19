@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
      */
     private lateinit var viewModel: LoginViewModel
 
-    var animated = true
+    var animated = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

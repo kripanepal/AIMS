@@ -12,8 +12,8 @@
                motion:motionTarget="@+id/Aims_logo"
                motion:framePosition="100"
                android:elevation="3dp" />
-           <KeyAttribute />
-           <KeyAttribute />
+
+
        </KeyFrameSet>
         <OnClick motion:targetId="@+id/constraintLayout" />
 
