@@ -94,6 +94,10 @@ class LoginFragment : Fragment() {
 
         observeLoginFields()
         loginOnDoneKey()
+
+        setIDAnimations()
+        setPasswordAnimations()
+
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
@@ -178,7 +182,7 @@ class LoginFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setAnimations()
+    fun setIDAnimations()
     {
         val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
         binding.userIdInput.setOnTouchListener { v,_ ->
@@ -196,7 +200,7 @@ class LoginFragment : Fragment() {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setAnimation()
+    fun setPasswordAnimations()
     {
         val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
         binding.passwordInput.setOnTouchListener { v,_ ->
