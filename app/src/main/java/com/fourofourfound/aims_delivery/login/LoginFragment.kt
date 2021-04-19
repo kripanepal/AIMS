@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -54,6 +56,8 @@ class LoginFragment : Fragment() {
      */
     private lateinit var viewModel: LoginViewModel
 
+    var animated = true
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,6 +97,8 @@ class LoginFragment : Fragment() {
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
+
+
         viewModel.loading.observe(viewLifecycleOwner) { if (it) hideSoftKeyboard(requireActivity()) }
         return binding.root
     }
@@ -171,5 +177,39 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun setAnimations()
+    {
+        val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
+        binding.userIdInput.setOnTouchListener { v,_ ->
+            v.performClick()
+
+            if(!animated)
+            {
+                motionContainer.setTransition(R.id.start, R.id.end)
+                motionContainer.transitionToEnd()
+                animated = true
+            }
+            false
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun setAnimation()
+    {
+        val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
+        binding.passwordInput.setOnTouchListener { v,_ ->
+            v.performClick()
+
+            if(!animated)
+            {
+                motionContainer.setTransition(R.id.start, R.id.end)
+                motionContainer.transitionToEnd()
+                animated = true
+            }
+            false
+        }
+    }
 
 }
