@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
@@ -20,6 +19,7 @@ import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproach
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.animateViewVisibility
 import com.fourofourfound.aims_delivery.utils.isDarkModeOn
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
@@ -77,8 +77,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        binding.mapRecenterBtn.setOnClickListener { recenter() }
-        binding.destinationReached.setOnClickListener { destinationReached() }
+        binding.destinationReachedBtn.setOnClickListener { destinationReached() }
         sharedViewModel.activeRoute?.apply { route = this }
         parentViewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
         return binding.root
@@ -89,7 +88,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) { recenter() }
                 override fun onStateChanged(bottomSheet: View, newState: Int) { recenter() } }
-        BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomSheetBehaviorCallback)
+        BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(
+            bottomSheetBehaviorCallback
+        )
+
         binding.destinationInfo.apply {
             sourceOrSiteName.text = sourceOrSite.location.destinationName
             address.text = sourceOrSite.location.address1
@@ -104,6 +106,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeMap()
         setUpDraggableView()
+
+        binding.mapRecenter.setOnClickListener{recenter()}
     }
 
 
@@ -195,7 +199,12 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     if (routingError == RoutingError.NONE) {
                         if (routeResults!![0].route != null) {
                             route = routeResults[0].route
-                            sharedViewModel.activeRoute = routeResults[0].route
+
+
+                            BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_EXPANDED
+
+
+
                             onRouteCalculated()
                         } else {
                             Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
@@ -234,19 +243,34 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         navigationManager.setMap(map)
         mapFragment.positionIndicator?.isVisible = true
         if (isDarkModeOn(requireContext())) map.mapScheme = Map.Scheme.NORMAL_NIGHT
+        animateViewVisibility(binding.destinationInfo.root,binding.startReachedContainer,true)
         if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
-            val alertDialogBuilder = AlertDialog.Builder(context)
-            alertDialogBuilder.setTitle("Navigation")
-            alertDialogBuilder.setMessage("Choose Mode")
-            alertDialogBuilder.setNegativeButton("Navigation") { _, _ ->
-                navigationManager.startNavigation(route!!)
+            binding.startBtn.setOnClickListener {
+                val alertDialogBuilder = AlertDialog.Builder(context)
+                alertDialogBuilder.setTitle("Navigation")
+                alertDialogBuilder.setMessage("Choose Mode")
+                alertDialogBuilder.setNegativeButton("Navigation") { _, _ ->
+                    navigationManager.startNavigation(route!!)
+                    sharedViewModel.activeRoute = route
+
+                    binding.startBtn.visibility = View.GONE
+                    BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_COLLAPSED
+
+                }
+                alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
+                    navigationManager.simulate(route!!, 100)
+                    sharedViewModel.activeRoute = route
+                    binding.startBtn.visibility = View.GONE
+                    BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_COLLAPSED
+
+
+
+                }
+                val alertDialog = alertDialogBuilder.create()
+                alertDialogBuilder.setCancelable(false)
+                alertDialog.show()
             }
-            alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
-                navigationManager.simulate(route!!, 100)
-            }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialogBuilder.setCancelable(false)
-            alertDialog.show()
+
         } else {
             mapFragment.onResume()
         }
@@ -260,8 +284,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
      *This method brings views to screen which are only required during navigation
      */
     private fun changeViewsVisibility() {
-        binding.destinationReached.visibility = View.VISIBLE
-        binding.mapRecenterBtn.visibility = View.VISIBLE
         binding.deliveryProgress.visibility = View.VISIBLE
         binding.nextInfoContainer.visibility = View.VISIBLE
         binding.progressBarContainer.visibility = View.GONE
@@ -269,6 +291,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun addListeners() {
         setMapTouchListener()
+        mapFragment.mapGesture!!.addOnGestureListener(MyOnGestureListener(),1,false)
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))

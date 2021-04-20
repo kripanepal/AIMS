@@ -114,10 +114,12 @@
                 android:text="Start Filling" />
 
 
-            <Button
+            <ImageView
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/ic_navigation"
                 android:id="@+id/startNavigation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="1dp"
                 android:text="Navigate" />

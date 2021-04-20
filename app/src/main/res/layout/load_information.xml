@@ -10,8 +10,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment"
-        android:background="?attr/colorSecondaryVariant">
+        android:background="?attr/colorSecondaryVariant"
+        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pickup_list"
@@ -20,25 +21,53 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
             tools:listitem="@layout/load_info_each_item" />
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/start_navigation"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:clickable="true"
-            app:fabCustomSize="75dp"
-            app:layout_constraintBottom_toBottomOf="@+id/pickup_list"
+        <RelativeLayout
+            android:id="@+id/start_trip_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/pickup_list"
-            app:layout_constraintHorizontal_bias="0.914"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pickup_list"
-            app:layout_constraintVertical_bias="0.918"
-            app:srcCompat="@drawable/ic_delivery"
-            app:maxImageSize="45dp"/>
+            app:layout_constraintVertical_bias="0.97">
+
+            <TextView
+                android:id="@+id/start_trip_text"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="-45dp"
+                android:layout_toStartOf="@+id/start_trip"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="50dp"
+                android:text="Start"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/start_trip"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:paddingHorizontal="5dp"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
+                app:maxImageSize="45dp"
+                app:srcCompat="@drawable/ic_delivery" />
+
+        </RelativeLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

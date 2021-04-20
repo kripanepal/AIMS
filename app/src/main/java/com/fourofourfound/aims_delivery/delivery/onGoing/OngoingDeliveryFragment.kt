@@ -95,8 +95,6 @@ class OngoingDeliveryFragment : Fragment() {
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
         if (sharedViewModel.activeRoute !== null) {
-            binding.startNavigation.text =
-                "Continue Navigation"
             binding.startFilling.visibility = View.GONE
         }
 

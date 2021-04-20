@@ -151,16 +151,8 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <ImageView
-                android:id="@+id/mapRecenterBtn"
-                android:layout_width="36dp"
-                android:layout_height="43dp"
-                android:layout_marginEnd="28dp"
-                android:layout_marginBottom="25dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/recenter" />
+
+
 
 
             <LinearLayout
@@ -184,14 +176,28 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
         <LinearLayout
+
             android:id="@+id/draggableView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="vertical"
-            app:behavior_peekHeight="50dp"
+            app:behavior_peekHeight="80dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <ImageView
+                android:layout_marginBottom="-20dp"
+                android:id="@+id/map_recenter"
+                android:layout_gravity="right"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_gps"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/draggableView"
+                app:tint="@color/arrow_color" />
 
             <View
                 android:layout_marginBottom="25dp"
@@ -202,6 +208,7 @@
                 android:background="@drawable/rounded_corneres" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/draggable_view_child"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorSecondaryVariant"
@@ -212,19 +219,53 @@
                 <include
                     android:id="@+id/destinationInfo"
                     layout="@layout/source_or_site_info"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
 
-                <Button
-
-                    android:id="@+id/destinationReached"
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/start_reached_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@id/destinationInfo"
-                    android:layout_margin="10dp"
-                    android:text="Reached"
-                    app:layout_constraintBottom_toBottomOf="@+id/destinationInfo"
-                    app:layout_constraintEnd_toEndOf="@+id/destinationInfo"
-                    app:layout_constraintTop_toTopOf="@+id/destinationInfo" />
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <Button
+                        android:textSize="15sp"
+                        android:id="@+id/start_btn"
+                        android:background="@drawable/rounded_corners_fab"
+                        android:backgroundTint="@color/Aims_Orange"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_navigate_outline"
+                        android:text="Start"
+                        android:layout_marginBottom="5dp"
+                        />
+                    <Button
+                        android:textSize="15sp"
+                        android:background="@drawable/rounded_corners_fab"
+                        android:backgroundTint="@color/Aims_Orange"
+                        android:id="@+id/destinationReached_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Reached"
+                       />
+
+
+
+                </LinearLayout>
+
+
+
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

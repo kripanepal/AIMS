@@ -1,12 +1,12 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
-import android.content.res.ColorStateList
 import android.os.Bundle
+import android.transition.TransitionManager
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +33,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
         currentTrip = tripFragmentArgs.trip
 
@@ -43,6 +42,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         viewModel = ViewModelProvider(this).get(LoadInfoViewModel::class.java)
         val adapter = LoadInfoAdapter()
+
         binding.pickupList.adapter = adapter
 
         adapter.data = currentTrip.sourceOrSite
@@ -58,15 +58,18 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.selectedSourceOrSite.value.apply {
-            var colorValue: Int = if (this == null)
-                ContextCompat.getColor(requireContext(), R.color.Green)
-            else
-                ContextCompat.getColor(requireContext(), R.color.Aims_Orange)
-            binding.startNavigation.backgroundTintList = ColorStateList.valueOf(colorValue)
-        }
 
+        animateViewVisibility(binding.root,binding.startTripText,true)
+        if(sharedViewModel.selectedTrip.value != null &&  sharedViewModel.selectedTrip.value!! != currentTrip) binding.startTripContainer.visibility = View.GONE
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
+
+        if (sharedViewModel.selectedSourceOrSite.value == null && sharedViewModel.selectedTrip.value != null) {
+            binding.startTripText.text = "Deliver next"
+
+        }
+        if (sharedViewModel.selectedSourceOrSite.value != null && sharedViewModel.selectedTrip.value != null) {
+            binding.startTripText.text = "Continue Delivery"
+        }
     }
 
     /**
@@ -149,7 +152,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 sharedViewModel.selectedTrip.value!!.tripId,
                 StatusEnum.COMPLETED
             )
-            binding.startNavigation.visibility = View.GONE
+            binding.startTrip.visibility = View.GONE
         }
         var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
 
@@ -161,20 +164,29 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         if (!sharedViewModel.userLoggedIn.value!!) {
             findNavController().navigateUp()
         }
+
     }
 
     private fun setUpClickListener(
         currentTrip: Trip,
         sortedList: List<SourceOrSite>
     ) {
-        binding.startNavigation.setOnClickListener {
+        binding.startTripContainer.setOnClickListener {
             if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
                 showStartTripDialog(sortedList[0], currentTrip)
             } else {
-                markDestinationStart(sortedList[0])
+                if (sharedViewModel.selectedSourceOrSite.value == null) {
+                    markDestinationStart(sortedList[0])
+                } else {
+                    requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+                }
             }
+
         }
     }
+
+
+
 
     private fun markDestinationStart(sourceOrSite: SourceOrSite) {
         var time = Calendar.getInstance()

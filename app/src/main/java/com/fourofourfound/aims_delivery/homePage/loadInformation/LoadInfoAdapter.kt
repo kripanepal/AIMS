@@ -1,18 +1,20 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
-import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.homePage.TripListListener
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
-class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
+class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
     var data = listOf<SourceOrSite>()
         set(value) {
             field = value
@@ -57,8 +59,9 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
         }
 
         holder.itemView.statusImage.apply {
-            if (item.status == StatusEnum.ONGOING)
+            if (item.status == StatusEnum.ONGOING) {
                 setImageResource(R.drawable.ongoing)
+            }
             else if (item.status == StatusEnum.COMPLETED) setImageResource(R.drawable.trip_done_icon)
         }
 
