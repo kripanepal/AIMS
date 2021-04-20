@@ -3,6 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+    <data>
+        <variable
+            name="sourceOrSite"
+            type="com.fourofourfound.aims_delivery.domain.SourceOrSite" />
+        <variable
+            name="databaseForm"
+            type="com.fourofourfound.aims_delivery.database.entities.DatabaseForm" />
+        <variable
+            name="databaseTrip"
+            type="com.fourofourfound.aims_delivery.database.entities.DatabaseTrip" />
+    </data>
+
 
         <LinearLayout
             android:id="@+id/LinearLayout"
@@ -10,6 +22,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{sourceOrSite.wayPointTypeDescription}"
+                    />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -24,7 +48,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Completed" />
+                    android:text="@{databaseTrip.status.status}"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -40,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="111111" />
+                    android:text="@{databaseForm.billOfLadingNumber}" />
             </LinearLayout>
 
             <LinearLayout
@@ -56,7 +81,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Product"/>
+                    android:text="@{databaseForm.product}"/>
             </LinearLayout>
 
             <LinearLayout
@@ -74,7 +99,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Start Time"/>
+                    android:text="@{databaseForm.startTime}"/>
             </LinearLayout>
 
             <LinearLayout
@@ -91,8 +116,47 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="End Time"/>
+                    android:text="@{databaseForm.endTime}"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date: "
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{databaseForm.startDate}"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Date: "
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{databaseForm.endDate}"/>
+            </LinearLayout>
+
+
+
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -109,7 +173,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gross Quantity"/>
+                    android:text="@{databaseForm.grossQty}"/>
             </LinearLayout>
 
             <LinearLayout
@@ -127,7 +191,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Net Quantity"/>
+                    android:text="@{databaseForm.netQty}"/>
             </LinearLayout>
 
             <LinearLayout
@@ -143,7 +207,23 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Trailer Start Reading"/>
+                    android:text="@{databaseForm.trailerBeginReading}"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trailer End Reading: "
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{databaseForm.trailerEndReading}"/>
             </LinearLayout>
         </LinearLayout>
 </layout>
