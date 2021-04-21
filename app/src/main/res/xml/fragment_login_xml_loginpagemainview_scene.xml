@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    xmlns:motion="http://schemas.android.com/apk/res-auto"
+    >
 
     <Transition
         motion:constraintSetEnd="@+id/end"
@@ -12,10 +13,7 @@
                motion:motionTarget="@+id/Aims_logo"
                motion:framePosition="100"
                android:elevation="3dp" />
-
-
        </KeyFrameSet>
-        <OnClick motion:targetId="@+id/constraintLayout" />
 
     </Transition>
 
@@ -24,22 +22,24 @@
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:layout_height="475dp"
+            android:layout_height="400dp"
             android:layout_width="match_parent"
             android:id="@+id/constraintLayout"
-
-            android:layout_marginBottom="128dp"
+            android:layout_marginBottom="120dp"
             android:layout_marginRight="32dp"
             android:layout_marginLeft="32dp"
+            motion:layout_constraintTop_toBottomOf="@+id/Aims_logo"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintRight_toRightOf="parent"
             motion:layout_constraintLeft_toLeftOf="parent"
             motion:layout_constraintDimensionRatio="w,1:1" />
         <Constraint
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             motion:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:id="@+id/Aims_logo"
-            android:layout_marginTop="64dp" />
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintBottom_toTopOf="@id/constraintLayout"/>
     </ConstraintSet>
 </MotionScene>

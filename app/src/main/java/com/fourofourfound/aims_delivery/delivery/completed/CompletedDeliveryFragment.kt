@@ -66,7 +66,7 @@ class CompletedDeliveryFragment : Fragment() {
         //getting a view model from a factory
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(CompletedDeliveryViewModel::class.java)
-        val adapter = LoadInfoAdapter()
+        val adapter = CompletedDeliveryAdapter()
         binding.sourceOrSiteInfo.adapter = adapter
 
 

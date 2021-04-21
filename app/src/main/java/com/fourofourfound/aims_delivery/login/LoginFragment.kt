@@ -182,14 +182,12 @@ class LoginFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setIDAnimations()
-    {
+    fun setIDAnimations() {
         val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
-        binding.userIdInput.setOnTouchListener { v,_ ->
+        binding.userIdInput.setOnTouchListener { v, _ ->
             v.performClick()
 
-            if(!animated)
-            {
+            if (!animated) {
                 motionContainer.setTransition(R.id.start, R.id.end)
                 motionContainer.transitionToEnd()
                 animated = true
