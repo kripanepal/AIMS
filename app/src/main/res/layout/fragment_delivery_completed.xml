@@ -46,6 +46,7 @@
                 app:cardElevation="@dimen/card_elevation">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sourceOrSiteInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

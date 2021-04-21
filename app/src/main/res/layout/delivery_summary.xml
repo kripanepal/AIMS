@@ -29,6 +29,7 @@
                 android:layout_gravity="center_horizontal">
 
                 <TextView
+                    android:id="@+id/sourceOrSiteInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{sourceOrSite.wayPointTypeDescription}"
@@ -46,6 +47,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseTrip.status.status}"
@@ -63,6 +65,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/bill_of_lading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.billOfLadingNumber}" />
@@ -79,6 +82,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/product_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.product}"/>
@@ -97,6 +101,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.startTime}"/>
@@ -114,6 +119,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.endTime}"/>
@@ -132,6 +138,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.startDate}"/>
@@ -149,6 +156,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{databaseForm.endDate}"/>
