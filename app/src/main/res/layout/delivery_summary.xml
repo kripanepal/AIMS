@@ -32,7 +32,7 @@
                     android:id="@+id/sourceOrSiteInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{sourceOrSite.wayPointTypeDescription}"
+
                     />
             </LinearLayout>
 
@@ -50,7 +50,7 @@
                     android:id="@+id/status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseTrip.status.status}"
+
                     />
             </LinearLayout>
 
@@ -68,7 +68,7 @@
                     android:id="@+id/bill_of_lading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.billOfLadingNumber}" />
+                   />
             </LinearLayout>
 
             <LinearLayout
@@ -85,7 +85,7 @@
                     android:id="@+id/product_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.product}"/>
+                    />
             </LinearLayout>
 
             <LinearLayout
