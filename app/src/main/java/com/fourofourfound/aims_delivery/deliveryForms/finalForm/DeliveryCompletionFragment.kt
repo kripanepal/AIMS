@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.StatusEnum
@@ -32,7 +34,6 @@ import com.github.gcacace.signaturepad.views.SignaturePad
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,6 +52,7 @@ class DeliveryCompletionFragment : Fragment() {
     private val args by navArgs<DeliveryCompletionFragmentArgs>()
     lateinit var getContent: ActivityResultLauncher<Intent>
     var currentPhotoPath: String = ""
+    lateinit var billOfLadingAdapter: BillOfLadingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,15 +95,17 @@ class DeliveryCompletionFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    override fun onAttach(context: Context)  {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             it.data?.data?.apply {
                 val source = ImageDecoder.createSource(requireContext().contentResolver, this)
-                viewModel.imageBitmap.value = ImageDecoder.decodeBitmap(source)
+                var bitmap = ImageDecoder.decodeBitmap(
+                    source
+                )
+                changeImageBitmaps(bitmap)
                 currentPhotoPath = ""
             }
-
 
             if (currentPhotoPath.isNotBlank()) {
                 try {
@@ -116,29 +120,81 @@ class DeliveryCompletionFragment : Fragment() {
                             photoURI
                         )
                     )
-                    viewModel.imageBitmap.value = bitmap
+                    changeImageBitmaps(bitmap)
+
                     currentPhotoPath = ""
 
-                }catch (E:Exception)
-                {
-                    Toast.makeText(requireContext(),"No image provided",Toast.LENGTH_SHORT).show()
+                } catch (E: Exception) {
+                    Toast.makeText(requireContext(), "No image provided", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
+    }
+
+    private fun changeImageBitmaps(source: Bitmap) {
+        if (viewModel.imageBitmaps.value.isNullOrEmpty())
+            viewModel.imageBitmaps.value = mutableListOf(source)
+        else
+            viewModel.imageBitmaps.value =
+                viewModel.imageBitmaps.value?.plus(
+                    mutableListOf(
+                        source
+                    )
+                ) as MutableList<Bitmap>?
+        binding.billOfLadingImages.post { binding.billOfLadingImages.scrollToPosition(binding.billOfLadingImages.adapter!!.itemCount - 1) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
         viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
+
+
+
+        billOfLadingAdapter = BillOfLadingAdapter(BitmapListListener(
+            { imageBitMap ->
+                val removeImage = {
+                    viewModel.imageBitmaps.value =
+                        viewModel.imageBitmaps.value?.filter { !it.sameAs(imageBitMap) } as MutableList<Bitmap>
+                }
+
+                CustomDialogBuilder(
+                    requireContext(),
+                    "Delete",
+                    "Do your want to remove this picture",
+                    "Yes",
+                    removeImage,
+                    "No",
+                    null,
+                    false
+                ).builder.show()
+
+            }, { imageBitMap ->
+                var imageView = ImageView(context)
+                imageView.setImageBitmap(imageBitMap)
+                var alertDialog = AlertDialog.Builder(context)
+                alertDialog.setView(imageView)
+                alertDialog.show()
+            })
+        )
+
+
+        binding.billOfLadingImages.adapter = billOfLadingAdapter
         observeImages()
+
+        binding.billOfLadingImages.adapter!!.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                binding.billOfLadingImages.scrollToPosition(binding.billOfLadingImages.adapter!!.itemCount - 1)
+            }
+        })
     }
 
+
     private fun observeImages() {
-        viewModel.imageBitmap.observe(viewLifecycleOwner) { bitmap ->
+        viewModel.imageBitmaps.observe(viewLifecycleOwner) { bitmap ->
             bitmap?.apply {
-                binding.billOfLadingImage.setImageBitmap(bitmap)
+                billOfLadingAdapter.submitList(this)
             }
         }
     }

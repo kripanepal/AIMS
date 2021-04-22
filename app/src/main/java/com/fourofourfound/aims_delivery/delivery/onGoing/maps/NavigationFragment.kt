@@ -1,12 +1,10 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -214,7 +212,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {}
                 override fun onCalculateRouteFinished(
-                    routeResults: List<RouteResult>,
+                    routeResults: List<RouteResult>?,
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
@@ -231,6 +229,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                         showErrorDialog()
                     }
                 }
+
             })
     }
 

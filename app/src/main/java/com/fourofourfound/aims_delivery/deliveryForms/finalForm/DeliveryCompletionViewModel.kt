@@ -14,7 +14,6 @@ import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.util.*
 
 class DeliveryCompletionViewModel(
@@ -45,7 +44,7 @@ class DeliveryCompletionViewModel(
     var stickReadingAfter = MutableLiveData<Double>(null)
     var meterReadingBefore = MutableLiveData<Double>(null)
     var meterReadingAfter = MutableLiveData<Double>(null)
-    var imageBitmap = MutableLiveData<Bitmap?>(null)
+    var imageBitmaps = MutableLiveData<MutableList<Bitmap>>()
 
     fun submitForm() {
         var formToSubmit = DatabaseCompletionForm(
@@ -73,8 +72,7 @@ class DeliveryCompletionViewModel(
             stickReadingBefore.value,
             stickReadingAfter.value,
             meterReadingBefore.value,
-            meterReadingAfter.value,
-            imageBitmap.value
+            meterReadingAfter.value
 
         )
 
@@ -105,8 +103,17 @@ class DeliveryCompletionViewModel(
     }
 
 
+    operator fun <T> MutableLiveData<ArrayList<T>>.plusAssign(values: List<T>) {
+        val value = this.value ?: arrayListOf()
+        value.addAll(values)
+        this.value = value
+    }
 
-    
+    operator fun <T> MutableLiveData<ArrayList<T>>.minusAssign(values: List<T>) {
+        val value = this.value ?: arrayListOf()
+        value.removeAll(values)
+        this.value = value
+    }
 
 
 }

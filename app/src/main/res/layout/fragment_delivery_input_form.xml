@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -15,15 +14,24 @@
         android:id="@+id/form_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:fillViewport="true">
 
-        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/form_parent_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
+            <ImageView
+                android:id="@+id/enlarged_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/error_text"
@@ -37,26 +45,28 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-
             <Button
-                app:layout_constraintTop_toTopOf="@id/bill_of_lading_container"
-                app:layout_constraintLeft_toRightOf="@id/bill_of_lading_container"
-                app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/upload_image_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="8dp"
                 android:background="@drawable/ic_outline_camera_alt_24"
-                />
-                <ImageView
-                    scaleType="fitXY"
-                    android:id="@+id/bill_of_ladingImage"
-                    app:layout_constraintTop_toBottomOf="@id/comments_container"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/submit_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                app:layout_constraintBottom_toTopOf="@+id/product_desc_container"
+                app:layout_constraintLeft_toRightOf="@id/bill_of_lading_container"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/bill_of_lading_container" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bill_of_ladingImages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/submit_btn"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/comments_container" />
+
             <Button
                 android:id="@+id/submit_btn"
                 android:layout_width="wrap_content"
