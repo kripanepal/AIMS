@@ -44,7 +44,7 @@ class TripListRepository(private val database: TripListDatabase) {
                 else{}
             } catch (e: Exception) {
             //todo need to do actual error handling
-                Log.i("drivername", "THis is an exception")
+                Log.i("drivername", e.toString())
             }
         }
     }
@@ -105,7 +105,7 @@ class TripListRepository(private val database: TripListDatabase) {
                     }
                 }
             } catch (e: Exception) {
-                Log.i("AAAAAAAAAA", e.stackTraceToString())
+                Log.i("DatabaseError", e.stackTraceToString())
 
             }
         }

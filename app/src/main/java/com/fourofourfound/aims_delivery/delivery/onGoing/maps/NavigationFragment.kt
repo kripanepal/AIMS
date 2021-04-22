@@ -1,10 +1,12 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +37,7 @@ import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -52,7 +55,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private lateinit var sourceOrSite: SourceOrSite
     private val timeoutHandler = Handler(Looper.getMainLooper())
     lateinit var parentViewModel: OngoingDeliveryViewModel
-
+    private var m_foregroundServiceStarted = false
 
 
     /**
@@ -84,14 +87,29 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun setUpDraggableView() {
-        var bottomSheetBehaviorCallback =
-            object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) { recenter() }
-                override fun onStateChanged(bottomSheet: View, newState: Int) { recenter() } }
-        BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(
-            bottomSheetBehaviorCallback
-        )
+val bottomSheetCallBack = object:BottomSheetBehavior.BottomSheetCallback()
+{
 
+    fun changeMarginToDraggableView(view: View, expanded: Float) {
+        val draggableView = binding.draggableView
+        var layoutParams =( view.layoutParams as ViewGroup.MarginLayoutParams )
+        layoutParams.bottomMargin = (((draggableView.height*expanded)/1.4)+ BottomSheetBehavior.from(
+            draggableView
+        ).peekHeight).toInt()
+        view.layoutParams = layoutParams
+    }
+
+    override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+    }
+
+    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+        changeMarginToDraggableView(binding.mapRecenter, slideOffset)
+        changeMarginToDraggableView(binding.speedInfoContainer, slideOffset)
+    }
+
+}
+BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomSheetCallBack)
         binding.destinationInfo.apply {
             sourceOrSiteName.text = sourceOrSite.location.destinationName
             address.text = sourceOrSite.location.address1
@@ -132,6 +150,9 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
                     navigationManager.setMap(map)
                     mapFragment.positionIndicator?.isVisible = true
+
+
+
                     checkAndCreateRoute()
                 }
             }
@@ -200,11 +221,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                         if (routeResults!![0].route != null) {
                             route = routeResults[0].route
 
-
-                            BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_EXPANDED
-
-
-
                             onRouteCalculated()
                         } else {
                             Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
@@ -227,24 +243,26 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         map.zoomTo(geoBoundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_TILT)
         map.mapScheme = Map.Scheme.TRUCKNAV_DAY
         startNavigation()
+        binding.progressBarContainer.visibility = View.GONE
     }
 
     private fun recenter() {
         PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
-            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW)
+            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW, 18.0, 90f, 0f)
         }
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
 
     }
 
+
+
     private fun startNavigation() {
         changeNextManeuverTexts()
-        changeViewsVisibility()
         navigationManager.setMap(map)
-        mapFragment.positionIndicator?.isVisible = true
         if (isDarkModeOn(requireContext())) map.mapScheme = Map.Scheme.NORMAL_NIGHT
-        animateViewVisibility(binding.destinationInfo.root,binding.startReachedContainer,true)
+
         if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
+            showBottomSheetWithAnimation()
             binding.startBtn.setOnClickListener {
                 val alertDialogBuilder = AlertDialog.Builder(context)
                 alertDialogBuilder.setTitle("Navigation")
@@ -252,18 +270,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 alertDialogBuilder.setNegativeButton("Navigation") { _, _ ->
                     navigationManager.startNavigation(route!!)
                     sharedViewModel.activeRoute = route
+                    bottomSheetNavigationStarted()
+                    changeViewsVisibility()
 
-                    binding.startBtn.visibility = View.GONE
-                    BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_COLLAPSED
 
                 }
                 alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
                     navigationManager.simulate(route!!, 100)
                     sharedViewModel.activeRoute = route
-                    binding.startBtn.visibility = View.GONE
-                    BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_COLLAPSED
-
-
+                    bottomSheetNavigationStarted()
+                    changeViewsVisibility()
 
                 }
                 val alertDialog = alertDialogBuilder.create()
@@ -272,10 +288,32 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             }
 
         } else {
+            changeViewsVisibility()
+            bottomSheetNavigationStarted()
             mapFragment.onResume()
+            mapFragment.map?.positionIndicator?.isVisible  = true
         }
         recenter()
         addListeners()
+
+    }
+
+    private fun bottomSheetNavigationStarted() {
+        binding.startReachedContainer.visibility = View.VISIBLE
+        binding.startBtn.visibility = View.GONE
+        binding.destinationInfo.root.visibility = View.VISIBLE
+        BottomSheetBehavior.from(binding.draggableView).state = BottomSheetBehavior.STATE_COLLAPSED
+
+    }
+
+    private fun showBottomSheetWithAnimation() {
+        animateViewVisibility(binding.startReachedContainer, binding.startReachedContainer, true)
+        animateViewVisibility(binding.root, binding.destinationInfo.root, true)
+        Handler(Looper.getMainLooper()).postDelayed({
+            BottomSheetBehavior.from(binding.draggableView).state =
+                BottomSheetBehavior.STATE_EXPANDED
+        }, 1000)
+
 
     }
 
@@ -285,13 +323,13 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
      */
     private fun changeViewsVisibility() {
         binding.deliveryProgress.visibility = View.VISIBLE
-        binding.nextInfoContainer.visibility = View.VISIBLE
-        binding.progressBarContainer.visibility = View.GONE
+        animateViewVisibility(binding.root, binding.nextInfoContainer, true)
+
+
     }
 
     private fun addListeners() {
-        setMapTouchListener()
-        mapFragment.mapGesture!!.addOnGestureListener(MyOnGestureListener(),1,false)
+        mapFragment.mapGesture!!.addOnGestureListener(MyOnGestureListener(), 1, false)
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
         navigationManager.addNavigationManagerEventListener(WeakReference(routeCompleteListener))
@@ -301,20 +339,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         setUpVoiceNavigation()
     }
 
-    private fun setMapTouchListener() {
-        mapFragment.setOnTouchListener { v, _ ->
-            v.performClick()
-            timeoutHandler.removeCallbacksAndMessages(null);
-            navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.NONE
-            timeoutHandler.postDelayed({
-                navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.POSITION_ANIMATION
-                timeoutHandler.postDelayed({
-                    navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
-                }, 1500)
-            }, 3000)
-            false
-        }
-    }
+
 
     private fun removeListeners() {
         navigationManager.apply {
@@ -372,14 +397,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             }
 
             if (positionCoordinates != null && positionCoordinates.isValid && positionCoordinates is MatchedGeoPosition) {
+                mapFragment.map?.positionIndicator?.isVisible  = true
                 var completedDistance = navigationManager.elapsedDistance.toInt()
                 val remainingDistance = navigationManager.destinationDistance.toDouble()
 
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
                 //meter to miles
-                var formatted =
-                    String.format("%.2f", navigationManager.nextManeuverDistance * 0.000621371)
+
+                var formatted =if(navigationManager.nextManeuverDistance<Long.MAX_VALUE)
+                    String.format("%.2f", navigationManager.nextManeuverDistance * 0.000621371) else "calculating"
                 binding.remainingDistance.text = formatted
 
                 var currentSpeedLimit = 0.0
@@ -388,6 +415,13 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     currentSpeedLimit = positionCoordinates.roadElement!!.speedLimit.toDouble()
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
+                val millis =(navigationManager.getEta(true, Route.TrafficPenaltyMode.OPTIMAL).time ).minus(
+                    Calendar.getInstance().time.time
+                )
+                val hours = (millis / (1000 * 60 * 60))
+                val mins =  ((millis / (1000 * 60)) % 60)
+                var remainingTime = if(hours>0) "$hours hr $mins min" else "$mins min"
+                binding.remainingTime.text = remainingTime
 
                 if(!parentViewModel.destinationApproaching && navigationManager.destinationDistance<1000 && navigationManager.destinationDistance>10) {
                     //TODO same context is unavailable when orientation changes
@@ -465,8 +499,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 )
         }
 
-        navigationManager.afterNextManeuver?.roadName.apply {
-            viewModel.nextManeuverRoadName.value = this ?: "Destination Ahead"
+        navigationManager.afterNextManeuver?.roadName?.apply {
+            viewModel.nextManeuverRoadName.value = this.substringBefore('/')
         }
     }
 
@@ -477,7 +511,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             navigationManager.resume()
         }
         requireActivity().bottom_navigation.visibility =
-            if (resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE)
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
                 View.GONE
             else View.VISIBLE
     }

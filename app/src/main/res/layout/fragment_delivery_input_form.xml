@@ -36,27 +36,27 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="40dp"
-                app:cardElevation="@dimen/card_elevation"
 
-                android:clickable="true"
-                app:layout_constraintTop_toBottomOf="@id/comments_container"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/submit_btn"
-                >
 
             <Button
+                app:layout_constraintTop_toTopOf="@id/bill_of_lading_container"
+                app:layout_constraintLeft_toRightOf="@id/bill_of_lading_container"
+                app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/upload_image_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="8dp"
                 android:background="@drawable/ic_outline_camera_alt_24"
                 />
-            </androidx.cardview.widget.CardView>
+                <ImageView
+                    scaleType="fitXY"
+                    android:id="@+id/bill_of_ladingImage"
+                    app:layout_constraintTop_toBottomOf="@id/comments_container"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/submit_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/submit_btn"
                 android:layout_width="wrap_content"
@@ -72,7 +72,7 @@
                 android:id="@+id/bill_of_lading_container"
                 style="@style/textInputLayoutStyle"
                 app:hintTextColor="?attr/colorOnPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/upload_image_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/error_text">
 

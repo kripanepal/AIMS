@@ -1,25 +1,22 @@
 package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 
-import android.Manifest
-import android.app.Activity
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.graphics.ImageDecoder
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,6 +31,8 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBind
 import com.github.gcacace.signaturepad.views.SignaturePad
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,10 +45,13 @@ class DeliveryCompletionFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var binding: FragmentDeliveryInputFormBinding
-    private lateinit var viewModel: DeliveryCompletionViewModel
+    lateinit var binding: FragmentDeliveryInputFormBinding
+    lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
-    val args by navArgs<DeliveryCompletionFragmentArgs>()
+    private val args by navArgs<DeliveryCompletionFragmentArgs>()
+    lateinit var getContent: ActivityResultLauncher<Intent>
+    var currentPhotoPath: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +60,6 @@ class DeliveryCompletionFragment : Fragment() {
             findNavController().navigateUp()
             return null
         }
-
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -84,48 +85,46 @@ class DeliveryCompletionFragment : Fragment() {
         initializeViewModelVariables()
         viewDateAndTime()
 
-        binding.uploadImageBtn.setOnClickListener{
+        binding.uploadImageBtn.setOnClickListener {
             openCamera()
         }
 
         return binding.root
     }
 
-    private fun openCamera() {
-
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    (context as Activity?)!!,
-                    Manifest.permission.CAMERA
-                )
-            ) {
-            } else {
-                ActivityCompat.requestPermissions(
-                    (context as Activity?)!!, arrayOf(Manifest.permission.CAMERA), 1
-                )
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onAttach(context: Context)  {
+        super.onAttach(context)
+        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.data?.apply {
+                val source = ImageDecoder.createSource(requireContext().contentResolver, this)
+                viewModel.imageBitmap.value = ImageDecoder.decodeBitmap(source)
+                currentPhotoPath = ""
             }
-        }
 
-        val requestImageCapture = 1
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            startActivityForResult(takePictureIntent, requestImageCapture)
-        }
-        catch(e: ActivityNotFoundException) {
-            CustomDialogBuilder(
-                requireContext(),
-                "Error",
-                "No camera detected",
-            "OK",
-                null,
-                null,
-                null,
-                true
-            ).builder.show()
+
+            if (currentPhotoPath.isNotBlank()) {
+                try {
+                    val photoURI = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.fourofourfound.aims_delivery",
+                        File(currentPhotoPath)
+                    )
+                    val bitmap = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            requireContext().contentResolver,
+                            photoURI
+                        )
+                    )
+                    viewModel.imageBitmap.value = bitmap
+                    currentPhotoPath = ""
+
+                }catch (E:Exception)
+                {
+                    Toast.makeText(requireContext(),"No image provided",Toast.LENGTH_SHORT).show()
+                }
+
+            }
         }
     }
 
@@ -133,6 +132,15 @@ class DeliveryCompletionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
         viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
+        observeImages()
+    }
+
+    private fun observeImages() {
+        viewModel.imageBitmap.observe(viewLifecycleOwner) { bitmap ->
+            bitmap?.apply {
+                binding.billOfLadingImage.setImageBitmap(bitmap)
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -173,7 +181,6 @@ class DeliveryCompletionFragment : Fragment() {
                         }
 
                         override fun onNothingSelected(parent: AdapterView<*>?) {
-                            TODO("Not yet implemented")
                         }
                     }
             }

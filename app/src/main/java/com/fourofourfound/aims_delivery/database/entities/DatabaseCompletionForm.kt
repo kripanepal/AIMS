@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.database.entities
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["seqNo", "tripId"])
@@ -20,6 +21,7 @@ data class DatabaseCompletionForm(
     var stickReadingBefore: Double?,
     var stickReadingAfter: Double?,
     var meterReadingBefore: Double?,
-    var meterReadingAfter: Double?
+    var meterReadingAfter: Double?,
+    var image:Bitmap? = null
 
 )

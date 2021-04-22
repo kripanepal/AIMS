@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import com.fourofourfound.aims_delivery.utils.StatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.*
 
 class DeliveryCompletionViewModel(
@@ -43,6 +45,7 @@ class DeliveryCompletionViewModel(
     var stickReadingAfter = MutableLiveData<Double>(null)
     var meterReadingBefore = MutableLiveData<Double>(null)
     var meterReadingAfter = MutableLiveData<Double>(null)
+    var imageBitmap = MutableLiveData<Bitmap?>(null)
 
     fun submitForm() {
         var formToSubmit = DatabaseCompletionForm(
@@ -70,7 +73,8 @@ class DeliveryCompletionViewModel(
             stickReadingBefore.value,
             stickReadingAfter.value,
             meterReadingBefore.value,
-            meterReadingAfter.value
+            meterReadingAfter.value,
+            imageBitmap.value
 
         )
 
@@ -99,6 +103,10 @@ class DeliveryCompletionViewModel(
             productList.value = database.productsDao.getProducts()
         }
     }
+
+
+
+    
 
 
 }

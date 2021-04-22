@@ -18,7 +18,7 @@ import retrofit2.http.POST
  * Base URL
  * The URL of the server
  */
-private const val BASE_URL = "https://aims-server.herokuapp.com/"
+private const val BASE_URL =  "https://aims-server.herokuapp.com/"
 
 
 //a moshi object
