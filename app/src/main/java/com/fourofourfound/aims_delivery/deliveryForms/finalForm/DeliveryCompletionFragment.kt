@@ -10,9 +10,8 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,6 +32,7 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBind
 import com.github.gcacace.signaturepad.views.SignaturePad
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import uk.co.senab.photoview.PhotoViewAttacher
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +53,8 @@ class DeliveryCompletionFragment : Fragment() {
     lateinit var getContent: ActivityResultLauncher<Intent>
     var currentPhotoPath: String = ""
     lateinit var billOfLadingAdapter: BillOfLadingAdapter
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -148,9 +150,11 @@ class DeliveryCompletionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
         viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
+          setupImageRecyclerView()
 
+    }
 
-
+    private fun setupImageRecyclerView() {
         billOfLadingAdapter = BillOfLadingAdapter(BitmapListListener(
             { imageBitMap ->
                 val removeImage = {
@@ -170,11 +174,21 @@ class DeliveryCompletionFragment : Fragment() {
                 ).builder.show()
 
             }, { imageBitMap ->
-                var imageView = ImageView(context)
-                imageView.setImageBitmap(imageBitMap)
-                var alertDialog = AlertDialog.Builder(context)
-                alertDialog.setView(imageView)
-                alertDialog.show()
+
+
+                var alertDialog =
+                    AlertDialog.Builder(
+                        context,
+                        android.R.style.Theme_Black_NoTitleBar_Fullscreen
+                    )
+                alertDialog.setView(R.layout.each_image_view)
+                var dialog = alertDialog.create()
+                dialog.show()
+                dialog.findViewById<ImageView>(R.id.image_to_display).apply {
+                    setImageBitmap(imageBitMap)
+                    PhotoViewAttacher(this).update()
+                }
+
             })
         )
 
@@ -288,7 +302,7 @@ class DeliveryCompletionFragment : Fragment() {
         return true
     }
 
-    fun showGeneralErrors(view: EditText, error: String): Boolean {
+    private fun showGeneralErrors(view: EditText, error: String): Boolean {
         view.error = error
         return false
     }
@@ -414,6 +428,8 @@ class DeliveryCompletionFragment : Fragment() {
         }
     }
 
+
+
     private fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
@@ -441,6 +457,7 @@ class DeliveryCompletionFragment : Fragment() {
             false
         }
     }
+
 
 
 }

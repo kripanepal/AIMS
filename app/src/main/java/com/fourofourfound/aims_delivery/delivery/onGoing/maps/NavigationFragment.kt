@@ -212,7 +212,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
             object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {}
                 override fun onCalculateRouteFinished(
-                    routeResults: List<RouteResult>?,
+                    routeResults: List<RouteResult>,
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
