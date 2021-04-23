@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
@@ -69,6 +70,13 @@ class OngoingDeliveryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //return if no this is not an ongoing delivery
+        val deliveryArgs by navArgs<OngoingDeliveryFragmentArgs>()
+        var showMap = try {
+            deliveryArgs.showMap
+        } catch (e: Exception) {
+            false
+        }
+
         if (sharedViewModel.selectedTrip.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
@@ -76,7 +84,9 @@ class OngoingDeliveryFragment : Fragment() {
             }
             return goback
         }
-        if (sharedViewModel.selectedSourceOrSite.value == null) {
+
+        if (sharedViewModel.selectedSourceOrSite.value == null && !showMap) {
+
             findNavController().navigate(R.id.navigationFragment)
             return null
         }
@@ -102,6 +112,17 @@ class OngoingDeliveryFragment : Fragment() {
 
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
+        }
+
+        viewModel.fillingEnded.observe(viewLifecycleOwner)
+        {
+            if (it) {
+                binding.fillForm.visibility = View.VISIBLE
+                binding.endFilling.visibility = View.GONE
+                binding.fillForm.setOnClickListener {
+                    getFormConfirmation().builder.show()
+                }
+            }
         }
 
         return binding.root
@@ -150,10 +171,6 @@ class OngoingDeliveryFragment : Fragment() {
             preFillingDialog.arguments = args
             preFillingDialog.show(childFragmentManager, "PreFillingReadings")
 
-            viewModel.fillingEnded.observe(viewLifecycleOwner)
-            {
-                if (it) getFormConfirmation().builder.show()
-            }
         }
     }
 

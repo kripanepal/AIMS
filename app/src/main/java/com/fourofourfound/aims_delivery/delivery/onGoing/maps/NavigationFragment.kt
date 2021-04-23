@@ -2,11 +2,9 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,9 +52,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     var route: Route? = null
     private var fetchingDataInProgress = false
     private lateinit var sourceOrSite: SourceOrSite
-    private val timeoutHandler = Handler(Looper.getMainLooper())
     lateinit var parentViewModel: OngoingDeliveryViewModel
-    private var m_foregroundServiceStarted = false
 
 
     /**
@@ -74,8 +70,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
         if (sharedViewModel.selectedTrip.value === null || sharedViewModel.selectedSourceOrSite.value === null) {
 
-        }
-        else sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
+        } else sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
 
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
@@ -126,11 +121,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         initializeMap()
 
 
-        if(sharedViewModel.selectedSourceOrSite.value != null) {
+        if (sharedViewModel.selectedSourceOrSite.value != null) {
             setUpDraggableView()
-            binding.mapRecenter.setOnClickListener { recenter()}
-        }
-        else {
+            binding.mapRecenter.setOnClickListener { recenter() }
+        } else {
 
             binding.noTripText.visibility = View.VISIBLE
             binding.progressBarContainer.visibility = View.GONE
@@ -141,55 +135,69 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun showAllDestinations() {
         map.removeAllMapObjects()
-        sharedViewModel.selectedTrip?.apply {
-            val testPoints: MutableList<GeoCoordinate> = ArrayList()
+        sharedViewModel.selectedTrip.value?.apply {
+            val destinationPoints: MutableList<GeoCoordinate> = ArrayList()
+            val sorted = this.sourceOrSite.sortedBy {
+                it.seqNum
+            }
+            generateMarkers(sorted, destinationPoints)
+            createPolyLine(destinationPoints)
+            binding.mapRecenter.performClick()
+        }
+    }
 
+    private fun createPolyLine(destinationPoints: MutableList<GeoCoordinate>) {
+        var polyLine = GeoPolyline(destinationPoints)
+        var mapPolyLine = MapPolyline(polyLine)
+        mapPolyLine.lineWidth = 10
+        map.addMapObject(mapPolyLine)
+        binding.mapRecenter.setOnClickListener {
+            map.zoomTo(
+                polyLine.boundingBox!!,
+                Map.Animation.BOW,
+                17.0f,
+                90f
+            )
+        }
+    }
 
-                testPoints.add( GeoCoordinate(
-                   currentLatitude,
-                   currentLongitude
-                ))
+    private fun generateMarkers(
+        sorted: List<SourceOrSite>,
+        destinationPoints: MutableList<GeoCoordinate>
+    ) {
+        for (destination: SourceOrSite in sorted) {
+            val markerImage = Image()
+            try {
+                if (destination.status == StatusEnum.COMPLETED)
+                    markerImage.setImageResource(R.drawable.delivery_done)
+                else markerImage.setImageResource(R.drawable.delivery_not_done)
 
-            map.addMapObject(MapMarker(GeoCoordinate(
-                currentLatitude,
-                currentLongitude
-            )))
+            } catch (e: IOException) {
 
-            for(destination:SourceOrSite in this.value!!.sourceOrSite) {
-                val myImage = Image()
+            }
 
-                try {
-                    if(destination.status == StatusEnum.COMPLETED)
-                    myImage.setImageResource(R.drawable.delivery_done)
-                    else  myImage.setImageResource(R.drawable.delivery_not_done)
-
-                } catch (e: IOException) {
-
-                }
-
-                val myMapMarker = MapLabeledMarker(
-                    GeoCoordinate(
-                        destination.location.latitude,
-                        destination.location.longitude
-                    ),myImage
-                )
-                myMapMarker.setLabelText(map.mapDisplayLanguage,destination.location.destinationName)
-                myMapMarker.fontScalingFactor = 4F
-                myMapMarker.fontScalingFactor
-
-                testPoints.add( GeoCoordinate(
+            val mapMarker = MapLabeledMarker(
+                GeoCoordinate(
                     destination.location.latitude,
                     destination.location.longitude
-                ))
+                ), markerImage
+            )
+            mapMarker.setLabelText(
+                map.mapDisplayLanguage,
+                destination.location.destinationName
+            )
+            mapMarker.fontScalingFactor = 4F
 
-                map.addMapObject(myMapMarker)
-            }
-var polyLine = GeoPolyline(testPoints)
-            var mappl =  MapPolyline(polyLine)
-            mappl.lineWidth= 20
-            map.addMapObject(mappl)
-            binding.mapRecenter.setOnClickListener { map.zoomTo(polyLine.boundingBox!!,Map.Animation.BOW,17.0f,90f)}
-            binding.mapRecenter.performClick()
+
+            destinationPoints.add(
+                GeoCoordinate(
+                    destination.location.latitude,
+                    destination.location.longitude
+                )
+            )
+
+
+            map.addMapObject(mapMarker)
         }
     }
 
@@ -217,8 +225,8 @@ var polyLine = GeoPolyline(testPoints)
                     mapFragment.positionIndicator?.isVisible = true
 
 
-if(sharedViewModel.selectedSourceOrSite.value != null) checkAndCreateRoute()
-else if(sharedViewModel.selectedTrip.value!=null) showAllDestinations()
+                    if (sharedViewModel.selectedSourceOrSite.value != null) checkAndCreateRoute()
+                    else if (sharedViewModel.selectedTrip.value != null) showAllDestinations()
                 }
             }
         }
@@ -303,6 +311,7 @@ else if(sharedViewModel.selectedTrip.value!=null) showAllDestinations()
     }
 
     private fun onRouteCalculated() {
+        map.removeAllMapObjects()
         var givenRoute = route!!
         val mapRoute = MapRoute(givenRoute)
         mapRoute.isManeuverNumberVisible = true

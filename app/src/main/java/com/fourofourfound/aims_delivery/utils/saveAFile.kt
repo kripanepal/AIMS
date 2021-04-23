@@ -3,8 +3,6 @@ package com.fourofourfound.aims_delivery.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import android.os.Environment
-import android.util.Log
 import androidx.annotation.RequiresApi
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -23,7 +21,6 @@ fun bitmapToFile(
         file =
             File("/sdcard/Pictures/Aims/$fileNameToSave")
         file!!.createNewFile()
-        Log.i("AAAAAAA",file.path.toString())
 
         //Convert bitmap to byte array
         val bos = ByteArrayOutputStream()

@@ -1,8 +1,6 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.os.Bundle
-import android.transition.TransitionManager
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,16 +50,19 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             it?.apply { if (it.tripId == currentTrip.tripId) adapter.data = it.sourceOrSite }
         }
 
-        startTripOnClick(currentTrip)
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        animateViewVisibility(binding.root,binding.startTripText,true)
-        if(sharedViewModel.selectedTrip.value != null &&  sharedViewModel.selectedTrip.value!! != currentTrip) binding.startTripContainer.visibility = View.GONE
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
+
+        if (sharedViewModel.selectedTrip.value != null && sharedViewModel.selectedTrip.value!! != currentTrip) binding.startTripContainer.visibility =
+            View.GONE
+
 
         if (sharedViewModel.selectedSourceOrSite.value == null && sharedViewModel.selectedTrip.value != null) {
             binding.startTripText.text = "Deliver next"
@@ -70,6 +71,8 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         if (sharedViewModel.selectedSourceOrSite.value != null && sharedViewModel.selectedTrip.value != null) {
             binding.startTripText.text = "Continue Delivery"
         }
+
+        startTripOnClick(currentTrip)
     }
 
     /**
@@ -171,22 +174,37 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         currentTrip: Trip,
         sortedList: List<SourceOrSite>
     ) {
-        binding.startTripContainer.setOnClickListener {
-            if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
-                showStartTripDialog(sortedList[0], currentTrip)
-            } else {
-                if (sharedViewModel.selectedSourceOrSite.value == null) {
-                    markDestinationStart(sortedList[0])
+        if (sortedList.isEmpty()) {
+            binding.startTripText.text = "Trip Completed"
+            binding.startTrip.visibility = View.VISIBLE
+            animateViewVisibility(
+                binding.startTripContainer.rootView,
+                binding.startTripContainer,
+                true
+            )
+            //TODO need to inform aims dispatcher
+        } else {
+            animateViewVisibility(
+                binding.startTripContainer.rootView,
+                binding.startTripContainer,
+                true
+            )
+            binding.startTripContainer.setOnClickListener {
+                if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
+                    showStartTripDialog(sortedList[0], currentTrip)
                 } else {
-                    requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+                    if (sharedViewModel.selectedSourceOrSite.value == null) {
+                        markDestinationStart(sortedList[0])
+                    } else {
+                        requireActivity().bottom_navigation.selectedItemId =
+                            R.id.delivery_navigation
+                    }
                 }
+
             }
-
         }
+
     }
-
-
-
 
     private fun markDestinationStart(sourceOrSite: SourceOrSite) {
         var time = Calendar.getInstance()

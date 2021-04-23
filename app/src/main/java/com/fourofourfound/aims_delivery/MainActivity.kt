@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 var noActionBar = listOf(R.id.loginFragment, R.id.navigationFragment)
                 var noBottomNavigation = listOf(R.id.loginFragment, R.id.deliveryCompletionFragment)
-
                 if (destination.id in noActionBar) hideActionBar(this)
                 else showActionBar(this)
                 if (destination.id in noBottomNavigation) hideBottomNavigation(this)

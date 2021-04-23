@@ -10,8 +10,9 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
-import android.view.*
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,8 +55,6 @@ class DeliveryCompletionFragment : Fragment() {
     lateinit var getContent: ActivityResultLauncher<Intent>
     var currentPhotoPath: String = ""
     lateinit var billOfLadingAdapter: BillOfLadingAdapter
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -368,9 +367,14 @@ class DeliveryCompletionFragment : Fragment() {
                 )
                 sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
                     StatusEnum.COMPLETED
-                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
                 dialog.dismiss()
-                findNavController().navigateUp()
+                findNavController().navigate(
+                    DeliveryCompletionFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment(
+                        true
+                    )
+                )
+                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+
                 //TODO need to manage this
                 sharedViewModel.selectedSourceOrSite.value = null
             }

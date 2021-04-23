@@ -113,6 +113,12 @@
                 android:layout_height="wrap_content"
                 android:text="Start Filling" />
 
+            <Button
+                android:id="@+id/fill_form"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fill Form"
+                android:visibility="gone" />
 
             <ImageView
                 android:layout_marginBottom="10dp"

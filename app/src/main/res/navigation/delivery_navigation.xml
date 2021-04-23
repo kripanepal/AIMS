@@ -12,6 +12,9 @@
         <action
             android:id="@+id/actionOngoingDeliveryFragmentToDeliveryCompletionFragment"
             app:destination="@id/deliveryCompletionFragment" />
+        <argument
+            android:name="showMap"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/navigationFragment"
@@ -33,7 +36,8 @@
         <action
             android:id="@+id/action_deliveryCompletionFragment_to_ongoingDeliveryFragment"
             app:destination="@id/ongoingDeliveryFragment"
-            app:popUpTo="@id/ongoingDeliveryFragment" />
+            app:popUpTo="@id/ongoingDeliveryFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="trailerBeginReading"
             app:argType="java.lang.Double" />
