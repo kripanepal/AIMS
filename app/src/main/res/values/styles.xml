@@ -15,6 +15,7 @@
         <item name="android:inputType">number</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:layout_margin">5dp</item>
+        <item name="android:layout_marginHorizontal">15dp</item>
     </style>
 
     <style name="roundedImageView">

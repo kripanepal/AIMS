@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.StatusEnum
@@ -150,7 +151,10 @@ class DeliveryCompletionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
         viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
-          setupImageRecyclerView()
+        setupImageRecyclerView()
+        binding.formParentView.setOnClickListener {
+            hideSoftKeyboard(requireActivity())
+        }
 
     }
 
@@ -209,6 +213,9 @@ class DeliveryCompletionFragment : Fragment() {
         viewModel.imageBitmaps.observe(viewLifecycleOwner) { bitmap ->
             bitmap?.apply {
                 billOfLadingAdapter.submitList(this)
+                binding.formScrollView.post {
+                    binding.formScrollView.fullScroll(View.FOCUS_DOWN)
+                }
             }
         }
     }
@@ -318,7 +325,12 @@ class DeliveryCompletionFragment : Fragment() {
     private fun initializeViewModelVariables() {
         viewModel.startTime = args.startDateAndTime
         viewModel.endTime = args.endDateAndTime
-
+        viewModel.trailerBeginReading.value = args.trailerBeginReading
+        viewModel.trailerEndReading.value = args.trailerEndReading
+        viewModel.meterReadingBefore.value = args.meterBeginReading
+        viewModel.meterReadingAfter.value = args.meterEndReading
+        viewModel.stickReadingBefore.value = args.stickBeginReading
+        viewModel.stickReadingAfter.value = args.stickEndReading
 
     }
 

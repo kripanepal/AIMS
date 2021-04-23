@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.source_or_site_info.*
 import java.util.*
 
 
@@ -71,13 +69,18 @@ class OngoingDeliveryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //return if no this is not an ongoing delivery
-        if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
+        if (sharedViewModel.selectedTrip.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
             }
             return goback
         }
+        if (sharedViewModel.selectedSourceOrSite.value == null) {
+            findNavController().navigate(R.id.navigationFragment)
+            return null
+        }
+
 
         //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
@@ -86,7 +89,6 @@ class OngoingDeliveryFragment : Fragment() {
             container,
             false
         )
-
 
 
         //assigning value to viewModel that is used by the layout
@@ -150,7 +152,7 @@ class OngoingDeliveryFragment : Fragment() {
 
             viewModel.fillingEnded.observe(viewLifecycleOwner)
             {
-                if(it) showFormSendingData()
+                if (it) getFormConfirmation().builder.show()
             }
         }
     }
@@ -167,6 +169,12 @@ class OngoingDeliveryFragment : Fragment() {
                         currentSourceOrSite,
                         viewModel.startDateAndTime,
                         viewModel.endDateAndTime,
+                        viewModel.trailerReadingBegin.value!!,
+                        viewModel.trailerReadingEnd.value!!,
+                        viewModel.meterReadingBegin.value,
+                        viewModel.meterReadingEnd.value,
+                        viewModel.stickReadingBegin.value,
+                        viewModel.stickReadingEnd.value
                     )
                 )
 
@@ -175,49 +183,6 @@ class OngoingDeliveryFragment : Fragment() {
             null,
             false
         )
-
-
-    }
-
-    private fun showFormSendingData() {
-        var endTime = Calendar.getInstance()
-
-        CustomDialogBuilder(
-            requireContext(),
-            "Sending product delivery/pickup completed message",
-            String.format(
-                "Time Stamp: %d-%d-%d %d:%d " +
-                        "\nDriver ID: %s " +
-                        "\nTrip ID: %d " +
-                        "\nDestination ID: %d " +
-                        "\nProduct ID: %s " +
-                        "\nStart Time: %d:%d " +
-                        "\nEnd Time: %d:%d " +
-                        "\nGross Qty: %d " +
-                        "\nNet Qty: %d",
-                endTime.get(Calendar.YEAR),
-                endTime.get(Calendar.MONTH),
-                endTime.get(Calendar.DAY_OF_MONTH),
-                endTime.get(Calendar.HOUR_OF_DAY),
-                endTime.get(Calendar.MINUTE),
-                sharedViewModel.driver.driver_id,
-                sharedViewModel.selectedTrip.value!!.tripId,
-                currentSourceOrSite.seqNum,
-                currentSourceOrSite.productInfo.productId,
-                viewModel.startDateAndTime.get(Calendar.HOUR_OF_DAY),
-                viewModel.startDateAndTime.get(Calendar.MINUTE),
-                viewModel.endDateAndTime.get(Calendar.HOUR_OF_DAY),
-                viewModel.endDateAndTime.get(Calendar.MINUTE),
-                1000,
-                1000
-            ),
-
-            "Ok",
-            { getFormConfirmation().builder.show() },
-            null,
-            null,
-            false
-        ).builder.show()
     }
 
     private fun observeDestination() {

@@ -10,7 +10,7 @@
 
         android:label="Current Trip">
         <action
-            android:id="@+id/action_ongoingDeliveryFragment_to_deliveryCompletionFragment"
+            android:id="@+id/actionOngoingDeliveryFragmentToDeliveryCompletionFragment"
             app:destination="@id/deliveryCompletionFragment" />
     </fragment>
     <fragment
@@ -34,6 +34,26 @@
             android:id="@+id/action_deliveryCompletionFragment_to_ongoingDeliveryFragment"
             app:destination="@id/ongoingDeliveryFragment"
             app:popUpTo="@id/ongoingDeliveryFragment" />
+        <argument
+            android:name="trailerBeginReading"
+            app:argType="java.lang.Double" />
+        <argument android:name="trailerEndReading"
+            app:argType="java.lang.Double" />
+        <argument
+            android:name="meterBeginReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument
+            android:name="meterEndReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument
+            android:name="stickBeginReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument android:name="stickEndReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

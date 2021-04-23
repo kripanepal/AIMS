@@ -2,9 +2,11 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 
 import android.app.AlertDialog
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,7 @@ import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproach
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aims_delivery.utils.animateViewVisibility
 import com.fourofourfound.aims_delivery.utils.isDarkModeOn
 import com.fourofourfound.aimsdelivery.R
@@ -27,13 +30,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
-import com.here.android.mpa.mapping.AndroidXMapFragment
+import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
-import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -70,11 +73,11 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_navigation, container, false)
         if (sharedViewModel.selectedTrip.value === null || sharedViewModel.selectedSourceOrSite.value === null) {
-            findNavController().navigate(R.id.ongoingDeliveryFragment)
-            return binding.root
-        }
 
-        sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
+        }
+        else sourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
+
+
         viewModel = ViewModelProvider(this).get(NavigationViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -85,29 +88,29 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun setUpDraggableView() {
-val bottomSheetCallBack = object:BottomSheetBehavior.BottomSheetCallback()
-{
+        val bottomSheetCallBack = object : BottomSheetBehavior.BottomSheetCallback() {
 
-    fun changeMarginToDraggableView(view: View, expanded: Float) {
-        val draggableView = binding.draggableView
-        var layoutParams =( view.layoutParams as ViewGroup.MarginLayoutParams )
-        layoutParams.bottomMargin = (((draggableView.height*expanded)/1.4)+ BottomSheetBehavior.from(
-            draggableView
-        ).peekHeight).toInt()
-        view.layoutParams = layoutParams
-    }
+            fun changeMarginToDraggableView(view: View, expanded: Float) {
+                val draggableView = binding.draggableView
+                var layoutParams = (view.layoutParams as ViewGroup.MarginLayoutParams)
+                layoutParams.bottomMargin =
+                    (((draggableView.height * expanded) / 1.4) + BottomSheetBehavior.from(
+                        draggableView
+                    ).peekHeight).toInt()
+                view.layoutParams = layoutParams
+            }
 
-    override fun onStateChanged(bottomSheet: View, newState: Int) {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
 
-    }
+            }
 
-    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-        changeMarginToDraggableView(binding.mapRecenter, slideOffset)
-        changeMarginToDraggableView(binding.speedInfoContainer, slideOffset)
-    }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                changeMarginToDraggableView(binding.mapRecenter, slideOffset)
+                changeMarginToDraggableView(binding.speedInfoContainer, slideOffset)
+            }
 
-}
-BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomSheetCallBack)
+        }
+        BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomSheetCallBack)
         binding.destinationInfo.apply {
             sourceOrSiteName.text = sourceOrSite.location.destinationName
             address.text = sourceOrSite.location.address1
@@ -121,9 +124,73 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeMap()
-        setUpDraggableView()
 
-        binding.mapRecenter.setOnClickListener{recenter()}
+
+        if(sharedViewModel.selectedSourceOrSite.value != null) {
+            setUpDraggableView()
+            binding.mapRecenter.setOnClickListener { recenter()}
+        }
+        else {
+
+            binding.noTripText.visibility = View.VISIBLE
+            binding.progressBarContainer.visibility = View.GONE
+
+        }
+
+    }
+
+    private fun showAllDestinations() {
+        map.removeAllMapObjects()
+        sharedViewModel.selectedTrip?.apply {
+            val testPoints: MutableList<GeoCoordinate> = ArrayList()
+
+
+                testPoints.add( GeoCoordinate(
+                   currentLatitude,
+                   currentLongitude
+                ))
+
+            map.addMapObject(MapMarker(GeoCoordinate(
+                currentLatitude,
+                currentLongitude
+            )))
+
+            for(destination:SourceOrSite in this.value!!.sourceOrSite) {
+                val myImage = Image()
+
+                try {
+                    if(destination.status == StatusEnum.COMPLETED)
+                    myImage.setImageResource(R.drawable.delivery_done)
+                    else  myImage.setImageResource(R.drawable.delivery_not_done)
+
+                } catch (e: IOException) {
+
+                }
+
+                val myMapMarker = MapLabeledMarker(
+                    GeoCoordinate(
+                        destination.location.latitude,
+                        destination.location.longitude
+                    ),myImage
+                )
+                myMapMarker.setLabelText(map.mapDisplayLanguage,destination.location.destinationName)
+                myMapMarker.fontScalingFactor = 4F
+                myMapMarker.fontScalingFactor
+
+                testPoints.add( GeoCoordinate(
+                    destination.location.latitude,
+                    destination.location.longitude
+                ))
+
+                map.addMapObject(myMapMarker)
+            }
+var polyLine = GeoPolyline(testPoints)
+            var mappl =  MapPolyline(polyLine)
+            mappl.lineWidth= 20
+            map.addMapObject(mappl)
+            binding.mapRecenter.setOnClickListener { map.zoomTo(polyLine.boundingBox!!,Map.Animation.BOW,17.0f,90f)}
+            binding.mapRecenter.performClick()
+        }
     }
 
 
@@ -150,12 +217,13 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                     mapFragment.positionIndicator?.isVisible = true
 
 
-
-                    checkAndCreateRoute()
+if(sharedViewModel.selectedSourceOrSite.value != null) checkAndCreateRoute()
+else if(sharedViewModel.selectedTrip.value!=null) showAllDestinations()
                 }
             }
         }
     }
+
 
     private fun checkAndCreateRoute() {
         if (route == null) {
@@ -179,6 +247,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                 ).builder.show()
             } else {
                 //TODO need to change these parameters
+                //TODO need to change these parameters
                 routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
                 routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
                     .setTruckLength(25.25f)
@@ -201,8 +270,8 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
         val destination =
             RouteWaypoint(
                 GeoCoordinate(
-                    sourceOrSite.location.latitude,
-                    sourceOrSite.location.longitude
+                    sourceOrSite!!.location.latitude,
+                    sourceOrSite!!.location.longitude
                 )
             )
         routePlan.addWaypoint(startPoint)
@@ -216,7 +285,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
-                        if (routeResults!![0].route != null) {
+                        if (routeResults[0].route != null) {
                             route = routeResults[0].route
 
                             onRouteCalculated()
@@ -254,7 +323,6 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
     }
 
 
-
     private fun startNavigation() {
         changeNextManeuverTexts()
         navigationManager.setMap(map)
@@ -290,7 +358,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
             changeViewsVisibility()
             bottomSheetNavigationStarted()
             mapFragment.onResume()
-            mapFragment.map?.positionIndicator?.isVisible  = true
+            mapFragment.map?.positionIndicator?.isVisible = true
         }
         recenter()
         addListeners()
@@ -337,7 +405,6 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
         navigationManager.addNewInstructionEventListener(WeakReference(instructListener))
         setUpVoiceNavigation()
     }
-
 
 
     private fun removeListeners() {
@@ -396,7 +463,7 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
             }
 
             if (positionCoordinates != null && positionCoordinates.isValid && positionCoordinates is MatchedGeoPosition) {
-                mapFragment.map?.positionIndicator?.isVisible  = true
+                mapFragment.map?.positionIndicator?.isVisible = true
                 var completedDistance = navigationManager.elapsedDistance.toInt()
                 val remainingDistance = navigationManager.destinationDistance.toDouble()
 
@@ -404,8 +471,11 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
                 //meter to miles
 
-                var formatted =if(navigationManager.nextManeuverDistance<Long.MAX_VALUE)
-                    String.format("%.2f", navigationManager.nextManeuverDistance * 0.000621371) else "calculating"
+                var formatted = if (navigationManager.nextManeuverDistance < Long.MAX_VALUE)
+                    String.format(
+                        "%.2f",
+                        navigationManager.nextManeuverDistance * 0.000621371
+                    ) else "calculating"
                 binding.remainingDistance.text = formatted
 
                 var currentSpeedLimit = 0.0
@@ -414,15 +484,16 @@ BottomSheetBehavior.from(binding.draggableView).addBottomSheetCallback(bottomShe
                     currentSpeedLimit = positionCoordinates.roadElement!!.speedLimit.toDouble()
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
-                val millis =(navigationManager.getEta(true, Route.TrafficPenaltyMode.OPTIMAL).time ).minus(
-                    Calendar.getInstance().time.time
-                )
+                val millis =
+                    (navigationManager.getEta(true, Route.TrafficPenaltyMode.OPTIMAL).time).minus(
+                        Calendar.getInstance().time.time
+                    )
                 val hours = (millis / (1000 * 60 * 60))
-                val mins =  ((millis / (1000 * 60)) % 60)
-                var remainingTime = if(hours>0) "$hours hr $mins min" else "$mins min"
+                val mins = ((millis / (1000 * 60)) % 60)
+                var remainingTime = if (hours > 0) "$hours hr $mins min" else "$mins min"
                 binding.remainingTime.text = remainingTime
 
-                if(!parentViewModel.destinationApproaching && navigationManager.destinationDistance<1000 && navigationManager.destinationDistance>10) {
+                if (!parentViewModel.destinationApproaching && navigationManager.destinationDistance < 1000 && navigationManager.destinationDistance > 10) {
                     //TODO same context is unavailable when orientation changes
                     showDestinationApproachingDialog(requireContext())
                     parentViewModel.destinationApproaching = true
