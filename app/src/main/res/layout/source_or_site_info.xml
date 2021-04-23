@@ -8,27 +8,27 @@
         android:id="@+id/sourceOrSiteName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/teko_semibold"
+        android:fontFamily="sans-serif-black"
         android:paddingBottom="5dp"
         android:textColor="@color/Aims_Orange"
-        android:textSize="25dp"
+        android:textSize="@dimen/text_size_large"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-black"
         android:paddingBottom="5dp"
         android:textColor="@color/Aims_light_orange"
-        android:textSize="15dp"
-        android:textStyle="italic" />
+        android:textSize="@dimen/text_size_medium"
+         />
 
     <TextView
         android:id="@+id/product_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-black"
         android:paddingBottom="5dp"
         android:textSize="15dp" />
 
@@ -36,7 +36,7 @@
         android:id="@+id/product_qty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-black"
         android:textSize="15dp" />
 
 
