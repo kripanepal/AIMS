@@ -14,12 +14,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.delivery.onGoing.OngoingDeliveryViewModel
-import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
+import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aims_delivery.utils.animateViewVisibility
 import com.fourofourfound.aims_delivery.utils.isDarkModeOn
 import com.fourofourfound.aimsdelivery.R
@@ -28,13 +27,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
-import com.here.android.mpa.mapping.*
+import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
+import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -52,7 +51,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     var route: Route? = null
     private var fetchingDataInProgress = false
     private lateinit var sourceOrSite: SourceOrSite
-    lateinit var parentViewModel: OngoingDeliveryViewModel
+    private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
 
 
     /**
@@ -78,7 +77,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         binding.lifecycleOwner = this
         binding.destinationReachedBtn.setOnClickListener { destinationReached() }
         sharedViewModel.activeRoute?.apply { route = this }
-        parentViewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
+
         return binding.root
     }
 
@@ -124,82 +123,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         if (sharedViewModel.selectedSourceOrSite.value != null) {
             setUpDraggableView()
             binding.mapRecenter.setOnClickListener { recenter() }
-        } else {
-
-            binding.noTripText.visibility = View.VISIBLE
-            binding.progressBarContainer.visibility = View.GONE
-
-        }
-
+        } else binding.progressBarContainer.visibility = View.GONE
     }
 
-    private fun showAllDestinations() {
-        map.removeAllMapObjects()
-        sharedViewModel.selectedTrip.value?.apply {
-            val destinationPoints: MutableList<GeoCoordinate> = ArrayList()
-            val sorted = this.sourceOrSite.sortedBy {
-                it.seqNum
-            }
-            generateMarkers(sorted, destinationPoints)
-            createPolyLine(destinationPoints)
-            binding.mapRecenter.performClick()
-        }
-    }
 
-    private fun createPolyLine(destinationPoints: MutableList<GeoCoordinate>) {
-        var polyLine = GeoPolyline(destinationPoints)
-        var mapPolyLine = MapPolyline(polyLine)
-        mapPolyLine.lineWidth = 10
-        map.addMapObject(mapPolyLine)
-        binding.mapRecenter.setOnClickListener {
-            map.zoomTo(
-                polyLine.boundingBox!!,
-                Map.Animation.BOW,
-                17.0f,
-                90f
-            )
-        }
-    }
-
-    private fun generateMarkers(
-        sorted: List<SourceOrSite>,
-        destinationPoints: MutableList<GeoCoordinate>
-    ) {
-        for (destination: SourceOrSite in sorted) {
-            val markerImage = Image()
-            try {
-                if (destination.status == StatusEnum.COMPLETED)
-                    markerImage.setImageResource(R.drawable.delivery_done)
-                else markerImage.setImageResource(R.drawable.delivery_not_done)
-
-            } catch (e: IOException) {
-
-            }
-
-            val mapMarker = MapLabeledMarker(
-                GeoCoordinate(
-                    destination.location.latitude,
-                    destination.location.longitude
-                ), markerImage
-            )
-            mapMarker.setLabelText(
-                map.mapDisplayLanguage,
-                destination.location.destinationName
-            )
-            mapMarker.fontScalingFactor = 4F
-
-
-            destinationPoints.add(
-                GeoCoordinate(
-                    destination.location.latitude,
-                    destination.location.longitude
-                )
-            )
-
-
-            map.addMapObject(mapMarker)
-        }
-    }
 
 
     private fun initializeMap() {
@@ -226,7 +153,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
 
                     if (sharedViewModel.selectedSourceOrSite.value != null) checkAndCreateRoute()
-                    else if (sharedViewModel.selectedTrip.value != null) showAllDestinations()
                 }
             }
         }
@@ -352,7 +278,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
                 }
                 alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
-                    navigationManager.simulate(route!!, 100)
+                    navigationManager.simulate(route!!, 200)
                     sharedViewModel.activeRoute = route
                     bottomSheetNavigationStarted()
                     changeViewsVisibility()
@@ -400,11 +326,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private fun changeViewsVisibility() {
         binding.deliveryProgress.visibility = View.VISIBLE
         animateViewVisibility(binding.root, binding.nextInfoContainer, true)
-
-
     }
 
     private fun addListeners() {
+
         mapFragment.mapGesture!!.addOnGestureListener(MyOnGestureListener(), 1, false)
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
@@ -418,6 +343,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun removeListeners() {
         navigationManager.apply {
+            deliveryStatusViewModel.locationRepository.addListener()
             navigationManager.removeRerouteListener(rerouteListener)
             navigationManager.removeNavigationManagerEventListener(routeCompleteListener)
             MapDataPrefetcher.getInstance().removeListener(prefetchListener)
@@ -502,11 +428,12 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 var remainingTime = if (hours > 0) "$hours hr $mins min" else "$mins min"
                 binding.remainingTime.text = remainingTime
 
-                if (!parentViewModel.destinationApproaching && navigationManager.destinationDistance < 1000 && navigationManager.destinationDistance > 10) {
-                    //TODO same context is unavailable when orientation changes
-                    showDestinationApproachingDialog(requireContext())
-                    parentViewModel.destinationApproaching = true
-                }
+
+                deliveryStatusViewModel.locationRepository.coordinates.value = GeoCoordinates(
+                    positionCoordinates.coordinate.latitude,
+                    positionCoordinates.coordinate.longitude
+                )
+
 
             }
         }

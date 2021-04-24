@@ -39,17 +39,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:textColor="@color/black"
-                android:gravity="center"
-                android:background="#99FF0004"
-                android:id="@+id/no_trip_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Delivery Info not available"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
             <RelativeLayout
                 android:visibility="gone"

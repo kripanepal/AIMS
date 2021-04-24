@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -155,6 +156,22 @@ class DeliveryCompletionFragment : Fragment() {
             hideSoftKeyboard(requireActivity())
         }
 
+        viewModel.formSubmitted.observe(viewLifecycleOwner)
+        { status ->
+            if (status) {
+                Log.i("Changing", sharedViewModel.selectedTrip.value!!.sourceOrSite.toString())
+                sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
+                    StatusEnum.COMPLETED
+                Log.i("Changed", sharedViewModel.selectedTrip.value!!.sourceOrSite.toString())
+                findNavController().navigate(
+                    DeliveryCompletionFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment()
+                )
+                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+
+                //TODO need to manage this
+                sharedViewModel.selectedSourceOrSite.value = null
+            }
+        }
     }
 
     private fun setupImageRecyclerView() {
@@ -357,27 +374,7 @@ class DeliveryCompletionFragment : Fragment() {
 
         dialog.findViewById<Button>(R.id.signature_done).setOnClickListener {
 
-            var beta = { //TODO need to save the captured image bitmap in the database
-                val signatureBitMap = signaturePad.signatureBitmap
-                dialog.cancel()
-                viewModel.submitForm()
-                viewModel.updateDeliveryStatus(
-                    sharedViewModel.selectedTrip.value!!.tripId,
-                    StatusEnum.COMPLETED
-                )
-                sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }?.status =
-                    StatusEnum.COMPLETED
-                dialog.dismiss()
-                findNavController().navigate(
-                    DeliveryCompletionFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment(
-                        true
-                    )
-                )
-                requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
-                //TODO need to manage this
-                sharedViewModel.selectedSourceOrSite.value = null
-            }
 
             var time = Calendar.getInstance()
 
@@ -411,7 +408,16 @@ class DeliveryCompletionFragment : Fragment() {
                     viewModel.netQty.value
                 ),
                 "OK",
-                beta,
+                { //TODO need to save the captured image bitmap in the database
+                    val signatureBitMap = signaturePad.signatureBitmap
+                    dialog.cancel()
+                    viewModel.submitForm()
+                    viewModel.updateDeliveryStatus(
+                        sharedViewModel.selectedTrip.value!!.tripId,
+                        StatusEnum.COMPLETED
+                    )
+                    Log.i("Bhaisakyo", "Form ko ho hai")
+                },
                 null,
                 null,
                 false

@@ -26,7 +26,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     var userLoggedIn = MutableLiveData(false)
     var isLocationBroadcastReceiverInitialized: Boolean = false
     var activeRoute: com.here.android.mpa.routing.Route? = null
-    var selectedTrip = MutableLiveData<Trip>()
+    var selectedTrip = MutableLiveData<Trip?>()
     var selectedSourceOrSite = MutableLiveData<SourceOrSite>()
     val internetConnection = CheckInternetConnection(application)
     val loading = MutableLiveData(false)

@@ -45,6 +45,7 @@ class DeliveryCompletionViewModel(
     var meterReadingBefore = MutableLiveData<Double>(null)
     var meterReadingAfter = MutableLiveData<Double>(null)
     var imageBitmaps = MutableLiveData<MutableList<Bitmap>>()
+    var formSubmitted = MutableLiveData(false)
 
     fun submitForm() {
         var formToSubmit = DatabaseCompletionForm(
@@ -79,8 +80,9 @@ class DeliveryCompletionViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 tripListRepository.sendFormData(formToSubmit)
-            }
 
+            }
+            formSubmitted.value = true
         }
     }
 

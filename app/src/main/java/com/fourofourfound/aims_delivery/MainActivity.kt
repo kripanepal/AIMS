@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
+import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
+import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
+import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationLeaving
+import com.fourofourfound.aims_delivery.domain.GeoCoordinates
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
@@ -30,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var noInternetText: TextView
     lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
     lateinit var sharedViewModel: SharedViewModel
+    lateinit var deliveryStatusViewModel: DeliveryStatusViewModel
     private var currentNavController: LiveData<NavController>? = null
     lateinit var dialog: AlertDialog
 
@@ -60,6 +67,9 @@ class MainActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         observeLoading()
+
+
+        trackDestinationApproaching()
     }
 
     /**
@@ -161,6 +171,7 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (currentNavController?.value?.currentDestination?.id != R.id.loginFragment) {
             locationPermissionUtil.onPermissionSelected()
         }
@@ -194,6 +205,66 @@ class MainActivity : AppCompatActivity() {
         } else {
             navController.navigateUp()
         }
+
+    }
+
+    private fun trackDestinationApproaching() {
+
+        try {
+            sharedViewModel.selectedSourceOrSite.observe(this) {
+                deliveryStatusViewModel =
+                    ViewModelProvider(this).get(DeliveryStatusViewModel::class.java)
+                val locationRepository = deliveryStatusViewModel.locationRepository
+
+                if (it != null) {
+                    if (deliveryStatusViewModel.currentDestination != it.location) {
+                        Log.i("BBBBBBBBBBBB", "Changed")
+                        deliveryStatusViewModel.previousDestination =
+                            deliveryStatusViewModel.currentDestination
+                        deliveryStatusViewModel.currentDestination = it.location
+
+
+                        val destination =
+                            GeoCoordinates(it.location.latitude, it.location.longitude)
+                        locationRepository.coordinates.observe(this@MainActivity)
+                        { currentCoordinates ->
+                            Log.i("BBBBBBBBBBBB", currentCoordinates.toString())
+                            if (checkDistanceToDestination(
+                                    currentCoordinates,
+                                    destination
+                                ) < 1000 && !deliveryStatusViewModel.destinationApproaching
+                            ) {
+                                showDestinationApproachingDialog(this@MainActivity)
+                                deliveryStatusViewModel.destinationApproaching = true
+                            }
+                        }
+
+
+                        deliveryStatusViewModel.previousDestination?.apply {
+                            val oldDestination =
+                                GeoCoordinates(this.latitude, this.longitude)
+                            locationRepository.coordinates.observe(this@MainActivity)
+                            { currentCoordinates ->
+                                var distance = checkDistanceToDestination(
+                                    currentCoordinates,
+                                    oldDestination
+                                )
+                                if (distance > 1000 && !deliveryStatusViewModel.destinationLeaving
+                                ) {
+                                    Log.i("AAAAAAAAAAA", "Sending")
+                                    showDestinationLeaving(this@MainActivity)
+                                    deliveryStatusViewModel.destinationLeaving = true
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+        }
+
 
     }
 }

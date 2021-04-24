@@ -182,7 +182,8 @@ dependencies {
     //zoomable image view
     compile 'com.commit451:PhotoView:1.2.4'
 
-
+    //database libaray
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
 
 

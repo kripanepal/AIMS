@@ -13,11 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
-import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
-import com.fourofourfound.aims_delivery.repository.LocationRepository
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
@@ -69,26 +66,14 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //return if no this is not an ongoing delivery
-        val deliveryArgs by navArgs<OngoingDeliveryFragmentArgs>()
-        var showMap = try {
-            deliveryArgs.showMap
-        } catch (e: Exception) {
-            false
-        }
 
-        if (sharedViewModel.selectedTrip.value == null) {
+
+        if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
             }
             return goback
-        }
-
-        if (sharedViewModel.selectedSourceOrSite.value == null && !showMap) {
-
-            findNavController().navigate(R.id.navigationFragment)
-            return null
         }
 
 
@@ -106,9 +91,11 @@ class OngoingDeliveryFragment : Fragment() {
         binding.lifecycleOwner = this
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
 
-        if (sharedViewModel.activeRoute !== null) {
+        sharedViewModel.activeRoute?.apply {
             binding.startFilling.visibility = View.GONE
         }
+
+
 
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
@@ -245,8 +232,8 @@ class OngoingDeliveryFragment : Fragment() {
 
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
-                trackDestinationApproaching()
-                (activity as AppCompatActivity).supportActionBar?.title =
+
+            (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
 
                 viewModel.destination?.also {
@@ -265,23 +252,5 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
-    private fun trackDestinationApproaching() {
-        val locationRepository = LocationRepository(requireContext())
-        val destination = GeoCoordinates(
-            currentSourceOrSite.location.latitude,
-            currentSourceOrSite.location.longitude
-        )
-        locationRepository.coordinates.observe(viewLifecycleOwner)
-        {
-            if (checkDistanceToDestination(
-                    it,
-                    destination
-                ) && !viewModel.destinationApproaching
-            ) {
-                showDestinationApproachingDialog(requireContext())
-                viewModel.destinationApproaching = true
-            }
-        }
-    }
 
 }

@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -34,11 +33,11 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     var meterReadingEnd = MutableLiveData(0.0)
     var trailerReadingEnd = MutableLiveData(0.0)
 
+    var fillingStarted = MutableLiveData(false)
+    var fillingEnded = MutableLiveData(false)
 
 
     var destinationApproaching = false
-    var fillingStarted = MutableLiveData(false)
-    var fillingEnded = MutableLiveData(false)
 
 
     fun updateFuelInfo(trailerId: Int, fuelQuantity: Double) {

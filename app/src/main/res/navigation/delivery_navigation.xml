@@ -12,9 +12,6 @@
         <action
             android:id="@+id/actionOngoingDeliveryFragmentToDeliveryCompletionFragment"
             app:destination="@id/deliveryCompletionFragment" />
-        <argument
-            android:name="showMap"
-            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/navigationFragment"

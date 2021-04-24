@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -163,6 +164,7 @@ class HomePage : Fragment() {
                 currentTripAdapter.submitList(this)
                 if (this.isNotEmpty()) {
                     var selectedTrip = this[0]
+                    Log.i("TripChange1", selectedTrip.sourceOrSite.toString())
                     sharedViewModel.selectedTrip.value = selectedTrip
                     var selectedDestination =
                         selectedTrip.sourceOrSite.find { each -> each.status == StatusEnum.ONGOING }
