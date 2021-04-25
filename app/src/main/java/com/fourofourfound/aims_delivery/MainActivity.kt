@@ -2,7 +2,6 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -218,7 +217,6 @@ class MainActivity : AppCompatActivity() {
 
                 if (it != null) {
                     if (deliveryStatusViewModel.currentDestination != it.location) {
-                        Log.i("BBBBBBBBBBBB", "Changed")
                         deliveryStatusViewModel.previousDestination =
                             deliveryStatusViewModel.currentDestination
                         deliveryStatusViewModel.currentDestination = it.location
@@ -228,7 +226,6 @@ class MainActivity : AppCompatActivity() {
                             GeoCoordinates(it.location.latitude, it.location.longitude)
                         locationRepository.coordinates.observe(this@MainActivity)
                         { currentCoordinates ->
-                            Log.i("BBBBBBBBBBBB", currentCoordinates.toString())
                             if (checkDistanceToDestination(
                                     currentCoordinates,
                                     destination
@@ -251,7 +248,6 @@ class MainActivity : AppCompatActivity() {
                                 )
                                 if (distance > 1000 && !deliveryStatusViewModel.destinationLeaving
                                 ) {
-                                    Log.i("AAAAAAAAAAA", "Sending")
                                     showDestinationLeaving(this@MainActivity)
                                     deliveryStatusViewModel.destinationLeaving = true
                                 }

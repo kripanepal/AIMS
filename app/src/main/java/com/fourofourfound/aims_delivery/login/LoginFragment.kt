@@ -1,7 +1,5 @@
 package com.fourofourfound.aims_delivery.login
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.showStartCallDialog
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
@@ -83,6 +80,12 @@ class LoginFragment : Fragment() {
                 viewModel.doneNavigatingToHomePage()
             }
         })
+
+
+        findNavController().navigate(R.id.homePage)
+        sharedViewModel.userLoggedIn.value = true
+        viewModel.doneNavigatingToHomePage()
+
 
         //show dialog listener
         binding.contactMyProvider.setOnClickListener {
