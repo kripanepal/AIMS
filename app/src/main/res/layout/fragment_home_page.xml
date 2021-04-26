@@ -18,6 +18,7 @@
         tools:context="com.fourofourfound.aims_delivery.homePage.HomePage">
 
 
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
@@ -26,6 +27,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <LinearLayout
                 android:paddingHorizontal="@dimen/app_horizontal_margin"
@@ -152,11 +158,10 @@
 
             </LinearLayout>
 
+            </ScrollView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </layout>
