@@ -1,13 +1,17 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.htmlToText
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
@@ -34,56 +38,81 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
 
+        if (item.status == StatusEnum.ONGOING) {
+            holder.itemView.parentConstraint.apply {
+                deepChangeTextColor(this)
+
+            }
+        }
+
         holder.itemView.sourceOrSiteInfo.apply {
             sourceOrSiteName.text = item.location.destinationName
             address.text = item.location.address1
             product_desc.text = item.productInfo.productDesc
-            product_qty.text = item.productInfo.requestedQty.toString() + " " + item.productInfo.uom
+            val qtyText = "${item.productInfo.requestedQty.toString()} ${item.productInfo.uom}"
+            product_qty.text = qtyText
 
         }
 
-        holder.itemView.load_notes.text = item.productInfo.fill
+        val notesText = "<b> Notes: </b> " + item.productInfo.fill
+        holder.itemView.load_notes.text = htmlToText(notesText)
 
+        if (position == data.size - 1) {
+            holder.itemView.progressLine.visibility = View.GONE
+        }
 
         if (item.wayPointTypeDescription != "Source") {
             holder.itemView.container_name.apply {
-                text = item.siteContainerCode
+                val containerCode = "<b> Container: </b> " + item.siteContainerCode
+                text = htmlToText(containerCode)
                 visibility = View.VISIBLE
             }
             holder.itemView.container_desc.apply {
-                text = item.siteContainerDescription
+                val containerDesc = "<b> Description: </b> " + item.siteContainerDescription
+                text = htmlToText(containerDesc)
                 visibility = View.VISIBLE
             }
             holder.itemView.destinationImage.setImageResource(R.drawable.ic_site)
         }
         changeDestinationIconColor(holder, item)
 
-        holder.itemView.statusImage.apply {
-            if (item.status == StatusEnum.ONGOING) {
-                setImageResource(R.drawable.ongoing)
-            } else if (item.status == StatusEnum.COMPLETED) setImageResource(R.drawable.trip_done_icon)
-        }
+
     }
 
     private fun changeDestinationIconColor(
         holder: ViewHolder,
         item: SourceOrSite
     ) {
-        holder.itemView.destinationImage.apply {
             if (item.status == StatusEnum.COMPLETED) {
-                setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.Green
-                    )
+                val colorGreen = ContextCompat.getColor(
+                    holder.itemView.destinationImage.context,
+                    R.color.Green
                 )
+                holder.itemView.destinationImage.setColorFilter(colorGreen)
+                holder.itemView.progressLine.setBackgroundColor(colorGreen)
             } else {
                 val typedValue = TypedValue()
-                context.theme.resolveAttribute(R.attr.colorOnPrimary, typedValue, true)
-                setColorFilter(typedValue.data)
+                holder.itemView.destinationImage.context.theme.resolveAttribute(
+                    R.attr.colorOnPrimary,
+                    typedValue,
+                    true
+                )
+                holder.itemView.destinationImage.setColorFilter(typedValue.data)
+            }
+
+
+    }
+
+
+    private fun deepChangeTextColor(parent: ViewGroup) {
+        parent.children.forEach {
+            if (it is TextView) {
+                var textView: TextView = it
+                textView.setTypeface(null, Typeface.BOLD);
+            } else if (it is ViewGroup) {
+                deepChangeTextColor(it)
             }
         }
     }
-
 
 }

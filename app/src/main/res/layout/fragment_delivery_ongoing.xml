@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="horizontal">
                 <ImageView
-                    android:paddingRight="15dp"
+                    android:layout_marginRight="10dp"
                     android:id="@+id/destinationImage"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -69,7 +69,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="30dp"
                     android:layout_marginVertical="5dp"
                     android:orientation="vertical">
 
@@ -84,15 +83,13 @@
                         android:id="@+id/siteContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{sourceOrSite.siteContainerDescription}"
-                        android:textSize="15dp" />
+                        android:textSize="@dimen/description_text_size" />
 
                     <TextView
                         android:id="@+id/load_notes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{sourceOrSite.productInfo.fill}"
-                        android:textSize="15dp" />
+                        android:textSize="@dimen/description_text_size" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -111,6 +108,8 @@
                 android:id="@+id/start_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
                 android:text="Start Filling" />
 
             <Button
@@ -118,17 +117,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fill Form"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
                 android:visibility="gone" />
 
-            <ImageView
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/ic_navigation"
+            <RelativeLayout
                 android:id="@+id/startNavigation"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_marginStart="-142dp"
                 android:layout_marginEnd="1dp"
-                android:text="Navigate" />
+                android:layout_marginBottom="10dp"
+                android:layout_toEndOf="@+id/start_filling"
+                android:text="Navigate">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="-45dp"
+                    android:layout_toStartOf="@+id/start_trip"
+                    android:background="@drawable/rounded_corners_fab"
+                    android:backgroundTint="@color/Aims_Orange"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="50dp"
+                    android:text="Directions"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/start_trip"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/rounded_corners_fab"
+                    android:backgroundTint="@color/Aims_Orange"
+                    android:paddingHorizontal="5dp"
+                    app:maxImageSize="45dp"
+                    app:srcCompat="@drawable/ic_direction" />
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/end_filling"
@@ -137,6 +167,8 @@
                 android:layout_toStartOf="@+id/startNavigation"
                 android:layout_toEndOf="@+id/start_filling"
                 android:text="End Filling"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
                 android:visibility="gone" />
 
             <Button
@@ -144,6 +176,8 @@
                 android:id="@+id/fillForm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners_fab"
+                android:backgroundTint="@color/Aims_Orange"
                 android:text="Fill Form" />
 
         </RelativeLayout>

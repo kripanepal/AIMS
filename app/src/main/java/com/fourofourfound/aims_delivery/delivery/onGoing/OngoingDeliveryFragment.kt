@@ -17,6 +17,7 @@ import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingP
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.htmlToText
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -203,10 +204,18 @@ class OngoingDeliveryFragment : Fragment() {
                     productQty.text =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
                 }
-                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(
+                if (it.wayPointTypeDescription == "Source") binding.destinationImage.setImageResource(
                     R.drawable.ic_source
                 )
-                else binding.destinationImage.setImageResource(R.drawable.ic_site)
+                else {
+                    binding.destinationImage.setImageResource(R.drawable.ic_site)
+                    val containerInfo =
+                        htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerDescription)
+                    binding.siteContainer.text = containerInfo
+
+                    val notes = htmlToText("<b>Notes</b>: " + currentSourceOrSite.productInfo.fill)
+                    binding.loadNotes.text = notes
+                }
             }
         }
     }
@@ -251,6 +260,4 @@ class OngoingDeliveryFragment : Fragment() {
             }
         }
     }
-
-
 }

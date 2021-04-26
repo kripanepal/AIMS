@@ -1,4 +1,4 @@
- package com.fourofourfound.aims_delivery.homePage.loadInformation
+package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
@@ -31,6 +32,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
         currentTrip = tripFragmentArgs.trip
 
@@ -56,10 +58,17 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
             }
         }
-
-
-
         return binding.root
+    }
+
+    private fun scrollTripStartIcon() {
+        binding.pickupList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 5) binding.startTripText.visibility = View.GONE
+                else if (dy < 5) binding.startTripText.visibility = View.VISIBLE
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,6 +88,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             binding.startTripText.text = "Continue Delivery"
         }
 
+        scrollTripStartIcon()
         startTripOnClick(currentTrip)
     }
 
@@ -183,19 +193,20 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     ) {
         if (sortedList.isEmpty()) {
             binding.startTripText.text = "Trip Completed"
-            binding.startTrip.setOnClickListener { null }
+            binding.startTripContainer.setOnClickListener { null }
             binding.startTrip.visibility = View.VISIBLE
             animateViewVisibility(
                 binding.startTripContainer.rootView,
                 binding.startTripContainer,
-                true
-            )
+                true,
+
+                )
             //TODO need to inform aims dispatcher
         } else {
             animateViewVisibility(
                 binding.startTripContainer.rootView,
                 binding.startTripContainer,
-                true
+                true,
             )
             binding.startTripContainer.setOnClickListener {
                 if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
