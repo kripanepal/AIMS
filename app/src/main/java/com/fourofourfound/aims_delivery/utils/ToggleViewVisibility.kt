@@ -1,14 +1,15 @@
 package com.fourofourfound.aims_delivery.utils
 
+import android.view.Gravity
 import android.view.View
-import java.text.SimpleDateFormat
-import java.util.*
 
 fun toggleViewVisibility(view: View) {
-    view.visibility = if (view.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+    if (view.visibility == View.VISIBLE) {
+        animateViewVisibility(view.rootView, view, false, Gravity.TOP)
+        view.visibility = View.GONE
+    } else {
+        animateViewVisibility(view.rootView, view, true, Gravity.TOP)
+        view.visibility = View.VISIBLE
+    }
 }
 
-fun Date.toString1(format: String, locale: Locale = Locale.getDefault()): String {
-    val formatter = SimpleDateFormat(format, locale)
-    return formatter.format(this)
-}

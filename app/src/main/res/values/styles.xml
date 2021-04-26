@@ -51,5 +51,9 @@
         <item name="android:background">?attr/colorOnSecondary</item>
     </style>
 
+    <style name="textColorNormal">
+        <item name="android:textSize">40sp</item>
+    </style>
+
 
 </resources>

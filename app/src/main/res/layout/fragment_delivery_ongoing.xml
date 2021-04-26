@@ -142,9 +142,9 @@
                     android:backgroundTint="@color/Aims_Orange"
                     android:gravity="center_vertical"
                     android:paddingStart="10dp"
+                    android:textColor="?attr/colorOnPrimary"
                     android:paddingEnd="50dp"
                     android:text="Directions"
-                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <ImageView

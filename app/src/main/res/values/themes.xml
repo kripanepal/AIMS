@@ -10,7 +10,6 @@
         <item name="colorAccent">@color/Aims_Orange</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
-
     </style>
 
 
@@ -20,8 +19,9 @@
     </style>
 
 
-
-
+    <style name="textColorLight">
+        <item name="android:textColor">#99716F6F</item>
+    </style>
 
 
 </resources>

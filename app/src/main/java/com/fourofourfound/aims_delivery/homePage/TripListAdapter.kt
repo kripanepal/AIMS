@@ -1,15 +1,14 @@
 package com.fourofourfound.aims_delivery.homePage
 
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.database.utilClasses.FuelWithInfo
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
 /**
@@ -20,9 +19,7 @@ import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
  * @constructor Create empty Trip list adapter
  */
 class TripListAdapter(
-    private val context: Context,
     private val clickListener: TripListListener,
-    private val parentViewModel: HomePageViewModel
 ) : ListAdapter<Trip,
         TripListAdapter.ViewHolder>(TripsDiffCallBack()) {
 
@@ -113,10 +110,11 @@ class TripListAdapter(
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
                 binding.cardViewNestedView.apply {
-                    visibility = if (visibility === View.VISIBLE) View.GONE
-                    else View.VISIBLE
+                    toggleViewVisibility(this)
                 }
             }
+
+
             val adapter = FuelSummaryAdapter(fuelInfo.toTypedArray())
             binding.nestedTripDetailsListView.adapter = adapter
             binding.executePendingBindings()

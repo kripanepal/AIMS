@@ -189,26 +189,26 @@ class HomePage : Fragment() {
 
     private fun setUpAdapters(): Triple<TripListAdapter, TripListAdapter, TripListAdapter> {
         //adapter for the recycler view
-        val currentTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+        val currentTripAdapter = TripListAdapter(TripListListener { trip ->
             findNavController().navigate(
                 HomePageDirections.actionHomePageToLoadInfoFragment(
                     trip
                 )
             )
-        }, viewModel)
+        })
 
         //adapter for the recycler view
-        val upComingTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+        val upComingTripAdapter = TripListAdapter(TripListListener { trip ->
             findNavController().navigate(
                 HomePageDirections.actionHomePageToLoadInfoFragment(
                     trip
                 )
             )
 
-        }, viewModel)
+        })
 
         //adapter for the recycler view
-        val completedTripAdapter = TripListAdapter(requireContext(), TripListListener { trip ->
+        val completedTripAdapter = TripListAdapter(TripListListener { trip ->
             //set up the behaviour of button on the item being displayed
             findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(
@@ -216,7 +216,7 @@ class HomePage : Fragment() {
                 )
             )
 
-        }, viewModel)
+        })
 
         binding.currentTripList.adapter = currentTripAdapter
         binding.completedTripList.adapter = completedTripAdapter

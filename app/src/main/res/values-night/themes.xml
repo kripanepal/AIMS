@@ -20,5 +20,9 @@
 
     </style>
 
+    <style name="textColorLight">
+        <item name="android:textColor">#999A9999</item>
+    </style>
+
 
 </resources>

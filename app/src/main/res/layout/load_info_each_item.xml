@@ -4,68 +4,81 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:theme="@style/textColorLight"
         android:id="@+id/parentConstraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingHorizontal="10dp"
-        android:paddingTop="10dp">
+        android:paddingHorizontal="10dp">
 
         <ImageView
             android:id="@+id/destinationImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            app:layout_constraintEnd_toStartOf="@id/destination_description"
+            app:layout_constraintEnd_toStartOf="@id/card_each_destination"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/card_each_destination"
             app:srcCompat="@drawable/ic_source" />
 
-        <LinearLayout
-            android:id="@+id/destination_description"
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_each_destination"
+            style="@style/cardView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="50dp"
-            android:orientation="vertical"
+            app:cardBackgroundColor="?attr/colorSecondary"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/destinationImage"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include
-                android:id="@+id/sourceOrSiteInfo"
-                layout="@layout/source_or_site_info"
+            <LinearLayout
+
+                android:id="@+id/destination_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-5dp" />
+                android:layout_gravity="start|top"
+                android:orientation="vertical"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/destinationImage"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/container_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/description_text_size"
-                android:visibility="gone" />
+                <include
+                    android:id="@+id/sourceOrSiteInfo"
+                    layout="@layout/source_or_site_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/container_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/description_text_size"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/container_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/description_text_size"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/container_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/description_text_size"
+                    android:visibility="gone" />
 
 
-            <TextView
-                android:id="@+id/load_notes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/description_text_size" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/load_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/description_text_size" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
 
         <View
             android:id="@+id/progressLine"
             android:layout_width="5dp"
+            android:layout_marginBottom="-5dp"
             android:layout_height="0dp"
             android:background="?attr/colorOnPrimary"
             android:orientation="vertical"

@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -38,12 +37,7 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
 
-        if (item.status == StatusEnum.ONGOING) {
-            holder.itemView.parentConstraint.apply {
-                deepChangeTextColor(this)
 
-            }
-        }
 
         holder.itemView.sourceOrSiteInfo.apply {
             sourceOrSiteName.text = item.location.destinationName
@@ -83,14 +77,24 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
         holder: ViewHolder,
         item: SourceOrSite
     ) {
-            if (item.status == StatusEnum.COMPLETED) {
+        when (item.status) {
+            StatusEnum.COMPLETED -> {
                 val colorGreen = ContextCompat.getColor(
                     holder.itemView.destinationImage.context,
                     R.color.Green
                 )
                 holder.itemView.destinationImage.setColorFilter(colorGreen)
                 holder.itemView.progressLine.setBackgroundColor(colorGreen)
-            } else {
+            }
+            StatusEnum.ONGOING -> {
+                deepChangeTextStyle(holder.itemView.parentConstraint)
+                val colorOrange = ContextCompat.getColor(
+                    holder.itemView.destinationImage.context,
+                    R.color.Aims_Orange
+                )
+                holder.itemView.destinationImage.setColorFilter(colorOrange)
+            }
+            else -> {
                 val typedValue = TypedValue()
                 holder.itemView.destinationImage.context.theme.resolveAttribute(
                     R.attr.colorOnPrimary,
@@ -99,19 +103,24 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 )
                 holder.itemView.destinationImage.setColorFilter(typedValue.data)
             }
-
+        }
 
     }
 
 
-    private fun deepChangeTextColor(parent: ViewGroup) {
+    private fun deepChangeTextStyle(parent: ViewGroup) {
+        var typedValue = TypedValue();
+        parent.context.theme.resolveAttribute(R.attr.colorOnPrimary, typedValue, true);
+        var color = ContextCompat.getColor(parent.context, typedValue.resourceId)
+
         parent.children.forEach {
-            if (it is TextView) {
-                var textView: TextView = it
-                textView.setTypeface(null, Typeface.BOLD);
-            } else if (it is ViewGroup) {
-                deepChangeTextColor(it)
-            }
+            if (it is TextView && it.id != R.id.sourceOrSiteName)
+                it.setTextColor(
+                    color
+                )
+            else if (it is ViewGroup)
+                deepChangeTextStyle(it)
+
         }
     }
 

@@ -1,9 +1,8 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -61,14 +60,24 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun scrollTripStartIcon() {
         binding.pickupList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 5) binding.startTripText.visibility = View.GONE
-                else if (dy < 5) binding.startTripText.visibility = View.VISIBLE
+                if (dy > 0)
+                    animateViewVisibility(binding.startTripContainer, binding.startTripText, false)
+                else if (dy < 0)
+                    animateViewVisibility(binding.startTripContainer, binding.startTripText, true)
             }
+
+
         })
+
+        binding.startTripText.setOnTouchListener { v, event ->
+            toggleViewVisibility(binding.startTripText)
+            false
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -199,7 +208,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 binding.startTripContainer.rootView,
                 binding.startTripContainer,
                 true,
-
                 )
             //TODO need to inform aims dispatcher
         } else {
@@ -263,5 +271,3 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         ).builder.show()
     }
 }
-
-
