@@ -16,10 +16,12 @@ import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentMapDownloadBinding
 import com.here.android.mpa.common.ApplicationContext
 import com.here.android.mpa.common.MapEngine
+import com.here.android.mpa.common.MapSettings
 import com.here.android.mpa.common.OnEngineInitListener
 import com.here.android.mpa.odml.MapLoader
 import com.here.android.mpa.odml.MapLoader.ResultCode
 import com.here.android.mpa.odml.MapPackage
+import java.io.File
 
 
 class MapDownloadFragment : Fragment() {
@@ -110,6 +112,11 @@ class MapDownloadFragment : Fragment() {
     }
 
     private fun initMapEngine() {
+        val path: String = File(requireActivity().getExternalFilesDir(null), ".here-map-data")
+            .absolutePath
+        // This method will throw IllegalArgumentException if provided path is not writable
+        // This method will throw IllegalArgumentException if provided path is not writable
+        MapSettings.setDiskCacheRootPath(path)
         MapEngine.getInstance().init(
             ApplicationContext(requireActivity())
         ) { error ->

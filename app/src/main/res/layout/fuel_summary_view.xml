@@ -29,7 +29,7 @@
             android:layout_weight="1.5"
             android:layout_marginHorizontal="4dp"
             android:layout_marginBottom="8dp"
-            android:gravity="left"
+            android:gravity="center"
             android:textSize="@dimen/text_size_small" />
 
         <View
@@ -39,12 +39,13 @@
             android:layout_marginHorizontal="2dp" />
 
         <TextView
+
             android:text="FuelSource"
             android:id="@+id/fuel_source"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:gravity="left"
+            android:gravity="center"
             android:textSize="@dimen/text_size_small" />
 
         <View

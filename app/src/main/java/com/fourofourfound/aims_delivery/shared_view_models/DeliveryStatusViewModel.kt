@@ -16,11 +16,11 @@ import com.fourofourfound.aims_delivery.repository.LocationRepository
  */
 class DeliveryStatusViewModel(application: Application) : AndroidViewModel(application) {
 
-    var currentDestination: DestinationLocation? = null
+
     var previousDestination: DestinationLocation? = null
 
     val locationRepository = LocationRepository(application)
-    var destinationApproaching = false
-    var destinationLeaving = false
+    var destinationApproachingShown = false
+    var destinationLeavingShown = false
 
 }

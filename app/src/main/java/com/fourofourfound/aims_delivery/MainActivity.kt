@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
 import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
 import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationLeaving
+import com.fourofourfound.aims_delivery.domain.DestinationLocation
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
@@ -62,13 +64,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         observeLoading()
 
 
-        trackDestinationApproaching()
+        trackTruck()
     }
 
     /**
@@ -207,54 +208,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun trackDestinationApproaching() {
-
+    private fun trackTruck() {
+        deliveryStatusViewModel = ViewModelProvider(this).get(DeliveryStatusViewModel::class.java)
+        val locationRepository = deliveryStatusViewModel.locationRepository
         try {
-            sharedViewModel.selectedSourceOrSite.observe(this) {
-                deliveryStatusViewModel =
-                    ViewModelProvider(this).get(DeliveryStatusViewModel::class.java)
-                val locationRepository = deliveryStatusViewModel.locationRepository
 
-                if (it != null) {
-                    if (deliveryStatusViewModel.currentDestination != it.location) {
-                        deliveryStatusViewModel.previousDestination =
-                            deliveryStatusViewModel.currentDestination
-                        deliveryStatusViewModel.currentDestination = it.location
-
-
-                        val destination =
-                            GeoCoordinates(it.location.latitude, it.location.longitude)
-                        locationRepository.coordinates.observe(this@MainActivity)
-                        { currentCoordinates ->
-                            if (checkDistanceToDestination(
-                                    currentCoordinates,
-                                    destination
-                                ) < 1000 && !deliveryStatusViewModel.destinationApproaching
-                            ) {
-                                showDestinationApproachingDialog(this@MainActivity)
-                                deliveryStatusViewModel.destinationApproaching = true
-                            }
-                        }
-
-
-                        deliveryStatusViewModel.previousDestination?.apply {
-                            val oldDestination =
-                                GeoCoordinates(this.latitude, this.longitude)
-                            locationRepository.coordinates.observe(this@MainActivity)
-                            { currentCoordinates ->
-                                var distance = checkDistanceToDestination(
-                                    currentCoordinates,
-                                    oldDestination
-                                )
-                                if (distance > 1000 && !deliveryStatusViewModel.destinationLeaving
-                                ) {
-                                    showDestinationLeaving(this@MainActivity)
-                                    deliveryStatusViewModel.destinationLeaving = true
-                                }
-                            }
-                        }
-
-
+            locationRepository.coordinates.observe(this@MainActivity)
+            { currentCoordinates ->
+                if (currentCoordinates.latitude != 0.00 && currentCoordinates.longitude != 0.00) {
+                    var headingTo = sharedViewModel.selectedSourceOrSite.value?.location
+                    if (headingTo != null) {
+                        trackDestinationApproaching(headingTo, currentCoordinates)
+                        trackDestinationLeaving(currentCoordinates)
                     }
                 }
             }
@@ -262,5 +227,40 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun trackDestinationApproaching(
+        headingTo: DestinationLocation,
+        currentCoordinates: GeoCoordinates
+    ) {
+        val destination = GeoCoordinates(
+            headingTo.latitude, headingTo.longitude
+        )
+
+        val distance = checkDistanceToDestination(currentCoordinates, destination)
+
+        if (distance < 500 && !deliveryStatusViewModel.destinationApproachingShown
+        ) {
+            showDestinationApproachingDialog(this@MainActivity)
+            deliveryStatusViewModel.destinationApproachingShown = true
+            deliveryStatusViewModel.destinationLeavingShown = false
+        }
+    }
+
+    private fun trackDestinationLeaving(currentCoordinates: GeoCoordinates) {
+        deliveryStatusViewModel.previousDestination?.apply {
+            val oldDestination = GeoCoordinates(this.latitude, this.longitude)
+            var distance = checkDistanceToDestination(
+                currentCoordinates,
+                oldDestination
+            )
+            if (distance > 500 && !deliveryStatusViewModel.destinationLeavingShown
+            ) {
+                showDestinationLeaving(this@MainActivity)
+                deliveryStatusViewModel.destinationLeavingShown = true
+                deliveryStatusViewModel.destinationApproachingShown = false
+                deliveryStatusViewModel.previousDestination = null
+            }
+        }
     }
 }

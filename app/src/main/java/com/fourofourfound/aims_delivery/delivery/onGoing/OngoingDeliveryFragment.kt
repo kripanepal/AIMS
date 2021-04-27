@@ -54,7 +54,6 @@ class OngoingDeliveryFragment : Fragment() {
     lateinit var currentSourceOrSite: SourceOrSite
 
 
-
     /**
      * On create view
      * @param inflater the inflator used to inflate the layout
@@ -67,8 +66,6 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
@@ -86,17 +83,13 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
-
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
         sharedViewModel.activeRoute?.apply {
             binding.startFilling.visibility = View.GONE
         }
-
-
 
         binding.startNavigation.setOnClickListener {
             findNavController().navigate(R.id.navigationFragment)
@@ -119,6 +112,7 @@ class OngoingDeliveryFragment : Fragment() {
 
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
+
             val  preFillingDialog = ReadingPrePostFilling()
 
             val args = Bundle()
@@ -256,7 +250,6 @@ class OngoingDeliveryFragment : Fragment() {
                 if(viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
                 if(viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
                 observeDestination()
-
             }
         }
     }

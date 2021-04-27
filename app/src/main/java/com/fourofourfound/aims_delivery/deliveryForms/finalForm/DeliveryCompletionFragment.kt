@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.StatusEnum
@@ -53,6 +54,7 @@ class DeliveryCompletionFragment : Fragment() {
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
     private val args by navArgs<DeliveryCompletionFragmentArgs>()
     lateinit var getContent: ActivityResultLauncher<Intent>
+    private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
     var currentPhotoPath: String = ""
     lateinit var billOfLadingAdapter: BillOfLadingAdapter
 
@@ -406,7 +408,7 @@ class DeliveryCompletionFragment : Fragment() {
                 { //TODO need to save the captured image bitmap in the database
                     val signatureBitMap = signaturePad.signatureBitmap
                     dialog.cancel()
-
+                    deliveryStatusViewModel.previousDestination = sharedViewModel.selectedSourceOrSite.value!!.location
                     viewModel.submitForm()
                     viewModel.updateDeliveryStatus(
                         sharedViewModel.selectedTrip.value!!.tripId,

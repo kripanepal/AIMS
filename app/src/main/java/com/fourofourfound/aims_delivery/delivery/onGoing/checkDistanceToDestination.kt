@@ -2,10 +2,11 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.content.Context
 import android.location.Location
+import android.util.Log
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 
-fun checkDistanceToDestination(source: GeoCoordinates, destination: GeoCoordinates): Float {
+fun checkDistanceToDestination(source: GeoCoordinates, destination: GeoCoordinates): Int {
 
     val locationA = Location("point A")
     locationA.latitude = source.latitude
@@ -13,7 +14,7 @@ fun checkDistanceToDestination(source: GeoCoordinates, destination: GeoCoordinat
     val locationB = Location("point B")
     locationB.latitude = destination.latitude
     locationB.longitude = destination.longitude
-    return locationA.distanceTo(locationB)
+    return (locationA.distanceTo(locationB) * 2.23694).toInt()
 }
 
 fun showDestinationApproachingDialog(context: Context) {

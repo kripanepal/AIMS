@@ -34,6 +34,7 @@ import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -130,6 +131,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
 
     private fun initializeMap() {
+        // This will use external storage to save map cache data, it is also possible to set
+        // private app's path
+        // This will use external storage to save map cache data, it is also possible to set
+        // private app's path
+        val path: String = File(requireActivity().getExternalFilesDir(null), ".here-map-data")
+            .absolutePath
+        // This method will throw IllegalArgumentException if provided path is not writable
+        // This method will throw IllegalArgumentException if provided path is not writable
+        MapSettings.setDiskCacheRootPath(path)
+
         binding.progressBarContainer.visibility = View.VISIBLE
         mapFragment = childFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment
         mapFragment.init { error ->
@@ -219,14 +230,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
-                        if (routeResults[0].route != null) {
-                            route = routeResults[0].route
-
-                            onRouteCalculated()
-                        } else {
-                            Toast.makeText(context, "Error:route invalid", Toast.LENGTH_LONG).show()
-                            showErrorDialog()
-                        }
+                        route = routeResults[0].route
+                        onRouteCalculated()
                     } else {
                         Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()
                         showErrorDialog()
@@ -251,7 +256,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun recenter() {
         PositioningManager.getInstance().lastKnownPosition.coordinate.apply {
-            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW, 18.0, 90f, 0f)
+            map.setCenter(GeoCoordinate(latitude, longitude), Map.Animation.BOW, 18.0, 0f, 0f)
         }
         navigationManager.mapUpdateMode = NavigationManager.MapUpdateMode.ROADVIEW
 
@@ -274,14 +279,16 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     sharedViewModel.activeRoute = route
                     bottomSheetNavigationStarted()
                     changeViewsVisibility()
+                    deliveryStatusViewModel.locationRepository.addListener()
 
 
                 }
                 alertDialogBuilder.setPositiveButton("Simulation") { _, _ ->
-                    navigationManager.simulate(route!!, 200)
+                    navigationManager.simulate(route!!, 100)
                     sharedViewModel.activeRoute = route
                     bottomSheetNavigationStarted()
                     changeViewsVisibility()
+                    deliveryStatusViewModel.locationRepository.addListener()
 
                 }
                 val alertDialog = alertDialogBuilder.create()
@@ -343,7 +350,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun removeListeners() {
         navigationManager.apply {
-            deliveryStatusViewModel.locationRepository.addListener()
+            deliveryStatusViewModel.locationRepository.removeListener()
             navigationManager.removeRerouteListener(rerouteListener)
             navigationManager.removeNavigationManagerEventListener(routeCompleteListener)
             MapDataPrefetcher.getInstance().removeListener(prefetchListener)

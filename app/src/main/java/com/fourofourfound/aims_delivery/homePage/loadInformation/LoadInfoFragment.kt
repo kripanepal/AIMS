@@ -24,6 +24,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private lateinit var binding: LoadInformationBinding
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
     lateinit var currentTrip: Trip
 
     override fun onCreateView(
@@ -246,6 +247,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 sourceOrSite.seqNum,
                 StatusEnum.ONGOING
             )
+
             //change the active tab to delivery tab
             requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
         }

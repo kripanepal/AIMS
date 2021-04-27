@@ -74,15 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <View
-                        android:id="@+id/view"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/dark_grey"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+
 
                     <TextView
                         android:id="@+id/tripSpecialInstructions"
@@ -99,12 +91,12 @@
                         android:id="@+id/nestedTripDetailsListView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginHorizontal="5dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/view" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
 
                     <View
                         android:layout_width="0dp"

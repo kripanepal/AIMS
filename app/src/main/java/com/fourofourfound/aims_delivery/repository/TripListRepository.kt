@@ -39,9 +39,9 @@ class TripListRepository(private val database: TripListDatabase) {
                 driverName = tripLists[0].driverName
                 driverCode = tripLists[0].driverCode
 
-                if (tripsFromDatabase.value?.asNetworkModel() != tripLists)
+
                     saveTrips(tripLists)
-                else{}
+
             } catch (e: Exception) {
             //todo need to do actual error handling
                 Log.i("drivername", e.toString())
