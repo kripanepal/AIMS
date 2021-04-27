@@ -13,206 +13,177 @@
             type="com.fourofourfound.aims_delivery.login.LoginViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/loginPageMainView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
         android:orientation="vertical"
+        app:layoutDescription="@xml/fragment_login_xml_loginpagemainview_scene"
+
         tools:context="com.fourofourfound.aims_delivery.login.LoginFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ImageView
+            android:id="@+id/Aims_logo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-        android:background="@drawable/layout_background">
+            android:layout_height="50dp"
+            android:layout_gravity="center"
 
-            <ImageView
-                android:id="@+id/Aims_logo"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="32dp"
-                android:contentDescription="AIMS Logo"
-                android:src="@drawable/ic_aims_logo"
-                app:layout_constraintHorizontal_bias="0.0"
+            android:contentDescription="AIMS Logo"
+            android:src="@drawable/ic_aims_logo"
+
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="475dp"
+            android:background="@drawable/login_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <TextView
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="LOGIN"
+
+                android:textSize="@dimen/text_size_large"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/login_ConstraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="324dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@id/needHelp_constraintLayout"
-                app:layout_constraintHorizontal_bias="1.0"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout2"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:textColorHint="@color/black"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login">
+
+
+                <EditText
+                    android:id="@+id/userIdInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableEnd="@drawable/pen_icon"
+                    android:drawableTint="?attr/colorPrimary"
+                    android:hint="@string/user_id_hint"
+                    android:inputType="textPersonName"
+                    android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="10dp"
+                    android:text="@={viewModel.userName}"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                app:endIconMode="password_toggle"
+                app:endIconTint="?attr/colorPrimary"
+                app:hintTextColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/login_error_message"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+                app:layout_constraintVertical_bias="0.07999998">
+
+                <EditText
+                    android:id="@+id/passwordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="Password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="10dp"
+                    android:text="@={viewModel.password}"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/login_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#F32929"
+                android:backgroundTint="#D11E1E"
+                android:maxWidth="300dp"
+                android:text="@{viewModel.errorMessage}"
+                app:layout_constraintBottom_toTopOf="@+id/loginButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/button_background"
+                android:onClick="@{()->viewModel.authenticateUser()}"
+                android:text="Login"
+                android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
+
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Aims_logo">
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+                app:layout_constraintVertical_bias="1.0" />
 
+            <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.ThreeBounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:SpinKit_Color="@color/Aims_Orange"
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout2"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:textColorHint="@color/black"
-                    app:hintTextColor="@color/black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintBottom_toBottomOf="@id/loginButton"
+                app:layout_constraintLeft_toLeftOf="@id/loginButton"
+                app:layout_constraintRight_toRightOf="@id/loginButton"
+                app:layout_constraintTop_toTopOf="@id/loginButton" />
 
+            <TextView
+                android:id="@+id/needHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/need_help_field_text"
 
-                    <EditText
-                        android:id="@+id/userIdInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:drawableEnd="@drawable/pen_icon"
-                        android:drawableTint="@color/design_default_color_primary"
-                        android:hint="@string/user_id_hint"
-                        android:inputType="textPersonName"
-                        android:onTextChanged="@{() -> viewModel.userIdTextChanged()}"
-                        android:paddingTop="28dp"
-                        android:paddingBottom="10dp"
-                        android:text="@={viewModel.userName}"
-                        android:textColor="@color/black" />
-                </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
+            <Button
+                android:id="@+id/contactMyProvider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="#AAFFFFFF"
+                android:text="@string/contact_my_provider_field_text"
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/black"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/design_default_color_primary"
-                    app:hintTextColor="@color/black"
-                    app:layout_constraintBottom_toTopOf="@+id/login_error_message"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-                    app:layout_constraintVertical_bias="0.07999998">
-
-                    <EditText
-                        android:id="@+id/passwordInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="Password"
-                        android:imeOptions="actionDone"
-                        android:inputType="textPassword"
-                        android:onTextChanged="@{() -> viewModel.passwordTextChanged()}"
-                        android:paddingTop="28dp"
-                        android:paddingBottom="10dp"
-                        android:text="@={viewModel.password}"
-                        android:textColor="@color/black" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <TextView
-                    android:id="@+id/login_error_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#F32929"
-                    android:backgroundTint="#D11E1E"
-                    android:maxWidth="300dp"
-                    android:text="@{viewModel.errorMessage}"
-                    app:layout_constraintBottom_toTopOf="@+id/loginButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <Button
-                    android:id="@+id/loginButton"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_background"
-                    android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
-                    android:onClick="@{()->viewModel.authenticateUser()}"
-                    android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <com.github.ybq.android.spinkit.SpinKitView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/spin_kit"
-                    style="@style/SpinKitView.ThreeBounce"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:SpinKit_Color="@color/Aims_Orange"
-
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/needHelp_constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical"
+                android:textColor="@color/Aims_Orange"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_ConstraintLayout">
 
+                />
 
-                <TextView
-                    android:id="@+id/needHelp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="76dp"
-                    android:text="@string/need_help_field_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="NotSibling" />
-
-                <Button
-                    android:id="@+id/contactMyProvider"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:backgroundTint="#AAFFFFFF"
-                    android:text="@string/contact_my_provider_field_text"
-                    android:textColor="@color/Aims_Orange"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/needHelp"
-                    app:layout_constraintVertical_bias="0.0" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <!-- TODO: Update blank fragment layout -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
-
-</RelativeLayout>
-</layout>
+        </layout>

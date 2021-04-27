@@ -1,17 +1,21 @@
 package com.fourofourfound.aims_delivery.login
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.showStartCallDialog
+import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 
@@ -52,6 +56,8 @@ class LoginFragment : Fragment() {
      */
     private lateinit var viewModel: LoginViewModel
 
+    var animated = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,22 +87,22 @@ class LoginFragment : Fragment() {
             }
         })
 
-
-        findNavController().navigate(R.id.homePage)
-        sharedViewModel.userLoggedIn.value = true
-        viewModel.doneNavigatingToHomePage()
-
-
         //show dialog listener
         binding.contactMyProvider.setOnClickListener {
-            showStartCallDialog(requireContext())
+            showDialog()
         }
 
         observeLoginFields()
         loginOnDoneKey()
+
+        setIDAnimations()
+        setPasswordAnimations()
+
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
+
+
         viewModel.loading.observe(viewLifecycleOwner) { if (it) hideSoftKeyboard(requireActivity()) }
         return binding.root
     }
@@ -133,6 +139,39 @@ class LoginFragment : Fragment() {
         }
     }
 
+
+    /**
+     * Show dialog
+     *method to display the dialog with provider's number
+     */
+    private fun showDialog() {
+        val dialogView = LayoutInflater.from(context).inflate(
+            R.layout.contact_my_provider_dialog, null
+        )
+        CustomDialogBuilder(
+            requireContext(),
+            "Contact Info",
+            null,
+            "Call now",
+            { startCall() },
+            "Cancel",
+            null,
+            false
+        ).builder.setView(dialogView).show()
+    }
+
+    /**
+     * Start call
+     *Start an intent to start the call to a
+     * specific number
+     */
+    private fun startCall() {
+        val intent = Intent(Intent.ACTION_DIAL)
+        val phoneNumber = "tel:" + getString(R.string.provider_number)
+        intent.data = Uri.parse(phoneNumber)
+        startActivity(intent)
+    }
+
     /**
      * On destroy view
      *assign _binding to null to prevent memory leaks
@@ -142,5 +181,37 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun setIDAnimations() {
+        val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
+        binding.userIdInput.setOnTouchListener { v, _ ->
+            v.performClick()
+
+            if (!animated) {
+                motionContainer.setTransition(R.id.start, R.id.end)
+                motionContainer.transitionToEnd()
+                animated = true
+            }
+            false
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun setPasswordAnimations()
+    {
+        val motionContainer: MotionLayout = binding.loginPageMainView as MotionLayout
+        binding.passwordInput.setOnTouchListener { v,_ ->
+            v.performClick()
+
+            if(!animated)
+            {
+                motionContainer.setTransition(R.id.start, R.id.end)
+                motionContainer.transitionToEnd()
+                animated = true
+            }
+            false
+        }
+    }
 
 }

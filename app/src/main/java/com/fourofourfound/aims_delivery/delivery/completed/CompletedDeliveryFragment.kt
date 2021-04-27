@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoAdapter
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBinding
 
@@ -65,6 +66,10 @@ class CompletedDeliveryFragment : Fragment() {
         //getting a view model from a factory
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(CompletedDeliveryViewModel::class.java)
+        val adapter = CompletedDeliveryAdapter()
+        binding.sourceOrSiteInfo.adapter = adapter
+
+
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
