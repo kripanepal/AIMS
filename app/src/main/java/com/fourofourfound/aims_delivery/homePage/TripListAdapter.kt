@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.database.utilClasses.FuelWithInfo
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.utils.toggleDropDownImage
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.databinding.TripListListViewBinding
 
@@ -111,6 +112,7 @@ class TripListAdapter(
             binding.cardView.setOnClickListener {
                 binding.cardViewNestedView.apply {
                     toggleViewVisibility(this)
+                    toggleDropDownImage(this,binding.tripDropDownImage)
                 }
             }
 

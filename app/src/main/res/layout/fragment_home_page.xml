@@ -49,33 +49,52 @@
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="@dimen/card_elevation">
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_all_sides_10"
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/current_trip_header"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Current Trip"
-                                android:textSize="@dimen/text_size_large" />
+                                android:textSize="@dimen/text_size_large"
+                                />
+                            <ImageView
+                                android:id="@+id/current_trip_drop_down_image"
+                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                                app:layout_constraintTop_toTopOf="@id/current_trip_header"
+                                app:layout_constraintBottom_toBottomOf="@id/current_trip_header"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_width="@dimen/homepage_dropdown_main"
+                                android:layout_height="@dimen/homepage_dropdown_main"/>
 
                             <TextView
                                 android:id="@+id/ongoing_trip_message"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/Aims_Orange"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/current_trip_header"
                                 android:textSize="@dimen/text_size_medium" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/current_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/ongoing_trip_message"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
 
@@ -89,19 +108,33 @@
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="@dimen/card_elevation">
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_all_sides_10"
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/upcoming_trip_header"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Upcoming Trips"
                                 android:textSize="@dimen/text_size_large" />
-
+                            <ImageView
+                                android:id="@+id/upcoming_trip_drop_down_image"
+                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                                app:layout_constraintTop_toTopOf="@id/upcoming_trip_header"
+                                app:layout_constraintBottom_toBottomOf="@id/upcoming_trip_header"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_width="@dimen/homepage_dropdown_main"
+                                android:layout_height="@dimen/homepage_dropdown_main"/>
                             <TextView
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_header"
                                 android:id="@+id/upcoming_trip_message"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -109,11 +142,14 @@
                                 android:textSize="@dimen/text_size_medium" />
 
                             <androidx.recyclerview.widget.RecyclerView
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_message"
                                 android:id="@+id/upcoming_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
 
@@ -128,19 +164,36 @@
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="@dimen/card_elevation">
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_all_sides_10"
                             android:orientation="vertical">
 
                             <TextView
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Completed Trips"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:id="@+id/completed_trip_header"
                                 android:textSize="@dimen/text_size_large" />
 
+                            <ImageView
+                                android:id="@+id/completed_trip_drop_down_image"
+                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                                app:layout_constraintTop_toTopOf="@id/completed_trip_header"
+                                app:layout_constraintBottom_toBottomOf="@id/completed_trip_header"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_width="@dimen/homepage_dropdown_main"
+                                android:layout_height="@dimen/homepage_dropdown_main"/>
+
                             <TextView
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_header"
                                 android:id="@+id/completed_trip_message"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -148,11 +201,14 @@
                                 android:textSize="@dimen/text_size_medium" />
 
                             <androidx.recyclerview.widget.RecyclerView
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_message"
                                 android:id="@+id/completed_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
 

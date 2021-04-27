@@ -31,9 +31,9 @@
             android:id="@+id/info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/trailerDetail"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailerDetail" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -58,9 +58,9 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/stickReadingContainer"
             android:layout_width="250dp"
-            android:visibility="@{isSite?View.VISIBLE:View.GONE}"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:visibility="@{isSite?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/trailerReadingContainer">
@@ -79,10 +79,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/meterReadingContainer"
-            android:visibility="@{isSite?View.VISIBLE:View.GONE}"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:visibility="@{isSite?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/stickReadingContainer">
@@ -98,28 +98,30 @@
                 android:paddingBottom="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <ImageView
+           android:layout_marginStart="20dp"
             android:id="@+id/submitBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Submit"
-            app:layout_constraintBaseline_toBaselineOf="@+id/cancelBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cancelBtn" />
-
-        <Button
-            android:id="@+id/cancelBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginTop="40dp"
-            android:text="Cancel"
+            android:src="@drawable/ic_done"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cancelBtn"
+            app:layout_constraintTop_toBottomOf="@id/meterReadingContainer" />
+
+        <ImageView
+            android:layout_marginEnd="20dp"
+            android:id="@+id/cancelBtn"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/submitBtn"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/meterReadingContainer" />
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

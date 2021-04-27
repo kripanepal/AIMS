@@ -36,9 +36,9 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/tripStatusImage"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/trip_drop_down_image"
+                        android:layout_width="@dimen/homepage_dropdown_sec"
+                        android:layout_height="@dimen/homepage_dropdown_sec"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

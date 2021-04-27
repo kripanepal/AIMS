@@ -98,11 +98,8 @@ class OngoingDeliveryFragment : Fragment() {
         viewModel.fillingEnded.observe(viewLifecycleOwner)
         {
             if (it) {
-                binding.fillForm.visibility = View.VISIBLE
-                binding.endFilling.visibility = View.GONE
-                binding.fillForm.setOnClickListener {
-                    getFormConfirmation().builder.show()
-                }
+                fuelingEndViews()
+
             }
         }
 
@@ -151,7 +148,7 @@ class OngoingDeliveryFragment : Fragment() {
             args.putString("trailer", sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc)
             args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
             preFillingDialog.arguments = args
-            preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+            preFillingDialog.show(childFragmentManager, "PostFillingReadings")
 
         }
     }
@@ -225,9 +222,11 @@ class OngoingDeliveryFragment : Fragment() {
     private fun fuelingEndViews()
     {
         binding.fillForm.visibility = View.VISIBLE
+        binding.endFilling.visibility = View.GONE
         binding.fillForm.setOnClickListener {
             getFormConfirmation().builder.show()
         }
+        binding.fillForm.performClick()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -29,12 +31,14 @@ import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
 import com.here.android.mpa.mapping.AndroidXMapFragment
 import com.here.android.mpa.mapping.Map
+import com.here.android.mpa.mapping.MapLabeledMarker
 import com.here.android.mpa.mapping.MapRoute
 import com.here.android.mpa.prefetcher.MapDataPrefetcher
 import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -157,10 +161,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                         GeoCoordinate(currentLatitude, currentLongitude, 0.0),
                         Map.Animation.NONE
                     )
-                    // Set the zoom level to the average between min and max
-                    map.zoomLevel = (map.maxZoomLevel + map.minZoomLevel) / 2
+
                     navigationManager.setMap(map)
                     mapFragment.positionIndicator?.isVisible = true
+                    recenter()
 
 
                     if (sharedViewModel.selectedSourceOrSite.value != null) checkAndCreateRoute()
@@ -242,16 +246,41 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun onRouteCalculated() {
+
         map.removeAllMapObjects()
+
+        addDestinationMarker()
+
+
         var givenRoute = route!!
         val mapRoute = MapRoute(givenRoute)
         mapRoute.isManeuverNumberVisible = true
         map.addMapObject(mapRoute)
         geoBoundingBox = givenRoute.boundingBox!!
-        map.zoomTo(geoBoundingBox, Map.Animation.NONE, Map.MOVE_PRESERVE_TILT)
+        map.zoomTo(route!!.boundingBox!!,Map.Animation.BOW,20.0f,0f)
         map.mapScheme = Map.Scheme.TRUCKNAV_DAY
         startNavigation()
         binding.progressBarContainer.visibility = View.GONE
+    }
+
+    private fun addDestinationMarker() {
+
+        val makerImage = Image()
+        try {
+
+            var icon = if(sourceOrSite.wayPointTypeDescription == "Source") R.drawable.ic_source else R.drawable.ic_site
+            ResourcesCompat.getDrawable(requireContext().resources, icon, null)?.let { makerImage.setBitmap(it.toBitmap(125,125)) }
+            val myMapMarker = MapLabeledMarker(GeoCoordinate(sourceOrSite.location.latitude, sourceOrSite.location.longitude),makerImage)
+            myMapMarker.setLabelText(map.mapDisplayLanguage, sourceOrSite.location.destinationName)
+            myMapMarker.fontScalingFactor = 4F
+            myMapMarker.fontScalingFactor
+            map.addMapObject(myMapMarker)
+
+        } catch (e: IOException) {
+
+        }
+
+
     }
 
     private fun recenter() {
@@ -279,7 +308,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     sharedViewModel.activeRoute = route
                     bottomSheetNavigationStarted()
                     changeViewsVisibility()
-                    deliveryStatusViewModel.locationRepository.addListener()
+                    recenter()
+                    addListeners()
 
 
                 }
@@ -288,7 +318,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     sharedViewModel.activeRoute = route
                     bottomSheetNavigationStarted()
                     changeViewsVisibility()
-                    deliveryStatusViewModel.locationRepository.addListener()
+                    recenter()
+                    addListeners()
 
                 }
                 val alertDialog = alertDialogBuilder.create()
@@ -296,14 +327,15 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 alertDialog.show()
             }
 
+
         } else {
             changeViewsVisibility()
             bottomSheetNavigationStarted()
             mapFragment.onResume()
             mapFragment.map?.positionIndicator?.isVisible = true
         }
-        recenter()
-        addListeners()
+
+
 
     }
 
@@ -337,6 +369,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
 
     private fun addListeners() {
 
+        deliveryStatusViewModel.locationRepository.addListener()
         mapFragment.mapGesture!!.addOnGestureListener(MyOnGestureListener(), 1, false)
         navigationManager.distanceUnit = NavigationManager.UnitSystem.IMPERIAL_US
         navigationManager.addRerouteListener(WeakReference(rerouteListener))
@@ -363,6 +396,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         override fun onRerouteEnd(routeResult: RouteResult, error: RoutingError?) {
             super.onRerouteEnd(routeResult, error)
             map.removeAllMapObjects()
+            addDestinationMarker()
             map.addMapObject(MapRoute(routeResult.route))
             sharedViewModel.activeRoute = routeResult.route
 
@@ -426,20 +460,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     currentSpeedLimit = positionCoordinates.roadElement!!.speedLimit.toDouble()
                 }
                 updateSpeedTexts(currentSpeed, currentSpeedLimit)
-                val millis =
-                    (navigationManager.getEta(true, Route.TrafficPenaltyMode.OPTIMAL).time).minus(
-                        Calendar.getInstance().time.time
-                    )
-                val hours = (millis / (1000 * 60 * 60))
-                val mins = ((millis / (1000 * 60)) % 60)
-                var remainingTime = if (hours > 0) "$hours hr $mins min" else "$mins min"
-                binding.remainingTime.text = remainingTime
-
-
-                deliveryStatusViewModel.locationRepository.coordinates.value = GeoCoordinates(
-                    positionCoordinates.coordinate.latitude,
-                    positionCoordinates.coordinate.longitude
-                )
+                updateTimeToArrivalText(positionCoordinates)
 
 
             }
@@ -450,6 +471,23 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             p1: PositioningManager.LocationStatus?
         ) {
         }
+    }
+
+    private fun updateTimeToArrivalText(positionCoordinates: MatchedGeoPosition) {
+        val millis =
+            (navigationManager.getEta(true, Route.TrafficPenaltyMode.OPTIMAL).time).minus(
+                Calendar.getInstance().time.time
+            )
+        val hours = (millis / (1000 * 60 * 60))
+        val mins = ((millis / (1000 * 60)) % 60)
+        var remainingTime = if (hours > 0) "$hours hr $mins min" else "$mins min"
+        if (mins >= 0)
+            binding.remainingTime.text = remainingTime
+        else binding.remainingTime.text = "Arrived"
+        deliveryStatusViewModel.locationRepository.coordinates.value = GeoCoordinates(
+            positionCoordinates.coordinate.latitude,
+            positionCoordinates.coordinate.longitude
+        )
     }
 
 

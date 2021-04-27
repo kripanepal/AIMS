@@ -15,6 +15,7 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.toggleDropDownImage
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
@@ -97,15 +98,18 @@ class HomePage : Fragment() {
     private fun changeContainerVisibility() {
         binding.completedTripListContainer.setOnClickListener {
             toggleViewVisibility(completed_trip_list)
+            toggleDropDownImage(binding.completedTripList,binding.completedTripDropDownImage)
 
         }
 
         binding.currentTripListContainer.setOnClickListener {
             toggleViewVisibility(current_trip_list)
+            toggleDropDownImage(binding.currentTripList,binding.currentTripDropDownImage)
 
         }
         binding.upcomingTripListContainer.setOnClickListener {
             toggleViewVisibility(upcoming_trip_list)
+            toggleDropDownImage(binding.upcomingTripList,binding.upcomingTripDropDownImage)
 
         }
     }

@@ -9,7 +9,7 @@
             type="com.fourofourfound.aims_delivery.domain.SourceOrSite" />
         <variable
             name="databaseForm"
-            type="com.fourofourfound.aims_delivery.database.entities.DatabaseForm" />
+            type="com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm" />
         <variable
             name="databaseTrip"
             type="com.fourofourfound.aims_delivery.database.entities.DatabaseTrip" />

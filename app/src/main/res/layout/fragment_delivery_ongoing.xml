@@ -105,6 +105,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:layout_marginBottom="10dp"
                 android:id="@+id/start_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,6 +114,7 @@
                 android:text="Start Filling" />
 
             <Button
+                android:layout_marginBottom="10dp"
                 android:id="@+id/fill_form"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,6 +124,7 @@
                 android:visibility="gone" />
 
             <RelativeLayout
+
                 android:id="@+id/startNavigation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -148,6 +151,7 @@
                     android:textSize="20sp" />
 
                 <ImageView
+                    android:layout_marginBottom="10dp"
                     android:id="@+id/start_trip"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -161,6 +165,7 @@
             </RelativeLayout>
 
             <Button
+                android:layout_marginBottom="10dp"
                 android:id="@+id/end_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -172,6 +177,7 @@
                 android:visibility="gone" />
 
             <Button
+                android:layout_marginBottom="10dp"
                 android:visibility="gone"
                 android:id="@+id/fillForm"
                 android:layout_width="wrap_content"
