@@ -2,7 +2,7 @@ package com.fourofourfound.aims_delivery.database.entities
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["latitude", "longitude", "destinationCode"])
+@Entity(primaryKeys = ["latitude", "longitude", "identifier"])
 data class DatabaseLocation(
     var address1: String,
     var address2: String?,
@@ -12,5 +12,6 @@ data class DatabaseLocation(
     val latitude: Double,
     val longitude: Double,
     val destinationCode: String,
-    val destinationName: String
+    val destinationName: String,
+    val identifier:String
 )

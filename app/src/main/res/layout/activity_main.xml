@@ -10,22 +10,24 @@
         android:id="@+id/no_internet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Aims_light_orange"
+        android:background="@color/Aims_Orange"
         android:gravity="center"
+        android:textSize="18sp"
         android:text="@string/no_internet_connection_text"
-        android:textColor="@color/Red"
-        android:visibility="gone"
+        android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/no_internet" />
+        app:layout_constraintTop_toBottomOf="@+id/no_internet"
+        android:background="@color/Aims_Orange"/>
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

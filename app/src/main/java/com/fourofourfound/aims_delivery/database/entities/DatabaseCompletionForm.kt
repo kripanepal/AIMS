@@ -22,6 +22,6 @@ data class DatabaseCompletionForm(
     var stickReadingAfter: Double?,
     var meterReadingBefore: Double?,
     var meterReadingAfter: Double?,
-    var image:Bitmap? = null
+    var identifier :String = "$tripId $seqNo"
 
 )

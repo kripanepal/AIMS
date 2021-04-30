@@ -113,6 +113,7 @@ class SettingsFragment : Fragment() {
         sharedViewModel.activeRoute = null
         sharedViewModel.selectedTrip.value = (null)
         viewModel.logoutUser()
+        sharedViewModel.driver = null
         NavigationManager.getInstance()?.stop()
         MapEngine.getInstance().onPause()
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation

@@ -8,26 +8,41 @@
     <fragment
         android:id="@+id/homePage"
         android:name="com.fourofourfound.aims_delivery.homePage.HomePage"
-        android:label="Home">
+        android:label="Trip List">
         <action
             android:id="@+id/action_homePage_to_loginFragment"
             app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
             app:launchSingleTop="false"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/loginFragment" />
         <action
             android:id="@+id/action_homePage_to_completedDeliveryFragment"
-            app:destination="@id/completedDeliveryFragment" />
+            app:destination="@id/completedDeliveryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_homePage_to_loadInfoFragment"
-            app:destination="@id/loadInfoFragment" />
+            app:destination="@id/loadInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/completedDeliveryFragment"
         android:name="com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryFragment"
-        android:label="CompletedDeliveryFragment">
+        android:label="Completed Trip Details">
         <argument
             android:name="trip"
             app:argType="com.fourofourfound.aims_delivery.domain.Trip" />
+        <argument
+            android:name="seqNo"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -41,5 +56,8 @@
         <argument
             android:name="trip"
             app:argType="com.fourofourfound.aims_delivery.domain.Trip" />
+        <action
+            android:id="@+id/action_loadInfoFragment_to_completedDeliveryFragment"
+            app:destination="@id/completedDeliveryFragment" />
     </fragment>
 </navigation>

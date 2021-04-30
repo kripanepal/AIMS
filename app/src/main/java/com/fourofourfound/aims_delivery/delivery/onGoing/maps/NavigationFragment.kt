@@ -39,6 +39,7 @@ import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -181,19 +182,21 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             val routeOptions = RouteOptions()
             coreRouter.connectivity = CoreRouter.Connectivity.DEFAULT
             if (sharedViewModel.internetConnection.value == false) {
-                CustomDialogBuilder(
-                    requireContext(),
-                    "No Internet Connection",
-                    "Route results may not be accurate without internet connection",
-                    "Continue",
-                    {
-                        routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
-                        createRoute(routeOptions, routePlan, coreRouter)
-                    },
-                    "Cancel Navigation",
-                    { findNavController().navigateUp() },
-                    false
-                ).builder.show()
+                context?.let {
+                    CustomDialogBuilder(
+                        it,
+                        "No Internet Connection",
+                        "Route results may not be accurate without internet connection",
+                        "Continue",
+                        {
+                            routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
+                            createRoute(routeOptions, routePlan, coreRouter)
+                        },
+                        "Cancel Navigation",
+                        { findNavController().navigateUp() },
+                        false
+                    ).builder.show()
+                }
             } else {
                 //TODO need to change these parameters
                 //TODO need to change these parameters
@@ -269,14 +272,14 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         try {
 
             var icon = if(sourceOrSite.wayPointTypeDescription == "Source") R.drawable.ic_source else R.drawable.ic_site
-            ResourcesCompat.getDrawable(requireContext().resources, icon, null)?.let { makerImage.setBitmap(it.toBitmap(125,125)) }
+            context?.let { ResourcesCompat.getDrawable(it.resources, icon, null)?.let { bitmap-> makerImage.setBitmap(bitmap.toBitmap(125,125)) } }
             val myMapMarker = MapLabeledMarker(GeoCoordinate(sourceOrSite.location.latitude, sourceOrSite.location.longitude),makerImage)
             myMapMarker.setLabelText(map.mapDisplayLanguage, sourceOrSite.location.destinationName)
             myMapMarker.fontScalingFactor = 4F
             myMapMarker.fontScalingFactor
             map.addMapObject(myMapMarker)
 
-        } catch (e: IOException) {
+        } catch (e: Exception) {
 
         }
 
@@ -295,7 +298,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private fun startNavigation() {
         changeNextManeuverTexts()
         navigationManager.setMap(map)
-        if (isDarkModeOn(requireContext())) map.mapScheme = Map.Scheme.NORMAL_NIGHT
 
         if (navigationManager.runningState !== NavigationManager.NavigationState.RUNNING) {
             showBottomSheetWithAnimation()
@@ -424,6 +426,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             positionCoordinates: GeoPosition?,
             status: Boolean
         ) {
+
             if (PositioningManager.getInstance().roadElement == null && !fetchingDataInProgress) {
                 val areaAround = positionCoordinates?.let {
                     GeoBoundingBox(
@@ -446,7 +449,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                 binding.deliveryProgress.progress =
                     (100 - (remainingDistance / (completedDistance + remainingDistance)) * 100).toInt()
                 //meter to miles
-
                 var formatted = if (navigationManager.nextManeuverDistance < Long.MAX_VALUE)
                     String.format(
                         "%.2f",
@@ -495,20 +497,22 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private fun destinationReached() {
         lifecycleScope.launchWhenResumed {
             //TODO inform dispatcher about destination reached
-            CustomDialogBuilder(
-                requireContext(),
-                "Show Details",
-                "Go back to the details page",
-                "OK",
-                {
-                    sharedViewModel.activeRoute = null
-                    removeListeners()
-                    findNavController().navigateUp()
-                },
-                "Cancel",
-                null,
-                false
-            ).builder.show()
+            context?.let {
+                CustomDialogBuilder(
+                    it,
+                    "Show Details",
+                    "Go back to the details page",
+                    "OK",
+                    {
+                        sharedViewModel.activeRoute = null
+                        removeListeners()
+                        findNavController().navigateUp()
+                    },
+                    "Cancel",
+                    null,
+                    false
+                ).builder.show()
+            }
         }
     }
 
@@ -573,16 +577,18 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun showErrorDialog() {
-        CustomDialogBuilder(
-            requireContext(),
-            "Something Went Wrong",
-            "Please check you internet connection. Maps may not be available offline. \n\nYou can download maps for offline use in settings tab",
-            "Retry",
-            { initializeMap() },
-            "Go Back",
-            { findNavController().navigateUp() },
-            false
-        ).builder.show()
+        context?.let {
+            CustomDialogBuilder(
+                it,
+                "Something Went Wrong",
+                "Please check you internet connection. Maps may not be available offline. \n\nYou can download maps for offline use in settings tab",
+                "Retry",
+                { initializeMap() },
+                "Go Back",
+                { findNavController().navigateUp() },
+                false
+            ).builder.show()
+        }
 
 
     }

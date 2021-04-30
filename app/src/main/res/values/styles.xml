@@ -48,11 +48,19 @@
     <style name="divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">?attr/colorOnSecondary</item>
+        <item name="android:background">?attr/colorOnPrimary</item>
     </style>
 
     <style name="textColorNormal">
         <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="textSizeDeliveryCompleted">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="textColorBlack">
+        <item name="android:textColor">@color/black</item>
     </style>
 
 

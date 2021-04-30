@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.homePage
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -80,34 +81,7 @@ class TripListAdapter(
             //add a new binding
             binding.trip = item
             binding.clickListener = clickListener
-            var fuelInfo = mutableListOf<FuelWithInfo>()
-            fuelInfo.add(FuelWithInfo("Fuel Type", "Source", "#Site"))
 
-            //get  lists of all product types for that trip
-            val productList = HashSet<Int>(item.sourceOrSite.size)
-            for (destination in item.sourceOrSite) productList.add(destination.productInfo.productId!!)
-
-            if (productList != null) {
-                for (product in productList) {
-                    //find all sources  for each fuel type
-                    val sourceList = item.sourceOrSite.filter {
-                        (it.wayPointTypeDescription == "Source") && (it.productInfo.productId == product)
-                    }
-
-                    if (sourceList.isNotEmpty()) {
-                        //order the source by seq number
-                        var firstElement = sourceList.sortedWith(compareBy { it.seqNum })[0]
-                        val numberOfSites = item.sourceOrSite.size - sourceList.size
-                        val productName = firstElement.productInfo.productDesc
-                        var sourceName =
-                            if (firstElement.wayPointTypeDescription == "Source") firstElement.location.destinationName else "Not Available"
-                        var fuelWithInfo =
-                            FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
-                        fuelInfo.add(fuelWithInfo)
-                    }
-                }
-
-            }
             //makes the nested view expandable
             binding.cardView.setOnClickListener {
                 binding.cardViewNestedView.apply {
@@ -116,10 +90,42 @@ class TripListAdapter(
                 }
             }
 
-
-            val adapter = FuelSummaryAdapter(fuelInfo.toTypedArray())
+            val adapter = FuelSummaryAdapter(calculateFuelInfo(item).toTypedArray())
             binding.nestedTripDetailsListView.adapter = adapter
             binding.executePendingBindings()
+        }
+
+
+
+        private fun calculateFuelInfo(item: Trip): MutableList<FuelWithInfo> {
+            var fuelInfo = mutableListOf<FuelWithInfo>()
+            fuelInfo.add(FuelWithInfo("Fuel Type", "Source", "#Site"))
+
+            //get  lists of all product types for that trip
+            val productList = ArrayList<String>(item.sourceOrSite.size)
+            for (destination in item.sourceOrSite) if (!productList.contains(destination.productInfo.productDesc!!)) productList.add(
+                destination.productInfo.productDesc!!
+            )
+            for ((index, product) in productList.withIndex()) {
+                //find all sources  for each fuel type
+                val sourceList = item.sourceOrSite.filter {
+                    (it.productInfo.productDesc == product)
+                }
+
+
+                if (sourceList.isNotEmpty()) {
+                    var sorted = sourceList.sortedWith(compareBy { it.seqNum })
+                        .filter { (it.wayPointTypeDescription == "Source") }
+                    val numberOfSites = sourceList.size - sorted.size
+                    val productName = productList[index]
+                    var sourceName =
+                        if (sorted.isEmpty()) "N/A" else sorted[0].location.destinationName
+                    var fuelWithInfo =
+                        FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
+                    fuelInfo.add(fuelWithInfo)
+                }
+            }
+            return fuelInfo
         }
     }
 

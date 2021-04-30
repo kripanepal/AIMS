@@ -65,14 +65,7 @@
                                 android:text="Current Trip"
                                 android:textSize="@dimen/text_size_large"
                                 />
-                            <ImageView
-                                android:id="@+id/current_trip_drop_down_image"
-                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
-                                app:layout_constraintTop_toTopOf="@id/current_trip_header"
-                                app:layout_constraintBottom_toBottomOf="@id/current_trip_header"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                android:layout_width="@dimen/homepage_dropdown_main"
-                                android:layout_height="@dimen/homepage_dropdown_main"/>
+
 
                             <TextView
                                 android:id="@+id/ongoing_trip_message"
@@ -123,14 +116,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Upcoming Trips"
                                 android:textSize="@dimen/text_size_large" />
-                            <ImageView
-                                android:id="@+id/upcoming_trip_drop_down_image"
-                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
-                                app:layout_constraintTop_toTopOf="@id/upcoming_trip_header"
-                                app:layout_constraintBottom_toBottomOf="@id/upcoming_trip_header"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                android:layout_width="@dimen/homepage_dropdown_main"
-                                android:layout_height="@dimen/homepage_dropdown_main"/>
+
                             <TextView
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +157,6 @@
                             android:orientation="vertical">
 
                             <TextView
-
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Completed Trips"
@@ -179,16 +164,8 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 android:id="@+id/completed_trip_header"
-                                android:textSize="@dimen/text_size_large" />
 
-                            <ImageView
-                                android:id="@+id/completed_trip_drop_down_image"
-                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
-                                app:layout_constraintTop_toTopOf="@id/completed_trip_header"
-                                app:layout_constraintBottom_toBottomOf="@id/completed_trip_header"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                android:layout_width="@dimen/homepage_dropdown_main"
-                                android:layout_height="@dimen/homepage_dropdown_main"/>
+                                android:textSize="@dimen/text_size_large" />
 
                             <TextView
                                 app:layout_constraintStart_toStartOf="parent"

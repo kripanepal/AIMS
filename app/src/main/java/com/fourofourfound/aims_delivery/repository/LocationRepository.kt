@@ -15,7 +15,6 @@ class LocationRepository(context:Context) {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     var coordinates = MutableLiveData(GeoCoordinates(0.0, 0.0))
     var locationListenerGPS = LocationListener { location ->
-        Log.i("AAAAAAAAAAA",location.latitude.toString())
         coordinates.value = GeoCoordinates(location.latitude, location.longitude)
     }
 

@@ -51,18 +51,10 @@ class DeliveryCompletionViewModel(
         var formToSubmit = DatabaseCompletionForm(
             billOfLadingNumber.value,
             productDesc.value!!,
-            "${startDate.get(Calendar.YEAR)} ${startDate.get(Calendar.MONTH).plus(1)} ${
-                startDate.get(
-                    Calendar.DAY_OF_MONTH
-                )
-            }",
-            startTime.get(Calendar.HOUR_OF_DAY).toString() + " " + startTime.get(Calendar.MINUTE),
-            "${endDate.get(Calendar.YEAR)} ${endDate.get(Calendar.MONTH).plus(1)} ${
-                endDate.get(
-                    Calendar.DAY_OF_MONTH
-                )
-            }",
-            endTime.get(Calendar.HOUR_OF_DAY).toString() + " " + endTime.get(Calendar.MINUTE),
+            "${startDate.get(Calendar.YEAR)}-${startDate.get(Calendar.MONTH)}-${startDate.get(Calendar.MONTH)}",
+            startTime.get(Calendar.HOUR_OF_DAY).toString() + ":" + startTime.get(Calendar.MINUTE),
+            "${endDate.get(Calendar.YEAR)}-${endDate.get(Calendar.MONTH)}-${endDate.get(Calendar.DAY_OF_MONTH)}",
+            endTime.get(Calendar.HOUR_OF_DAY).toString() + ":" + endTime.get(Calendar.MINUTE),
             grossQty.value!!,
             netQty.value!!,
             trailerBeginReading.value!!,
@@ -75,12 +67,12 @@ class DeliveryCompletionViewModel(
             meterReadingBefore.value,
             meterReadingAfter.value
 
+
         )
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 tripListRepository.sendFormData(formToSubmit)
-
             }
             formSubmitted.value = true
         }

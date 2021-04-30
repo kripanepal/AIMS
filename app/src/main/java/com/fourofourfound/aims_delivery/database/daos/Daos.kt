@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
+import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
 import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 
@@ -18,6 +19,10 @@ interface LocationDao {
 
     @Query("delete  from CustomDatabaseLocation")
     suspend fun deleteAllLocations()
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocation(location: DatabaseLocation)
 }
 
 @Dao
@@ -39,7 +44,6 @@ interface TrailerDao {
 @Dao
 interface DestinationDao {
 
-    //Dr.Smith Json
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDestination(vararg siteOrSource: DatabaseSourceOrSite)
 
@@ -60,6 +64,9 @@ interface TripDao {
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
 
+    @Query("DELETE FROM DatabaseTrip WHERE tripId IN (:ids) and status not in (0,2) ")
+    fun deleteTripById(ids: List<Int>)
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrip(trip: DatabaseTrip)
@@ -70,8 +77,6 @@ interface TripDao {
 
 
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: DatabaseLocation)
 
 
     @Transaction
@@ -100,5 +105,63 @@ interface DriverDao {
 
     @Query("select * from  Driver limit 1")
     fun getDriver(): Driver?
+}
+
+@Dao
+interface CompletedDeliveriesDao {
+
+    @Query("select * from DatabaseCompletionForm where tripId =:tripId")
+    fun getDetails( tripId:Int): List<CompletedFormWithInfo>
+
+    @Query("select * from DatabaseCompletionForm where tripId =:tripId and seqNo =:seqNo")
+    fun getDetailsForDestination(tripId: Int, seqNo: Int): List<CompletedFormWithInfo>
 
 }
+
+@Dao
+interface LogoutDao {
+
+    @Query("delete from DatabaseCompletionForm")
+    fun deleteForms()
+
+    @Query("delete from DatabaseTrip")
+    fun deleteTrips()
+
+    @Query("delete from CustomDatabaseLocation")
+    fun deleteSavedLocations()
+
+    @Query("delete from DatabaseFuel")
+    fun deleteFuels()
+
+    @Query("delete from DatabaseLocation")
+    fun deleteSavedAddresses()
+
+    @Query("delete from DatabaseSourceOrSite")
+    fun deleteDestinations()
+
+    @Query("delete from DatabaseTrailer")
+    fun deleteTrailers()
+
+    @Query("delete from DatabaseTruck")
+    fun deleteTrucks()
+
+    fun deleteAll()
+    {
+        deleteForms()
+        deleteTrips()
+        deleteSavedLocations()
+        deleteFuels()
+        deleteSavedAddresses()
+        deleteDestinations()
+        deleteTrailers()
+        deleteTrucks()
+
+    }
+
+
+
+
+
+}
+
+

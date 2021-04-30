@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
                 android:orientation="vertical"
-                android:padding="5dp"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/destinationImage"
                 app:layout_constraintTop_toTopOf="parent">
@@ -71,6 +72,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/description_text_size" />
+
+                <Button
+                    android:id="@+id/show_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Form"
+                    android:visibility="gone"
+                    android:textColor="@color/black"
+                    android:background="@drawable/rounded_corners_fab"
+                    android:backgroundTint="@color/Aims_Orange"
+                    android:layout_gravity="right" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -86,6 +98,8 @@
             app:layout_constraintEnd_toEndOf="@id/destinationImage"
             app:layout_constraintStart_toStartOf="@id/destinationImage"
             app:layout_constraintTop_toBottomOf="@id/destinationImage" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,57 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryViewModel" />
-
-        <variable
-            name="trip"
-            type="com.fourofourfound.aims_delivery.domain.Trip" />
-    </data>
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/card_background_color">
+     >
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/trip_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.completedTrip.tripName}"
-                android:textSize="@dimen/text_size_large"
-                android:textColor="@color/Aims_Orange"
-                />
-        </LinearLayout>
+            android:text="tripName"
+            android:textColor="@color/Aims_Orange"
+            android:textSize="@dimen/text_size_large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sourceOrSiteInfo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/delivery_summary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/trip_name"/>
 
-                android:layout_margin="30dp"
-                app:cardCornerRadius="@dimen/card_corner_radius"
-                app:cardElevation="@dimen/card_elevation">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/sourceOrSiteInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/delivery_summary"
-                />
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -3,22 +3,21 @@ package com.fourofourfound.aims_delivery.network
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.domain.UserLoginInfo
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 //server url
 /**
  * Base URL
  * The URL of the server
  */
-private const val BASE_URL =  "https://aims-server.herokuapp.com/"
+//private const val BASE_URL =  "https://aims-server.herokuapp.com/"
+private const val BASE_URL =  "https://api.appery.io/"
+private const val API_KEY =  "f20f8b25-b149-481c-9d2c-41aeb76246ef"
 
 
 //a moshi object
@@ -34,6 +33,7 @@ var retrofit: Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
+
 //interface to add the methods
 /**
  * User service
@@ -41,16 +41,23 @@ var retrofit: Retrofit = Retrofit.Builder()
  * @constructor Create empty User service
  */
 interface UserService {
-    @POST("/signin")
-    suspend fun validateUser(@Body loginInfo: UserLoginInfo): Boolean
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/?apiKey=$API_KEY&Active=true")
+    suspend fun validateUser(@Query(value = "Code") driverCode: String): DriverResponse
+
+
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/GetTripListDetailByDriver/{driverCode}?apiKey=$API_KEY")
+    suspend fun getAllTrips(@Path("driverCode")driverCode:String): TripResponse
+
+
+    @GET("/alltrips")
+    suspend fun getAllTripsFromHeroku(): TripResponse
+
 
     @POST("/location")
     suspend fun sendLocation(@Body location: CustomDatabaseLocation) {
         Log.i("Refresh", location.toString())
     }
 
-    @GET("/alltrips")
-    suspend fun getAllTrips(): TripResponse
 
     @POST("/form")
     fun sendFormData(@Body form: DatabaseCompletionForm)

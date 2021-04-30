@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Settings view model
@@ -30,9 +32,24 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
         CustomSharedPreferences(myApplication).apply {
             deleteEncryptedPreference("username")
             deleteEncryptedPreference("password")
+
+            deleteEncryptedPreference("driverCode")
+            deleteEncryptedPreference("id")
+            deleteEncryptedPreference("name")
+            deleteEncryptedPreference("companyId")
+            deleteEncryptedPreference("driverDescription")
+            deleteEncryptedPreference("compasDriverId")
+            deleteEncryptedPreference("truckId")
+            deleteEncryptedPreference("truckDescription")
+            deleteEncryptedPreference("active")
+
         }
         viewModelScope.launch {
-            tripListRepository.deleteAllTrips()
+            withContext(Dispatchers.IO) {
+                database.logoutDao.deleteAll()
+            }
+
+
         }
     }
 

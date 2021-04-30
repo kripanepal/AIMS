@@ -1,7 +1,10 @@
 package com.fourofourfound.aims_delivery.homePage
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +18,6 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aims_delivery.utils.StatusEnum
-import com.fourofourfound.aims_delivery.utils.toggleDropDownImage
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
@@ -59,11 +61,11 @@ class HomePage : Fragment() {
     lateinit var viewModel: HomePageViewModel
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
 
         //create a binding object
         _binding = DataBindingUtil.inflate(
@@ -71,17 +73,23 @@ class HomePage : Fragment() {
         )
 
         //navigate user to login screen if user is not logged in
-        if (!sharedViewModel.userLoggedIn.value!!) {
+        if (sharedViewModel.driver == null) {
             findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
             return binding.root
         }
 
         //initialize viewModel and assign value to the viewModel in xml file
         viewModel = ViewModelProvider(this).get(HomePageViewModel::class.java)
+
+        viewModel.driver = sharedViewModel.driver!!
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        if (viewModel.tripList.value.isNullOrEmpty())
+            viewModel.fetchTripFromNetwork(sharedViewModel.driver!!.code)
         viewModel.updating.observe(viewLifecycleOwner) { sharedViewModel.loading.value = it }
+        viewModel.loaded = 0
+
 
 
 
@@ -98,21 +106,16 @@ class HomePage : Fragment() {
     private fun changeContainerVisibility() {
         binding.completedTripListContainer.setOnClickListener {
             toggleViewVisibility(completed_trip_list)
-            toggleDropDownImage(binding.completedTripList,binding.completedTripDropDownImage)
-
         }
 
         binding.currentTripListContainer.setOnClickListener {
             toggleViewVisibility(current_trip_list)
-            toggleDropDownImage(binding.currentTripList,binding.currentTripDropDownImage)
-
         }
         binding.upcomingTripListContainer.setOnClickListener {
             toggleViewVisibility(upcoming_trip_list)
-            toggleDropDownImage(binding.upcomingTripList,binding.upcomingTripDropDownImage)
-
         }
     }
+
 
 
     /**
@@ -144,11 +147,13 @@ class HomePage : Fragment() {
      *Sets up swipe to refresh view which refreshes the trip list from the network
      */
     private fun setUpSwipeToRefresh() {
+
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.fetchTripFromNetwork()
+            viewModel.fetchTripFromNetwork(viewModel.driver.code)
             if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
         }
     }
+
 
 
     /**
@@ -158,36 +163,38 @@ class HomePage : Fragment() {
     private fun setUpRecyclerView() {
         val (currentTripAdapter, upComingTripAdapter, completedTripAdapter) = setUpAdapters()
         //observe for any changes on the trips and inform that to the user
-        viewModel.tripList?.observe(viewLifecycleOwner) {
-            sharedViewModel.getDriver(requireActivity().application)
-            //TODO new trip was added or modified. Need to send the notification to the user
-            it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
-                binding.ongoingTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                currentTripAdapter.submitList(this)
-                if (this.isNotEmpty()) {
-                    var selectedTrip = this[0]
-                    sharedViewModel.selectedTrip.value = selectedTrip
-                    var selectedDestination =
-                        selectedTrip.sourceOrSite.find { each -> each.status == StatusEnum.ONGOING }
-                    if (selectedDestination != null) sharedViewModel.selectedSourceOrSite.value =
-                        selectedDestination
+        viewModel.tripList.observe(viewLifecycleOwner) {
+         //TODO new trip was added or modified. Need to send the notification to the user
+                if (viewModel.loaded>0  && viewModel.getUpdatingTripsStatus()) showTripModifiedNotification()
+
+                it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
+                    binding.ongoingTripMessage.text =
+                        resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                    currentTripAdapter.submitList(this)
+                    if (this.isNotEmpty()) {
+                        var selectedTrip = this[0]
+                        sharedViewModel.selectedTrip.value = selectedTrip
+                        var selectedDestination =
+                            selectedTrip.sourceOrSite.find { each -> each.status == StatusEnum.ONGOING }
+                        if (selectedDestination != null) sharedViewModel.selectedSourceOrSite.value =
+                            selectedDestination
+
+                    }
 
                 }
 
-            }
+                it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
+                    binding.completedTripMessage.text =
+                        resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                    completedTripAdapter.submitList(this)
+                }
 
-            it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
-                binding.completedTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                completedTripAdapter.submitList(this)
-            }
+                it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
+                    binding.upcomingTripMessage.text =
+                        resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
+                    upComingTripAdapter.submitList(this)
+                }
 
-            it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
-                binding.upcomingTripMessage.text =
-                    resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
-                upComingTripAdapter.submitList(this)
-            }
         }
     }
 
@@ -216,7 +223,7 @@ class HomePage : Fragment() {
             //set up the behaviour of button on the item being displayed
             findNavController().navigate(
                 HomePageDirections.actionHomePageToCompletedDeliveryFragment(
-                    trip
+                    trip, -1
                 )
             )
 

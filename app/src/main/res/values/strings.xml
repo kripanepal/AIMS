@@ -13,6 +13,8 @@
     <string name="contact_my_provider_field_text_land">Need Help?</string>
     <string name="driver_info_sharedpref">Driver-Info</string>
 
+    <string name="trip_modified_notification_id">2</string>
+
     <string-array name="Products">
         <item>UNLEADED</item>
         <item>PREMIUM</item>
@@ -22,7 +24,7 @@
     <!--    format %-->
     <string name="text_with_percentage">%1$d%%</string>
     <string name="no_internet_connection_text">No internet connection</string>
-    <string name="back_to_homescreen">Back To Homescreen</string>
+    <string name="back_to_homescreen">Go Back</string>
     <string name="no_trip_or_ongoing_destination">No trip or ongoing destination</string>
 
 

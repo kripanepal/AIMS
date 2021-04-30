@@ -1,237 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tool="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="sourceOrSite"
-            type="com.fourofourfound.aims_delivery.domain.SourceOrSite" />
-        <variable
-            name="databaseForm"
-            type="com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm" />
-        <variable
-            name="databaseTrip"
-            type="com.fourofourfound.aims_delivery.database.entities.DatabaseTrip" />
-    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp">
 
-
-        <LinearLayout
-            android:id="@+id/LinearLayout"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/root_completed_fragment"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:padding="10dp"
+                android:theme="@style/textSizeDeliveryCompleted">
 
                 <TextView
-                    android:id="@+id/sourceOrSiteInfo"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/destination_name"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status: "
-                    android:textStyle="bold"/>
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tool:text="Monroe Bulk plant" />
 
                 <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/wayPoint_type"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bill of Lading: "
-                    android:textStyle="bold"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/destination_name"
+                    tool:text="Waypoint" />
 
                 <TextView
                     android:id="@+id/bill_of_lading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                   />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Product: "
-                    android:textStyle="bold"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/wayPoint_type"
+                    tool:text="Bill of lading" />
 
                 <TextView
                     android:id="@+id/product_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bill_of_lading"
+                    tool:text="Product" />
 
                 <TextView
+                    android:id="@+id/net_qty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Start Time: "
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/product_desc"
+                    tool:text="Net quantity" />
 
                 <TextView
-                    android:id="@+id/start_time"
+                    android:id="@+id/gross_qty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.startTime}"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="End Time: "
-                    android:textStyle="bold"
-                    />
-
-                <TextView
-                    android:id="@+id/end_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{databaseForm.endTime}"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start Date: "
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/net_qty"
+                    tool:text="Gross quantity" />
 
                 <TextView
                     android:id="@+id/start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.startDate}"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="End Date: "
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/gross_qty"
+                    tool:text="Start Date" />
 
                 <TextView
                     android:id="@+id/end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.endDate}"/>
-            </LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_date"
+                    tool:text="End Date" />
 
-
-
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
 
                 <TextView
+                    android:id="@+id/start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gross Quantity: "
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/end_date"
+                    tool:text="Start Time" />
+
 
                 <TextView
+                    android:id="@+id/end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.grossQty}"/>
-            </LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_time"
+                    tool:text="End Time" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
 
                 <TextView
+                    android:id="@+id/trailer_begin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Net Quantity: "
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/end_time"
+                    tool:text="Trailer begin" />
+
 
                 <TextView
+                    android:id="@+id/trailer_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{databaseForm.netQty}"/>
-            </LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/trailer_begin"
+                    tool:text="Trailer end" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/site_readings"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Trailer Start Reading: "
-                    android:textStyle="bold"/>
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/trailer_end">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{databaseForm.trailerBeginReading}"/>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Trailer End Reading: "
-                    android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/stick_reading_before"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{databaseForm.trailerEndReading}"/>
-            </LinearLayout>
-        </LinearLayout>
+                        tool:text="Stick reading before" />
+
+                    <TextView
+                        android:id="@+id/stick_reading_after"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/stick_reading_before"
+                        tool:text="Stick reading after" />
+
+
+                    <TextView
+                        android:id="@+id/meter_reading_before"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/stick_reading_after"
+                        tool:text="Meter reading before" />
+
+
+                    <TextView
+                        android:id="@+id/meter_reading_after"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/meter_reading_before"
+                        tool:text="End Time" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 </layout>

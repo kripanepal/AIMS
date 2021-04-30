@@ -152,7 +152,9 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         Log.i("WORKER", "SENDING LOCATION")
         customLocation =
             CustomDatabaseLocation(latitude, longitude, "time")
-        repository.refreshTrips()
+
+        //todo get from file
+        //repository.refreshTrips(code)
         MakeNetworkCall.retrofitService.sendLocation(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)
         Result.success()
@@ -185,9 +187,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         bigText: String?, resultIntent: Intent?, channelId: String
     ) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(channelId)
-        }
+        createNotificationChannel(channelId)
 
         var resultPendingIntent: PendingIntent? = null
         resultIntent?.apply {
@@ -226,11 +226,10 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     private fun createNotificationChannel(id: String) {
         var name = successChannelName
         var description = successChannelDescription
-        var importance = NotificationManager.IMPORTANCE_DEFAULT
+        var importance = NotificationManager.IMPORTANCE_LOW
         if (id === errorChannelId) {
             name = errorChannelName
             description = errorChannelDescription
-            importance = NotificationManager.IMPORTANCE_DEFAULT
         }
 
 

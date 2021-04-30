@@ -117,42 +117,44 @@
                 android:id="@+id/login_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#F32929"
-                android:backgroundTint="#D11E1E"
+                android:textColor="@color/Aims_red"
                 android:maxWidth="300dp"
                 android:text="@{viewModel.errorMessage}"
-                app:layout_constraintBottom_toTopOf="@+id/loginButton"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+                android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button
+                android:layout_margin="5dp"
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:background="@drawable/button_background"
                 android:onClick="@{()->viewModel.authenticateUser()}"
                 android:text="Login"
                 android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
 
+
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayout"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@id/spin_kit"/>
 
-            <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.github.ybq.android.spinkit.SpinKitView
                 android:id="@+id/spin_kit"
+                android:visibility="gone"
+                android:layout_margin="5dp"
                 style="@style/SpinKitView.ThreeBounce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:SpinKit_Color="@color/Aims_Orange"
+                app:layout_constraintTop_toBottomOf="@+id/login_error_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-                app:layout_constraintBottom_toBottomOf="@id/loginButton"
-                app:layout_constraintLeft_toLeftOf="@id/loginButton"
-                app:layout_constraintRight_toRightOf="@id/loginButton"
-                app:layout_constraintTop_toTopOf="@id/loginButton" />
+                />
 
             <TextView
                 android:id="@+id/needHelp"
@@ -180,6 +182,15 @@
                 app:layout_constraintRight_toRightOf="parent"
 
                 />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="for testing user id = D1 password = D1 "
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

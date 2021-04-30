@@ -11,7 +11,18 @@
         android:label="Current Trip">
         <action
             android:id="@+id/actionOngoingDeliveryFragmentToDeliveryCompletionFragment"
-            app:destination="@id/deliveryCompletionFragment" />
+            app:destination="@id/deliveryCompletionFragment"
+            app:enterAnim="@anim/push_up_in"
+            app:exitAnim="@anim/push_up_out"
+            app:popEnterAnim="@anim/push_down_in"
+            app:popExitAnim="@anim/push_down_out" />
+        <action
+            android:id="@+id/action_ongoingDeliveryFragment_to_navigationFragment"
+            app:destination="@id/navigationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/push_down_in"
+            app:popExitAnim="@anim/push_down_out" />
     </fragment>
     <fragment
         android:id="@+id/navigationFragment"

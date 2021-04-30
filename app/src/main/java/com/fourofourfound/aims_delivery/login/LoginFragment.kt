@@ -73,6 +73,7 @@ class LoginFragment : Fragment() {
 
         //checks if shared preferences already contains a user that is logged in
         if (viewModel.checkUserLoggedIn()) {
+            sharedViewModel.driver = viewModel.loggedInDriver
             findNavController().navigate(R.id.homePage)
             sharedViewModel.userLoggedIn.value = true
         }
@@ -81,6 +82,7 @@ class LoginFragment : Fragment() {
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
+                sharedViewModel.driver = viewModel.loggedInDriver
                 findNavController().navigate(R.id.homePage)
                 sharedViewModel.userLoggedIn.value = true
                 viewModel.doneNavigatingToHomePage()
@@ -104,7 +106,12 @@ class LoginFragment : Fragment() {
         }
 
 
-        viewModel.loading.observe(viewLifecycleOwner) { if (it) hideSoftKeyboard(requireActivity()) }
+        viewModel.loading.observe(viewLifecycleOwner) { if (it) {
+            hideSoftKeyboard(requireActivity())
+            binding.spinKit.visibility = View.VISIBLE
+        }
+            else  binding.spinKit.visibility = View.GONE
+        }
         return binding.root
     }
 

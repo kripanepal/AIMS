@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoAdapter
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBinding
 
@@ -25,12 +24,6 @@ class CompletedDeliveryFragment : Fragment() {
      * The binding object that is used by this fragment
      */
     lateinit var binding: FragmentDeliveryCompletedBinding
-
-    /**
-     * View model factory is the dactory that is used to create the viewmodel for this
-     * fragment.
-     */
-    private lateinit var viewModelFactory: CompletedDeliveryViewModelFactory
 
     /**
      * View model
@@ -51,7 +44,6 @@ class CompletedDeliveryFragment : Fragment() {
     ): View? {
         // Get args using by navArgs property delegate
         val tripFragmentArgs by navArgs<CompletedDeliveryFragmentArgs>()
-
         //create a binding object
         binding = DataBindingUtil.inflate(
             inflater,
@@ -60,22 +52,22 @@ class CompletedDeliveryFragment : Fragment() {
             false
         )
 
-        //constructing a view model factory
-        viewModelFactory = CompletedDeliveryViewModelFactory(tripFragmentArgs.trip)
-
         //getting a view model from a factory
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(CompletedDeliveryViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(CompletedDeliveryViewModel::class.java)
+        viewModel.getTripDetails(tripFragmentArgs.trip.tripId, tripFragmentArgs.seqNo)
         val adapter = CompletedDeliveryAdapter()
         binding.sourceOrSiteInfo.adapter = adapter
+        viewModel.loading.observe(viewLifecycleOwner)
+        {
+            adapter.data = viewModel.tripDetails
+        }
 
 
-
-        //assigning value to viewModel that is used by the layout
-        binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        return  binding.root
+        binding.tripName.text = tripFragmentArgs.trip.tripName
+
+        return binding.root
     }
 
 

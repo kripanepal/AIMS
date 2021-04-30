@@ -4,9 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 
-@Entity
+@Entity(primaryKeys = ["tripId","tripDate"])
 data class DatabaseTrip(
-    @PrimaryKey
     var tripId: Int,
     var tripName: String,
     var tripDate: String,

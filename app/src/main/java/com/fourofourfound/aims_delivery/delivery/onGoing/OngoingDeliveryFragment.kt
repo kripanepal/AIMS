@@ -89,10 +89,11 @@ class OngoingDeliveryFragment : Fragment() {
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
         sharedViewModel.activeRoute?.apply {
             binding.startFilling.visibility = View.GONE
+            binding.directions.text = "Continue Navigation"
         }
 
         binding.startNavigation.setOnClickListener {
-            findNavController().navigate(R.id.navigationFragment)
+            findNavController().navigate(OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToNavigationFragment())
         }
 
         viewModel.fillingEnded.observe(viewLifecycleOwner)
@@ -190,7 +191,8 @@ class OngoingDeliveryFragment : Fragment() {
                 binding.currentTrip = sharedViewModel.selectedTrip.value
                 binding.sourceOrSiteInfo.apply {
                     sourceOrSiteName.text = currentSourceOrSite.location.destinationName
-                    address.text = currentSourceOrSite.location.address1
+                    var fullAddress = "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
+                    address.text = fullAddress
                     productDesc.text = currentSourceOrSite.productInfo.productDesc
                     productQty.text =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
@@ -226,7 +228,6 @@ class OngoingDeliveryFragment : Fragment() {
         binding.fillForm.setOnClickListener {
             getFormConfirmation().builder.show()
         }
-        binding.fillForm.performClick()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

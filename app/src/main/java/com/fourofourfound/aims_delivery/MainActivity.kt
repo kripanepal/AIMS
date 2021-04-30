@@ -2,7 +2,8 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var navController: NavController
-    lateinit var noInternetText: TextView
     lateinit var locationPermissionUtil: BackgroundLocationPermissionUtil
     lateinit var sharedViewModel: SharedViewModel
     lateinit var deliveryStatusViewModel: DeliveryStatusViewModel
@@ -138,14 +138,15 @@ class MainActivity : AppCompatActivity() {
      * if there is no internet.
      */
     private fun changeInternetConnectionText() {
-        noInternetText = findViewById(R.id.no_internet)
+        var noInternetText: TextView = findViewById(R.id.no_internet)
         sharedViewModel.internetConnection
             .observe(this, Observer { isConnected ->
                 if (!isConnected) {
                     noInternetText.visibility = View.VISIBLE
                     return@Observer
-                }
-                noInternetText.visibility = View.GONE
+                } else noInternetText.visibility = View.GONE
+
+
 
             })
     }

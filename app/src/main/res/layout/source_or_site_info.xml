@@ -20,15 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tool:text="Monroe Bul " />
 
-    <TextView
-        android:id="@+id/address_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Address: "
-        android:textSize="@dimen/description_text_size"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sourceOrSiteName" />
 
     <TextView
         android:id="@+id/address"
@@ -36,9 +27,10 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/description_text_size"
         app:layout_constrainedWidth="true"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toEndOf="@id/address_container"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sourceOrSiteName"
         tool:text="200 Thomas Road " />
 

@@ -32,6 +32,8 @@
     <color name="Drop_down_color">#655858</color>
 
     <color name="dark_red">#8B0000</color>
+    <color name="green">#08FF00</color>
+    <color name="blue">#0000ff</color>
 
 
 </resources>

@@ -393,7 +393,7 @@ class DeliveryCompletionFragment : Fragment() {
                     time.get(Calendar.DAY_OF_MONTH),
                     time.get(Calendar.HOUR_OF_DAY),
                     time.get(Calendar.MINUTE),
-                    sharedViewModel.driver.driver_id,
+                    sharedViewModel.driver!!.code,
                     sharedViewModel.selectedTrip.value!!.tripId,
                     viewModel.destination.seqNum,
                     viewModel.destination.productInfo.productId,

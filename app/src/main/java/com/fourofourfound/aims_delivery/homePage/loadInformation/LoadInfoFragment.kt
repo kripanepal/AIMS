@@ -46,7 +46,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         binding.pickupList.adapter = adapter
 
         adapter.data = currentTrip.sourceOrSite
-
+        adapter.trip = currentTrip
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
             it?.apply {
@@ -86,8 +86,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
 
-        if (sharedViewModel.selectedTrip.value != null && sharedViewModel.selectedTrip.value!! != currentTrip) binding.startTripContainer.visibility =
-            View.GONE
+
 
 
         if (sharedViewModel.selectedSourceOrSite.value == null && sharedViewModel.selectedTrip.value != null) {
@@ -98,8 +97,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             binding.startTripText.text = "Continue Delivery"
         }
 
-        scrollTripStartIcon()
-        startTripOnClick(currentTrip)
+        if (sharedViewModel.selectedTrip.value != null && sharedViewModel.selectedTrip.value!!.tripId != currentTrip.tripId) binding.startTripContainer.visibility =
+            View.GONE
+        else
+        {  scrollTripStartIcon()
+            startTripOnClick(currentTrip)}
+
     }
 
     /**
@@ -137,7 +140,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 time.get(Calendar.DAY_OF_MONTH),
                 time.get(Calendar.HOUR_OF_DAY),
                 time.get(Calendar.MINUTE),
-                sharedViewModel.driver!!.driver_id,
+                sharedViewModel.driver!!.code,
                 currentTrip.tripId
             ),
             "Ok",
@@ -261,7 +264,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 time.get(Calendar.DAY_OF_MONTH),
                 time.get(Calendar.HOUR_OF_DAY),
                 time.get(Calendar.MINUTE),
-                sharedViewModel.driver.driver_id,
+                sharedViewModel.driver!!.code,
                 currentTrip.tripId,
                 sourceOrSite.seqNum
             ),

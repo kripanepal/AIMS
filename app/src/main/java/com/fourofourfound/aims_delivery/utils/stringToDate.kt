@@ -16,7 +16,7 @@ private fun parseDate(
     inputDateFormat: SimpleDateFormat,
     outputDateFormat: SimpleDateFormat
 ): String? {
-    var date: Date
+    var date: Date?
     var outputDateString: String? = null
     try {
         date = inputDateFormat.parse(inputDateString)

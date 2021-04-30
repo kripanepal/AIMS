@@ -1,14 +1,18 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.CustomSharedPreferences
-import com.fourofourfound.aims_delivery.domain.UserLoginInfo
+import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.lang.Exception
+import java.net.UnknownHostException
 
 /**
  * Login view model
@@ -67,6 +71,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val passwordFieldTouched: LiveData<Boolean>
         get() = _passwordFieldTouched
 
+    lateinit var loggedInDriver: Driver
+
 
     /**
      * Save user
@@ -74,10 +80,20 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
      * @param userName
      * @param password
      */
-    private fun saveUser(userName: String, password: String) {
+    private fun saveUser(
+       driver:Driver,password:String
+    ) {
         CustomSharedPreferences(myApplication).apply {
-            setEncryptedPreference("username", userName)
+            setEncryptedPreference("driverCode", driver.code)
             setEncryptedPreference("password", password)
+            setEncryptedPreference("id", driver.id.toString())
+            setEncryptedPreference("name", driver.driverName)
+            setEncryptedPreference("companyId",driver.companyID.toString())
+            setEncryptedPreference("driverDescription", driver.driverDescription)
+            setEncryptedPreference("compasDriverId", driver.compasDriverID.toString())
+            setEncryptedPreference("truckId", driver.truckId.toString())
+            setEncryptedPreference("truckDescription", driver.truckDescription.toString())
+            setEncryptedPreference("active", driver.active.toString())
         }
     }
 
@@ -91,10 +107,21 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun checkUserLoggedIn(): Boolean {
         CustomSharedPreferences(myApplication).apply {
-            val userName = getEncryptedPreference("username")
-            val password = getEncryptedPreference("password")
-            if (userName != "" && password != "") return true
-            return false
+            val code = getEncryptedPreference("driverCode")
+            val id = getEncryptedPreference("id")
+            val name = getEncryptedPreference("name")
+            val companyId = getEncryptedPreference("companyId")
+            val driverDescription = getEncryptedPreference("driverDescription")
+            val compasDriverId = getEncryptedPreference("compasDriverId")
+            val truckId =  getEncryptedPreference("truckId")
+            val truckDescription = getEncryptedPreference("truckDescription")
+            val active = getEncryptedPreference("active")
+            return try {
+                loggedInDriver = Driver(id.toInt() ,companyId.toInt(),code,name,driverDescription,compasDriverId,truckId.toInt(),truckDescription,active.toBoolean())
+                true
+            } catch (e:Exception) {
+                false
+            }
         }
     }
 
@@ -107,19 +134,28 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         _loading.value = true
         viewModelScope.launch {
             try {
-                MakeNetworkCall.retrofitService.validateUser(
-                    UserLoginInfo(
-                        userName.value.toString(),
-                        password.value.toString()
-                    )
-                )
-                _navigate.value = true
-                _loading.value = false
-                saveUser(userName.value.toString(), password.value.toString())
-            } catch (t: Throwable) {
-                //_errorMessage.value = t.message
-                _errorMessage.value = "Login failed"
-                _navigate.value = false
+                val driver = MakeNetworkCall.retrofitService.validateUser(
+                    userName.value.toString()
+                ).data.resultSet1
+                if (driver.isNotEmpty()) {
+                    loggedInDriver = driver[0]
+                    _navigate.value = true
+                    _loading.value = false
+                    saveUser(loggedInDriver, password.value.toString())
+                } else {
+                    _errorMessage.value = "No driver associated with this code"
+                }
+            } catch (t: HttpException) {
+                _errorMessage.value = "Connection failed"
+            }
+            catch (e: UnknownHostException) {
+                _errorMessage.value = "Connection failed"
+            }
+            catch (e: Exception) {
+               e.printStackTrace()
+                _errorMessage.value = "Something Went Wrong"
+            }
+            finally {
                 _loading.value = false
             }
         }

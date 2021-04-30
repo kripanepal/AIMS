@@ -1,7 +1,14 @@
 package com.fourofourfound.aims_delivery.delivery.completed
 
-import androidx.lifecycle.ViewModel
-import com.fourofourfound.aims_delivery.domain.Trip
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.database.getDatabase
+import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Completed delivery view model
@@ -12,11 +19,26 @@ import com.fourofourfound.aims_delivery.domain.Trip
  *
  * @param trip trip whose information is to be displayed
  */
-class CompletedDeliveryViewModel(trip: Trip) :ViewModel() {
+class CompletedDeliveryViewModel(application: Application) : AndroidViewModel(application) {
 
-    //abstracting the trip details so that it cannot be modified
-    private val _completedTrip : Trip = trip
-    val completedTrip: Trip
-        get() = _completedTrip
+
+
+    var loading = MutableLiveData(true)
+
+    val database = getDatabase(application)
+
+    var tripDetails= listOf<CompletedFormWithInfo>()
+
+    fun getTripDetails(tripId: Int, seqNo: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                if(seqNo == -1) tripDetails = database.completedDeliveriesDao.getDetails(tripId)
+                else tripDetails = database.completedDeliveriesDao.getDetailsForDestination(tripId, seqNo)
+
+            }
+            loading.value = false
+
+        }
+    }
 
 }

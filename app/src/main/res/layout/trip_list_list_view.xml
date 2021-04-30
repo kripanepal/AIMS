@@ -20,20 +20,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="15dp"
-            android:backgroundTint="?attr/colorSecondaryVariant"
-            app:cardCornerRadius="8dp"
-            >
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/card_background_gradient"
+                android:theme="@style/textColorBlack"
+                >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:id="@+id/cardViewMainView"
                     android:layout_margin="10dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                     <ImageView
                         android:id="@+id/trip_drop_down_image"
@@ -49,8 +51,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{trip.tripName}"
-                        android:textColor="?attr/colorOnPrimary"
+                        android:textColor="@color/purple_700"
                         android:paddingLeft="10dp"
+                        android:textStyle="bold"
                         android:textSize="@dimen/text_size_medium"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tripImage"
@@ -70,20 +73,22 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:visibility="gone"
                     android:id="@+id/cardViewNestedView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-
-
                     <TextView
+                        app:layout_constrainedWidth="true"
                         android:id="@+id/tripSpecialInstructions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
                         android:text="SPECIAL INSTRUCTIONS "
                         android:textSize="@dimen/text_size_small"
-                        android:layout_margin="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/showDetailsImg"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
                         app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
 
@@ -104,20 +109,23 @@
                         android:onClick="@{() -> clickListener.onClick(trip)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/nestedTripDetailsListView" />
+                        app:layout_constraintTop_toTopOf="@+id/nestedTripDetailsListView"
+                        app:layout_constraintVertical_bias="0.0" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/showDetailsImg"
-                        android:src="@drawable/ic_baseline_play_arrow_24"
-                        android:paddingTop="15dp"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
                         android:onClick="@{() -> clickListener.onClick(trip)}"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="See more"
+                        android:textSize="@dimen/text_size_medium"
+                        app:drawableEndCompat="@drawable/ic_baseline_play_arrow_24"
                         app:layout_constraintEnd_toEndOf="parent"
-                        tools:layout_conversion_absoluteHeight="48dp"
-                        tools:layout_conversion_absoluteWidth="93dp" />
+                        app:layout_constraintTop_toTopOf="@+id/tripSpecialInstructions"
+                        app:layout_constraintBottom_toBottomOf="@+id/tripSpecialInstructions" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

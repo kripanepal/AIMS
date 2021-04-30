@@ -8,8 +8,8 @@ data class DestinationWithInfo(
     @Embedded val sourceOrSite: DatabaseSourceOrSite,
 
     @Relation(
-        parentColumn = "destinationCode",
-        entityColumn = "destinationCode",
+        parentColumn = "identifier",
+        entityColumn = "identifier",
     )
     val location: DatabaseLocation,
     @Relation(

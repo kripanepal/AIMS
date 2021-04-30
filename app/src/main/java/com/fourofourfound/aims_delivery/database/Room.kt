@@ -22,7 +22,7 @@ import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
         DatabaseFuel::class,
         DatabaseLocation::class,
         Driver::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(StatusConverter::class)
@@ -34,6 +34,8 @@ abstract class TripListDatabase : RoomDatabase() {
     abstract val trailerDao: TrailerDao
     abstract val productsDao: ProductsDao
     abstract val driverDao: DriverDao
+    abstract val completedDeliveriesDao: CompletedDeliveriesDao
+    abstract val logoutDao: LogoutDao
 }
 
 @Volatile
@@ -46,8 +48,9 @@ fun getDatabase(context: Context): TripListDatabase {
                 context.applicationContext,
                 TripListDatabase::class.java,
                 "trips"
-            )
+            ).fallbackToDestructiveMigration()
                 .build()
+
         }
     }
     return INSTANCE
