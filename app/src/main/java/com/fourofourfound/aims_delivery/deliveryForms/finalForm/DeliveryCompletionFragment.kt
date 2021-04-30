@@ -8,8 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,12 +109,13 @@ class DeliveryCompletionFragment : Fragment() {
                 var bitmap = ImageDecoder.decodeBitmap(
                     source
                 )
-                changeImageBitmaps(bitmap)
+                changeImageBitmaps(bitmap, this)
                 currentPhotoPath = ""
             }
 
             if (currentPhotoPath.isNotBlank()) {
                 try {
+                    Log.i("aaaaaaa", currentPhotoPath)
                     val photoURI = FileProvider.getUriForFile(
                         requireContext(),
                         "com.fourofourfound.aims_delivery",
@@ -124,7 +127,7 @@ class DeliveryCompletionFragment : Fragment() {
                             photoURI
                         )
                     )
-                    changeImageBitmaps(bitmap)
+                    changeImageBitmaps(bitmap, photoURI)
 
                     currentPhotoPath = ""
 
@@ -135,7 +138,8 @@ class DeliveryCompletionFragment : Fragment() {
         }
     }
 
-    private fun changeImageBitmaps(source: Bitmap) {
+
+    private fun changeImageBitmaps(source: Bitmap, photoURI: Uri) {
         if (viewModel.imageBitmaps.value.isNullOrEmpty())
             viewModel.imageBitmaps.value = mutableListOf(source)
         else
@@ -408,7 +412,8 @@ class DeliveryCompletionFragment : Fragment() {
                 { //TODO need to save the captured image bitmap in the database
                     val signatureBitMap = signaturePad.signatureBitmap
                     dialog.cancel()
-                    deliveryStatusViewModel.previousDestination = sharedViewModel.selectedSourceOrSite.value!!.location
+                    deliveryStatusViewModel.previousDestination =
+                        sharedViewModel.selectedSourceOrSite.value!!.location
                     viewModel.submitForm()
                     viewModel.updateDeliveryStatus(
                         sharedViewModel.selectedTrip.value!!.tripId,

@@ -7,7 +7,7 @@
         android:title="Home" />
     <item
         android:id="@+id/delivery_navigation"
-        android:icon="@drawable/map_icon"
+        android:icon="@drawable/ic_truck"
         android:title="Delivery" />
     <item
         android:id="@+id/settings_navigation"

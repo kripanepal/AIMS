@@ -18,11 +18,11 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:paddingHorizontal="10dp"
-
             android:id="@+id/form_parent_view"
+
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp">
 
             <ImageView
                 android:id="@+id/enlarged_image"
@@ -133,13 +133,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/product_desc_container" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_date_container"
                 style="@style/textInputLayoutStyle"
+                android:layout_margin="5dp"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom"
                 app:endIconTint="@color/Aims_Orange"
-                android:layout_margin="5dp"
                 app:layout_constraintEnd_toStartOf="@id/end_date_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider">
@@ -157,10 +158,10 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/end_date_container"
                 style="@style/textInputLayoutStyle"
+                android:layout_margin="5dp"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom"
                 app:endIconTint="@color/Aims_Orange"
-                android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/start_date_container"
                 app:layout_constraintTop_toBottomOf="@id/divider">
@@ -287,9 +288,9 @@
                 app:layout_constraintTop_toBottomOf="@id/divider0" />
 
             <View
-                android:layout_marginTop="5dp"
                 android:id="@+id/divider1"
                 style="@style/divider"
+                android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/begin_filling" />

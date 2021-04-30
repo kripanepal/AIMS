@@ -45,6 +45,7 @@ class DeliveryCompletionViewModel(
     var meterReadingBefore = MutableLiveData<Double>(null)
     var meterReadingAfter = MutableLiveData<Double>(null)
     var imageBitmaps = MutableLiveData<MutableList<Bitmap>>()
+    var imageUris = MutableLiveData<MutableList<String>>()
     var formSubmitted = MutableLiveData(false)
 
     fun submitForm() {
