@@ -56,6 +56,8 @@ interface DestinationDao {
     @Query("select * from  DatabaseSourceOrSite  where tripId=:tripId and seqNum=:seqNum limit 1")
     fun getDestination(tripId: Int, seqNum: Int): DatabaseSourceOrSite
 
+    @Query("select count(*) from DatabaseSourceOrSite where status = 2")
+    fun getTotalDestinations(): Int
 
 }
 
@@ -78,10 +80,6 @@ interface TripDao {
     suspend fun insertTruck(truck: DatabaseTruck)
 
 
-
-
-
-
     @Transaction
     @Query("select * from  DatabaseTrip order by status desc ")
     fun getAllTrip(): LiveData<List<TripWithInfo>>
@@ -89,6 +87,9 @@ interface TripDao {
 
     @Query("select * from  DatabaseTrip  where tripId=:tripId")
     fun getTripById(tripId: Int): DatabaseTrip?
+
+    @Query("select count(*) from DatabaseTrip where status = 2")
+    fun getTotalCompletedTrips(): Int
 
 }
 
@@ -148,8 +149,8 @@ interface LogoutDao {
     @Query("delete from DatabaseTruck")
     fun deleteTrucks()
 
-    fun deleteAll()
-    {
+    @Transaction
+    fun deleteAll() {
         deleteForms()
         deleteTrips()
         deleteSavedLocations()
@@ -160,10 +161,6 @@ interface LogoutDao {
         deleteTrucks()
 
     }
-
-
-
-
 
 }
 

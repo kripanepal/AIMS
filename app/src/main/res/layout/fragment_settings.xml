@@ -10,7 +10,7 @@
 
         <variable
             name="driver"
-            type="com.fourofourfound.aims_delivery.database.entities.Driver" />
+            type="com.fourofourfound.aims_delivery.network.Driver" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/app_horizontal_margin"
+                setIntAsString="@{viewModel.totalDeliveriesCompleted.intValue()}"
                 tools:text="100"
                 app:layout_constraintTop_toBottomOf="@+id/total_deliveries"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -85,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/app_horizontal_margin"
-            android:text="Total Trips"
+            android:text="Total Trips Completed"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -95,6 +96,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            setIntAsString="@{viewModel.totalTripsCompleted.intValue()}"
             tools:text="100"
             app:layout_constraintLeft_toRightOf="@id/view"
             app:layout_constraintTop_toBottomOf="@id/total_trips"
@@ -134,7 +136,7 @@
                     android:id="@+id/driverName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{driver.driver_name}"
+                    android:text="@{driver.driverName}"
                     android:textSize="@dimen/text_size_medium"
 
                     app:layout_constraintLeft_toRightOf="@+id/name"
@@ -154,9 +156,8 @@
                     android:id="@+id/driverID"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{driver.driver_id}"
+                    android:text="@{driver.code}"
                     android:textSize="@dimen/text_size_medium"
-
                     app:layout_constraintLeft_toRightOf="@+id/id"
                     app:layout_constraintTop_toBottomOf="@+id/driverName" />
 

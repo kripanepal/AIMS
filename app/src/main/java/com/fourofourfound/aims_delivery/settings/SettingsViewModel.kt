@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.database.getDatabase
@@ -21,7 +22,9 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
     private val myApplication = application
     private val database = getDatabase(application)
     private val tripListRepository = TripListRepository(database)
-
+    var totalTripsCompleted = MutableLiveData(0)
+    var totalDeliveriesCompleted = MutableLiveData(0)
+    var loading = MutableLiveData(false)
 
     /**
      * Logout User
@@ -48,9 +51,17 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
             withContext(Dispatchers.IO) {
                 database.logoutDao.deleteAll()
             }
-
-
         }
     }
+
+    fun getDeliveryData() {
+        viewModelScope.launch {
+            loading.value = true
+            totalTripsCompleted.value = tripListRepository.getTotalTripsCompleted()
+            totalDeliveriesCompleted.value = tripListRepository.getTotalDeliveriesMade()
+            loading.value = false
+        }
+    }
+
 
 }

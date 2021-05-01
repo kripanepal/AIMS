@@ -1,7 +1,5 @@
 package com.fourofourfound.aims_delivery.settings
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,6 +83,18 @@ class SettingsFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDeliveryData()
+        sharedViewModel.driver?.apply {
+            binding.driver = this
+            viewModel.loading.observe(viewLifecycleOwner) {
+                sharedViewModel.loading.value = it
+            }
+        }
+
     }
 
     private fun showAboutDialog() {

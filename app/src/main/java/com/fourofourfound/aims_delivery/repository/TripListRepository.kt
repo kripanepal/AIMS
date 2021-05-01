@@ -209,5 +209,21 @@ class TripListRepository(private val database: TripListDatabase) {
 
     }
 
+    suspend fun getTotalTripsCompleted(): Int {
+        var totalCompleted = 0
+        withContext(Dispatchers.IO) {
+            totalCompleted = database.tripDao.getTotalCompletedTrips()
+        }
+        return totalCompleted
+    }
+
+    suspend fun getTotalDeliveriesMade(): Int {
+        var totalCompleted = 0
+        withContext(Dispatchers.IO) {
+            totalCompleted = database.destinationDao.getTotalDestinations()
+        }
+        return totalCompleted
+    }
+
 
 }
