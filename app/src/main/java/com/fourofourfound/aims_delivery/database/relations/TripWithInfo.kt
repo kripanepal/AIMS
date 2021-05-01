@@ -6,7 +6,6 @@ import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
 import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.domain.*
 import com.fourofourfound.aims_delivery.network.NetworkTrip
-import com.fourofourfound.aims_delivery.utils.StatusEnum
 
 data class TripWithInfo(
     @Embedded val trip: DatabaseTrip,
@@ -24,7 +23,7 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
     var finalList = mutableListOf<NetworkTrip>()
 
     map {
-      if(it.trip.status == StatusEnum.NOT_STARTED || it.trip.status == StatusEnum.COMPLETED)
+//      if(it.trip.status == StatusEnum.NOT_STARTED || it.trip.status == StatusEnum.COMPLETED)
         for (each in it.destinationInfo)
             each.sourceOrSite.apply {
                 finalList.add(

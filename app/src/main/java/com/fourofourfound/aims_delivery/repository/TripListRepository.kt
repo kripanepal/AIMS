@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
@@ -27,8 +26,7 @@ class TripListRepository(private val database: TripListDatabase) {
     {
         it.asDomainModel()
     }
-    var updatingTrips= false
-
+    var updatingTrips = false
 
 
     /**
@@ -38,7 +36,7 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun refreshTrips(code: String) {
         withContext(Dispatchers.IO) {
             try {
-                 val networkTrips = MakeNetworkCall.retrofitService.getAllTrips(code).data.resultSet1
+                val networkTrips = MakeNetworkCall.retrofitService.getAllTrips(code).data.resultSet1
 
                 val filteredNetworkList = networkTrips.map { it.asFiltered() }
 
@@ -50,10 +48,10 @@ class TripListRepository(private val database: TripListDatabase) {
                     deleteTrips(removed)
                     updatingTrips = true
                     saveTrips(filteredNetworkList)
+                } else {
                 }
-                else{ }
             } catch (e: Exception) {
-                Log.i("ERROR!!!",e.stackTraceToString())
+                Log.i("ERROR!!!", e.stackTraceToString())
             }
         }
 
@@ -119,8 +117,7 @@ class TripListRepository(private val database: TripListDatabase) {
             } catch (e: Exception) {
                 Log.i("ERROR!!!", e.stackTraceToString())
 
-            }
-            finally {
+            } finally {
                 updatingTrips = false
             }
 
@@ -149,7 +146,6 @@ class TripListRepository(private val database: TripListDatabase) {
     }
 
 
-
     /**
      * Save Location to Database
      * Saves the user current location to the local database
@@ -171,11 +167,11 @@ class TripListRepository(private val database: TripListDatabase) {
                 database.formDao.insertFormData(formToSubmit)
 
             } catch (e: Exception) {
-                Log.i("ERROR!!!",e.stackTraceToString())
+                Log.i("ERROR!!!", e.stackTraceToString())
                 try {
                     database.formDao.insertFormData(formToSubmit)
                 } catch (e: Exception) {
-                    Log.i("ERROR!!!",e.toString())
+                    Log.i("ERROR!!!", e.toString())
                 }
             }
 
@@ -198,7 +194,18 @@ class TripListRepository(private val database: TripListDatabase) {
 
     private fun deleteTrips(ids: List<Int>) {
 
-            database.tripDao.deleteTripById(ids)
+        database.tripDao.deleteTripById(ids)
+
+    }
+
+    fun addBillOfLadingImages(tripId: Int, seqNum: Int, imagePaths: MutableList<String>?) {
+        if (imagePaths != null) {
+            var billOfLadingImages = mutableListOf<BillOfLadingImages>()
+            for (image in imagePaths) {
+                billOfLadingImages.add(BillOfLadingImages("$tripId $seqNum", image))
+            }
+            database.formDao.addBillOfLadingImages(billOfLadingImages)
+        }
 
     }
 

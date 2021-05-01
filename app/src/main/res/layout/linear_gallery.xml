@@ -9,6 +9,10 @@
             type="android.graphics.Bitmap" />
 
         <variable
+            name="imagePath"
+            type="String" />
+
+        <variable
             name="clickListener"
             type="com.fourofourfound.aims_delivery.deliveryForms.finalForm.BitmapListListener" />
     </data>
@@ -34,8 +38,8 @@
                 android:id="@+id/bill_of_ladingImage"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:onClick="@{() -> clickListener.enlarge(bitmap)}"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="@{() -> clickListener.enlarge(bitmap)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +48,7 @@
                 android:id="@+id/close_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:onClick="@{() -> clickListener.delete(bitmap)}"
+                android:onClick="@{() -> clickListener.delete(imagePath)}"
                 android:src="@drawable/ic_baseline_close_24"
                 app:layout_constraintEnd_toEndOf="@id/bill_of_ladingImage"
                 app:layout_constraintTop_toTopOf="@id/bill_of_ladingImage" />

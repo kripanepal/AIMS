@@ -1,17 +1,20 @@
 package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.fourofourfound.aims_delivery.utils.getBitMapFromFilePath
 import com.fourofourfound.aimsdelivery.databinding.LinearGalleryBinding
 
 class BillOfLadingAdapter(
-    var clickListener: BitmapListListener
-) : ListAdapter<Bitmap,
-        BillOfLadingAdapter.ViewHolder>(BitmapDiffCallBack()) {
+    var clickListener: BitmapListListener,
+    var parentContext: Context
+) : ListAdapter<String,
+        BillOfLadingAdapter.ViewHolder>(ViewHolder.BitmapDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -19,9 +22,9 @@ class BillOfLadingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var item = getItem(position)
-        holder.bind(item, clickListener)
-        holder.bind(getItem(position)!!, clickListener)
+        //var item = getItem(position)
+        //holder.bind(item, clickListener, parentContext)
+        holder.bind(getItem(position)!!, clickListener, parentContext)
     }
 
     class ViewHolder private constructor(var binding: LinearGalleryBinding) :
@@ -40,38 +43,43 @@ class BillOfLadingAdapter(
             }
         }
 
-        fun bind(item: Bitmap, clickListener: BitmapListListener) {
+        fun bind(item: String, clickListener: BitmapListListener, parentContext: Context) {
             binding.clickListener = clickListener
-            binding.bitmap = item
-            binding.billOfLadingImage.setImageBitmap(item)
+            if (item.isNotBlank()) {
 
+                val bitmap = getBitMapFromFilePath(parentContext, item)
+                binding.billOfLadingImage.setImageBitmap(bitmap)
+                binding.imagePath = item
+                binding.bitmap = bitmap
+            }
             binding.executePendingBindings()
         }
-    }
 
-    class BitmapDiffCallBack : DiffUtil.ItemCallback<Bitmap>() {
 
-        override fun areItemsTheSame(oldItem: Bitmap, newItem: Bitmap): Boolean {
-            //check for similar item
-            return oldItem.sameAs(newItem)
-        }
+        class BitmapDiffCallBack : DiffUtil.ItemCallback<String>() {
 
-        override fun areContentsTheSame(oldItem: Bitmap, newItem: Bitmap): Boolean {
-            //check for same item
-            return oldItem.sameAs(newItem)
+            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+                //check for similar item
+                return oldItem == (newItem)
+            }
+
+            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+                //check for same item
+                return oldItem == (newItem)
+            }
         }
     }
 }
 
 class BitmapListListener(
-    val deleteListener: (bitmap: Bitmap) -> Unit,
-    val enlargeListener: (bitmap: Bitmap) -> Unit
+    val deleteListener: (imageUri: String) -> Unit,
+    val enlargeListener: (imageBitmap: Bitmap) -> Unit
 ) {
-    fun delete(bitmap: Bitmap) {
-        deleteListener(bitmap)
+    fun delete(imageUri: String) {
+        deleteListener(imageUri)
     }
 
-    fun enlarge(bitmap: Bitmap) {
-        enlargeListener(bitmap)
+    fun enlarge(imageBitmap: Bitmap) {
+        enlargeListener(imageBitmap)
     }
 }

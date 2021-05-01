@@ -1,15 +1,12 @@
 package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,15 +25,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryInputFormBinding
 import com.github.gcacace.signaturepad.views.SignaturePad
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.senab.photoview.PhotoViewAttacher
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,7 +48,7 @@ class DeliveryCompletionFragment : Fragment() {
     lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
     private val args by navArgs<DeliveryCompletionFragmentArgs>()
-    lateinit var getContent: ActivityResultLauncher<Intent>
+    lateinit var getImageContent: ActivityResultLauncher<Intent>
     private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
     var currentPhotoPath: String = ""
     lateinit var billOfLadingAdapter: BillOfLadingAdapter
@@ -93,62 +87,61 @@ class DeliveryCompletionFragment : Fragment() {
         viewDateAndTime()
 
         binding.uploadImageBtn.setOnClickListener {
-            openCamera()
+
+            if (checkPermission(
+                    listOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    requireContext()
+                )
+            ) {
+                openCamera()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    "Please provide storage permissions ",
+                    Toast.LENGTH_SHORT
+                ).show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    listOf(Manifest.permission.READ_EXTERNAL_STORAGE).toTypedArray(), 10
+                )
+            }
         }
 
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it.data?.data?.apply {
-                val source = ImageDecoder.createSource(requireContext().contentResolver, this)
-                var bitmap = ImageDecoder.decodeBitmap(
-                    source
-                )
-                changeImageBitmaps(bitmap, this)
+        getImageContent =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                it.data?.data?.apply {
+                    currentPhotoPath = getRealPathFromURI(requireContext(), this)
+                }
+                if (currentPhotoPath.isNotEmpty() && getBitMapFromFilePath(
+                        requireContext(),
+                        currentPhotoPath
+                    ) != null
+                ) {
+                    changeImagePaths(currentPhotoPath)
+                }
                 currentPhotoPath = ""
             }
-
-            if (currentPhotoPath.isNotBlank()) {
-                try {
-                    val photoURI = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.fourofourfound.aims_delivery",
-                        File(currentPhotoPath)
-                    )
-                    val bitmap = ImageDecoder.decodeBitmap(
-                        ImageDecoder.createSource(
-                            requireContext().contentResolver,
-                            photoURI
-                        )
-                    )
-                    changeImageBitmaps(bitmap, photoURI)
-
-                    currentPhotoPath = ""
-
-                } catch (E: Exception) {
-                    Toast.makeText(requireContext(), "No image provided", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
-
-    private fun changeImageBitmaps(source: Bitmap, photoURI: Uri) {
-        if (viewModel.imageBitmaps.value.isNullOrEmpty())
-            viewModel.imageBitmaps.value = mutableListOf(source)
+    private fun changeImagePaths(source: String) {
+        if (viewModel.imagePaths.value.isNullOrEmpty())
+            viewModel.imagePaths.value = mutableListOf(source)
         else
-            viewModel.imageBitmaps.value =
-                viewModel.imageBitmaps.value?.plus(
+            viewModel.imagePaths.value =
+                viewModel.imagePaths.value?.plus(
                     mutableListOf(
                         source
                     )
-                ) as MutableList<Bitmap>?
+                ) as MutableList<String>?
         binding.billOfLadingImages.post { binding.billOfLadingImages.scrollToPosition(binding.billOfLadingImages.adapter!!.itemCount - 1) }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -175,41 +168,43 @@ class DeliveryCompletionFragment : Fragment() {
     }
 
     private fun setupImageRecyclerView() {
-        billOfLadingAdapter = BillOfLadingAdapter(BitmapListListener(
-            { imageBitMap ->
-                val removeImage = {
-                    viewModel.imageBitmaps.value =
-                        viewModel.imageBitmaps.value?.filter { !it.sameAs(imageBitMap) } as MutableList<Bitmap>
-                }
+        billOfLadingAdapter = BillOfLadingAdapter(
+            BitmapListListener(
+                { imagePath ->
+                    val removeImage = {
+                        viewModel.imagePaths.value = viewModel.imagePaths.value?.filter {
+                            it != imagePath
+                        } as MutableList<String>?
 
-                CustomDialogBuilder(
-                    requireContext(),
-                    "Delete",
-                    "Do your want to remove this picture",
-                    "Yes",
-                    removeImage,
-                    "No",
-                    null,
-                    false
-                ).builder.show()
+                    }
+                    CustomDialogBuilder(
+                        requireContext(),
+                        "Delete",
+                        "Do your want to remove this picture",
+                        "Yes",
+                        removeImage,
+                        "No",
+                        null,
+                        false
+                    ).builder.show()
 
-            }, { imageBitMap ->
+                }, { imageBitMap ->
 
 
-                var alertDialog =
-                    AlertDialog.Builder(
-                        context,
-                        android.R.style.Theme_Black_NoTitleBar_Fullscreen
-                    )
-                alertDialog.setView(R.layout.each_image_view)
-                var dialog = alertDialog.create()
-                dialog.show()
-                dialog.findViewById<ImageView>(R.id.image_to_display).apply {
-                    setImageBitmap(imageBitMap)
-                    PhotoViewAttacher(this).update()
-                }
+                    var alertDialog =
+                        AlertDialog.Builder(
+                            context,
+                            android.R.style.Theme_Black_NoTitleBar_Fullscreen
+                        )
+                    alertDialog.setView(R.layout.each_image_view)
+                    var dialog = alertDialog.create()
+                    dialog.show()
+                    dialog.findViewById<ImageView>(R.id.image_to_display).apply {
+                        setImageBitmap(imageBitMap)
+                        PhotoViewAttacher(this).update()
+                    }
 
-            })
+                }), requireContext()
         )
 
 
@@ -226,7 +221,7 @@ class DeliveryCompletionFragment : Fragment() {
 
 
     private fun observeImages() {
-        viewModel.imageBitmaps.observe(viewLifecycleOwner) { bitmap ->
+        viewModel.imagePaths.observe(viewLifecycleOwner) { bitmap ->
             bitmap?.apply {
                 billOfLadingAdapter.submitList(this)
                 binding.formScrollView.post {
@@ -454,7 +449,6 @@ class DeliveryCompletionFragment : Fragment() {
     }
 
 
-
     private fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
 
         val cal =
@@ -484,6 +478,4 @@ class DeliveryCompletionFragment : Fragment() {
     }
 
 
-
 }
-

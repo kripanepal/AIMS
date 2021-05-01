@@ -16,7 +16,7 @@ import kotlin.collections.ArrayList
 
 
 fun DeliveryCompletionFragment.openCamera() {
-    getContent.launch(context?.let { getPickImageIntent(it) })
+    getImageContent.launch(context?.let { getPickImageIntent(it) })
 }
 
 @SuppressLint("RestrictedApi")
@@ -88,3 +88,4 @@ private fun DeliveryCompletionFragment.createImageFile(context: Context): File {
     currentPhotoPath = image.absolutePath
     return image
 }
+

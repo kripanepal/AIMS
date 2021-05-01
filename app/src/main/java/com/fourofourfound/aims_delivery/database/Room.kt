@@ -21,7 +21,8 @@ import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
         DatabaseCompletionForm::class,
         DatabaseFuel::class,
         DatabaseLocation::class,
-        Driver::class],
+        Driver::class,
+        BillOfLadingImages::class],
     version = 2,
     exportSchema = false
 )

@@ -30,6 +30,9 @@ interface FormDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFormData(formData: DatabaseCompletionForm)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addBillOfLadingImages(images: List<BillOfLadingImages>)
 }
 
 @Dao
