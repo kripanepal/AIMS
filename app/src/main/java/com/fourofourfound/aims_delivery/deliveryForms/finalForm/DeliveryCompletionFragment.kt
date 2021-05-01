@@ -11,7 +11,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,7 +114,6 @@ class DeliveryCompletionFragment : Fragment() {
 
             if (currentPhotoPath.isNotBlank()) {
                 try {
-                    Log.i("aaaaaaa", currentPhotoPath)
                     val photoURI = FileProvider.getUriForFile(
                         requireContext(),
                         "com.fourofourfound.aims_delivery",

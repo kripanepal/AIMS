@@ -16,7 +16,7 @@ import kotlin.collections.ArrayList
 
 
 fun DeliveryCompletionFragment.openCamera() {
-    getContent.launch(getPickImageIntent(requireContext()))
+    getContent.launch(context?.let { getPickImageIntent(it) })
 }
 
 @SuppressLint("RestrictedApi")
@@ -26,33 +26,35 @@ fun DeliveryCompletionFragment.getPickImageIntent(context: Context): Intent? {
 
     var chooserIntent: Intent? = null
 
-    var intentList: List<Intent?> = ArrayList()
+    var intentList: MutableList<Intent> = ArrayList()
 
     val pickIntent = Intent(
-         Intent.ACTION_PICK,
-         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        Intent.ACTION_PICK,
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     )
     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     takePhotoIntent.putExtra("data", true)
 
     val photoURI = FileProvider.getUriForFile(
-         context,
-         "com.fourofourfound.aims_delivery",
-         createImageFile(requireContext())
+        context,
+        "com.fourofourfound.aims_delivery",
+        createImageFile(context)
     )
     takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
 
-    intentList = addIntentsToList(context, intentList as MutableList<Intent>, pickIntent)
+    intentList = addIntentsToList(context, intentList, pickIntent)
     intentList = addIntentsToList(context, intentList, takePhotoIntent)
+
+
 
     if (intentList.isNotEmpty()) {
         chooserIntent = Intent.createChooser(
-             intentList.removeAt(intentList.size - 1),
-             "Capture/select bill of lading picture"
+            intentList.removeAt(intentList.size - 1),
+            "Capture/select bill of lading picture"
         )
         chooserIntent.putExtra(
-             Intent.EXTRA_INITIAL_INTENTS,
-             intentList.toTypedArray()
+            Intent.EXTRA_INITIAL_INTENTS,
+            intentList.toTypedArray()
         )
     }
     return chooserIntent
