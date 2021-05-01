@@ -122,46 +122,7 @@ interface CompletedDeliveriesDao {
 
 }
 
-@Dao
-interface LogoutDao {
 
-    @Query("delete from DatabaseCompletionForm")
-    fun deleteForms()
 
-    @Query("delete from DatabaseTrip")
-    fun deleteTrips()
-
-    @Query("delete from CustomDatabaseLocation")
-    fun deleteSavedLocations()
-
-    @Query("delete from DatabaseFuel")
-    fun deleteFuels()
-
-    @Query("delete from DatabaseLocation")
-    fun deleteSavedAddresses()
-
-    @Query("delete from DatabaseSourceOrSite")
-    fun deleteDestinations()
-
-    @Query("delete from DatabaseTrailer")
-    fun deleteTrailers()
-
-    @Query("delete from DatabaseTruck")
-    fun deleteTrucks()
-
-    @Transaction
-    fun deleteAll() {
-        deleteForms()
-        deleteTrips()
-        deleteSavedLocations()
-        deleteFuels()
-        deleteSavedAddresses()
-        deleteDestinations()
-        deleteTrailers()
-        deleteTrucks()
-
-    }
-
-}
 
 

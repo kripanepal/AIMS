@@ -1,13 +1,12 @@
 package com.fourofourfound.aims_delivery.homePage
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.launch
 
 /**
@@ -20,8 +19,10 @@ import kotlinx.coroutines.launch
 class HomePageViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var driver: Driver
-    val database = getDatabase(application)
+    val database = getDatabaseForDriver(application)
+
     private val tripListRepository = TripListRepository(database)
+
     /**
      * Trip list
      * List of trip that is a to be displayed

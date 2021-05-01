@@ -36,22 +36,23 @@ abstract class TripListDatabase : RoomDatabase() {
     abstract val productsDao: ProductsDao
     abstract val driverDao: DriverDao
     abstract val completedDeliveriesDao: CompletedDeliveriesDao
-    abstract val logoutDao: LogoutDao
+    var databaseName = ""
 }
 
 @Volatile
 private lateinit var INSTANCE: TripListDatabase
 
-fun getDatabase(context: Context): TripListDatabase {
+fun getDatabase(context: Context, driverCode: String): TripListDatabase {
+    var databaseForDriver = "${driverCode.trim()}-trips"
     synchronized(TripListDatabase::class.java) {
-        if (!::INSTANCE.isInitialized) {
+        if (!::INSTANCE.isInitialized || !INSTANCE.isOpen || INSTANCE.databaseName != databaseForDriver) {
             INSTANCE = Room.databaseBuilder(
                 context.applicationContext,
                 TripListDatabase::class.java,
-                "trips"
+                databaseForDriver
             ).fallbackToDestructiveMigration()
                 .build()
-
+            INSTANCE.databaseName = databaseForDriver
         }
     }
     return INSTANCE

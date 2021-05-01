@@ -2,8 +2,7 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.amitshekhar.DebugDB
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
 import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         dialog = showLoadingOverLay(this)
         dialog.show()
 
+        Log.i("DatabaseDebug", DebugDB.getAddressLog())
     }
 
     private fun observeLoading() {

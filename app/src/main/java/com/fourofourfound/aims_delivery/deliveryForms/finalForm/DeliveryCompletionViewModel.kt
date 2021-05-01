@@ -7,10 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ class DeliveryCompletionViewModel(
     val application: Application,
     val currentSourceOrSite: SourceOrSite
 ) : ViewModel() {
-    val database = getDatabase(application)
+    val database = getDatabaseForDriver(application)
     private val tripListRepository = TripListRepository(database)
     var tripId = 0
     val destination = currentSourceOrSite

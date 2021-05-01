@@ -4,13 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.Driver
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.StatusEnum
-import kotlinx.coroutines.Dispatchers
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Home page view model
@@ -21,7 +18,7 @@ import kotlinx.coroutines.withContext
  */
 class LoadInfoViewModel(application: Application) : AndroidViewModel(application) {
 
-    val database = getDatabase(application)
+    val database = getDatabaseForDriver(application)
     private val tripListRepository = TripListRepository(database)
     //TODO NEED TO REMOVE THESE
     val sendTripData = MutableLiveData(false)

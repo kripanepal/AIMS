@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,11 +21,9 @@ import kotlinx.coroutines.withContext
  */
 class CompletedDeliveryViewModel(application: Application) : AndroidViewModel(application) {
 
-
-
     var loading = MutableLiveData(true)
 
-    val database = getDatabase(application)
+    val database = getDatabaseForDriver(application)
 
     var tripDetails= listOf<CompletedFormWithInfo>()
 

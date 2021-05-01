@@ -22,10 +22,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.checkPermission
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import com.fourofourfound.aims_delivery.utils.getLocationPermissionsToBeChecked
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params), LocationListener {
     var locationManager: LocationManager =
         appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val database = getDatabase(applicationContext)
+    val database = getDatabaseForDriver(applicationContext)
     private val repository = TripListRepository(database)
     lateinit var customLocation: CustomDatabaseLocation
     lateinit var notificationBuilder: NotificationCompat.Builder

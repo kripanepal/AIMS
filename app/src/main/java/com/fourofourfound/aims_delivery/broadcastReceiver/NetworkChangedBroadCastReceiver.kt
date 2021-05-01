@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -35,8 +35,9 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
             //launch a coroutine to in the IO thread
             GlobalScope.launch(Dispatchers.IO) {
 
+
                 //get the instance of the database
-                val database = getDatabase(context)
+                val database = getDatabaseForDriver(context)
 
                 //get saved location from the database
                 database.locationDao.getSavedLocation().apply {
@@ -49,6 +50,8 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
                     } catch (e: Exception) {
                     }
                 }
+
+
             }
         }
     }

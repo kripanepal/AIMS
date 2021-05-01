@@ -5,11 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.CustomSharedPreferences
-import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.repository.TripListRepository
-import kotlinx.coroutines.Dispatchers
+import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Settings view model
@@ -20,7 +18,7 @@ import kotlinx.coroutines.withContext
  */
 class SettingsViewModel(application: Application) :AndroidViewModel(application) {
     private val myApplication = application
-    private val database = getDatabase(application)
+    var database = getDatabaseForDriver(application)
     private val tripListRepository = TripListRepository(database)
     var totalTripsCompleted = MutableLiveData(0)
     var totalDeliveriesCompleted = MutableLiveData(0)
@@ -47,11 +45,8 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
             deleteEncryptedPreference("active")
 
         }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                database.logoutDao.deleteAll()
-            }
-        }
+        database.close()
+
     }
 
     fun getDeliveryData() {
