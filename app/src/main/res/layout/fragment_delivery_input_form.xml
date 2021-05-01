@@ -123,7 +123,6 @@
                     android:background="@drawable/spinner_box"
                     android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
                     android:text="@={viewModel.productDesc}" />
-
             </LinearLayout>
 
 

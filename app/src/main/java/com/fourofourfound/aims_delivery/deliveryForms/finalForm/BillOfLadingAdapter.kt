@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.deliveryForms.finalForm
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -46,12 +47,15 @@ class BillOfLadingAdapter(
         fun bind(item: String, clickListener: BitmapListListener, parentContext: Context) {
             binding.clickListener = clickListener
             if (item.isNotBlank()) {
-
                 val bitmap = getBitMapFromFilePath(parentContext, item)
                 binding.billOfLadingImage.setImageBitmap(bitmap)
                 binding.imagePath = item
                 binding.bitmap = bitmap
+                if (clickListener.deleteListener == null) {
+                    binding.closeButton.visibility = View.GONE
+                }
             }
+
             binding.executePendingBindings()
         }
 
@@ -72,11 +76,13 @@ class BillOfLadingAdapter(
 }
 
 class BitmapListListener(
-    val deleteListener: (imageUri: String) -> Unit,
+    val deleteListener: ((imageUri: String) -> Unit)? = null,
     val enlargeListener: (imageBitmap: Bitmap) -> Unit
 ) {
     fun delete(imageUri: String) {
-        deleteListener(imageUri)
+        if (deleteListener != null) {
+            deleteListener!!(imageUri)
+        }
     }
 
     fun enlarge(imageBitmap: Bitmap) {

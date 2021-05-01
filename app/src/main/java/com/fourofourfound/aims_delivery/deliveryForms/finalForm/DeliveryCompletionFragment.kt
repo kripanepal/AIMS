@@ -188,23 +188,23 @@ class DeliveryCompletionFragment : Fragment() {
                         false
                     ).builder.show()
 
-                }, { imageBitMap ->
+                }) { imageBitMap ->
 
 
-                    var alertDialog =
-                        AlertDialog.Builder(
-                            context,
-                            android.R.style.Theme_Black_NoTitleBar_Fullscreen
-                        )
-                    alertDialog.setView(R.layout.each_image_view)
-                    var dialog = alertDialog.create()
-                    dialog.show()
-                    dialog.findViewById<ImageView>(R.id.image_to_display).apply {
-                        setImageBitmap(imageBitMap)
-                        PhotoViewAttacher(this).update()
-                    }
+                var alertDialog =
+                    AlertDialog.Builder(
+                        context,
+                        android.R.style.Theme_Black_NoTitleBar_Fullscreen
+                    )
+                alertDialog.setView(R.layout.each_image_view)
+                var dialog = alertDialog.create()
+                dialog.show()
+                dialog.findViewById<ImageView>(R.id.image_to_display).apply {
+                    setImageBitmap(imageBitMap)
+                    PhotoViewAttacher(this).update()
+                }
 
-                }), requireContext()
+            }, requireContext()
         )
 
 
@@ -238,15 +238,13 @@ class DeliveryCompletionFragment : Fragment() {
                 val products = viewModel.productList.value!!.toTypedArray()
 
                 // Initializing an ArrayAdapter
-                var adapter = ArrayAdapter(
-                    requireContext(), // Context
-                    android.R.layout.simple_spinner_item, // Layout
-                    products // Array
+                val adapter = ArrayAdapter(
+                    requireContext(), R.layout.drop_down_product,
+                    R.id.dropdown_menu_item, products
                 )
 
-
                 // Set the drop down view resource
-                adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+                adapter.setDropDownViewResource(R.layout.drop_down_product)
                 val autoCompleteTextView = binding.productDesc
 
                 // Finally, data bind the spinner object with adapter

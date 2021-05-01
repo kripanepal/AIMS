@@ -15,6 +15,7 @@
         <variable
             name="clickListener"
             type="com.fourofourfound.aims_delivery.deliveryForms.finalForm.BitmapListListener" />
+
     </data>
 
     <androidx.cardview.widget.CardView
