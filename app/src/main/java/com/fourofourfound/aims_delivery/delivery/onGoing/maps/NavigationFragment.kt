@@ -22,7 +22,6 @@ import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewMod
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.animateViewVisibility
-import com.fourofourfound.aims_delivery.utils.isDarkModeOn
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -38,8 +37,6 @@ import com.here.android.mpa.prefetcher.MapDataPrefetcher.Listener.PrefetchStatus
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.io.IOException
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.properties.Delegates
@@ -230,10 +227,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         routePlan.addWaypoint(destination)
         coreRouter.calculateRoute(
             routePlan,
-            object : Router.Listener<List<RouteResult>?, RoutingError> {
+            object : Router.Listener<List<RouteResult>, RoutingError> {
                 override fun onProgress(i: Int) {}
                 override fun onCalculateRouteFinished(
-                    routeResults: List<RouteResult>?,
+                    routeResults: List<RouteResult>,
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
