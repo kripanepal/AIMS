@@ -23,7 +23,6 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
     var finalList = mutableListOf<NetworkTrip>()
 
     map {
-//      if(it.trip.status == StatusEnum.NOT_STARTED || it.trip.status == StatusEnum.COMPLETED)
         for (each in it.destinationInfo)
             each.sourceOrSite.apply {
                 finalList.add(
@@ -79,7 +78,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
         listOfSourceAndSite = mutableListOf()
         for (destination in it.destinationInfo) {
             productInfo = ProductInfo(
-                destination.fuel.productId!!,
+                destination.fuel.productId,
                 destination.fuel.productCode,
                 destination.fuel.productDesc,
                 destination.sourceOrSite.requestedQty,

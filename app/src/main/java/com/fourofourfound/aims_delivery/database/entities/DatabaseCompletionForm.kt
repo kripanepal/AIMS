@@ -1,16 +1,14 @@
 package com.fourofourfound.aims_delivery.database.entities
 
-import android.graphics.Bitmap
 import androidx.room.Entity
+import java.util.*
 
 @Entity(primaryKeys = ["seqNo", "tripId"])
 data class DatabaseCompletionForm(
-    var billOfLadingNumber: Int?,
+    var billOfLadingNumber: String?,
     var product: String,
-    var startDate: String,
-    var startTime: String,
-    var endDate: String,
-    var endTime: String,
+    var startTime: Calendar,
+    var endTime: Calendar,
     var grossQty: Int,
     var netQty: Int,
     var trailerBeginReading: Double,
@@ -22,6 +20,6 @@ data class DatabaseCompletionForm(
     var stickReadingAfter: Double?,
     var meterReadingBefore: Double?,
     var meterReadingAfter: Double?,
-    var identifier :String = "$tripId $seqNo"
+    var identifier: String = "$tripId $seqNo"
 
 )

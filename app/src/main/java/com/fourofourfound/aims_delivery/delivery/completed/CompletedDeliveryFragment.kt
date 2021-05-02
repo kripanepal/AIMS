@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBinding
 
@@ -32,6 +35,13 @@ class CompletedDeliveryFragment : Fragment() {
     private lateinit var viewModel: CompletedDeliveryViewModel
 
     /**
+     * Shared view model
+     * ViewModel that contains shared information about the user and the
+     * trip
+     */
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    /**
      * On create view
      * @param inflater the inflator used to inflate the layout
      * @param container the viewGroup where the layout is added
@@ -51,6 +61,8 @@ class CompletedDeliveryFragment : Fragment() {
             container,
             false
         )
+
+        if (sharedViewModel.driver == null) findNavController().navigateUp()
 
         //getting a view model from a factory
         viewModel = ViewModelProvider(this).get(CompletedDeliveryViewModel::class.java)

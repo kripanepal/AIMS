@@ -219,8 +219,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         val destination =
             RouteWaypoint(
                 GeoCoordinate(
-                    sourceOrSite!!.location.latitude,
-                    sourceOrSite!!.location.longitude
+                    sourceOrSite.location.latitude,
+                    sourceOrSite.location.longitude
                 )
             )
         routePlan.addWaypoint(startPoint)
@@ -234,7 +234,7 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
-                        route = routeResults?.get(0)?.route
+                        route = routeResults[0].route
                         onRouteCalculated()
                     } else {
                         Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()

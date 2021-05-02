@@ -1,10 +1,7 @@
 package com.fourofourfound.aims_delivery.homePage
 
-import android.app.NotificationManager
-import android.content.Context
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
+import com.fourofourfound.aims_delivery.utils.CustomWorkManager
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
@@ -75,7 +73,9 @@ class HomePage : Fragment() {
         //navigate user to login screen if user is not logged in
         if (sharedViewModel.driver == null) {
             findNavController().navigate(HomePageDirections.actionHomePageToLoginFragment())
+            super.onDestroy()
             return binding.root
+
         }
 
         //initialize viewModel and assign value to the viewModel in xml file
@@ -233,6 +233,16 @@ class HomePage : Fragment() {
         binding.completedTripList.adapter = completedTripAdapter
         binding.upcomingTripList.adapter = upComingTripAdapter
         return Triple(currentTripAdapter, upComingTripAdapter, completedTripAdapter)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (sharedViewModel.driver != null) {
+            CustomWorkManager(requireContext()).apply {
+                sendLocationAndUpdateTrips()
+                sendLocationOnetime()
+            }
+        }
     }
 
 

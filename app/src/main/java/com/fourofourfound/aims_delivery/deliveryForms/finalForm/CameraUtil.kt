@@ -15,12 +15,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-fun DeliveryCompletionFragment.openCamera() {
+fun BOLFormFragment.openCamera() {
     getImageContent.launch(context?.let { getPickImageIntent(it) })
 }
 
 @SuppressLint("RestrictedApi")
-fun DeliveryCompletionFragment.getPickImageIntent(context: Context): Intent? {
+fun BOLFormFragment.getPickImageIntent(context: Context): Intent? {
     val builder = VmPolicy.Builder()
     StrictMode.setVmPolicy(builder.build())
 
@@ -76,14 +76,14 @@ private fun addIntentsToList(
     return list
 }
 
-private fun DeliveryCompletionFragment.createImageFile(context: Context): File {
+private fun BOLFormFragment.createImageFile(context: Context): File {
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     val imageFileName = "${viewModel.tripId} ${viewModel.destination.seqNum}-${timeStamp} - "
     val storageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
     val image = File.createTempFile(
-         imageFileName,
-         ".jpg",
-         storageDir
+        imageFileName,
+        ".jpg",
+        storageDir
     )
     currentPhotoPath = image.absolutePath
     return image

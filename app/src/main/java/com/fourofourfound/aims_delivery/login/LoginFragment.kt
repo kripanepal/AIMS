@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
-import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.showStartCallDialog
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
 
@@ -91,7 +92,7 @@ class LoginFragment : Fragment() {
 
         //show dialog listener
         binding.contactMyProvider.setOnClickListener {
-            showDialog()
+            showStartCallDialog(requireContext())
         }
 
         observeLoginFields()
@@ -106,12 +107,14 @@ class LoginFragment : Fragment() {
         }
 
 
-        viewModel.loading.observe(viewLifecycleOwner) { if (it) {
-            hideSoftKeyboard(requireActivity())
-            binding.spinKit.visibility = View.VISIBLE
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it) {
+                hideSoftKeyboard(requireActivity())
+                binding.spinKit.visibility = View.VISIBLE
+            } else binding.spinKit.visibility = View.GONE
         }
-            else  binding.spinKit.visibility = View.GONE
-        }
+
+        Log.i("AAAAAAAAAAAA", "CALLING from login")
         return binding.root
     }
 
@@ -147,26 +150,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-
-    /**
-     * Show dialog
-     *method to display the dialog with provider's number
-     */
-    private fun showDialog() {
-        val dialogView = LayoutInflater.from(context).inflate(
-            R.layout.contact_my_provider_dialog, null
-        )
-        CustomDialogBuilder(
-            requireContext(),
-            "Contact Info",
-            null,
-            "Call now",
-            { startCall() },
-            "Cancel",
-            null,
-            false
-        ).builder.setView(dialogView).show()
-    }
 
     /**
      * Start call

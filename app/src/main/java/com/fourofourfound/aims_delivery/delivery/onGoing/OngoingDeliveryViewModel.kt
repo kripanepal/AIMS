@@ -21,9 +21,10 @@ import java.util.*
  * @param application the ApplicationContext used to create the viewModel
  */
 class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(application) {
-    val database = getDatabaseForDriver(application)
-    private val tripListRepository = TripListRepository(database)
-    var destination :SourceOrSite? = null
+    private val myApplication = application
+    var database = getDatabaseForDriver(application)
+    private var tripListRepository = TripListRepository(database)
+    var destination: SourceOrSite? = null
     lateinit var startDateAndTime: Calendar
     lateinit var endDateAndTime: Calendar
     var stickReadingBegin = MutableLiveData(0.0)
@@ -47,6 +48,11 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
             }
 
         }
+    }
+
+    fun getDatabase() {
+        database = getDatabaseForDriver(myApplication)
+        tripListRepository = TripListRepository(database)
     }
 
 }

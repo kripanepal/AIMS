@@ -28,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center"
-
             android:contentDescription="AIMS Logo"
             android:src="@drawable/ic_aims_logo"
 
@@ -49,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="LOGIN"
-
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_size_large"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -188,6 +187,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="for testing user id = D1 password = D1 "
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login" />

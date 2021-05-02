@@ -16,7 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -36,7 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DeliveryCompletionFragment : Fragment() {
+class BOLFormFragment : androidx.fragment.app.Fragment() {
 
     /**
      * Shared view model
@@ -47,7 +46,7 @@ class DeliveryCompletionFragment : Fragment() {
     lateinit var binding: FragmentDeliveryInputFormBinding
     lateinit var viewModel: DeliveryCompletionViewModel
     private lateinit var viewModelFactory: DeliveryCompletionViewModelFactory
-    private val args by navArgs<DeliveryCompletionFragmentArgs>()
+    private val args by navArgs<BOLFormFragmentArgs>()
     lateinit var getImageContent: ActivityResultLauncher<Intent>
     private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
     var currentPhotoPath: String = ""
@@ -157,7 +156,7 @@ class DeliveryCompletionFragment : Fragment() {
             if (status) {
 
                 findNavController().navigate(
-                    DeliveryCompletionFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment()
+                    BOLFormFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment()
                 )
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
@@ -296,7 +295,7 @@ class DeliveryCompletionFragment : Fragment() {
                 binding.trailerEnd,
                 "Invalid Trailer Reading"
             )
-            if (startDate.timeInMillis > endDate.timeInMillis) return showDateTimeError("date")
+
 
             if (startTime.timeInMillis > endTime.timeInMillis) return showDateTimeError("time")
 
@@ -306,7 +305,6 @@ class DeliveryCompletionFragment : Fragment() {
                     "Begin reading is greater than end reading"
                 )
             }
-
             if ((trailerBeginReading.value!! < trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription != "Source") {
                 return showGeneralErrors(
                     binding.trailerEnd,
@@ -448,15 +446,13 @@ class DeliveryCompletionFragment : Fragment() {
 
 
     private fun getDate(textView: TextView, textInputLayout: TextInputLayout, context: Context) {
-
         val cal =
-            if (textView.id == binding.startDate.id) viewModel.startDate else viewModel.endDate
-
+            if (textView.id == binding.startDate.id) viewModel.startTime else viewModel.endTime
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            textView.text = SimpleDateFormat("yyyy:MM:dd").format(cal.time)
+            textView.text = SimpleDateFormat("yyyy:MM:dd", Locale.US).format(cal.time)
 
         }
 
@@ -471,7 +467,6 @@ class DeliveryCompletionFragment : Fragment() {
                 picker.datePicker.maxDate = System.currentTimeMillis()
                 picker.show()
             }
-            false
         }
     }
 

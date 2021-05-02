@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +10,6 @@ import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.lang.Exception
 import java.net.UnknownHostException
 
 /**

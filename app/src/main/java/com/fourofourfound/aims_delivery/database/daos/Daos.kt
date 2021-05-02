@@ -84,6 +84,9 @@ interface TripDao {
     @Query("select * from  DatabaseTrip order by status desc ")
     fun getAllTrip(): LiveData<List<TripWithInfo>>
 
+    @Query("select * from  DatabaseTrip order by status desc ")
+    fun getAllTripsOneTime(): List<TripWithInfo>
+
 
     @Query("select * from  DatabaseTrip  where tripId=:tripId")
     fun getTripById(tripId: Int): DatabaseTrip?
@@ -102,14 +105,6 @@ interface ProductsDao {
     suspend fun getProducts(): List<String>
 }
 
-@Dao
-interface DriverDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDriver(driver: Driver)
-
-    @Query("select * from  Driver limit 1")
-    fun getDriver(): Driver?
-}
 
 @Dao
 interface CompletedDeliveriesDao {

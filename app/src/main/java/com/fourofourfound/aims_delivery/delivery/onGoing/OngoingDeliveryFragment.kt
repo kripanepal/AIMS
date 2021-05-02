@@ -104,6 +104,7 @@ class OngoingDeliveryFragment : Fragment() {
             }
         }
 
+        viewModel.getDatabase()
         return binding.root
     }
 

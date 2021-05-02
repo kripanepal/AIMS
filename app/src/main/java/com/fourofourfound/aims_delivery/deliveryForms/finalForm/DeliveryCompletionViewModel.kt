@@ -24,7 +24,7 @@ class DeliveryCompletionViewModel(
     private val tripListRepository = TripListRepository(database)
     var tripId = 0
     val destination = currentSourceOrSite
-    val billOfLadingNumber = MutableLiveData<Int>(null)
+    val billOfLadingNumber = MutableLiveData<String>(null)
     var productDesc = MutableLiveData(currentSourceOrSite.productInfo.productDesc)
     val grossQty: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
@@ -37,8 +37,6 @@ class DeliveryCompletionViewModel(
     val trailerEndReading: MutableLiveData<Double> = MutableLiveData(trailerEndReadingCalc)
     var startTime: Calendar = Calendar.getInstance()
     var endTime: Calendar = Calendar.getInstance()
-    var startDate: Calendar = Calendar.getInstance()
-    var endDate: Calendar = Calendar.getInstance()
     var productList = MutableLiveData<List<String>>()
     var stickReadingBefore = MutableLiveData<Double>(null)
     var stickReadingAfter = MutableLiveData<Double>(null)
@@ -52,10 +50,9 @@ class DeliveryCompletionViewModel(
         var formToSubmit = DatabaseCompletionForm(
             billOfLadingNumber.value,
             productDesc.value!!,
-            "${startDate.get(Calendar.YEAR)}-${startDate.get(Calendar.MONTH)}-${startDate.get(Calendar.MONTH)}",
-            startTime.get(Calendar.HOUR_OF_DAY).toString() + ":" + startTime.get(Calendar.MINUTE),
-            "${endDate.get(Calendar.YEAR)}-${endDate.get(Calendar.MONTH)}-${endDate.get(Calendar.DAY_OF_MONTH)}",
-            endTime.get(Calendar.HOUR_OF_DAY).toString() + ":" + endTime.get(Calendar.MINUTE),
+            startTime,
+            endTime,
+
             grossQty.value!!,
             netQty.value!!,
             trailerBeginReading.value!!,

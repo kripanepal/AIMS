@@ -21,8 +21,8 @@ import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.fourofourfound.aims_delivery.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.checkPermission
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
@@ -46,6 +46,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     var locationManager: LocationManager =
         appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     val database = getDatabaseForDriver(applicationContext)
+
     private val repository = TripListRepository(database)
     lateinit var customLocation: CustomDatabaseLocation
     lateinit var notificationBuilder: NotificationCompat.Builder
@@ -152,14 +153,20 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         Log.i("WORKER", "SENDING LOCATION")
         customLocation =
             CustomDatabaseLocation(latitude, longitude, "time")
-
+        var code = ""
+        CustomSharedPreferences(applicationContext).apply {
+            code = getEncryptedPreference("driverCode")
+        }
         //todo get from file
-        //repository.refreshTrips(code)
-        MakeNetworkCall.retrofitService.sendLocation(customLocation)
+        Log.i("WORKER", code)
+        repository.refreshTrips(code)
+        //MakeNetworkCall.retrofitService.sendLocation(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)
+        Log.i("WORKER", "SUCCESSFUL")
         Result.success()
     } catch (exception: Exception) {
         Log.i("WORKER", "Failed")
+        Log.i("WORKER", exception.message.toString())
         repository.saveLocationToDatabase(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)
         Result.failure()

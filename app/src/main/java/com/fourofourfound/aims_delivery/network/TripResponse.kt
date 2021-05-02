@@ -15,5 +15,3 @@ class DriverResponse {
         lateinit var resultSet1: List<Driver>
     }
 }
-
-

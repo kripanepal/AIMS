@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -92,7 +91,7 @@
             android:layout_width="5dp"
             android:layout_marginBottom="-5dp"
             android:layout_height="0dp"
-            android:background="?attr/colorOnPrimary"
+            android:background="?attr/color"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/destinationImage"

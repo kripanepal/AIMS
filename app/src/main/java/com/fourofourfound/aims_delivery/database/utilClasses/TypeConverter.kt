@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import com.fourofourfound.aims_delivery.utils.StatusEnum
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 // example converter for java.util.Date
 class StatusConverter {
@@ -36,6 +38,21 @@ class StatusConverter {
     @TypeConverter
     fun toBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    @TypeConverter
+    fun fromCalender(calendar: Calendar): String {
+        return SimpleDateFormat("HH:mm:ss/yyyy-MM-dd", Locale.US).format(calendar.time)
+    }
+
+    @TypeConverter
+    fun stringToCalender(string: String): Calendar {
+
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("HH:mm:ss/yyyy-MM-dd", Locale.US)
+        cal.time = sdf.parse(string)!!
+        return cal
+
     }
 
 

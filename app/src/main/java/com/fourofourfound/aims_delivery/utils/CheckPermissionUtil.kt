@@ -25,3 +25,5 @@ fun checkPermission(permissionsToCheck: List<String>, context: Context): Boolean
     }
     return toReturn
 }
+
+

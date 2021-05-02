@@ -34,6 +34,6 @@ fun showStartCallDialog(context: Context) {
         { startCall(context) },
         "Cancel",
         null,
-        false
+        true
     ).builder.setView(dialogView).show()
 }

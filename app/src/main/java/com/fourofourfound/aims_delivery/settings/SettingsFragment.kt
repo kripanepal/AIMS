@@ -67,7 +67,16 @@ class SettingsFragment : Fragment() {
 
         //checks if the user is logged in
         binding.logoutView.setOnClickListener {
-            logoutUser()
+            CustomDialogBuilder(
+                requireContext(),
+                "Logout?",
+                "Do you want to logout?",
+                "Yes",
+                { logoutUser() },
+                "No",
+                null,
+                true
+            ).builder.show()
         }
 
         binding.downloadMaps.setOnClickListener {
@@ -82,17 +91,20 @@ class SettingsFragment : Fragment() {
             showAboutDialog()
         }
 
+        viewModel.getDatabase()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.getDeliveryData()
+        viewModel.loading.observe(viewLifecycleOwner) {
+            sharedViewModel.loading.value = it
+        }
         sharedViewModel.driver?.apply {
             binding.driver = this
-            viewModel.loading.observe(viewLifecycleOwner) {
-                sharedViewModel.loading.value = it
-            }
+
         }
 
     }
@@ -109,7 +121,7 @@ class SettingsFragment : Fragment() {
             null,
             null,
             null,
-            false
+            true
         ).builder.setView(dialogView).show()
     }
 
@@ -119,6 +131,7 @@ class SettingsFragment : Fragment() {
      * login screen.
      */
     private fun logoutUser() {
+        viewModel.loading.value = true
         sharedViewModel.userLoggedIn.value = false
         sharedViewModel.activeRoute = null
         sharedViewModel.selectedTrip.value = (null)
@@ -126,6 +139,7 @@ class SettingsFragment : Fragment() {
         sharedViewModel.driver = null
         NavigationManager.getInstance()?.stop()
         MapEngine.getInstance().onPause()
+        viewModel.loading.value = false
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
     }

@@ -13,6 +13,8 @@ import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
 import com.fourofourfound.aims_delivery.delivery.completed.CompletedDeliveryAdapter.ViewHolder
 import com.fourofourfound.aims_delivery.deliveryForms.finalForm.BillOfLadingAdapter
 import com.fourofourfound.aims_delivery.deliveryForms.finalForm.BitmapListListener
+import com.fourofourfound.aims_delivery.utils.getDate
+import com.fourofourfound.aims_delivery.utils.getTime
 import com.fourofourfound.aims_delivery.utils.htmlToText
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.delivery_summary.view.*
@@ -52,10 +54,10 @@ class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
             addBoldWithText(product_desc, "Product: ", item.form.product)
             addBoldWithText(net_qty, "Net Quantity: ", item.form.netQty.toString())
             addBoldWithText(gross_qty, "Gross Quantity: ", item.form.grossQty.toString())
-            addBoldWithText(start_date, "Start Date: ", item.form.startDate)
-            addBoldWithText(end_date, "End Date: ", item.form.endDate)
-            addBoldWithText(start_time, "Start Time: ", item.form.startTime)
-            addBoldWithText(end_time, "End Time: ", item.form.endTime)
+            addBoldWithText(start_date, "Start Date: ", getDate(item.form.startTime))
+            addBoldWithText(end_date, "End Date: ", getDate(item.form.endTime))
+            addBoldWithText(start_time, "Start Time: ", getTime(item.form.startTime))
+            addBoldWithText(end_time, "End Time: ", getTime(item.form.endTime))
             addBoldWithText(
                 trailer_begin,
                 "Trailer Reading: ",

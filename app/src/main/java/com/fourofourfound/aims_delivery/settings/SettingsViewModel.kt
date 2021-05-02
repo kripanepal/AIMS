@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(application: Application) :AndroidViewModel(application) {
     private val myApplication = application
     var database = getDatabaseForDriver(application)
-    private val tripListRepository = TripListRepository(database)
+
+    private var tripListRepository = TripListRepository(database)
     var totalTripsCompleted = MutableLiveData(0)
     var totalDeliveriesCompleted = MutableLiveData(0)
     var loading = MutableLiveData(false)
@@ -46,7 +47,6 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
 
         }
         database.close()
-
     }
 
     fun getDeliveryData() {
@@ -56,6 +56,11 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
             totalDeliveriesCompleted.value = tripListRepository.getTotalDeliveriesMade()
             loading.value = false
         }
+    }
+
+    fun getDatabase() {
+        database = getDatabaseForDriver(myApplication)
+        tripListRepository = TripListRepository(database)
     }
 
 

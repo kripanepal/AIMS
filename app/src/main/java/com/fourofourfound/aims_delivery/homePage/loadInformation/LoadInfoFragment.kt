@@ -122,11 +122,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             currentTrip.status = StatusEnum.ONGOING
             sharedViewModel.selectedTrip.value = currentTrip
             viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
-            CustomWorkManager(requireContext()).apply {
-                //TODO need to call both methods
-                sendLocationAndUpdateTrips()
-                sendLocationOnetime()
-            }
             markDestinationStart(sourceOrSite)
 
         }
@@ -161,7 +156,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private fun showStartTripDialog(sourceOrSite: SourceOrSite, currentTrip: Trip) {
         CustomDialogBuilder(
             requireContext(),
-            "Start a trip?",
+            "Start this trip?",
             null,
             "Start now",
             { markTripStart(sourceOrSite, currentTrip) },

@@ -37,10 +37,9 @@ class TripListRepository(private val database: TripListDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 val networkTrips = MakeNetworkCall.retrofitService.getAllTrips(code).data.resultSet1
-
                 val filteredNetworkList = networkTrips.map { it.asFiltered() }
-
-                val storedData = tripsFromDatabase.value?.asNetworkModel()!!
+                val databaseData = database.tripDao.getAllTripsOneTime()
+                val storedData = databaseData.asNetworkModel()
                 if (!storedData.containsAll(filteredNetworkList)) {
                     val removed = storedData.subtract(filteredNetworkList).map {
                         it.tripId as Int
@@ -98,7 +97,6 @@ class TripListRepository(private val database: TripListDatabase) {
                             uom!!,
                             fill!!
                         )
-                        var driver = Driver(driverCode!!, driverName!!)
 
                         var savedSourceOrSite =
                             database.destinationDao.getDestination(tripId, seqNum)
@@ -111,7 +109,7 @@ class TripListRepository(private val database: TripListDatabase) {
                         database.tripDao.insertTrip(trip)
                         database.productsDao.insertFuel(fuel)
                         database.destinationDao.insertDestination(sourceOrSite)
-                        database.driverDao.insertDriver(driver)
+
                     }
                 }
             } catch (e: Exception) {

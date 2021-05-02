@@ -91,6 +91,7 @@
                 <EditText
                     android:id="@+id/bill_of_lading"
                     style="@style/editTextInputLayout"
+                    android:inputType="text"
                     android:hint="Bill of Lading Number"
                     android:text="@={viewModel.billOfLadingNumber}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -147,7 +148,7 @@
                 <EditText
                     android:id="@+id/start_date"
                     style="@style/editTextInputLayout"
-                    setCalendarDate="@{viewModel.startDate}"
+                    setCalendarDate="@{viewModel.startTime}"
                     android:enabled="false"
                     android:hint="Start Date"
                     android:inputType="datetime" />
@@ -168,7 +169,7 @@
                 <EditText
                     android:id="@+id/end_date"
                     style="@style/editTextInputLayout"
-                    setCalendarDate="@{viewModel.endDate}"
+                    setCalendarDate="@{viewModel.endTime}"
                     android:enabled="false"
                     android:hint="End Date"
                     android:inputType="none" />

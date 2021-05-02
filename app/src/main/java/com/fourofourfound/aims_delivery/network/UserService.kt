@@ -4,8 +4,6 @@ import android.util.Log
 import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -18,12 +16,6 @@ import retrofit2.http.*
 //private const val BASE_URL =  "https://aims-server.herokuapp.com/"
 private const val BASE_URL =  "https://api.appery.io/"
 private const val API_KEY =  "f20f8b25-b149-481c-9d2c-41aeb76246ef"
-
-
-//a moshi object
-val moshi: Moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .build()
 
 
 // a retrofit object
