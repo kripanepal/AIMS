@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.database.entities.StatusTable
 import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
@@ -31,5 +32,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     val internetConnection = CheckInternetConnection(application)
     val loading = MutableLiveData(false)
      var driver: Driver? = null
+    var statusTable: List<StatusTable>? = null
 
 }

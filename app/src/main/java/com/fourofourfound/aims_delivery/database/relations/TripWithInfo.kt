@@ -118,7 +118,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
                         siteContainerDescription,
                         delReqNum,
                         delReqLineNum,
-                        status
+                        deliveryStatus
                     )
                 )
             }
@@ -126,7 +126,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
 
         }
         it.trip.apply {
-            trip = Trip(tripId, tripName, tripDate, listOfSourceAndSite, status)
+            trip = Trip(tripId, tripName, tripDate, listOfSourceAndSite, deliveryStatus)
         }
         finalList.add(trip)
 

@@ -406,10 +406,10 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                     viewModel.submitForm()
                     viewModel.updateDeliveryStatus(
                         sharedViewModel.selectedTrip.value!!.tripId,
-                        StatusEnum.COMPLETED
+                        DeliveryStatusEnum.COMPLETED
                     )
-                    sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.status == StatusEnum.ONGOING }!!.status =
-                        StatusEnum.COMPLETED
+                    sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.deliveryStatus == DeliveryStatusEnum.ONGOING }!!.deliveryStatus =
+                        DeliveryStatusEnum.COMPLETED
 
                 },
                 null,

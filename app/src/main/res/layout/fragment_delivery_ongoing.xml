@@ -58,12 +58,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginRight="10dp"
                     android:id="@+id/destinationImage"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     app:srcCompat="@drawable/ic_source" />
 
                 <LinearLayout
@@ -105,22 +107,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:layout_marginBottom="10dp"
                 android:id="@+id/start_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_corners_fab"
                 android:backgroundTint="@color/Aims_Orange"
                 android:text="Start Filling" />
 
             <Button
-                android:layout_marginBottom="10dp"
                 android:id="@+id/fill_form"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fill Form"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_corners_fab"
                 android:backgroundTint="@color/Aims_Orange"
+                android:text="Fill Form"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -146,17 +148,17 @@
                     android:backgroundTint="@color/Aims_Orange"
                     android:gravity="center_vertical"
                     android:paddingStart="10dp"
-                    android:textColor="?attr/colorOnPrimary"
                     android:paddingEnd="50dp"
                     android:text="Directions"
+                    android:textColor="?attr/colorOnPrimary"
                     android:textSize="20sp" />
 
                 <ImageView
-                    android:layout_marginBottom="10dp"
                     android:id="@+id/start_trip"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/rounded_corners_fab"
                     android:backgroundTint="@color/Aims_Orange"
                     android:paddingHorizontal="5dp"
@@ -166,26 +168,26 @@
             </RelativeLayout>
 
             <Button
-                android:layout_marginBottom="10dp"
                 android:id="@+id/end_filling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_toStartOf="@+id/startNavigation"
                 android:layout_toEndOf="@+id/start_filling"
-                android:text="End Filling"
                 android:background="@drawable/rounded_corners_fab"
                 android:backgroundTint="@color/Aims_Orange"
+                android:text="End Filling"
                 android:visibility="gone" />
 
             <Button
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
                 android:id="@+id/fillForm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_corners_fab"
                 android:backgroundTint="@color/Aims_Orange"
-                android:text="Fill Form" />
+                android:text="Fill Form"
+                android:visibility="gone" />
 
         </RelativeLayout>
     </LinearLayout>

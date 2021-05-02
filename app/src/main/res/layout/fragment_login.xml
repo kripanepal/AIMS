@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -39,8 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="475dp"
             android:background="@drawable/login_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/login"
@@ -116,20 +115,20 @@
                 android:id="@+id/login_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Aims_red"
+                android:layout_margin="5dp"
                 android:maxWidth="300dp"
                 android:text="@{viewModel.errorMessage}"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayout"
-                android:layout_margin="5dp"
+                android:textColor="@color/Aims_red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout" />
 
             <Button
-                android:layout_margin="5dp"
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:background="@drawable/button_background"
                 android:onClick="@{()->viewModel.authenticateUser()}"
                 android:text="Login"
@@ -138,20 +137,20 @@
 
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spin_kit"/>
+                app:layout_constraintTop_toBottomOf="@id/spin_kit" />
 
             <com.github.ybq.android.spinkit.SpinKitView
                 android:id="@+id/spin_kit"
-                android:visibility="gone"
-                android:layout_margin="5dp"
                 style="@style/SpinKitView.ThreeBounce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:visibility="gone"
                 app:SpinKit_Color="@color/Aims_Orange"
-                app:layout_constraintTop_toBottomOf="@+id/login_error_message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_error_message"
 
                 />
 
@@ -197,4 +196,4 @@
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
-        </layout>
+</layout>

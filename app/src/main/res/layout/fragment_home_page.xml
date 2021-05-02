@@ -14,8 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:animateLayoutChanges="true"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="?attr/colorSecondaryVariant"
         tools:context="com.fourofourfound.aims_delivery.homePage.HomePage">
 
@@ -57,14 +57,13 @@
 
                             <TextView
                                 android:id="@+id/current_trip_header"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Current Trip"
                                 android:textSize="@dimen/text_size_large"
-                                />
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
 
                             <TextView
@@ -72,19 +71,19 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/Aims_Orange"
-                                app:layout_constraintStart_toStartOf="parent"
+                                android:textSize="@dimen/text_size_medium"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/current_trip_header"
-                                android:textSize="@dimen/text_size_medium" />
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/current_trip_header" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/current_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/ongoing_trip_message"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/ongoing_trip_message" />
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -109,32 +108,32 @@
 
                             <TextView
                                 android:id="@+id/upcoming_trip_header"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Upcoming Trips"
-                                android:textSize="@dimen/text_size_large" />
+                                android:textSize="@dimen/text_size_large"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_header"
                                 android:id="@+id/upcoming_trip_message"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/Aims_Orange"
-                                android:textSize="@dimen/text_size_medium" />
+                                android:textSize="@dimen/text_size_medium"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_header" />
 
                             <androidx.recyclerview.widget.RecyclerView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_message"
                                 android:id="@+id/upcoming_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/upcoming_trip_message" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
@@ -157,34 +156,34 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/completed_trip_header"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Completed Trips"
-                                app:layout_constraintStart_toStartOf="parent"
+                                android:textSize="@dimen/text_size_large"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:id="@+id/completed_trip_header"
+                                app:layout_constraintStart_toStartOf="parent"
 
-                                android:textSize="@dimen/text_size_large" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_header"
                                 android:id="@+id/completed_trip_message"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/Aims_Orange"
-                                android:textSize="@dimen/text_size_medium" />
+                                android:textSize="@dimen/text_size_medium"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_header" />
 
                             <androidx.recyclerview.widget.RecyclerView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_message"
                                 android:id="@+id/completed_trip_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/completed_trip_message" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>

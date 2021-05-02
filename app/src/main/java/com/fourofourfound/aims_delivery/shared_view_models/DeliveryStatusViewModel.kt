@@ -15,11 +15,9 @@ import com.fourofourfound.aims_delivery.repository.LocationRepository
  * @param application the applicationContext which created this viewModel
  */
 class DeliveryStatusViewModel(application: Application) : AndroidViewModel(application) {
-
-
-    var previousDestination: DestinationLocation? = null
-
+   var previousDestination: DestinationLocation? = null
     val locationRepository = LocationRepository(application)
+
     var destinationApproachingShown = false
     var destinationLeavingShown = false
 

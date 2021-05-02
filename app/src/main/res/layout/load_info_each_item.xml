@@ -4,12 +4,12 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:theme="@style/textColorLight"
         android:id="@+id/parentConstraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingHorizontal="10dp">
+        android:paddingHorizontal="10dp"
+        android:theme="@style/textColorLight">
 
         <ImageView
             android:id="@+id/destinationImage"
@@ -18,7 +18,7 @@
             app:layout_constraintEnd_toStartOf="@id/card_each_destination"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/card_each_destination"
-            app:srcCompat="@drawable/ic_source" />
+            android:src="@drawable/ic_source" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_each_destination"
@@ -76,12 +76,12 @@
                     android:id="@+id/show_form"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Show Form"
-                    android:visibility="gone"
-                    android:textColor="@color/black"
+                    android:layout_gravity="right"
                     android:background="@drawable/rounded_corners_fab"
                     android:backgroundTint="@color/Aims_Orange"
-                    android:layout_gravity="right" />
+                    android:text="Show Form"
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -89,15 +89,14 @@
         <View
             android:id="@+id/progressLine"
             android:layout_width="5dp"
-            android:layout_marginBottom="-5dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="-5dp"
             android:background="?attr/color"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/destinationImage"
             app:layout_constraintStart_toStartOf="@id/destinationImage"
             app:layout_constraintTop_toBottomOf="@id/destinationImage" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

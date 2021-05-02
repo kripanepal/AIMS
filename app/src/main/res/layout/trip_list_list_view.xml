@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="trip"
             type="com.fourofourfound.aims_delivery.domain.Trip" />
@@ -14,125 +16,122 @@
             type="com.fourofourfound.aims_delivery.homePage.TripListListener" />
     </data>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_view"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="15dp"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginVertical="15dp"
-            app:cardCornerRadius="8dp">
+            android:background="@drawable/card_background_gradient"
+            android:orientation="vertical"
+            android:theme="@style/textColorBlack">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardViewMainView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_background_gradient"
-                android:theme="@style/textColorBlack"
-                >
+                android:layout_margin="10dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:id="@+id/cardViewMainView"
-                    android:layout_margin="10dp"
+                <ImageView
+                    android:id="@+id/trip_drop_down_image"
+                    android:layout_width="@dimen/homepage_dropdown_sec"
+                    android:layout_height="@dimen/homepage_dropdown_sec"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                <TextView
+                    android:id="@+id/tripListItem"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    >
+                    android:paddingLeft="10dp"
+                    android:text="@{trip.tripName}"
+                    android:textColor="@color/purple_700"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tripImage"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/trip_drop_down_image"
-                        android:layout_width="@dimen/homepage_dropdown_sec"
-                        android:layout_height="@dimen/homepage_dropdown_sec"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24" />
-
-                    <TextView
-                        android:id="@+id/tripListItem"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{trip.tripName}"
-                        android:textColor="@color/purple_700"
-                        android:paddingLeft="10dp"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/text_size_medium"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/tripImage"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/tripImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_local_gas_station_24"
-                        tools:srcCompat="@tools:sample/avatars" />
+                <ImageView
+                    android:id="@+id/tripImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_local_gas_station_24"
+                    tools:srcCompat="@tools:sample/avatars" />
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:visibility="gone"
-                    android:id="@+id/cardViewNestedView"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardViewNestedView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tripSpecialInstructions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="SPECIAL INSTRUCTIONS "
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/showDetailsImg"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
+                    app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/nestedTripDetailsListView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        app:layout_constrainedWidth="true"
-                        android:id="@+id/tripSpecialInstructions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="SPECIAL INSTRUCTIONS "
-                        android:textSize="@dimen/text_size_small"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/showDetailsImg"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@+id/nestedTripDetailsListView"
-                        app:layout_constraintTop_toBottomOf="@+id/nestedTripDetailsListView" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:onClick="@{() -> clickListener.onClick(trip)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/nestedTripDetailsListView"
+                    app:layout_constraintVertical_bias="0.0" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/nestedTripDetailsListView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="5dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:onClick="@{() -> clickListener.onClick(trip)}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/nestedTripDetailsListView"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <TextView
-                        android:id="@+id/showDetailsImg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:onClick="@{() -> clickListener.onClick(trip)}"
-                        android:text="See more"
-                        android:textSize="@dimen/text_size_medium"
-                        app:drawableEndCompat="@drawable/ic_baseline_play_arrow_24"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tripSpecialInstructions"
-                        app:layout_constraintBottom_toBottomOf="@+id/tripSpecialInstructions" />
+                <TextView
+                    android:id="@+id/showDetailsImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="@{() -> clickListener.onClick(trip)}"
+                    android:text="See more"
+                    android:textSize="@dimen/text_size_medium"
+                    app:drawableEndCompat="@drawable/ic_baseline_play_arrow_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/tripSpecialInstructions"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tripSpecialInstructions" />
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
 
-        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </layout>

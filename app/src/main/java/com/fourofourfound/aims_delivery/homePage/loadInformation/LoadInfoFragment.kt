@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage.loadInformation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -99,9 +100,10 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         if (sharedViewModel.selectedTrip.value != null && sharedViewModel.selectedTrip.value!!.tripId != currentTrip.tripId) binding.startTripContainer.visibility =
             View.GONE
-        else
-        {  scrollTripStartIcon()
-            startTripOnClick(currentTrip)}
+        else {
+            scrollTripStartIcon()
+            startTripOnClick(currentTrip)
+        }
 
     }
 
@@ -117,17 +119,25 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         viewModel.sendTripSelectedData()
 
-        //TODO REMOVE THIS
-        var beta = {
-            currentTrip.status = StatusEnum.ONGOING
-            sharedViewModel.selectedTrip.value = currentTrip
-            viewModel.changeTripStatus(currentTrip.tripId, StatusEnum.ONGOING)
-            markDestinationStart(sourceOrSite)
 
-        }
-        CustomDialogBuilder(
-            requireContext(),
-            "Sending Starting Data Trip",
+        currentTrip.deliveryStatus = DeliveryStatusEnum.ONGOING
+        sharedViewModel.selectedTrip.value = currentTrip
+        val statusCode = getStatusType(sharedViewModel.statusTable!!, StatusMessageEnum.SELTRIP)!!
+        viewModel.changeTripStatus(currentTrip.tripId, DeliveryStatusEnum.ONGOING)
+
+        viewModel.sendStatusUpdate(
+            sharedViewModel.driver!!.code.trim(),
+            currentTrip.tripId,
+            statusCode.statusCode,
+            statusCode.statusMessage,
+            getDate(time)
+        )
+
+        markDestinationStart(sourceOrSite)
+
+
+        Log.d(
+            "NETWORK",
             String.format(
                 "Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s",
                 time.get(Calendar.YEAR),
@@ -137,13 +147,10 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 time.get(Calendar.MINUTE),
                 sharedViewModel.driver!!.code,
                 currentTrip.tripId
-            ),
-            "Ok",
-            beta,
-            null,
-            null,
-            true
-        ).builder.show()
+            )
+        )
+
+
     }
 
     /**
@@ -172,13 +179,13 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      */
     private fun startTripOnClick(currentTrip: Trip) {
         var notCompletedList = currentTrip.sourceOrSite.filter {
-            it.status != StatusEnum.COMPLETED
+            it.deliveryStatus != DeliveryStatusEnum.COMPLETED
         }
 
         if (notCompletedList.isEmpty()) {
             viewModel.changeTripStatus(
                 sharedViewModel.selectedTrip.value!!.tripId,
-                StatusEnum.COMPLETED
+                DeliveryStatusEnum.COMPLETED
             )
             binding.startTrip.visibility = View.GONE
         }
@@ -207,7 +214,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 binding.startTripContainer.rootView,
                 binding.startTripContainer,
                 true,
-                )
+            )
             //TODO need to inform aims dispatcher
         } else {
             animateViewVisibility(
@@ -234,26 +241,11 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
     private fun markDestinationStart(sourceOrSite: SourceOrSite) {
         var time = Calendar.getInstance()
-        viewModel.sendDestinationSelectedData()
 
-        //TODO REMOVE THIS
-        var beta = {
-            sourceOrSite.status = StatusEnum.ONGOING
-            sharedViewModel.selectedSourceOrSite.value = sourceOrSite
-            viewModel.changeDeliveryStatus(
-                currentTrip.tripId,
-                sourceOrSite.seqNum,
-                StatusEnum.ONGOING
-            )
 
-            //change the active tab to delivery tab
-            requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
-        }
-        CustomDialogBuilder(
-            requireContext(),
-            "Sending Starting Destination Info",
-            String.format(
-                "Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
+        Log.i(
+            "NETWORK", String.format(
+                "Sending Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
                 time.get(Calendar.YEAR),
                 time.get(Calendar.MONTH),
                 time.get(Calendar.DAY_OF_MONTH),
@@ -262,12 +254,19 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 sharedViewModel.driver!!.code,
                 currentTrip.tripId,
                 sourceOrSite.seqNum
-            ),
-            "Ok",
-            beta,
-            null,
-            null,
-            true
-        ).builder.show()
+            )
+        )
+        sourceOrSite.deliveryStatus = DeliveryStatusEnum.ONGOING
+        sharedViewModel.selectedSourceOrSite.value = sourceOrSite
+        viewModel.changeDeliveryStatus(
+            currentTrip.tripId,
+            sourceOrSite.seqNum,
+            DeliveryStatusEnum.ONGOING
+        )
+
+        //change the active tab to delivery tab
+        requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+
+
     }
 }

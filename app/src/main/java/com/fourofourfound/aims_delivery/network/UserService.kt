@@ -14,8 +14,8 @@ import retrofit2.http.*
  * The URL of the server
  */
 //private const val BASE_URL =  "https://aims-server.herokuapp.com/"
-private const val BASE_URL =  "https://api.appery.io/"
-private const val API_KEY =  "f20f8b25-b149-481c-9d2c-41aeb76246ef"
+private const val BASE_URL = "https://api.appery.io/"
+private const val API_KEY = "f20f8b25-b149-481c-9d2c-41aeb76246ef"
 
 
 // a retrofit object
@@ -38,11 +38,22 @@ interface UserService {
 
 
     @GET("/rest/1/apiexpress/api/DispatcherMobileApp/GetTripListDetailByDriver/{driverCode}?apiKey=$API_KEY")
-    suspend fun getAllTrips(@Path("driverCode")driverCode:String): TripResponse
+    suspend fun getAllTrips(@Path("driverCode") driverCode: String): TripResponse
+
+    @GET("rest/1/apiexpress/api/DispatcherMobileApp/TripStatusPut/{driverCode}/{tripId}/{statusCode}/{statusMessage}/true/{statusDate}?apiKey=$API_KEY")
+    suspend fun sendStatusUpdate(
+        @Path("driverCode") driverCode: String,
+        @Path("tripId") tripId: Int,
+        @Path("statusCode") statusCode: String,
+        @Path("statusMessage") statusMessage: String,
+        @Path("statusDate") statusDate: String, ): StatusMessageUpdateResponse
 
 
     @GET("/alltrips")
     suspend fun getAllTripsFromHeroku(): TripResponse
+
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/TripStatusMessageList/%20?apiKey=$API_KEY")
+    suspend fun getStatusTable(): StatusTableResponse
 
 
     @POST("/location")

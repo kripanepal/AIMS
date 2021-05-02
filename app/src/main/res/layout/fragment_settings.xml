@@ -23,10 +23,10 @@
             android:id="@+id/profile_constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:background="@color/Aims_Orange"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:background="@color/Aims_Orange">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/profile_picture"
@@ -35,72 +35,72 @@
                 android:layout_gravity="center"
                 android:background="@drawable/profile_picture_rounded"
                 android:src="@drawable/ic_profile_picture"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@id/profile_picture"
-                android:background="@color/light_grey" />
+                android:background="@color/light_grey"
+                app:layout_constraintTop_toBottomOf="@id/profile_picture" />
 
             <TextView
                 android:id="@+id/total_deliveries"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Deliveries"
-                android:textStyle="bold"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="@dimen/app_horizontal_margin"
+                android:text="Total Deliveries"
                 android:textSize="@dimen/text_size_medium"
-                app:layout_constraintTop_toBottomOf="@id/divider"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
 
             <TextView
+                setIntAsString="@{viewModel.totalDeliveriesCompleted.intValue()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/app_horizontal_margin"
-                setIntAsString="@{viewModel.totalDeliveriesCompleted.intValue()}"
-                tools:text="100"
-                app:layout_constraintTop_toBottomOf="@+id/total_deliveries"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/view" />
+                app:layout_constraintRight_toLeftOf="@id/view"
+                app:layout_constraintTop_toBottomOf="@+id/total_deliveries"
+                tools:text="100" />
 
-        <View
-            android:id= "@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="50dp"
-            android:background="@color/light_grey"
-            app:layout_constraintLeft_toRightOf="@id/total_deliveries"
-            app:layout_constraintRight_toLeftOf="@id/total_trips"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:layout_constraintBottom_toBottomOf="parent"
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="50dp"
+                android:background="@color/light_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/total_deliveries"
+                app:layout_constraintRight_toLeftOf="@id/total_trips"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
 
-            />
+                />
 
-        <TextView
-            android:id="@+id/total_trips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_horizontal_margin"
-            android:text="Total Trips Completed"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_medium"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:layout_constraintLeft_toRightOf="@+id/total_deliveries"
-            app:layout_constraintRight_toRightOf="parent"/>
+            <TextView
+                android:id="@+id/total_trips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/app_horizontal_margin"
+                android:text="Total Trips Completed"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/total_deliveries"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            setIntAsString="@{viewModel.totalTripsCompleted.intValue()}"
-            tools:text="100"
-            app:layout_constraintLeft_toRightOf="@id/view"
-            app:layout_constraintTop_toBottomOf="@id/total_trips"
-            app:layout_constraintRight_toRightOf="parent"/>
+            <TextView
+                setIntAsString="@{viewModel.totalTripsCompleted.intValue()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/view"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total_trips"
+                tools:text="100" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

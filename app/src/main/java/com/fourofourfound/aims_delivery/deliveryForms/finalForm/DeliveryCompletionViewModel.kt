@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -85,10 +85,10 @@ class DeliveryCompletionViewModel(
         getProducts()
     }
 
-    fun updateDeliveryStatus(tripId: Int, status: StatusEnum) {
+    fun updateDeliveryStatus(tripId: Int, deliveryStatus: DeliveryStatusEnum) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                tripListRepository.updateDeliveryStatus(tripId, currentSourceOrSite.seqNum, status)
+                tripListRepository.updateDeliveryStatus(tripId, currentSourceOrSite.seqNum, deliveryStatus)
             }
         }
     }

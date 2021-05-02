@@ -2,6 +2,8 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -51,16 +53,22 @@ class MainActivity : AppCompatActivity() {
         changeInternetConnectionText()
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
-
-        dialog = showLoadingOverLay(this)
+      dialog = showLoadingOverLay(this)
         dialog.show()
+        Thread.setDefaultUncaughtExceptionHandler{ thread: Thread, throwable: Throwable ->
+        }
 
-        Log.i("DatabaseDebug", DebugDB.getAddressLog())
+        Log.d("DatabaseDebug", DebugDB.getAddressLog())
     }
 
     private fun observeLoading() {
         sharedViewModel.loading.observe(this) {
-            if (it) dialog.show() else dialog.dismiss()
+            if (it) {
+                dialog.show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    dialog.hide()
+                }, 7000)
+            } else dialog.dismiss()
         }
     }
 

@@ -1,8 +1,7 @@
 package com.fourofourfound.aims_delivery.database.entities
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 
 @Entity(primaryKeys = ["tripId", "seqNum"]
 )
@@ -23,7 +22,7 @@ data class DatabaseSourceOrSite(
     var uom: String = "NOT PROVIDED",
     var fill: String = "",
     var identifier: String = "$tripId $seqNum",
-    var status: StatusEnum = StatusEnum.NOT_STARTED,
+    var deliveryStatus: DeliveryStatusEnum = DeliveryStatusEnum.NOT_STARTED,
 
-)
+    )
 

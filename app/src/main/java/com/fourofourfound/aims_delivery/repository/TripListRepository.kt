@@ -10,7 +10,7 @@ import com.fourofourfound.aims_delivery.database.relations.asNetworkModel
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 import com.fourofourfound.aims_delivery.network.asFiltered
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -64,7 +64,7 @@ class TripListRepository(private val database: TripListDatabase) {
                     each.asFiltered().apply {
                         val savedTrip = database.tripDao.getTripById(tripId!!)
                         val trip = DatabaseTrip(tripId, tripName!!, tripDate!!)
-                        savedTrip?.apply { trip.status = status }
+                        savedTrip?.apply { trip.deliveryStatus = deliveryStatus }
 
                         val truck = DatabaseTruck(truckId!!, truckCode!!, truckDesc!!)
                         val trailer = DatabaseTrailer(trailerId!!, trailerCode!!, trailerDesc!!)
@@ -100,7 +100,7 @@ class TripListRepository(private val database: TripListDatabase) {
 
                         var savedSourceOrSite =
                             database.destinationDao.getDestination(tripId, seqNum)
-                        savedSourceOrSite?.apply { sourceOrSite.status = savedSourceOrSite.status }
+                        savedSourceOrSite?.apply { sourceOrSite.deliveryStatus = savedSourceOrSite.deliveryStatus }
 
                         //todo delete all records before adding after if, not here
                         database.locationDao.insertLocation(location)
@@ -129,13 +129,13 @@ class TripListRepository(private val database: TripListDatabase) {
      * Marks the trip as completed when the trip
      * finishes.
      * @param tripId The id of the trip
-     * @param status The status of the trip
+     * @param deliveryStatus The status of the trip
      */
-    suspend fun changeTripStatus(tripId: Int, status: StatusEnum) {
+    suspend fun changeTripStatus(tripId: Int, deliveryStatus: DeliveryStatusEnum) {
         withContext(Dispatchers.IO) {
             try {
                 //TODO make network call to inform aims dispatcher
-                database.tripDao.changeTripStatus(tripId, status)
+                database.tripDao.changeTripStatus(tripId, deliveryStatus)
             } catch (e: Exception) {
 
             }
@@ -176,9 +176,9 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
-    suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, status: StatusEnum) {
+    suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, deliveryStatus: DeliveryStatusEnum) {
         try {
-            database.destinationDao.updateDeliveryStatus(tripId, seqNum, status)
+            database.destinationDao.updateDeliveryStatus(tripId, seqNum, deliveryStatus)
         } catch (e: Exception) {
         }
     }
@@ -216,11 +216,20 @@ class TripListRepository(private val database: TripListDatabase) {
     }
 
     suspend fun getTotalDeliveriesMade(): Int {
-        var totalCompleted = 0
+        var totalCompleted: Int
         withContext(Dispatchers.IO) {
             totalCompleted = database.destinationDao.getTotalDestinations()
         }
         return totalCompleted
+    }
+
+    suspend fun getStatusTable() {
+        withContext(Dispatchers.IO) {
+            val response = MakeNetworkCall.retrofitService.getStatusTable().data.resultSet1
+            var savedStatusTable = database.statusDao.getStatusTable()
+            if(response != savedStatusTable)
+            database.statusDao.insertStatusTable(response)
+        }
     }
 
 

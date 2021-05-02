@@ -3,7 +3,7 @@ package com.fourofourfound.aims_delivery.database.utilClasses
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -11,19 +11,19 @@ import java.util.*
 // example converter for java.util.Date
 class StatusConverter {
     @TypeConverter
-    fun fromIntToStatusEnum(value: Int): StatusEnum {
+    fun fromIntToStatusEnum(value: Int): DeliveryStatusEnum {
         return when (value) {
-            0 -> StatusEnum.ONGOING
-            1 -> StatusEnum.NOT_STARTED
-            else -> StatusEnum.COMPLETED
+            0 -> DeliveryStatusEnum.ONGOING
+            1 -> DeliveryStatusEnum.NOT_STARTED
+            else -> DeliveryStatusEnum.COMPLETED
         }
     }
 
     @TypeConverter
-    fun fromStatusEnumToInt(value: StatusEnum): Int {
+    fun fromStatusEnumToInt(value: DeliveryStatusEnum): Int {
         return when (value) {
-            StatusEnum.ONGOING -> 0
-            StatusEnum.NOT_STARTED -> 1
+            DeliveryStatusEnum.ONGOING -> 0
+            DeliveryStatusEnum.NOT_STARTED -> 1
             else -> 2
         }
     }

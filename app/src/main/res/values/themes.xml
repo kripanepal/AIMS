@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Aims_delivery" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/Aims_Orange</item>
         <item name="colorPrimaryVariant">@color/Aims_light_orange</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="color">#EAE8E5</item>
+        <item name="color">#989796</item>
         <item name="colorSecondary">@color/card_color</item>
         <item name="colorSecondaryVariant">@color/card_background_color</item>
         <item name="colorOnSecondary">@color/black</item>

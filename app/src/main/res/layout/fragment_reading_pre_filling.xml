@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="isSite"
             type="Boolean" />
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
     </data>
 
@@ -99,10 +101,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-           android:layout_marginStart="20dp"
             android:id="@+id/submitBtn"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:src="@drawable/ic_done"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -111,11 +113,11 @@
             app:layout_constraintTop_toBottomOf="@id/meterReadingContainer" />
 
         <ImageView
-            android:layout_marginEnd="20dp"
             android:id="@+id/cancelBtn"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:layout_marginTop="40dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/ic_cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/submitBtn"

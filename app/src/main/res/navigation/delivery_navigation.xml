@@ -49,7 +49,8 @@
         <argument
             android:name="trailerBeginReading"
             app:argType="java.lang.Double" />
-        <argument android:name="trailerEndReading"
+        <argument
+            android:name="trailerEndReading"
             app:argType="java.lang.Double" />
         <argument
             android:name="meterBeginReading"
@@ -63,7 +64,8 @@
             android:name="stickBeginReading"
             app:argType="java.lang.Double"
             app:nullable="true" />
-        <argument android:name="stickEndReading"
+        <argument
+            android:name="stickEndReading"
             app:argType="java.lang.Double"
             app:nullable="true" />
     </fragment>

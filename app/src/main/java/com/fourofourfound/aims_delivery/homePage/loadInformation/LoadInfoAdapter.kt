@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
-import com.fourofourfound.aims_delivery.homePage.HomePageDirections
-import com.fourofourfound.aims_delivery.homePage.TripListListener
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import com.fourofourfound.aims_delivery.utils.htmlToText
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.load_info_each_item.view.*
@@ -60,7 +57,7 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
             holder.itemView.progressLine.visibility = View.GONE
         }
 
-        if(item.status == StatusEnum.COMPLETED){
+        if(item.deliveryStatus == DeliveryStatusEnum.COMPLETED){
             holder.itemView.show_form.also { view ->
                 view.visibility = View.VISIBLE
                 holder.itemView.show_form.setOnClickListener {
@@ -96,8 +93,8 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
         holder: ViewHolder,
         item: SourceOrSite
     ) {
-        when (item.status) {
-            StatusEnum.COMPLETED -> {
+        when (item.deliveryStatus) {
+            DeliveryStatusEnum.COMPLETED -> {
                 val colorGreen = ContextCompat.getColor(
                     holder.itemView.destinationImage.context,
                     R.color.Green
@@ -105,7 +102,7 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 holder.itemView.destinationImage.setColorFilter(colorGreen)
                 holder.itemView.progressLine.setBackgroundColor(colorGreen)
             }
-            StatusEnum.ONGOING -> {
+            DeliveryStatusEnum.ONGOING -> {
                 deepChangeTextStyle(holder.itemView.parentConstraint)
                 val colorOrange = ContextCompat.getColor(
                     holder.itemView.destinationImage.context,
@@ -116,7 +113,7 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
             else -> {
                 val typedValue = TypedValue()
                 holder.itemView.destinationImage.context.theme.resolveAttribute(
-                    R.attr.colorOnPrimary,
+                    R.attr.color,
                     typedValue,
                     true
                 )

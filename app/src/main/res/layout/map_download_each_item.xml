@@ -29,9 +29,9 @@
         android:layout_marginVertical="10dp">
 
         <RelativeLayout
-            android:layout_marginVertical="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -48,11 +48,11 @@
 
             <ImageView
                 android:id="@+id/imageView"
+                imageBasedOnStatus="@{currentItem}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
-                imageBasedOnStatus="@{currentItem}"
                 android:onClick="@{() -> clickListener.onClick(currentItem)}" />
 
 

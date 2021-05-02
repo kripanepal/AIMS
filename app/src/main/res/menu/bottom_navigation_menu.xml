@@ -10,7 +10,6 @@
         android:icon="@drawable/ic_truck"
         android:title="Delivery" />
     <item
-        android:id="@+id/settings_navigation"
         android:icon="@drawable/settings_icon"
         android:title="Settings" />
 </menu>

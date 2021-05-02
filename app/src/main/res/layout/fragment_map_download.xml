@@ -24,12 +24,12 @@
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/downloadProgressBar"
-            app:SpinKit_Color="@color/Aims_Orange"
             style="@style/SpinKitView.Large.Circle"
             android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="25dp"
             android:visibility="gone"
-            android:layout_height="100dp"
+            app:SpinKit_Color="@color/Aims_Orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

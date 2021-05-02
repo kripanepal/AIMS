@@ -91,8 +91,8 @@
                 <EditText
                     android:id="@+id/bill_of_lading"
                     style="@style/editTextInputLayout"
-                    android:inputType="text"
                     android:hint="Bill of Lading Number"
+                    android:inputType="text"
                     android:text="@={viewModel.billOfLadingNumber}" />
             </com.google.android.material.textfield.TextInputLayout>
 

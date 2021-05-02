@@ -41,12 +41,13 @@
 
 
             <RelativeLayout
-                android:visibility="gone"
-                android:background="?attr/colorSecondaryVariant"
                 android:id="@+id/nextInfoContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="?attr/colorSecondaryVariant"
                 android:paddingHorizontal="14dp"
+                android:visibility="gone"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -88,8 +89,6 @@
             </RelativeLayout>
 
 
-
-
             <ProgressBar
                 android:id="@+id/deliveryProgress"
                 style="?android:attr/progressBarStyleHorizontal"
@@ -99,13 +98,13 @@
                 app:layout_constraintTop_toBottomOf="@id/nextInfoContainer" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_marginHorizontal="10dp"
                 android:id="@+id/speedInfoContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="@dimen/botttomSheetPeekHeight"
                 android:background="#FFFFFF"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/botttomSheetPeekHeight"
                 android:paddingBottom="5dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/mapFragmentContainer"
@@ -204,10 +203,10 @@
                 android:id="@+id/dragger"
                 android:layout_width="40dp"
                 android:layout_height="5dp"
-                android:background="@drawable/rounded_corneres"
                 android:layout_gravity="center_horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/rounded_corneres"
                 android:backgroundTint="@color/Aims_Orange"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -261,11 +260,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <include
-                android:layout_marginHorizontal="14dp"
                 android:id="@+id/destinationInfo"
                 layout="@layout/source_or_site_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
                 android:layout_marginTop="10dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

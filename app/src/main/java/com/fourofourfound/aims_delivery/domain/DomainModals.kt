@@ -1,7 +1,7 @@
 package com.fourofourfound.aims_delivery.domain
 
 import android.os.Parcelable
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
@@ -12,7 +12,7 @@ data class Trip(
     var tripName: String,
     var tripDate: String,
     var sourceOrSite: List<SourceOrSite>,
-    var status: StatusEnum? = StatusEnum.NOT_STARTED,
+    var deliveryStatus: DeliveryStatusEnum? = DeliveryStatusEnum.NOT_STARTED,
 ) : Parcelable
 
 @Parcelize
@@ -28,7 +28,7 @@ data class SourceOrSite(
     var delReqNum: Int? = null,
     var delReqLineNum: Int? = null,
 
-    var status: StatusEnum,
+    var deliveryStatus: DeliveryStatusEnum,
 ) : Parcelable
 
 @Parcelize

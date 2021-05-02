@@ -15,7 +15,7 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
-import com.fourofourfound.aims_delivery.utils.StatusEnum
+import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
@@ -164,10 +164,9 @@ class HomePage : Fragment() {
         val (currentTripAdapter, upComingTripAdapter, completedTripAdapter) = setUpAdapters()
         //observe for any changes on the trips and inform that to the user
         viewModel.tripList.observe(viewLifecycleOwner) {
-         //TODO new trip was added or modified. Need to send the notification to the user
                 if (viewModel.loaded>0  && viewModel.getUpdatingTripsStatus()) showTripModifiedNotification()
 
-                it.filter { trip -> trip.status == StatusEnum.ONGOING }.apply {
+                it.filter { trip -> trip.deliveryStatus == DeliveryStatusEnum.ONGOING }.apply {
                     binding.ongoingTripMessage.text =
                         resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
                     currentTripAdapter.submitList(this)
@@ -175,21 +174,19 @@ class HomePage : Fragment() {
                         var selectedTrip = this[0]
                         sharedViewModel.selectedTrip.value = selectedTrip
                         var selectedDestination =
-                            selectedTrip.sourceOrSite.find { each -> each.status == StatusEnum.ONGOING }
+                            selectedTrip.sourceOrSite.find { each -> each.deliveryStatus == DeliveryStatusEnum.ONGOING }
                         if (selectedDestination != null) sharedViewModel.selectedSourceOrSite.value =
                             selectedDestination
-
                     }
-
                 }
 
-                it.filter { trip -> trip.status == StatusEnum.COMPLETED }.apply {
+                it.filter { trip -> trip.deliveryStatus == DeliveryStatusEnum.COMPLETED }.apply {
                     binding.completedTripMessage.text =
                         resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
                     completedTripAdapter.submitList(this)
                 }
 
-                it.filter { trip -> trip.status == StatusEnum.NOT_STARTED }.apply {
+                it.filter { trip -> trip.deliveryStatus == DeliveryStatusEnum.NOT_STARTED }.apply {
                     binding.upcomingTripMessage.text =
                         resources.getQuantityString(R.plurals.numberOfTripsAvailable, size, size)
                     upComingTripAdapter.submitList(this)
@@ -237,10 +234,21 @@ class HomePage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (sharedViewModel.driver != null) {
             CustomWorkManager(requireContext()).apply {
                 sendLocationAndUpdateTrips()
                 sendLocationOnetime()
+            }
+
+            if(sharedViewModel.statusTable == null) {
+                viewModel.getStatusTableFromNetwork()
+                viewModel.statusTableAvailable.observe(viewLifecycleOwner)
+                {
+                    if (it) {
+                        sharedViewModel.statusTable = viewModel.statusTable
+                    }
+                }
             }
         }
     }
@@ -262,6 +270,7 @@ class HomePage : Fragment() {
     override fun onStart() {
         super.onStart()
         BackgroundLocationPermissionUtil(requireContext()).checkPermissionsOnStart()
+
     }
 
 
