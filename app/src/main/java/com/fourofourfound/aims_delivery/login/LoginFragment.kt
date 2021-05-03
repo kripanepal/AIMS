@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.MainActivity
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.showStartCallDialog
@@ -83,6 +84,7 @@ class LoginFragment : Fragment() {
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
+                (activity as MainActivity?)?.getDatabase()
                 sharedViewModel.driver = viewModel.loggedInDriver
                 findNavController().navigate(R.id.homePage)
                 sharedViewModel.userLoggedIn.value = true
@@ -114,7 +116,6 @@ class LoginFragment : Fragment() {
             } else binding.spinKit.visibility = View.GONE
         }
 
-        Log.i("AAAAAAAAAAAA", "CALLING from login")
         return binding.root
     }
 
@@ -175,10 +176,10 @@ class LoginFragment : Fragment() {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setMotionAnimations(view:View)
+    fun setMotionAnimations(view: View)
     {
         val motionContainer = binding.loginPageMainView as MotionLayout
-        view.setOnTouchListener { v,_ ->
+        view.setOnTouchListener { v, _ ->
             v.performClick()
 
             if(!animated)

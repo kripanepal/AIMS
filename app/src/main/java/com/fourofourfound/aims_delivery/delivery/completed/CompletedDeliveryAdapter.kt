@@ -57,7 +57,7 @@ class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
                 "Bill Of Lading: ",
                 (item.form.billOfLadingNumber ?: "Not Provided").toString()
             )
-            addBoldWithText(product_desc, "Product: ", item.form.product)
+            addBoldWithText(product_desc, "Product: ", item.product.productDesc!!)
             addBoldWithText(net_qty, "Net Quantity: ", item.form.netQty.toString())
             addBoldWithText(gross_qty, "Gross Quantity: ", item.form.grossQty.toString())
             addBoldWithText(start_date, "Start Date: ", getDate(item.form.startTime))

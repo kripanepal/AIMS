@@ -16,9 +16,9 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.amitshekhar.DebugDB
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
+import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
 import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
 import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationApproachingDialog
-import com.fourofourfound.aims_delivery.delivery.onGoing.showDestinationLeaving
 import com.fourofourfound.aims_delivery.domain.DestinationLocation
 import com.fourofourfound.aims_delivery.domain.GeoCoordinates
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
@@ -26,6 +26,9 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.*
 
 
 /**
@@ -53,9 +56,9 @@ class MainActivity : AppCompatActivity() {
         changeInternetConnectionText()
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
-      dialog = showLoadingOverLay(this)
+        dialog = showLoadingOverLay(this)
         dialog.show()
-        Thread.setDefaultUncaughtExceptionHandler{ thread: Thread, throwable: Throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { thread: Thread, throwable: Throwable ->
         }
 
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
@@ -156,7 +159,6 @@ class MainActivity : AppCompatActivity() {
                 } else noInternetText.visibility = View.GONE
 
 
-
             })
     }
 
@@ -251,7 +253,23 @@ class MainActivity : AppCompatActivity() {
 
         if (distance < 500 && !deliveryStatusViewModel.destinationApproachingShown
         ) {
-            showDestinationApproachingDialog(this@MainActivity)
+            val statusCodeToGet =
+                if (sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") StatusMessageEnum.ARRIVESRC else StatusMessageEnum.ARRIVESITE
+
+            val statusCode = getStatusType(sharedViewModel.statusTable!!, statusCodeToGet)!!
+
+            val toPut = DatabaseStatusPut(
+                sharedViewModel.driver!!.code.trim(),
+                sharedViewModel.selectedTrip.value!!.tripId,
+                statusCode.statusCode,
+                statusCode.statusMessage,
+                getDate(Calendar.getInstance())
+            )
+
+
+
+            DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(this))
+
             deliveryStatusViewModel.destinationApproachingShown = true
             deliveryStatusViewModel.destinationLeavingShown = false
         }
@@ -259,18 +277,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun trackDestinationLeaving(currentCoordinates: GeoCoordinates) {
         deliveryStatusViewModel.previousDestination?.apply {
-            val oldDestination = GeoCoordinates(this.latitude, this.longitude)
+            val oldDestination = GeoCoordinates(this.location.latitude, this.location.longitude)
             var distance = checkDistanceToDestination(
                 currentCoordinates,
                 oldDestination
             )
             if (distance > 500 && !deliveryStatusViewModel.destinationLeavingShown
             ) {
-                showDestinationLeaving(this@MainActivity)
+
+                val statusCodeToGet =
+                    if (deliveryStatusViewModel.previousDestination!!.wayPointTypeDescription == "Source") StatusMessageEnum.LEAVESRC else StatusMessageEnum.LEAVESITE
+
+                val statusCode = getStatusType(sharedViewModel.statusTable!!, statusCodeToGet)!!
+
+                val toPut = DatabaseStatusPut(
+                    sharedViewModel.driver!!.code.trim(),
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    statusCode.statusCode,
+                    statusCode.statusMessage,
+                    getDate(Calendar.getInstance())
+                )
+
+                DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(this@MainActivity))
                 deliveryStatusViewModel.destinationLeavingShown = true
                 deliveryStatusViewModel.destinationApproachingShown = false
                 deliveryStatusViewModel.previousDestination = null
             }
         }
+    }
+
+    fun getDatabase() {
+        deliveryStatusViewModel.getUpdatedDatabase()
     }
 }

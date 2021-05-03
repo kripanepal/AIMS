@@ -76,7 +76,7 @@
                     android:id="@+id/show_form"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="left"
                     android:background="@drawable/rounded_corners_fab"
                     android:backgroundTint="@color/Aims_Orange"
                     android:text="Show Form"

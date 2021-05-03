@@ -1,8 +1,8 @@
 package com.fourofourfound.aims_delivery.network
 
+import androidx.annotation.Nullable
 import com.fourofourfound.aims_delivery.database.entities.StatusTable
 import com.google.gson.annotations.SerializedName
-import kotlin.properties.Delegates
 
 class TripResponse {
     lateinit var data: Data
@@ -40,7 +40,48 @@ class StatusMessageUpdateResponse {
     }
 }
 
-class StatusData()
+
+class ProductPickupResponse {
+    lateinit var data: Data
+    lateinit var status:String
+
+    class Data {
+        lateinit var resultSet1: List<StatusData>
+        lateinit var resultSet2: List<ProductPickupResponseData>
+    }
+
+    data class ProductPickupResponseData
+        (
+        @SerializedName("DriverCode")
+        val driverCode: String,
+        @SerializedName("TripID")
+        val tripId: Int,
+        @SerializedName("SourceID")
+        val sourceId: Int,
+        @SerializedName("Productid")
+        val productId: Int,
+        @SerializedName("ManifestNumber")
+        val bol: String,
+        @SerializedName("LoadstartDateTime")
+        val startDate: String,
+        @SerializedName("LoadEndDateTime")
+        val endDate: String,
+        @SerializedName("SourceGrossQuantity")
+        val grossQuantity: Int,
+        @SerializedName("SourceNetQuantity")
+        val netQuantity: Int,
+
+
+        @SerializedName("TripWayPointID")
+        val tripWayPointID: Int ,
+
+        @SerializedName("id")
+        val id: Int,
+)
+
+}
+
+class StatusData
 {
     @SerializedName("StatusCode")
      var statusCode:Int = 0
@@ -49,3 +90,4 @@ class StatusData()
     lateinit var status:String
 
 }
+

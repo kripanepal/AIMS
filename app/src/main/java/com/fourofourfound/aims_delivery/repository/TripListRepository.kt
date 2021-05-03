@@ -21,8 +21,7 @@ import kotlinx.coroutines.withContext
  * @constructor Create empty Trip list repository
  */
 class TripListRepository(private val database: TripListDatabase) {
-    private val tripsFromDatabase = database.tripDao.getAllTrip()
-    val trips = Transformations.map(tripsFromDatabase)
+    val trips = Transformations.map(database.tripDao.getAllTrip())
     {
         it.asDomainModel()
     }
@@ -40,12 +39,13 @@ class TripListRepository(private val database: TripListDatabase) {
                 val filteredNetworkList = networkTrips.map { it.asFiltered() }
                 val databaseData = database.tripDao.getAllTripsOneTime()
                 val storedData = databaseData.asNetworkModel()
+
+
                 if (!storedData.containsAll(filteredNetworkList)) {
-                    val removed = storedData.subtract(filteredNetworkList).map {
-                        it.tripId as Int
-                    }
-                    deleteTrips(removed)
                     updatingTrips = true
+                    val removed = (storedData.filterNot { filteredNetworkList.contains(it) })
+                    deleteTrips(removed.map { it.tripId as Int })
+
                     saveTrips(filteredNetworkList)
                 } else {
                 }
@@ -95,7 +95,7 @@ class TripListRepository(private val database: TripListDatabase) {
                             delReqLineNum,
                             requestedQty!!,
                             uom!!,
-                            fill!!
+                            fill!!,  sourceId, siteId
                         )
 
                         var savedSourceOrSite =
@@ -191,7 +191,8 @@ class TripListRepository(private val database: TripListDatabase) {
     }
 
     private fun deleteTrips(ids: List<Int>) {
-
+        val completedTrips = database.tripDao.getCompletedTripsId()
+        ids.minus(completedTrips)
         database.tripDao.deleteTripById(ids)
 
     }

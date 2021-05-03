@@ -57,6 +57,8 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
                         requestedQty,
                         uom,
                         fill,
+                        sourceId = sourceId,
+                        siteId = siteId
                     )
                 )
             }
@@ -118,7 +120,7 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
                         siteContainerDescription,
                         delReqNum,
                         delReqLineNum,
-                        deliveryStatus
+                        sourceId, siteId, deliveryStatus
                     )
                 )
             }

@@ -98,6 +98,12 @@ data class NetworkTrip(
 
     @SerializedName("DriverName")
     val driverName: String = "N/A",
+
+    @SerializedName("SourceID")
+    val sourceId: Int? ,
+
+    @SerializedName("SiteID")
+    val siteId: Int?,
 )
 
 fun NetworkTrip.asFiltered(): NetworkTrip =
@@ -132,6 +138,8 @@ fun NetworkTrip.asFiltered(): NetworkTrip =
                 requestedQty ?: 0,
                 uom ?: "",
                 fill ?: "Not provided",
+                sourceId= sourceId,
+                siteId =  siteId
             )
 
 data class Driver(

@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
 import com.fourofourfound.aims_delivery.utils.CustomWorkManager
@@ -57,6 +58,8 @@ class HomePage : Fragment() {
      *  the ViewModel that is used by the fragment to store the data
      */
     lateinit var viewModel: HomePageViewModel
+
+    private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -175,6 +178,10 @@ class HomePage : Fragment() {
                         sharedViewModel.selectedTrip.value = selectedTrip
                         var selectedDestination =
                             selectedTrip.sourceOrSite.find { each -> each.deliveryStatus == DeliveryStatusEnum.ONGOING }
+
+                        val previousDestinationIndex = selectedTrip.sourceOrSite.indexOf(selectedDestination) -1
+                        if(previousDestinationIndex>=0)   deliveryStatusViewModel.previousDestination = selectedTrip.sourceOrSite[previousDestinationIndex]
+
                         if (selectedDestination != null) sharedViewModel.selectedSourceOrSite.value =
                             selectedDestination
                     }

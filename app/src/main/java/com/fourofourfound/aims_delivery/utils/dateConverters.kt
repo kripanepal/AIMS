@@ -36,3 +36,7 @@ fun getTime(calendar: Calendar): String {
 fun getDate(calendar: Calendar): String {
     return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.time)
 }
+
+    fun getDateAndTime(calendar: Calendar): String {
+    return "${getDate(calendar)} ${getTime(calendar)}"
+}

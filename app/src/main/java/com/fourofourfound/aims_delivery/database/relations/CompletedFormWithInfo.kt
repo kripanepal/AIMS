@@ -2,10 +2,7 @@ package com.fourofourfound.aims_delivery.database.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.fourofourfound.aims_delivery.database.entities.BillOfLadingImages
-import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
-import com.fourofourfound.aims_delivery.database.entities.DatabaseLocation
-import com.fourofourfound.aims_delivery.database.entities.DatabaseSourceOrSite
+import com.fourofourfound.aims_delivery.database.entities.*
 
 data class CompletedFormWithInfo(
     @Embedded val form: DatabaseCompletionForm,
@@ -26,6 +23,12 @@ data class CompletedFormWithInfo(
         parentColumn = "identifier",
         entityColumn = "identifier",
     )
-    val images: List<BillOfLadingImages>
+    val images: List<BillOfLadingImages> ,
+
+    @Relation(
+        parentColumn = "productDelivered",
+        entityColumn = "productId",
+    )
+    val product: DatabaseFuel
 
 )

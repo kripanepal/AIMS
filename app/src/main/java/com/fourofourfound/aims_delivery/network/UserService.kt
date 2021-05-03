@@ -37,7 +37,7 @@ interface UserService {
     suspend fun validateUser(@Query(value = "Code") driverCode: String): DriverResponse
 
 
-    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/GetTripListDetailByDriver/{driverCode}?apiKey=$API_KEY")
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/GetDetailedTripListByDriver/{driverCode}?apiKey=$API_KEY")
     suspend fun getAllTrips(@Path("driverCode") driverCode: String): TripResponse
 
     @GET("rest/1/apiexpress/api/DispatcherMobileApp/TripStatusPut/{driverCode}/{tripId}/{statusCode}/{statusMessage}/true/{statusDate}?apiKey=$API_KEY")
@@ -57,13 +57,26 @@ interface UserService {
 
 
     @POST("/location")
-    suspend fun sendLocation(@Body location: CustomDatabaseLocation) {
-        Log.i("Refresh", location.toString())
-    }
+    suspend fun sendLocation(@Body location: CustomDatabaseLocation)
 
 
     @POST("/form")
     fun sendFormData(@Body form: DatabaseCompletionForm)
+
+
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/TripProductPickupPut/{driverCode}/{tripId}/{sourceId}/{productId}/{bol}/{startDate}/{endDate}/{grossQuantity}/{netQuantity}?apiKey=f20f8b25-b149-481c-9d2c-41aeb76246ef")
+    suspend  fun sendProductPickupInfo( @Path("driverCode") driverCode: String,
+                               @Path("tripId") tripId: Int,
+                               @Path("sourceId") sourceId: Int,
+                               @Path("productId") productId: Int,
+                               @Path("bol") bol: String,
+                               @Path("startDate") startDate: String,
+                               @Path("endDate") endDate: String,
+                               @Path("grossQuantity") grossQuantity: Int,
+                               @Path("netQuantity") netQuantity: Int,
+                               ): ProductPickupResponse
+
+
 }
 
 /**
