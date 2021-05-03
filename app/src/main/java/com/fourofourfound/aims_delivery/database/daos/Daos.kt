@@ -8,6 +8,11 @@ import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
 import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
 import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 
+/**
+ * Location dao
+ * Data access object to manipulate location of the user.
+ * @constructor Create empty Location dao
+ */
 @Dao
 interface LocationDao {
     //Locations
@@ -19,7 +24,6 @@ interface LocationDao {
 
     @Query("delete  from CustomDatabaseLocation")
     suspend fun deleteAllLocations()
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: DatabaseLocation)

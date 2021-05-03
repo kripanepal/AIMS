@@ -14,7 +14,7 @@ import java.util.*
 
 /**
  * Ongoing delivery view model
- *This view model is used by the OngoingDeliveryFragment to store the information about ongoing
+ * This view model is used by the OngoingDeliveryFragment to store the information about ongoing
  * delivery
  * @constructor
  *
@@ -36,7 +36,6 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
 
     var fillingStarted = MutableLiveData(false)
     var fillingEnded = MutableLiveData(false)
-
 
     var destinationApproaching = false
 

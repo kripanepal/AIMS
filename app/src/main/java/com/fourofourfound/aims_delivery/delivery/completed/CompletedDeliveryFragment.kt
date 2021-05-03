@@ -16,8 +16,8 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBind
 
 /**
  * Completed delivery fragment
- *This fragment is responsible for displaying the data related to
- * deliveries that are completed
+ * This fragment is responsible for displaying the data related to
+ * completed deliveries
  *
  * @constructor Create empty Completed delivery fragment
  */

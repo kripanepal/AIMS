@@ -109,14 +109,21 @@ class OngoingDeliveryFragment : Fragment() {
     }
 
 
+    /**
+     * Observe start fueling
+     * This method observes if the fuel filling is started or not
+     */
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
 
-            val  preFillingDialog = ReadingPrePostFilling()
+            val preFillingDialog = ReadingPrePostFilling()
 
             val args = Bundle()
             args.putBoolean("isFilling", true)
-            args.putString("trailer", sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc)
+            args.putString(
+                "trailer",
+                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+            )
             args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
             preFillingDialog.arguments = args
             preFillingDialog.show(childFragmentManager, "PreFillingReadings")
@@ -124,8 +131,7 @@ class OngoingDeliveryFragment : Fragment() {
 
         viewModel.fillingStarted.observe(viewLifecycleOwner)
         {
-            if(it)
-            {
+            if(it) {
                 viewModel.updateFuelInfo(
                     currentSourceOrSite.trailerInfo.trailerId,
                     viewModel.trailerReadingBegin.value!!
@@ -139,15 +145,22 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
+    /**
+     * Observe end fueling
+     * This method observes if the fuel filling is ended or not
+     */
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
             viewModel.endDateAndTime = Calendar.getInstance()
 
-            val  preFillingDialog = ReadingPrePostFilling()
+            val preFillingDialog = ReadingPrePostFilling()
 
             val args = Bundle()
             args.putBoolean("isFilling", false)
-            args.putString("trailer", sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc)
+            args.putString(
+                "trailer",
+                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+            )
             args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
             preFillingDialog.arguments = args
             preFillingDialog.show(childFragmentManager, "PostFillingReadings")
@@ -155,6 +168,11 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
+    /**
+     * Get form confirmation
+     * This method records the time and fuel reading and navigates to the form page
+     * @return a dialog
+     */
     private fun getFormConfirmation(): CustomDialogBuilder {
         return CustomDialogBuilder(
             requireContext(),
@@ -183,6 +201,10 @@ class OngoingDeliveryFragment : Fragment() {
         )
     }
 
+    /**
+     * Observe destination
+     *
+     */
     private fun observeDestination() {
         sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
         {
@@ -192,7 +214,8 @@ class OngoingDeliveryFragment : Fragment() {
                 binding.currentTrip = sharedViewModel.selectedTrip.value
                 binding.sourceOrSiteInfo.apply {
                     sourceOrSiteName.text = currentSourceOrSite.location.destinationName
-                    var fullAddress = "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
+                    var fullAddress =
+                        "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
                     address.text = fullAddress
                     productDesc.text = currentSourceOrSite.productInfo.productDesc
                     productQty.text =

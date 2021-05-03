@@ -42,6 +42,11 @@ import java.util.*
 import kotlin.properties.Delegates
 
 
+/**
+ * Navigation fragment
+ * This fragment is responsible for navigating in map.
+ * @constructor Create empty Navigation fragment
+ */
 class NavigationFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: NavigationViewModel
     lateinit var binding: FragmentNavigationBinding
@@ -84,6 +89,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         return binding.root
     }
 
+    /**
+     * Set up draggable view
+     * This method sets up the draggable view at the bottom of the map
+     */
     private fun setUpDraggableView() {
         val bottomSheetCallBack = object : BottomSheetBehavior.BottomSheetCallback() {
 
@@ -128,8 +137,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             binding.mapRecenter.setOnClickListener { recenter() }
         } else binding.progressBarContainer.visibility = View.GONE
     }
-
-
 
 
     private fun initializeMap() {
@@ -333,7 +340,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             mapFragment.onResume()
             mapFragment.map?.positionIndicator?.isVisible = true
         }
-
 
 
     }

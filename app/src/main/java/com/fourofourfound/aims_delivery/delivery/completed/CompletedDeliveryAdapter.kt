@@ -20,7 +20,13 @@ import com.fourofourfound.aimsdelivery.R
 import kotlinx.android.synthetic.main.delivery_summary.view.*
 import uk.co.senab.photoview.PhotoViewAttacher
 
-
+/**
+ * Completed delivery adapter
+ * This adapter provides access to the form data items and creates a view for
+ * each item in the data set.
+ *
+ * @constructor Create empty Completed delivery adapter
+ */
 class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var data = listOf<CompletedFormWithInfo>()
@@ -115,12 +121,25 @@ class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
         }
     }
 
+    /**
+     * Get image path
+     * This method gets the list of image path
+     * @param list list of image path
+     * @return list of image path
+     */
     private fun getImagePath(list: List<BillOfLadingImages>): List<String> {
         return list.map {
             it.imagePath
         }
     }
 
+    /**
+     * Add bold with text
+     * THis method add bold text
+     * @param view view where text is to be added
+     * @param boldText text to be added
+     * @param text data to be added
+     */
     private fun addBoldWithText(view: TextView, boldText: String, text: String) {
         val notesText = "<b> $boldText </b> $text"
         view.text = htmlToText(notesText)

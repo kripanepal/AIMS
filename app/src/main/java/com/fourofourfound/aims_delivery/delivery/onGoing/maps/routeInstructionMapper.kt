@@ -3,7 +3,12 @@ package com.fourofourfound.aims_delivery.delivery.onGoing.maps
 import com.fourofourfound.aimsdelivery.R
 import com.here.android.mpa.routing.Maneuver
 
-
+/**
+ * Route name to image mapper
+ * This method provides the upcoming direction sign
+ * @param directionName upcoming direction image
+ * @return upcoming direction
+ */
 fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
 
     return when (directionName) {
@@ -37,6 +42,12 @@ fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
 
 }
 
+/**
+ * Route name to direction text mapper
+ * This method provides the name of the next direction
+ * @param directionName upcoming direction text
+ * @return upcoming direction text
+ */
 fun routeNameToDirectionTextMapper(directionName: Maneuver.Icon?): String {
 
     return when (directionName) {
