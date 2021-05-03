@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
+import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
@@ -34,25 +36,48 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
         if (isNetworkConnected(context)) {
             //launch a coroutine to in the IO thread
             GlobalScope.launch(Dispatchers.IO) {
-
-
                 //get the instance of the database
                 val database = getDatabaseForDriver(context)
 
-                //get saved location from the database
-                database.locationDao.getSavedLocation().apply {
-                    try {
-                        //send the data to the dispatcher
-                        MakeNetworkCall.retrofitService.sendLocation(this)
+                sendUnsentLocation(database)
+                sendUnsentPutMessages(database)
+            }
+        }
+    }
 
-                        //delete contents of location table as only latest location is required
-                        database.locationDao.deleteAllLocations()
-                    } catch (e: Exception) {
-                    }
+    private suspend fun sendUnsentPutMessages(database: TripListDatabase) {
+        val statusPutToSend = database.statusPutDao.getAllUnsentData()
+        for (each in statusPutToSend) {
+            Log.i("NETWORK-CALL", each.toString())
+            try {
+                each.apply {
+                    MakeNetworkCall.retrofitService.sendStatusUpdate(
+                        driverCode,
+                        tripId,
+                        statusCode,
+                        statusMessage,
+                        statusDate
+                    )
+                    Log.i("NETWORK-CALL", "Sending saved put messages")
+                    database.statusPutDao.deletePutData(each)
                 }
 
+            } catch (e: Exception) {
 
             }
+        }
+    }
+
+    private suspend fun sendUnsentLocation(database: TripListDatabase) {
+        try {
+            //get saved location from the database
+            val locationToSend = database.locationDao.getSavedLocation()
+            //send the data to the dispatcher
+            MakeNetworkCall.retrofitService.sendLocation(locationToSend)
+
+            //delete contents of location table as only latest location is required
+            database.locationDao.deleteAllLocations()
+        } catch (e: Exception) {
         }
     }
 

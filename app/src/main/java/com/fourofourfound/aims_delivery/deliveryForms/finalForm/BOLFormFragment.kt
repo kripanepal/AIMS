@@ -402,7 +402,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                     val signatureBitMap = signaturePad.signatureBitmap
                     dialog.cancel()
                     deliveryStatusViewModel.previousDestination =
-                        sharedViewModel.selectedSourceOrSite.value!!.location
+                        sharedViewModel.selectedSourceOrSite.value!!
                     viewModel.submitForm()
                     viewModel.updateDeliveryStatus(
                         sharedViewModel.selectedTrip.value!!.tripId,

@@ -128,6 +128,21 @@ interface StatusDao {
     fun getStatusTable(): List<StatusTable>
 }
 
+@Dao
+interface StatusPutDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPutData( toPut:DatabaseStatusPut)
+
+   @Delete
+    fun deletePutData( toDelete:DatabaseStatusPut)
+
+    @Query("select * from DatabaseStatusPut")
+    fun getAllUnsentData():List<DatabaseStatusPut>
+
+
+}
+
 
 
 
