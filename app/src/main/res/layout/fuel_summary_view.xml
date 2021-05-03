@@ -7,9 +7,9 @@
     <View
         style="@style/divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:layout_marginHorizontal="2dp"
-        android:background="@color/black" />
+        android:background="@color/ExtraLightblack_card_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,10 +18,10 @@
 
         <View
             style="@style/divider"
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="2dp"
-            android:background="@color/black" />
+            android:background="@color/ExtraLightblack_card_color" />
 
         <TextView
 
@@ -31,33 +31,35 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1.5"
-            android:gravity="center|center_vertical"
+            android:gravity="left"
             android:text="FuelType"
             android:textSize="@dimen/text_size_small" />
 
         <View
             style="@style/divider"
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="2dp"
-            android:background="@color/black" />
+            android:background="@color/ExtraLightblack_card_color" />
 
         <TextView
 
             android:id="@+id/fuel_source"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1.5"
-            android:gravity="center|center_vertical"
+            android:gravity="left"
             android:text="FuelSource"
             android:textSize="@dimen/text_size_small" />
 
         <View
             style="@style/divider"
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="2dp"
-            android:background="@color/black" />
+            android:background="@color/ExtraLightblack_card_color" />
 
         <TextView
             android:id="@+id/site_count"
@@ -70,16 +72,16 @@
 
         <View
             style="@style/divider"
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="2dp"
-            android:background="@color/black" />
+            android:background="@color/ExtraLightblack_card_color" />
     </LinearLayout>
 
     <View
         style="@style/divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:layout_marginHorizontal="2dp"
-        android:background="@color/black" />
+        android:background="@color/ExtraLightblack_card_color" />
 </LinearLayout>

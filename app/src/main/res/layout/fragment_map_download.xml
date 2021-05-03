@@ -24,7 +24,7 @@
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/downloadProgressBar"
-            style="@style/SpinKitView.Large.Circle"
+            style="@style/SpinKitView.Circle"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginHorizontal="25dp"

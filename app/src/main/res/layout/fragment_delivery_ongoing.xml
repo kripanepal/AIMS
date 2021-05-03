@@ -53,8 +53,11 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="10dp">
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation"
+            android:layout_marginVertical="@dimen/card_vertical_margin"
+            android:layout_margin="@dimen/app_horizontal_margin"
+            app:cardBackgroundColor="?attr/colorSecondary">
 
             <LinearLayout
                 android:layout_width="match_parent"
