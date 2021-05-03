@@ -8,6 +8,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -146,24 +147,25 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeSpinner()
         viewModel.tripId = sharedViewModel.selectedTrip.value!!.tripId
+        viewModel.driver = sharedViewModel.driver!!.code
         setupImageRecyclerView()
         binding.formParentView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
 
-        viewModel.formSubmitted.observe(viewLifecycleOwner)
+
+
+        viewModel.navigate.observe(viewLifecycleOwner)
         { status ->
             if (status) {
-
-                findNavController().navigate(
-                    BOLFormFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment()
-                )
+                findNavController().navigate(BOLFormFragmentDirections.actionDeliveryCompletionFragmentToOngoingDeliveryFragment())
                 requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-
-                //TODO need to manage this
                 sharedViewModel.selectedSourceOrSite.value = null
             }
         }
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            sharedViewModel.loading.value = it }
     }
 
     private fun setupImageRecyclerView() {
@@ -361,11 +363,8 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
             signaturePad.clear()
         }
 
-        //TODO TO REMOVE
 
         dialog.findViewById<Button>(R.id.signature_done).setOnClickListener {
-
-
             var time = Calendar.getInstance()
 
             CustomDialogBuilder(
@@ -404,12 +403,13 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                     deliveryStatusViewModel.previousDestination =
                         sharedViewModel.selectedSourceOrSite.value!!
                     viewModel.submitForm()
+                    sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.deliveryStatus == DeliveryStatusEnum.ONGOING }!!.deliveryStatus =
+                        DeliveryStatusEnum.COMPLETED
                     viewModel.updateDeliveryStatus(
                         sharedViewModel.selectedTrip.value!!.tripId,
                         DeliveryStatusEnum.COMPLETED
                     )
-                    sharedViewModel.selectedTrip.value!!.sourceOrSite.find { it.deliveryStatus == DeliveryStatusEnum.ONGOING }!!.deliveryStatus =
-                        DeliveryStatusEnum.COMPLETED
+
 
                 },
                 null,

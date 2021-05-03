@@ -6,6 +6,8 @@ import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
 import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
+import com.fourofourfound.aims_delivery.database.utilClasses.ProductPickedUpData
+import com.fourofourfound.aims_delivery.network.ProductPickupResponse
 import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 
 @Dao
@@ -66,6 +68,9 @@ interface TripDao {
     @Query("update DatabaseTrip set deliveryStatus=:deliveryStatus where tripId= :tripId")
     fun changeTripStatus(tripId: Int, deliveryStatus: DeliveryStatusEnum)
 
+    @Query("select tripId from DatabaseTrip where deliveryStatus = 2")
+    fun getCompletedTripsId():List<Int>
+
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
 
@@ -84,6 +89,7 @@ interface TripDao {
     @Query("select * from  DatabaseTrip order by deliveryStatus desc ")
     fun getAllTrip(): LiveData<List<TripWithInfo>>
 
+    @Transaction
     @Query("select * from  DatabaseTrip order by deliveryStatus desc ")
     fun getAllTripsOneTime(): List<TripWithInfo>
 
@@ -101,19 +107,29 @@ interface ProductsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFuel(fuel: DatabaseFuel)
 
-    @Query("select distinct productDesc from DatabaseFuel")
-    suspend fun getProducts(): List<String>
+    @Query("select * from DatabaseFuel")
+    suspend fun getProducts(): List<DatabaseFuel>
 }
 
 
 @Dao
 interface CompletedDeliveriesDao {
 
+    @Transaction
     @Query("select * from DatabaseCompletionForm where tripId =:tripId")
     fun getDetails( tripId:Int): List<CompletedFormWithInfo>
 
+    @Transaction
     @Query("select * from DatabaseCompletionForm where tripId =:tripId and seqNo =:seqNo")
     fun getDetailsForDestination(tripId: Int, seqNo: Int): List<CompletedFormWithInfo>
+
+    @Query("select tripId,billOfLadingNumber,endTime,grossQty,netQty,startTime,sourceOrSiteId as sourceId ,driverId as driverCode, productDelivered as productId from DatabaseCompletionForm where wayPointType='Source' and dataSent = 0")
+    fun getUnsentProductPickedUp(): List<ProductPickedUpData>
+
+    @Query("update DatabaseCompletionForm set dataSent = 1 where  sourceOrSiteId=:id")
+    fun updateFormSentStatus(id:Int)
+
+
 
 }
 

@@ -21,8 +21,10 @@ data class DatabaseSourceOrSite(
     var requestedQty: Int = 0,
     var uom: String = "NOT PROVIDED",
     var fill: String = "",
+
+    var sourceId:Int?,
+    var siteId:Int?,
     var identifier: String = "$tripId $seqNum",
     var deliveryStatus: DeliveryStatusEnum = DeliveryStatusEnum.NOT_STARTED,
-
     )
 

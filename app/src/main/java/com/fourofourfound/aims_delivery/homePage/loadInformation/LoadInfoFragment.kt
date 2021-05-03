@@ -128,8 +128,8 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             statusCode.statusCode,
             statusCode.statusMessage,
             getDate(time))
-        deliveryStatusViewModel.sendStatusUpdate(
-          toPut
+        DeliveryStatusViewModel.sendStatusUpdate(
+          toPut, getDatabaseForDriver(requireContext())
         )
 
         markDestinationStart(sourceOrSite)
@@ -206,7 +206,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 getDate(Calendar.getInstance())
             )
 
-            deliveryStatusViewModel.sendStatusUpdate(toPut)
+            DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(requireContext()))
 
 
         }
@@ -263,7 +263,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         Log.i(
             "NETWORK-CALL", String.format(
-                "Sending Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
+                "Sending destination started: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
                 time.get(Calendar.YEAR),
                 time.get(Calendar.MONTH),
                 time.get(Calendar.DAY_OF_MONTH),

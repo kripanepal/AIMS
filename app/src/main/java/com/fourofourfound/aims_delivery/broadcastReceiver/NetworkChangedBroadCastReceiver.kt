@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,30 +41,22 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
 
                 sendUnsentLocation(database)
                 sendUnsentPutMessages(database)
+                sendUnsentPickupMessages(database)
             }
         }
     }
 
-    private suspend fun sendUnsentPutMessages(database: TripListDatabase) {
+    private  fun sendUnsentPickupMessages(database: TripListDatabase) {
+        val unsentPickupList = database.completedDeliveriesDao.getUnsentProductPickedUp()
+        for (pickupInfo in unsentPickupList) DeliveryStatusViewModel.sendProductPickedUpMessage(pickupInfo, database)
+
+    }
+
+
+    private fun sendUnsentPutMessages(database: TripListDatabase) {
         val statusPutToSend = database.statusPutDao.getAllUnsentData()
         for (each in statusPutToSend) {
-            Log.i("NETWORK-CALL", each.toString())
-            try {
-                each.apply {
-                    MakeNetworkCall.retrofitService.sendStatusUpdate(
-                        driverCode,
-                        tripId,
-                        statusCode,
-                        statusMessage,
-                        statusDate
-                    )
-                    Log.i("NETWORK-CALL", "Sending saved put messages")
-                    database.statusPutDao.deletePutData(each)
-                }
-
-            } catch (e: Exception) {
-
-            }
+                DeliveryStatusViewModel.sendStatusUpdate(each,database)
         }
     }
 

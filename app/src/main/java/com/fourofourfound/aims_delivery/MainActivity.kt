@@ -26,6 +26,8 @@ import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -264,7 +266,9 @@ class MainActivity : AppCompatActivity() {
                 getDate(Calendar.getInstance())
             )
 
-            deliveryStatusViewModel.sendStatusUpdate(toPut)
+
+
+            DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(this))
 
             deliveryStatusViewModel.destinationApproachingShown = true
             deliveryStatusViewModel.destinationLeavingShown = false
@@ -294,7 +298,7 @@ class MainActivity : AppCompatActivity() {
                     getDate(Calendar.getInstance())
                 )
 
-                deliveryStatusViewModel.sendStatusUpdate(toPut)
+                DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(this@MainActivity))
                 deliveryStatusViewModel.destinationLeavingShown = true
                 deliveryStatusViewModel.destinationApproachingShown = false
                 deliveryStatusViewModel.previousDestination = null

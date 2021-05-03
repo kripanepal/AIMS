@@ -27,6 +27,8 @@ data class SourceOrSite(
     var siteContainerDescription: String? = null,
     var delReqNum: Int? = null,
     var delReqLineNum: Int? = null,
+    var sourceId:Int?,
+    var siteId:Int?,
 
     var deliveryStatus: DeliveryStatusEnum,
 ) : Parcelable

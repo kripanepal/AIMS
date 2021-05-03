@@ -116,7 +116,6 @@ class LoginFragment : Fragment() {
             } else binding.spinKit.visibility = View.GONE
         }
 
-        Log.i("AAAAAAAAAAAA", "CALLING from login")
         return binding.root
     }
 
