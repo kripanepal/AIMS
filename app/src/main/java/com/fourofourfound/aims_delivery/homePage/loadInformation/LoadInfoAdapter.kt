@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.load_info_each_item.view.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
 
 
-class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
+class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
     var data = listOf<SourceOrSite>()
         set(value) {
             field = value
@@ -38,6 +38,12 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
         return ViewHolder(view)
     }
 
+
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
 
@@ -48,10 +54,15 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
             product_desc.text = item.productInfo.productDesc
             val qtyText = "${item.productInfo.requestedQty.toString()} ${item.productInfo.uom}"
             product_qty.text = qtyText
+
+            truck_text.text = item.truckInfo.truckDesc
+            trailer_text.text = item.trailerInfo.trailerDesc
         }
 
         val notesText = "<b> Notes: </b> " + item.productInfo.fill
         holder.itemView.load_notes.text = htmlToText(notesText)
+
+
 
         if (position == data.size - 1) {
             holder.itemView.progressLine.visibility = View.GONE
@@ -62,7 +73,12 @@ class LoadInfoAdapter() : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
                 view.visibility = View.VISIBLE
                 holder.itemView.show_form.setOnClickListener {
                     trip?.apply {
-                        it.findNavController().navigate(LoadInfoFragmentDirections.actionLoadInfoFragmentToCompletedDeliveryFragment(this, item.seqNum))
+                        it.findNavController().navigate(
+                            LoadInfoFragmentDirections.actionLoadInfoFragmentToCompletedDeliveryFragment(
+                                this,
+                                item.seqNum
+                            )
+                        )
                     }
 
 

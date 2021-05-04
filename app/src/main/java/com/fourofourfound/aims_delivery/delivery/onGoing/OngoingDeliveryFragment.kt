@@ -21,6 +21,8 @@ import com.fourofourfound.aims_delivery.utils.htmlToText
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.source_or_site_info.*
+import kotlinx.android.synthetic.main.source_or_site_info.view.*
 import java.util.*
 
 
@@ -218,8 +220,11 @@ class OngoingDeliveryFragment : Fragment() {
                         "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
                     address.text = fullAddress
                     productDesc.text = currentSourceOrSite.productInfo.productDesc
-                    productQty.text =
-                        currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
+                    var productQtyText =  currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
+                    productQty.text =productQtyText
+
+                    truck_text.text = currentSourceOrSite.truckInfo.truckDesc
+                    trailer_text.text = currentSourceOrSite.trailerInfo.trailerDesc
                 }
                 if (it.wayPointTypeDescription == "Source") binding.destinationImage.setImageResource(
                     R.drawable.ic_source
@@ -227,8 +232,12 @@ class OngoingDeliveryFragment : Fragment() {
                 else {
                     binding.destinationImage.setImageResource(R.drawable.ic_site)
                     val containerInfo =
-                        htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerDescription)
+                        htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerCode)
                     binding.siteContainer.text = containerInfo
+
+                    val  containerDesc =
+                        htmlToText("<b>Container Desc</b>: " + currentSourceOrSite.siteContainerDescription)
+                    binding.siteContainerDescription.text = containerDesc
 
                     val notes = htmlToText("<b>Notes</b>: " + currentSourceOrSite.productInfo.fill)
                     binding.loadNotes.text = notes
