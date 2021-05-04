@@ -12,14 +12,16 @@ import com.here.android.mpa.odml.MapPackage
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * Set visibility for map state
+ *
+ * @param view
+ * @param mapPackage
+ */
 @BindingAdapter("imageBasedOnStatus")
 fun setVisibilityForMapState(view: ImageView, mapPackage: MapPackage) {
     view.setImageResource( if (mapPackage.installationState == MapPackage.InstallationState.INSTALLED) R.drawable.delete_icn else R.drawable.download_icn)
 }
-
-
-
 
 @BindingAdapter("setIntAsString")
 fun setTextAsString(view: TextView, int: Int) {

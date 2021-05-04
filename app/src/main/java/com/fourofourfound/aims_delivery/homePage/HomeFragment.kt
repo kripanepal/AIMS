@@ -15,9 +15,9 @@ import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCas
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.BackgroundLocationPermissionUtil
-import com.fourofourfound.aims_delivery.utils.CustomWorkManager
 import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 import com.fourofourfound.aims_delivery.utils.toggleViewVisibility
+import com.fourofourfound.aims_delivery.worker.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentHomePageBinding
 import kotlinx.android.synthetic.main.activity_main.*

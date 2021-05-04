@@ -5,6 +5,11 @@ import android.view.View
 import android.widget.ImageView
 import com.fourofourfound.aimsdelivery.R
 
+/**
+ * Toggle view visibility
+ * This method toggles the view visibility with animation
+ * @param view the view to be animated
+ */
 fun toggleViewVisibility(view: View) {
     if (view.visibility == View.VISIBLE) {
         animateViewVisibility(view.rootView, view, false, Gravity.TOP)
@@ -15,7 +20,12 @@ fun toggleViewVisibility(view: View) {
     }
 }
 
-
+/**
+ * Toggle drop down image
+ * This method changed the drop down icon
+ * @param parent the parent view of the icon
+ * @param dropDown the image view where drop down icon to be shown
+ */
 fun  toggleDropDownImage(parent: View, dropDown: ImageView) {
     if (parent.visibility == View.VISIBLE) {
         dropDown.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24)

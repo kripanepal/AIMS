@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat
 /**
  * Check Permission
  * This method checks if required permission is granted or not.
- *
  * @param permissionsToCheck List of permissions to be checked
  * @param context current state of the application
  * @return true if all permissions have been granted

@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
+import com.fourofourfound.aims_delivery.utils.CustomSharedPreferences
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.UnknownHostException
@@ -21,6 +21,10 @@ import java.net.UnknownHostException
  */
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
+    /**
+     * My application
+     * Base class for maintaining global application state
+     */
     private val myApplication = application
 
     /**

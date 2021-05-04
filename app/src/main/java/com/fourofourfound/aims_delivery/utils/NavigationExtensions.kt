@@ -31,7 +31,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 /**
  * Setup With Nav Controller
  * Manages the various graphs needed for a [BottomNavigationView].
- *
  * This sample is a workaround until the Navigation Component supports multiple back stacks.
  */
 fun BottomNavigationView.setupWithNavController(

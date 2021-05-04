@@ -24,6 +24,11 @@ import com.here.android.mpa.odml.MapPackage
 import java.io.File
 
 
+/**
+ * Map download fragment
+ *
+ * @constructor Create empty Map download fragment
+ */
 class MapDownloadFragment : Fragment() {
 
     lateinit var mapLoader: MapLoader

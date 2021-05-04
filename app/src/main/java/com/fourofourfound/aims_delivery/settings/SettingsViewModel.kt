@@ -4,26 +4,60 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.utils.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Settings view model
  * This view model is used by the SettingsFragment to store the settings information
- *
  * @constructor
  * @param application the applicationContext which created this viewModel
  */
 class SettingsViewModel(application: Application) :AndroidViewModel(application) {
+    /**
+     * My application
+     * Base class for maintaining global application state
+     */
     private val myApplication = application
+
+    /**
+     * Database
+     * The database for the currently logged in driver
+     */
     var database = getDatabaseForDriver(application)
 
+    /**
+     * Trip list repository
+     * The repository that holds the information about the trip and the destination
+     */
     private var tripListRepository = TripListRepository(database)
+
+    /**
+     * Total trips completed
+     * This live data hold the information about the total number of completed trips
+     */
     var totalTripsCompleted = MutableLiveData(0)
+
+    /**
+     * Total deliveries completed
+     * This live data hold the information about the total number of deliveries completed
+     */
     var totalDeliveriesCompleted = MutableLiveData(0)
+
+    /**
+     * Loading
+     * The live data that tells the application whether the loading animation needs to
+     * be shown or not.
+     */
     var loading = MutableLiveData(false)
+
+    /*
+     */
+    var logoutUser = MutableLiveData(false)
 
     /**
      * Logout User
@@ -31,24 +65,31 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
      * upon clicking the logout button.
      */
     fun logoutUser() {
-        CustomSharedPreferences(myApplication).apply {
-            deleteEncryptedPreference("username")
-            deleteEncryptedPreference("password")
-
-            deleteEncryptedPreference("driverCode")
-            deleteEncryptedPreference("id")
-            deleteEncryptedPreference("name")
-            deleteEncryptedPreference("companyId")
-            deleteEncryptedPreference("driverDescription")
-            deleteEncryptedPreference("compasDriverId")
-            deleteEncryptedPreference("truckId")
-            deleteEncryptedPreference("truckDescription")
-            deleteEncryptedPreference("active")
-
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                CustomSharedPreferences(myApplication).apply {
+                    deleteEncryptedPreference("username")
+                    deleteEncryptedPreference("password")
+                    deleteEncryptedPreference("driverCode")
+                    deleteEncryptedPreference("id")
+                    deleteEncryptedPreference("name")
+                    deleteEncryptedPreference("companyId")
+                    deleteEncryptedPreference("driverDescription")
+                    deleteEncryptedPreference("compasDriverId")
+                    deleteEncryptedPreference("truckId")
+                    deleteEncryptedPreference("truckDescription")
+                    deleteEncryptedPreference("active")
+                }
+            }
+            logoutUser.value = true
         }
         database.close()
     }
 
+    /**
+     * Get delivery data
+     * This method gets the information about the completed trips and deliveries
+     */
     fun getDeliveryData() {
         viewModelScope.launch {
             loading.value = true
@@ -58,6 +99,10 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
         }
     }
 
+    /**
+     * Get database
+     * This method gets the database for the currently logged in driver
+     */
     fun getDatabase() {
         database = getDatabaseForDriver(myApplication)
         tripListRepository = TripListRepository(database)

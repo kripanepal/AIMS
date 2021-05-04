@@ -1,5 +1,6 @@
 package com.fourofourfound.aims_delivery.settings
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,8 @@ import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
 import com.here.android.mpa.common.MapEngine
 import com.here.android.mpa.guidance.NavigationManager
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.system.exitProcess
+
 
 /**
  * Settings Fragment
@@ -50,22 +52,27 @@ class SettingsFragment : Fragment() {
      */
     lateinit var viewModel: SettingsViewModel
 
+    /**
+     * On create view
+     * This method initializes the fragment
+     * @param inflater the inflater that is used to inflate the view
+     * @param container the container that holds the fragment
+     * @param savedInstanceState called when fragment is starting
+     * @return the view that is inflated
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         //create a binding object
         _binding = DataBindingUtil.inflate<FragmentSettingsBinding>(
             inflater, R.layout.fragment_settings, container, false
         )
-
         //initialize viewModel and assign value to the viewModel in xml file
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
-        //checks if the user is logged in
+        //show user logout confirmation message
         binding.logoutView.setOnClickListener {
             CustomDialogBuilder(
                 requireContext(),
@@ -78,37 +85,40 @@ class SettingsFragment : Fragment() {
                 true
             ).builder.show()
         }
-
         binding.downloadMaps.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_mapDownloadFragment)
         }
-
         binding.help.setOnClickListener {
             showStartCallDialog(requireContext())
         }
-
         binding.about.setOnClickListener {
             showAboutDialog()
         }
-
         viewModel.getDatabase()
         return binding.root
     }
 
+    /**
+     * On view created
+     * This method is called when the view is created
+     * @param view the view that is created
+     * @param savedInstanceState called when fragment is started
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.getDeliveryData()
         viewModel.loading.observe(viewLifecycleOwner) {
             sharedViewModel.loading.value = it
         }
         sharedViewModel.driver?.apply {
             binding.driver = this
-
         }
-
     }
 
+    /**
+     * Show about dialog
+     * This method shows a dialog containing the information about the application
+     */
     private fun showAboutDialog() {
         val dialogView = LayoutInflater.from(context).inflate(
             R.layout.about_dialog, null
@@ -140,7 +150,25 @@ class SettingsFragment : Fragment() {
         NavigationManager.getInstance()?.stop()
         MapEngine.getInstance().onPause()
         viewModel.loading.value = false
-        requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+        //requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+        restartApplication(requireActivity())
+    }
+
+    /**
+     * Restart application
+     * This method restarts the application when log out is pressed.
+     * @param activity the activity of the application
+     */
+    fun restartApplication(activity: Activity) {
+        viewModel.logoutUser.observe(viewLifecycleOwner) {
+            if (it) {
+                val pm = activity.packageManager
+                val intent = pm.getLaunchIntentForPackage(activity.packageName)
+                activity.finishAffinity() // Finishes all activities.
+                activity.startActivity(intent) // Start the launch activity
+                exitProcess(0) // System finishes and automatically relaunches us.
+            }
+        }
 
     }
 }

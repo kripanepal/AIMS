@@ -22,27 +22,46 @@ import retrofit2.HttpException
  * Shared View Model
  * This view model stores the information about current user, connection status and
  * currently selected trip. This View Model is used buy multiple fragments
- *
  * @constructor
  *
  * @param application the applicationContext which created this viewModel
  */
 class DeliveryStatusViewModel(application: Application) : AndroidViewModel(application) {
+
+    /**
+     * My application
+     * Base class for maintaining global application state
+     */
     private val myApplication = application
+
+    /**
+     * Database
+     * The database for the driver that is used by the view model
+     */
     var database = getDatabaseForDriver(application)
 
+    /**
+     * Get updated database
+     * This method sets the value of database for new driver if the driver is changed
+     */
     fun getUpdatedDatabase() {
         database = getDatabaseForDriver(myApplication)
     }
 
-
     companion object {
+
+        /**
+         * Send status update
+         * THis method makes network call to send status update with required information
+         * and saves the information to database if the update fails
+         * @param toPut the update that is to be sent
+         * @param database the database where the information is stored if the update fails
+         */
         fun sendStatusUpdate(
             toPut: DatabaseStatusPut, database: TripListDatabase
         ) {
             GlobalScope.launch {
                 withContext(Dispatchers.IO)
-
                 {
                     try {
                         toPut.apply {
@@ -56,9 +75,8 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                             )
                         }
                         Log.i("NETWORK-CALL", " successful for $toPut")
-
-
                     } catch (ex: Exception) {
+                        //Save to local database if the update fails
                         database.statusPutDao.insertPutData(toPut)
                         Log.i("NETWORK-CALL", "failed")
                     }
@@ -67,13 +85,19 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
             }
         }
 
+        /**
+         * Send product picked up message
+         * THis method makes network call to send product picked up message with required information
+         * and saves the information to database if the update fails
+         * @param pickupInfo the product information that needs to be sent
+         * @param database the database where the information is stored if the update fails
+         */
         fun sendProductPickedUpMessage(
             pickupInfo: ProductPickedUpData,
             database: TripListDatabase
         ) {
             GlobalScope.launch {
                 withContext(Dispatchers.IO)
-
                 {
                     try {
                         Log.i("NETWORK-CALL", "\nsending saved product pickup message")
@@ -90,9 +114,7 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                                 netQty
                             )
                         }
-
-
-
+                        //Save to local database if update fails
                         if (response.status == "success") {
                             Log.i("NETWORK-CALL", "Successful for  $pickupInfo")
                             database.completedDeliveriesDao.updateFormSentStatus(

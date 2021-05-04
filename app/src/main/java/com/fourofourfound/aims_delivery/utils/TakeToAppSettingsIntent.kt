@@ -8,7 +8,6 @@ import android.provider.Settings
 /**
  * Take to Permission Screen Intent
  * This method takes the user to the permission settings screen
- *
  * @return permission setting intent
  */
 fun takeToPermissionScreenIntent(context: Context): Intent {

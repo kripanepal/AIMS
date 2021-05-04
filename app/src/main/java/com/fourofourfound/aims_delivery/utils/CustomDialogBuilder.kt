@@ -42,10 +42,8 @@ class CustomDialogBuilder(
      * title, message and buttons.
      */
     private fun generateDialog() {
-
         builder.setTitle(title)
         message?.apply { builder.setMessage(this) }
-
         if (!positiveButtonText.isNullOrEmpty())
             builder.setPositiveButton(positiveButtonText) { dialog, which ->
                 positiveMessageCallback?.let { it() }
@@ -54,8 +52,6 @@ class CustomDialogBuilder(
             builder.setNegativeButton(negativeButtonText) { dialog, which ->
                 negativeMessageCallback?.let { it() }
             }
-
         builder.setCancelable(cancelable)
     }
-
 }

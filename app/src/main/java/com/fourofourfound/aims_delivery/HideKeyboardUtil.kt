@@ -4,7 +4,11 @@ import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
 
-//this methos hides the keyboard if user clicks outside the focused view. Needs to be fixed
+/**
+ * Hide soft keyboard
+ * This method hides the keyboard if user clicks outside the focused view.
+ * @param activity the activity where the keyboard needs to be hidden
+ */
  fun hideSoftKeyboard(activity: Activity) {
     val inputMethodManager =
         activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager

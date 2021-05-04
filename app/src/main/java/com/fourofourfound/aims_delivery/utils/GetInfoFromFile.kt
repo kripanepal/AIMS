@@ -9,14 +9,21 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import java.io.File
 
+/**
+ * Get real path from URI
+ * This method gets the absolute path of the given URI
+ * @param context the context of the application
+ * @param contentUri the URI whose path is to be found
+ * @return the absolute path of the URI
+ */
 fun getRealPathFromURI(context: Context, contentUri: Uri): String {
     var cursor: Cursor? = null
     return try {
         val proj = arrayOf(MediaStore.Images.Media.DATA)
         cursor = context.contentResolver.query(contentUri, proj, null, null, null)
-        val column_index: Int = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        val columnIndex: Int = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
-        cursor.getString(column_index)
+        cursor.getString(columnIndex)
     } catch (e: java.lang.Exception) {
         ""
     } finally {
@@ -24,6 +31,13 @@ fun getRealPathFromURI(context: Context, contentUri: Uri): String {
     }
 }
 
+/**
+ * Get bit map from file path
+ * This method gets the bitmap of the image from the file location
+ * @param parentContext the context of the parent
+ * @param item the path of the image file
+ * @return the bitmap of the image if available
+ */
 fun getBitMapFromFilePath(
     parentContext: Context,
     item: String
@@ -36,9 +50,7 @@ fun getBitMapFromFilePath(
         )
         val source =
             ImageDecoder.createSource(parentContext.contentResolver, photoURI)
-
         ImageDecoder.decodeBitmap(source)
-
     } catch (E: Exception) {
         null
     }

@@ -15,17 +15,25 @@ import com.fourofourfound.aims_delivery.MainActivity
  */
 class BackgroundLocationPermissionUtil(var context: Context) {
 
+    /**
+     * Permission missing dialog
+     * The dialog that is shown when location permission is missing
+     */
     lateinit var permissionMissingDialog: AlertDialog
+
+    /**
+     * Permissions to check
+     * The list of permission that are to be checked
+     */
     private var permissionsToCheck = getLocationPermissionsToBeChecked()
 
     init {
         showLocationPermissionMissingDialog()
     }
 
-
     /**
      * On permission selected
-     * This method is called everytime the permission for the
+     * This method is called every time the permission for the
      * application is changed
      */
     fun onPermissionSelected() {
@@ -42,7 +50,6 @@ class BackgroundLocationPermissionUtil(var context: Context) {
      * Check Permission On Start
      * This method shows the permission missing dialog on the startup
      * if the permission is not granted.
-     *
      */
     fun checkPermissionsOnStart() {
         val tempPermissionList = permissionsToCheck.toMutableList()

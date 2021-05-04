@@ -1,11 +1,10 @@
-package com.fourofourfound.aims_delivery.utils
+package com.fourofourfound.aims_delivery.worker
 
 import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.fourofourfound.aims_delivery.worker.SyncDataWithServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,10 +54,9 @@ class CustomWorkManager(var context: Context) {
     fun sendLocationOnetime() {
         //Runs a work one time for testing only
         applicationScope.launch {
-            var repeatingRequest = OneTimeWorkRequestBuilder<SyncDataWithServer>()
-                .setInitialDelay(15, TimeUnit.SECONDS)
+            val repeatingRequest = OneTimeWorkRequestBuilder<SyncDataWithServer>()
+                .setInitialDelay(60, TimeUnit.SECONDS)
                 .build()
-
             WorkManager.getInstance(context).enqueue(repeatingRequest)
         }
     }
