@@ -13,10 +13,6 @@
             type="com.fourofourfound.aims_delivery.login.LoginViewModel" />
     </data>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/loginPageMainView"
         android:layout_width="match_parent"
@@ -199,5 +195,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
-    </ScrollView>
 </layout>
