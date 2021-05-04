@@ -55,18 +55,13 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
      */
     var loading = MutableLiveData(false)
 
-    /*
-     */
-    var logoutUser = MutableLiveData(false)
 
     /**
      * Logout User
-     * This method logs the user out of the application
-     * upon clicking the logout button.
+     * This method clears all the information of the user in the shared preferences
      */
     fun logoutUser() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+
                 CustomSharedPreferences(myApplication).apply {
                     deleteEncryptedPreference("username")
                     deleteEncryptedPreference("password")
@@ -80,9 +75,6 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
                     deleteEncryptedPreference("truckDescription")
                     deleteEncryptedPreference("active")
                 }
-            }
-            logoutUser.value = true
-        }
         database.close()
     }
 

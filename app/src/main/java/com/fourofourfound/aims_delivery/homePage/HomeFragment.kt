@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery.homePage
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -239,26 +240,6 @@ class HomePage : Fragment() {
         return Triple(currentTripAdapter, upComingTripAdapter, completedTripAdapter)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        if (sharedViewModel.driver != null) {
-            CustomWorkManager(requireContext()).apply {
-                sendLocationAndUpdateTrips()
-                sendLocationOnetime()
-            }
-
-            if(sharedViewModel.statusTable == null) {
-                viewModel.getStatusTableFromNetwork()
-                viewModel.statusTableAvailable.observe(viewLifecycleOwner)
-                {
-                    if (it) {
-                        sharedViewModel.statusTable = viewModel.statusTable
-                    }
-                }
-            }
-        }
-    }
 
 
     /**

@@ -11,23 +11,24 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.repository.TripListRepository
-import com.fourofourfound.aims_delivery.utils.CustomSharedPreferences
-import com.fourofourfound.aims_delivery.utils.checkPermission
-import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
-import com.fourofourfound.aims_delivery.utils.getLocationPermissionsToBeChecked
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 
 /**
@@ -121,7 +122,17 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      * @return Result of the work
      */
     override suspend fun doWork(): Result {
-        Log.i("WORKER", "Running")
+        Log.i("WORKER-WORK", "Running")
+
+        //TODO remove this as it should run in the defined interval. Just for presentation
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
+            CustomWorkManager(applicationContext).apply {
+            sendLocationAndUpdateTrips()
+                sendLocationOnetime()
+            }
+        }, 60000)
+
+
         buildNotification(successTitle, null, null, null, successChannelId)
 
         //GPS available
@@ -140,13 +151,13 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                     )
                     return sendLocationToServerAndUpdateTrips()
                 }
-                Log.i("WORKER", "Missing location")
+                Log.i("WORKER-WORK", "Missing location")
                 return showMissingPermissionNotification()
             } else {
                 return showMissingPermissionNotification()
             }
         } else {
-            Log.i("WORKER", "GPS not enabled")
+            Log.i("WORKER-WORK", "GPS not enabled")
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             buildNotification(
                 gpsErrorTitle,
@@ -156,9 +167,10 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 errorChannelId
             )
             notificationManager.notify(NOTIFICATION_ID, notification)
-            Log.i("WORKER", "Missing permissions")
+            Log.i("WORKER-WORK", "Missing permissions")
             return Result.failure()
         }
+
     }
 
     /**
@@ -185,20 +197,22 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      * and gets updated trip from the server if any
      */
     private suspend fun Location.sendLocationToServerAndUpdateTrips() = try {
-        Log.i("WORKER", "SENDING LOCATION")
+
         customLocation =
-            CustomDatabaseLocation(latitude, longitude, "time")
+            CustomDatabaseLocation(latitude, longitude, getDateAndTime(Calendar.getInstance()))
+        Log.i("WORKER-WORK", "SENDING LOCATION $customLocation")
+        Log.i("WORKER-WORK", "Refreshing trips")
         var code: String
         CustomSharedPreferences(applicationContext).apply {
             code = getEncryptedPreference("driverCode")
         }
         repository.refreshTrips(code)
         locationManager.removeUpdates(this@SyncDataWithServer)
-        Log.i("WORKER", "SUCCESSFUL")
+        Log.i("WORKER-WORK", "SUCCESSFUL")
         Result.success()
     } catch (exception: Exception) {
-        Log.i("WORKER", "Failed")
-        Log.i("WORKER", exception.message.toString())
+        Log.i("WORKER-WORK", "Failed")
+        Log.i("WORKER-WORK", exception.message.toString())
         repository.saveLocationToDatabase(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)
         Result.failure()

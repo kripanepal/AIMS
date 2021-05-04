@@ -49,11 +49,13 @@
         android:id="@+id/product_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:textSize="@dimen/description_text_size"
         app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/product_qty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toEndOf="@id/product_desc_container"
+        app:layout_constraintStart_toEndOf="@+id/product_desc_container"
         app:layout_constraintTop_toBottomOf="@id/address"
         tool:text="RE687 Gasoline" />
 
@@ -65,7 +67,7 @@
         android:textSize="@dimen/description_text_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_desc_container" />
+        app:layout_constraintTop_toBottomOf="@+id/product_desc" />
 
     <TextView
         android:id="@+id/product_qty"

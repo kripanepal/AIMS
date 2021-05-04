@@ -100,9 +100,9 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
         dialog = showLoadingOverLay(this)
-        dialog.show()
-        Thread.setDefaultUncaughtExceptionHandler { thread: Thread, throwable: Throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { _, _ ->
         }
+
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
     }
 
@@ -258,14 +258,12 @@ class MainActivity : AppCompatActivity() {
         var topLevelId = listOf(
             R.id.homePage,
             R.id.ongoingDeliveryFragment,
-            R.id.settingsFragment,
-            R.id.loginFragment
+            R.id.settingsFragment
         )
-        if ((currentNavController?.value?.currentDestination?.id) in topLevelId) {
-            super.onBackPressed()
-        } else {
-            navController.navigateUp()
-        }
+        if ((currentNavController?.value?.currentDestination?.id) in topLevelId) super.onBackPressed()
+        else if (currentNavController?.value?.currentDestination?.id == R.id.loginFragment) finish()
+        else navController.navigateUp()
+
 
     }
 
@@ -310,12 +308,11 @@ class MainActivity : AppCompatActivity() {
         ) {
             val statusCodeToGet =
                 if (sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") StatusMessageEnum.ARRIVESRC else StatusMessageEnum.ARRIVESITE
-            val statusCode = getStatusType(sharedViewModel.statusTable!!, statusCodeToGet)!!
             val toPut = DatabaseStatusPut(
                 sharedViewModel.driver!!.code.trim(),
                 sharedViewModel.selectedTrip.value!!.tripId,
-                statusCode.statusCode,
-                statusCode.statusMessage,
+                statusCodeToGet.code,
+                statusCodeToGet.message,
                 getDate(Calendar.getInstance())
             )
             DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(this))
@@ -341,12 +338,12 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val statusCodeToGet =
                     if (deliveryStatusViewModel.previousDestination!!.wayPointTypeDescription == "Source") StatusMessageEnum.LEAVESRC else StatusMessageEnum.LEAVESITE
-                val statusCode = getStatusType(sharedViewModel.statusTable!!, statusCodeToGet)!!
+
                 val toPut = DatabaseStatusPut(
                     sharedViewModel.driver!!.code.trim(),
                     sharedViewModel.selectedTrip.value!!.tripId,
-                    statusCode.statusCode,
-                    statusCode.statusMessage,
+                    statusCodeToGet.code,
+                    statusCodeToGet.message,
                     getDate(Calendar.getInstance())
                 )
                 DeliveryStatusViewModel.sendStatusUpdate(

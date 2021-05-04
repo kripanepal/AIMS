@@ -138,15 +138,7 @@ interface CompletedDeliveriesDao {
 }
 
 
-@Dao
-interface StatusDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertStatusTable( statusList:List<StatusTable>)
-
-    @Query("select * from StatusTable")
-    fun getStatusTable(): List<StatusTable>
-}
 
 @Dao
 interface StatusPutDao {

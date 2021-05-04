@@ -52,8 +52,6 @@ interface UserService {
     @GET("/alltrips")
     suspend fun getAllTripsFromHeroku(): TripResponse
 
-    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/TripStatusMessageList/%20?apiKey=$API_KEY")
-    suspend fun getStatusTable(): StatusTableResponse
 
 
     @POST("/location")

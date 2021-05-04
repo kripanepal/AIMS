@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.StatusTable
 import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
@@ -25,8 +24,7 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
     val database = getDatabaseForDriver(application)
 
     private val tripListRepository = TripListRepository(database)
-    var statusTable = listOf<StatusTable>()
-    var statusTableAvailable = MutableLiveData(false)
+
 
 
     /**
@@ -58,19 +56,6 @@ class HomePageViewModel(application: Application) : AndroidViewModel(application
     fun getUpdatingTripsStatus() = tripListRepository.updatingTrips
 
 
-    fun getStatusTableFromNetwork() {
-        updating.value = true
-        viewModelScope.launch {
-            tripListRepository.getStatusTable()
-            if(!statusTableAvailable.value!!)
-            getStatusTableFromDatabase()
-            updating.value = false
-            statusTableAvailable.value = true
-        }
-    }
-    private suspend fun getStatusTableFromDatabase() {
-        withContext(Dispatchers.IO){
-            statusTable = database.statusDao.getStatusTable()
-        }
-    }
+
+
 }

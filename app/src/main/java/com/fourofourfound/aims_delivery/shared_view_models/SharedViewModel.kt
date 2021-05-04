@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.shared_view_models
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.fourofourfound.aims_delivery.database.entities.StatusTable
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.Driver
@@ -68,10 +67,5 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
      */
     var driver: Driver? = null
 
-    /**
-     * Status table
-     * The list of all status code and status message used in the application.
-     */
-    var statusTable: List<StatusTable>? = null
 
 }

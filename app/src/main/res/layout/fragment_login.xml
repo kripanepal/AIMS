@@ -130,7 +130,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_background"
-                android:onClick="@{()->viewModel.authenticateUser()}"
                 android:text="Login"
                 android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
 
@@ -181,15 +180,7 @@
 
                 />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="for testing user id = D1 password = D1 "
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

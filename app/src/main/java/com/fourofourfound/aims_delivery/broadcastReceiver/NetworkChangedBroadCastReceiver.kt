@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
@@ -48,7 +51,10 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
 
     private  fun sendUnsentPickupMessages(database: TripListDatabase) {
         val unsentPickupList = database.completedDeliveriesDao.getUnsentProductPickedUp()
-        for (pickupInfo in unsentPickupList) DeliveryStatusViewModel.sendProductPickedUpMessage(pickupInfo, database)
+        for (pickupInfo in unsentPickupList)
+            Handler(Looper.getMainLooper()).postDelayed({
+                DeliveryStatusViewModel.sendProductPickedUpMessage(pickupInfo, database)
+            }, 500)
 
     }
 
@@ -56,7 +62,11 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
     private fun sendUnsentPutMessages(database: TripListDatabase) {
         val statusPutToSend = database.statusPutDao.getAllUnsentData()
         for (each in statusPutToSend) {
+            Handler(Looper.getMainLooper()).postDelayed({
                 DeliveryStatusViewModel.sendStatusUpdate(each,database)
+
+            }, 500)
+
         }
     }
 

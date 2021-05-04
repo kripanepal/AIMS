@@ -22,8 +22,7 @@ import com.fourofourfound.aims_delivery.database.utilClasses.StatusConverter
         DatabaseFuel::class,
         DatabaseLocation::class,
         BillOfLadingImages::class,
-        StatusTable::class,
-               DatabaseStatusPut::class],
+        DatabaseStatusPut::class],
     version = 2,
     exportSchema = false
 )
@@ -36,9 +35,7 @@ abstract class TripListDatabase : RoomDatabase() {
     abstract val trailerDao: TrailerDao
     abstract val productsDao: ProductsDao
     abstract val completedDeliveriesDao: CompletedDeliveriesDao
-    abstract val statusDao: StatusDao
     abstract val statusPutDao: StatusPutDao
-
     var databaseName = ""
 }
 

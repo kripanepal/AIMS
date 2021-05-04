@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -97,6 +98,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             setEncryptedPreference("truckDescription", driver.truckDescription.toString())
             setEncryptedPreference("active", driver.active.toString())
         }
+
     }
 
     /**
@@ -110,6 +112,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun checkUserLoggedIn(): Boolean {
         CustomSharedPreferences(myApplication).apply {
             val code = getEncryptedPreference("driverCode")
+            val savedPassword = getEncryptedPreference("password")
             val id = getEncryptedPreference("id")
             val name = getEncryptedPreference("name")
             val companyId = getEncryptedPreference("companyId")
@@ -119,7 +122,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             val truckDescription = getEncryptedPreference("truckDescription")
             val active = getEncryptedPreference("active")
             return try {
-                loggedInDriver = Driver(id.toInt() ,companyId.toInt(),code,name,driverDescription,compasDriverId,truckId.toInt(),truckDescription,active.toBoolean())
+                userName.value =code
+               password.value = savedPassword
+                    loggedInDriver = Driver(id.toInt() ,companyId.toInt(),code,name,driverDescription,compasDriverId,truckId.toInt(),truckDescription,active.toBoolean())
+                 authenticateUser()
                 true
             } catch (e:Exception) {
                 false
@@ -154,7 +160,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 _errorMessage.value = "Connection failed"
             }
             catch (e: Exception) {
-               e.printStackTrace()
+               Log.i("AAAAAAAAAAAAAAA", e.message.toString())
                 _errorMessage.value = "Something Went Wrong"
             }
             finally {

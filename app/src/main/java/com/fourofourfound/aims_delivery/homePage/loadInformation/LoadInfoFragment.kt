@@ -17,6 +17,7 @@ import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.*
+import com.fourofourfound.aims_delivery.worker.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -120,17 +121,18 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
         currentTrip.deliveryStatus = DeliveryStatusEnum.ONGOING
         sharedViewModel.selectedTrip.value = currentTrip
-        val statusCode = getStatusType(sharedViewModel.statusTable!!, StatusMessageEnum.SELTRIP)!!
+        val statusCode =  StatusMessageEnum.SELTRIP
         viewModel.changeTripStatus(currentTrip.tripId, DeliveryStatusEnum.ONGOING)
 
         val toPut = DatabaseStatusPut(  sharedViewModel.driver!!.code.trim(),
             currentTrip.tripId,
-            statusCode.statusCode,
-            statusCode.statusMessage,
+            statusCode.code,
+            statusCode.message,
             getDate(time))
         DeliveryStatusViewModel.sendStatusUpdate(
           toPut, getDatabaseForDriver(requireContext())
         )
+
 
         markDestinationStart(sourceOrSite)
 
@@ -196,13 +198,11 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             )
 
             val statusCodeToGet = StatusMessageEnum.TRIPDONE
-            val statusCode = getStatusType(sharedViewModel.statusTable!!, statusCodeToGet)!!
-
             val toPut = DatabaseStatusPut(
                 sharedViewModel.driver!!.code.trim(),
                 sharedViewModel.selectedTrip.value!!.tripId,
-                statusCode.statusCode,
-                statusCode.statusMessage,
+                statusCodeToGet.code,
+                statusCodeToGet.message,
                 getDate(Calendar.getInstance())
             )
 
@@ -238,7 +238,10 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 true,
             )
             binding.startTripText.setOnClickListener {
-
+                CustomWorkManager(requireContext()).apply {
+                    sendLocationAndUpdateTrips()
+                    sendLocationOnetime()
+                }
 
                 if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
                     showStartTripDialog(sortedList[0], currentTrip)

@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.network
 
 import androidx.annotation.Nullable
-import com.fourofourfound.aims_delivery.database.entities.StatusTable
 import com.google.gson.annotations.SerializedName
 
 class TripResponse {
@@ -22,14 +21,7 @@ class DriverResponse {
     }
 }
 
-class StatusTableResponse {
-    lateinit var data: Data
-    lateinit var status:String
 
-    class Data {
-        lateinit var resultSet1: List<StatusTable>
-    }
-}
 
 class StatusMessageUpdateResponse {
     lateinit var data: Data

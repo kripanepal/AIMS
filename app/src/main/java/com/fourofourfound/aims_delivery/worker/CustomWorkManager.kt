@@ -1,6 +1,7 @@
 package com.fourofourfound.aims_delivery.worker
 
 import android.content.Context
+import android.os.Looper
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
@@ -9,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import java.util.logging.Handler
 
 /**
  * Custom work manager
@@ -55,9 +57,13 @@ class CustomWorkManager(var context: Context) {
         //Runs a work one time for testing only
         applicationScope.launch {
             val repeatingRequest = OneTimeWorkRequestBuilder<SyncDataWithServer>()
-                .setInitialDelay(60, TimeUnit.SECONDS)
+                .setInitialDelay(0, TimeUnit.SECONDS)
                 .build()
+
             WorkManager.getInstance(context).enqueue(repeatingRequest)
+
+
+
         }
     }
 }

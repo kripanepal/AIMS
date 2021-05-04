@@ -15,11 +15,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fourofourfound.aims_delivery.MainActivity
+import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
+import com.fourofourfound.aims_delivery.database.getDatabase
 import com.fourofourfound.aims_delivery.hideSoftKeyboard
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
+import com.fourofourfound.aims_delivery.utils.StatusMessageEnum
+import com.fourofourfound.aims_delivery.utils.getDate
 import com.fourofourfound.aims_delivery.utils.showStartCallDialog
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentLoginBinding
+import java.util.*
 
 /**
  * Login fragment
@@ -58,6 +64,8 @@ class LoginFragment : Fragment() {
      */
     private lateinit var viewModel: LoginViewModel
 
+    var sendSignedInMessage = false
+
     var animated = false
 
     override fun onCreateView(
@@ -76,6 +84,7 @@ class LoginFragment : Fragment() {
         //checks if shared preferences already contains a user that is logged in
         if (viewModel.checkUserLoggedIn()) {
             sharedViewModel.driver = viewModel.loggedInDriver
+
             findNavController().navigate(R.id.homePage)
             sharedViewModel.userLoggedIn.value = true
         }
@@ -84,10 +93,23 @@ class LoginFragment : Fragment() {
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
+                 if(sendSignedInMessage)
+                 {
+                     val statusCodeToGet= StatusMessageEnum.ONDUTY
+                     val toPut = DatabaseStatusPut(
+                        viewModel.loggedInDriver.code,
+                         0,
+                         statusCodeToGet.code,
+                         statusCodeToGet.message,
+                         getDate(Calendar.getInstance())
+                     )
+
+                     DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabase(requireContext(),viewModel.loggedInDriver.code))
+                 }
                 (activity as MainActivity?)?.getDatabase()
                 sharedViewModel.driver = viewModel.loggedInDriver
-                findNavController().navigate(R.id.homePage)
                 sharedViewModel.userLoggedIn.value = true
+                findNavController().navigate(R.id.homePage)
                 viewModel.doneNavigatingToHomePage()
             }
         })
@@ -127,10 +149,12 @@ class LoginFragment : Fragment() {
         binding.passwordInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewModel.authenticateUser()
+                sendSignedInMessage = true
             }
             false
         }
     }
+
 
 
     /**
@@ -152,17 +176,7 @@ class LoginFragment : Fragment() {
     }
 
 
-    /**
-     * Start call
-     *Start an intent to start the call to a
-     * specific number
-     */
-    private fun startCall() {
-        val intent = Intent(Intent.ACTION_DIAL)
-        val phoneNumber = "tel:" + getString(R.string.provider_number)
-        intent.data = Uri.parse(phoneNumber)
-        startActivity(intent)
-    }
+
 
     /**
      * On destroy view
@@ -175,13 +189,11 @@ class LoginFragment : Fragment() {
 
 
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun setMotionAnimations(view: View)
+    private fun setMotionAnimations(view: View)
     {
-        val motionContainer = binding.loginPageMainView as MotionLayout
+        val motionContainer = binding.loginPageMainView
         view.setOnTouchListener { v, _ ->
             v.performClick()
-
             if(!animated)
             {
                 motionContainer.setTransition(R.id.start, R.id.end)
@@ -192,4 +204,11 @@ class LoginFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.loginButton.setOnClickListener {
+            viewModel.authenticateUser()
+            sendSignedInMessage = true
+        }
+    }
 }

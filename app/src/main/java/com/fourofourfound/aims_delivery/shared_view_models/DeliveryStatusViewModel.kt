@@ -74,6 +74,7 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                                 statusDate
                             )
                         }
+                        database.statusPutDao.deletePutData(toPut)
                         Log.i("NETWORK-CALL", " successful for $toPut")
                     } catch (ex: Exception) {
                         //Save to local database if the update fails
@@ -129,39 +130,7 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                 }
             }
         }
-
-
     }
-
-
-    fun sendProductPickedUp(
-        toSend: ProductPickedUpData,
-    ) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO)
-            {
-                try {
-                    toSend.apply {
-//                        MakeNetworkCall.retrofitService.sendProductPickupInfo(
-//                            driverCode,
-//                            tripId,
-//                           sourceId,productId,billOfLadingNumber,startTime,endTime,grossQty,netQty
-//                        )
-
-                        database.completedDeliveriesDao.updateFormSentStatus(sourceId)
-                    }
-
-                } catch (ex: HttpException) {
-
-                } catch (ex: Exception) {
-
-                }
-
-            }
-
-        }
-    }
-
 
     var previousDestination: SourceOrSite? = null
     val locationRepository = LocationRepository(application)

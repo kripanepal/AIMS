@@ -10,13 +10,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
+import com.fourofourfound.aims_delivery.database.getDatabase
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.StatusMessageEnum
+import com.fourofourfound.aims_delivery.utils.getDate
 import com.fourofourfound.aims_delivery.utils.showStartCallDialog
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
 import com.here.android.mpa.common.MapEngine
 import com.here.android.mpa.guidance.NavigationManager
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 import kotlin.system.exitProcess
 
 
@@ -142,33 +149,59 @@ class SettingsFragment : Fragment() {
      */
     private fun logoutUser() {
         viewModel.loading.value = true
+
+        viewModel.logoutUser()
+
+        NavigationManager.getInstance()?.stop()
+        MapEngine.getInstance().onPause()
+
         sharedViewModel.userLoggedIn.value = false
         sharedViewModel.activeRoute = null
         sharedViewModel.selectedTrip.value = (null)
-        viewModel.logoutUser()
-        sharedViewModel.driver = null
-        NavigationManager.getInstance()?.stop()
-        MapEngine.getInstance().onPause()
+        sendSigningOffMessage()
+        clearViewModels()
         viewModel.loading.value = false
-        //requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
-        restartApplication(requireActivity())
+        sharedViewModel.driver = null
+        requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
+
+    }
+
+    private fun sendSigningOffMessage() {
+        val statusCodeToGet = StatusMessageEnum.OFFDUTY
+        val toPut = DatabaseStatusPut(
+            sharedViewModel.driver!!.code,
+            0,
+            statusCodeToGet.code,
+            statusCodeToGet.message,
+            getDate(Calendar.getInstance())
+        )
+
+        DeliveryStatusViewModel.sendStatusUpdate(
+            toPut,
+            getDatabase(requireContext(),  sharedViewModel.driver!!.code)
+        )
     }
 
     /**
-     * Restart application
-     * This method restarts the application when log out is pressed.
+     * Clear View Model
+     * This method erases all the info about the shared view model
      * @param activity the activity of the application
      */
-    fun restartApplication(activity: Activity) {
-        viewModel.logoutUser.observe(viewLifecycleOwner) {
-            if (it) {
-                val pm = activity.packageManager
-                val intent = pm.getLaunchIntentForPackage(activity.packageName)
-                activity.finishAffinity() // Finishes all activities.
-                activity.startActivity(intent) // Start the launch activity
-                exitProcess(0) // System finishes and automatically relaunches us.
-            }
-        }
+    private fun clearViewModels() {
+       sharedViewModel.apply {
+           this.activeRoute = null
+           this.driver = null
+           this.selectedSourceOrSite.value = null
+           this.selectedTrip.value = null
+           this.userLoggedIn.value = false
+       }
+         val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
+
+        deliveryStatusViewModel.apply {
+           this.previousDestination = null
+           this.destinationApproachingShown = false
+           this.destinationLeavingShown = false
+       }
 
     }
 }

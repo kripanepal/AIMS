@@ -224,14 +224,5 @@ class TripListRepository(private val database: TripListDatabase) {
         return totalCompleted
     }
 
-    suspend fun getStatusTable() {
-        withContext(Dispatchers.IO) {
-            val response = MakeNetworkCall.retrofitService.getStatusTable().data.resultSet1
-            var savedStatusTable = database.statusDao.getStatusTable()
-            if(response != savedStatusTable)
-            database.statusDao.insertStatusTable(response)
-        }
-    }
-
 
 }
