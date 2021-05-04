@@ -79,47 +79,158 @@
                     tool:text="Gross quantity" />
 
                 <TextView
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/start_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/end_text"
+                    app:layout_constraintStart_toEndOf="@+id/trailer"
+                    app:layout_constraintTop_toBottomOf="@id/gross_qty" />
+
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/gross_qty"
+                    app:layout_constraintStart_toEndOf="@id/start_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/end_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End"/>
+
+                <View
+                    android:background="?attr/colorOnPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_text"/>
+
+                <TextView
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_text"
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"/>
+
+                <TextView
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"/>
+
+
+
+
+
+
+
+                <TextView
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/readings"
+                    android:id="@+id/trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trailer"/>
+
+                <TextView
+                    android:textAlignment="textStart"
                     android:id="@+id/start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/gross_qty"
+                    app:layout_constraintStart_toEndOf="@+id/date"
+                    app:layout_constraintEnd_toStartOf="@id/end_date"
+                    app:layout_constraintTop_toBottomOf="@id/start_text"
                     tool:text="Start Date" />
 
                 <TextView
+                    android:textAlignment="textStart"
                     android:id="@+id/end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/start_date"
+                    app:layout_constraintStart_toEndOf="@id/start_date"
+                    app:layout_constraintTop_toBottomOf="@id/end_text"
+                    app:layout_constraintEnd_toEndOf="parent"
                     tool:text="End Date" />
 
 
                 <TextView
+                    android:textAlignment="textStart"
                     android:id="@+id/start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/end_date"
+                    app:layout_constraintStart_toEndOf="@+id/time"
+                    app:layout_constraintTop_toBottomOf="@id/start_date"
+                    app:layout_constraintEnd_toStartOf="@id/end_time"
                     tool:text="Start Time" />
 
 
                 <TextView
+                    android:textAlignment="textStart"
                     android:id="@+id/end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/start_time"
+                    app:layout_constraintStart_toEndOf="@id/start_time"
+                    app:layout_constraintTop_toBottomOf="@id/end_date"
+                    app:layout_constraintEnd_toEndOf="parent"
                     tool:text="End Time" />
 
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/time"
+                    android:id="@+id/readings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Readings"/>
+
+                <TextView
+                    android:id="@+id/start_text_readings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/end_text_readings"
+                    app:layout_constraintStart_toEndOf="@+id/trailer"
+                    app:layout_constraintTop_toTopOf="@id/readings" />
+
+                <TextView
+                    android:id="@+id/end_text_readings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/start_text_readings"
+                    app:layout_constraintTop_toTopOf="@id/readings" />
+
+
+
+                <View
+                    android:layout_marginBottom="5dp"
+                    android:background="?attr/colorOnPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/readings"/>
 
                 <TextView
                     android:id="@+id/trailer_begin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/end_time"
+                    app:layout_constraintEnd_toStartOf="@+id/trailer_end"
+                    app:layout_constraintStart_toEndOf="@+id/trailer"
+                    app:layout_constraintTop_toBottomOf="@id/readings"
                     tool:text="Trailer begin" />
 
 
@@ -127,8 +238,10 @@
                     android:id="@+id/trailer_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/trailer_begin"
+                    android:gravity="left"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/trailer_begin"
+                    app:layout_constraintTop_toBottomOf="@id/readings"
                     tool:text="Trailer end" />
 
 
@@ -136,45 +249,65 @@
                     android:id="@+id/site_readings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/trailer_end">
+                    app:layout_constraintTop_toBottomOf="@id/trailer">
+
+                    <TextView
+                        android:textStyle="bold"
+                      app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:id="@+id/stick_reading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stick "/>
 
 
                     <TextView
                         android:id="@+id/stick_reading_before"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/stick_reading_after"
+                        app:layout_constraintStart_toEndOf="@+id/meter_reading"
                         app:layout_constraintTop_toTopOf="parent"
-
-                        tool:text="Stick reading before" />
+                        tool:text=" before" />
 
                     <TextView
                         android:id="@+id/stick_reading_after"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/stick_reading_before"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tool:text=" after" />
+
+                    <TextView
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@id/stick_reading"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/stick_reading_before"
-                        tool:text="Stick reading after" />
+                        android:id="@+id/meter_reading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meter "/>
 
 
                     <TextView
                         android:id="@+id/meter_reading_before"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/stick_reading_after"
-                        tool:text="Meter reading before" />
+                        app:layout_constraintEnd_toStartOf="@+id/meter_reading_after"
+                        app:layout_constraintStart_toEndOf="@+id/meter_reading"
+                        app:layout_constraintTop_toBottomOf="@+id/stick_reading_before"
+                        tool:text="before" />
 
 
                     <TextView
                         android:id="@+id/meter_reading_after"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/meter_reading_before"
-                        tool:text="End Time" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/meter_reading_before"
+                        app:layout_constraintTop_toBottomOf="@id/stick_reading_after"
+                        tool:text="After" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

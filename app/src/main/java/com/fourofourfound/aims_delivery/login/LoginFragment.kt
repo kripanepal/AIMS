@@ -87,12 +87,16 @@ class LoginFragment : Fragment() {
 
             findNavController().navigate(R.id.homePage)
             sharedViewModel.userLoggedIn.value = true
+            return binding.root
+
         }
+
 
 
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
+
                  if(sendSignedInMessage)
                  {
                      val statusCodeToGet= StatusMessageEnum.ONDUTY

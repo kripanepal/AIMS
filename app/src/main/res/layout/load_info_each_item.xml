@@ -79,16 +79,17 @@
 
 
 
-                <Button
+                <ImageView
+                    android:backgroundTint="@color/Green"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
                     android:id="@+id/show_form"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="left"
-                    android:background="@drawable/rounded_corners_fab"
-                    android:backgroundTint="@color/Aims_Orange"
-                    android:text="Show Form"
-                    android:textColor="@color/black"
-                    android:visibility="gone" />
+                    android:background="@drawable/ic__form"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

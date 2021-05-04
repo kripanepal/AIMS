@@ -60,41 +60,21 @@ class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
             addBoldWithText(product_desc, "Product: ", item.product.productDesc!!)
             addBoldWithText(net_qty, "Net Quantity: ", item.form.netQty.toString())
             addBoldWithText(gross_qty, "Gross Quantity: ", item.form.grossQty.toString())
-            addBoldWithText(start_date, "Start Date: ", getDate(item.form.startTime))
-            addBoldWithText(end_date, "End Date: ", getDate(item.form.endTime))
-            addBoldWithText(start_time, "Start Time: ", getTime(item.form.startTime))
-            addBoldWithText(end_time, "End Time: ", getTime(item.form.endTime))
-            addBoldWithText(
-                trailer_begin,
-                "Trailer Reading: ",
-                item.form.trailerBeginReading.toString()
-            )
-            addBoldWithText(
-                trailer_end,
-                "Trailer Reading: ",
-                item.form.trailerEndReading.toString()
-            )
+
+            start_date.text =  getDate(item.form.startTime)
+            end_date.text =  getDate(item.form.endTime)
+            start_time.text =  getTime(item.form.startTime)
+            end_time.text =  getTime(item.form.endTime)
+            trailer_begin.text =  (item.form.trailerBeginReading.toString())
+            trailer_end.text =  (item.form.trailerEndReading.toString())
+
             if (item.destination.wayPointTypeDescription != "Source") {
-                addBoldWithText(
-                    stick_reading_before,
-                    "Stick Reading: ",
-                    (item.form.stickReadingBefore ?: "Not Provided").toString()
-                )
-                addBoldWithText(
-                    stick_reading_after,
-                    "Stick Reading: ",
-                    (item.form.stickReadingAfter ?: "Not Provided").toString()
-                )
-                addBoldWithText(
-                    meter_reading_before,
-                    "Meter Reading: ",
-                    (item.form.meterReadingBefore ?: "Not Provided").toString()
-                )
-                addBoldWithText(
-                    meter_reading_after,
-                    "Meter Reading: ",
-                    (item.form.meterReadingAfter ?: "Not Provided").toString()
-                )
+                stick_reading_before.text =  (item.form.stickReadingBefore.toString())
+                stick_reading_after.text =  (item.form.stickReadingAfter.toString())
+                meter_reading_before.text =  (item.form.meterReadingBefore.toString())
+                meter_reading_after.text =  (item.form.meterReadingAfter.toString())
+
+
                 site_readings.visibility = View.VISIBLE
             }
             val adapter = BillOfLadingAdapter(

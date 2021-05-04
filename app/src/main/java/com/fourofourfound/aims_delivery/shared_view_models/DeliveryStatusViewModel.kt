@@ -1,9 +1,13 @@
 package com.fourofourfound.aims_delivery.shared_view_models
 
 import android.app.Application
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
+import com.fourofourfound.aims_delivery.MainActivity
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
 import com.fourofourfound.aims_delivery.database.utilClasses.ProductPickedUpData
@@ -17,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+
 
 /**
  * Shared View Model
@@ -47,9 +52,13 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
     fun getUpdatedDatabase() {
         database = getDatabaseForDriver(myApplication)
     }
+    init {
+        context = myApplication
+    }
 
     companion object {
 
+        lateinit var context:Context
         /**
          * Send status update
          * THis method makes network call to send status update with required information
@@ -76,10 +85,21 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                         }
                         database.statusPutDao.deletePutData(toPut)
                         Log.i("NETWORK-CALL", " successful for $toPut")
-                    } catch (ex: Exception) {
+
+                        Handler(Looper.getMainLooper()).post(Runnable {
+                            Toast.makeText(
+                                context!!,
+                                "successful for $toPut",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        })
+
+                    } catch (e: Exception) {
                         //Save to local database if the update fails
                         database.statusPutDao.insertPutData(toPut)
                         Log.i("NETWORK-CALL", "failed")
+                        Log.i("NETWORK-CALL", e.message.toString())
                     }
                 }
 
@@ -121,11 +141,23 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                             database.completedDeliveriesDao.updateFormSentStatus(
                                 (pickupInfo.sourceId)
                             )
+
                         }
+                        Handler(Looper.getMainLooper()).post(Runnable {
+                        Toast.makeText(
+                                context!!,
+                                "successful for $pickupInfo",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                        })
+
                     } catch (e: HttpException) {
                         Log.i("NETWORK-CALL", e.stackTraceToString())
                     } catch (e: Exception) {
+
                         Log.i("NETWORK-CALL", "Failed")
+
                     }
                 }
             }

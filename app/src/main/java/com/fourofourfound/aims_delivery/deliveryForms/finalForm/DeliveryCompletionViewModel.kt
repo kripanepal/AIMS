@@ -32,7 +32,7 @@ class DeliveryCompletionViewModel(
     val grossQty: MutableLiveData<Int> =
         MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
     val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
-    val comments = MutableLiveData(currentSourceOrSite.productInfo.fill)
+    val comments = MutableLiveData("")
     val trailerBeginReading: MutableLiveData<Double> =
         MutableLiveData(currentSourceOrSite.trailerInfo.fuelQuantity)
     private val trailerEndReadingCalc =
