@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.network
 
-import androidx.annotation.Nullable
 import com.google.gson.annotations.SerializedName
 
 class TripResponse {
@@ -20,7 +19,6 @@ class DriverResponse {
         lateinit var resultSet1: List<Driver>
     }
 }
-
 
 
 class StatusMessageUpdateResponse {
