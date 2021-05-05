@@ -111,6 +111,7 @@ class LoadInfoAdapter : RecyclerView.Adapter<LoadInfoAdapter.ViewHolder>() {
     ) {
         when (item.deliveryStatus) {
             DeliveryStatusEnum.COMPLETED -> {
+                deepChangeTextStyle(holder.itemView.parentConstraint)
                 val colorGreen = ContextCompat.getColor(
                     holder.itemView.destinationImage.context,
                     R.color.Green
