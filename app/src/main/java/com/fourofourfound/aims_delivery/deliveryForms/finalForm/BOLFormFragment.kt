@@ -34,6 +34,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.senab.photoview.PhotoViewAttacher
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
+import kotlin.properties.Delegates
 
 
 class BOLFormFragment : androidx.fragment.app.Fragment() {
@@ -52,6 +54,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
     private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
     var currentPhotoPath: String = ""
     lateinit var billOfLadingAdapter: BillOfLadingAdapter
+    private var errorMargin by Delegates.notNull<Double>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +76,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
             requireActivity().application,
             sharedViewModel.selectedSourceOrSite.value!!
         )
+        errorMargin = 1-(requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)
 
         //getting a view model from a factory
         viewModel =
@@ -276,6 +280,10 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun verifyInput(): Boolean {
+        var netGrossMarginError = 1-(requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)
+        Log.i("AAAAAAA",
+            ((requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)).toString())
+
         viewModel.apply {
             if (productDesc.value.isNullOrEmpty()) return showGeneralErrors(
                 binding.billOfLading,
@@ -293,19 +301,24 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                 binding.trailerBegin,
                 "Invalid Trailer reading"
             )
-            if (viewModel.trailerEndReading.value!! < 0) return showGeneralErrors(
+            if (trailerEndReading.value!! < 0) return showGeneralErrors(
                 binding.trailerEnd,
                 "Invalid Trailer Reading"
             )
 
+            if (startTime.timeInMillis > endTime.timeInMillis)  return showErrorMessage("End time cannot be greater than start time")
+            if(netQty.value!! < abs(errorMargin*(trailerEndReading.value!!-trailerBeginReading.value!!))) return showErrorMessage("Difference too large for net quantity and trailer readings")
+            if(netQty.value!! < netGrossMarginError*grossQty.value!! || netQty.value!! >netGrossMarginError*grossQty.value!!) return showErrorMessage("Difference too large for net quantity and gross quantity")
 
-            if (startTime.timeInMillis > endTime.timeInMillis) return showDateTimeError("time")
+            if(sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
+                if (trailerBeginReading.value!! > trailerEndReading.value!!) {
+                    showGeneralErrors(
+                        binding.trailerEnd,
+                        "Begin reading is greater than end reading"
+                    )
+                }
 
-            if ((trailerBeginReading.value!! > trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
-                return showGeneralErrors(
-                    binding.trailerEnd,
-                    "Begin reading is greater than end reading"
-                )
+
             }
             if ((trailerBeginReading.value!! < trailerEndReading.value!!) && sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription != "Source") {
                 return showGeneralErrors(
@@ -323,8 +336,8 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
         return false
     }
 
-    private fun showDateTimeError(error: String): Boolean {
-        binding.errorText.text = "End $error cannot be greater than start $error"
+    private fun showErrorMessage(message:String): Boolean {
+        binding.errorText.text = message
         binding.errorText.visibility = View.VISIBLE
         binding.formScrollView.scrollTo(0, binding.formScrollView.top)
         return false
@@ -340,6 +353,15 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
         viewModel.meterReadingAfter.value = args.meterEndReading
         viewModel.stickReadingBefore.value = args.stickBeginReading
         viewModel.stickReadingAfter.value = args.stickEndReading
+
+        sharedViewModel.selectedSourceOrSite.value?.apply {
+            if(wayPointTypeDescription=="Source")
+                viewModel.netQty.value = args.trailerEndReading.toInt() - args.trailerBeginReading.toInt()
+                viewModel.netQty.value =  args.trailerBeginReading.toInt() - args.trailerEndReading.toInt()
+        }
+
+        viewModel.grossQty.value =  viewModel.netQty.value
+
 
     }
 

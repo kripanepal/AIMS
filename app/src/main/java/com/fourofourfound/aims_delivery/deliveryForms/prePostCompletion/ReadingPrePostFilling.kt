@@ -17,6 +17,7 @@ class ReadingPrePostFilling : DialogFragment() {
     lateinit var binding : FragmentReadingPreFillingBinding
     private var isSite = false
     var isFilling = true
+    var trailerReading = 0
 
 
 
@@ -27,7 +28,11 @@ class ReadingPrePostFilling : DialogFragment() {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_reading_pre_filling,container,false)
         isSite = arguments?.getBoolean("isSite") ?:false
         isFilling = arguments?.getBoolean("isFilling") ?: false
+        trailerReading = arguments?.getInt("trailerReading") ?: 0
+        val requiredQuantity = arguments?.getInt("requiredQuantity") ?: 0
+        trailerReading  = if(isSite) trailerReading-requiredQuantity else trailerReading+requiredQuantity
         binding.isSite = isSite
+        binding.trailerReading.setText(trailerReading.toString())
         binding.trailerDetail.text = arguments?.getString("trailer") ?: ""
         binding.info.text = if(isFilling)"Fill in the info Before filling the fuel" else "Fill in the info After filling the fuel"
 
@@ -38,7 +43,11 @@ class ReadingPrePostFilling : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.submitBtn.setOnClickListener {
-            if(binding.trailerReading.text.toString().isNullOrBlank()) binding.trailerReading.error = "This field is required"
+            val meterReading = binding.meterReading.text.toString()
+                val stickReading = binding.stickReading.text.toString()
+            if(binding.trailerReading.text.toString().isBlank()) binding.trailerReading.error = "This field is required"
+            else if(meterReading.isNotBlank() && meterReading.toInt()<0)binding.meterReading.error = "Invalid fuel amount"
+            else if(stickReading.isNotBlank() && stickReading.toInt()<0)binding.meterReading.error = "Invalid fuel amount"
             else{
                 val trailerReading = binding.trailerReading.text.toString().toDouble()
                 val meterReading = binding.meterReading.text.toString().toDoubleOrNull()

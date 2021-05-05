@@ -47,6 +47,9 @@ interface TrailerDao {
 
     @Query("update DatabaseTrailer set fuelQuantity =:fuelQuantity where trailerId =:trailerId")
     suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Double)
+
+    @Query("select fuelQuantity from DatabaseTrailer where trailerId =:trailerId")
+     fun getTrailerReading(trailerId: Int): LiveData<Int>
 }
 
 @Dao

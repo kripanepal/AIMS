@@ -20,11 +20,12 @@ import java.util.*
  *
  * @param application the ApplicationContext used to create the viewModel
  */
-class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(application) {
+class OngoingDeliveryViewModel(application: Application, destination: SourceOrSite) :AndroidViewModel(application) {
     private val myApplication = application
     var database = getDatabaseForDriver(application)
     private var tripListRepository = TripListRepository(database)
-    var destination: SourceOrSite? = null
+var trailerReading = database.trailerDao.getTrailerReading(destination.trailerInfo.trailerId)
+
     lateinit var startDateAndTime: Calendar
     lateinit var endDateAndTime: Calendar
     var stickReadingBegin = MutableLiveData(0.0)
@@ -37,7 +38,6 @@ class OngoingDeliveryViewModel(application: Application) :AndroidViewModel(appli
     var fillingStarted = MutableLiveData(false)
     var fillingEnded = MutableLiveData(false)
 
-    var destinationApproaching = false
 
 
     fun updateFuelInfo(trailerId: Int, fuelQuantity: Double) {

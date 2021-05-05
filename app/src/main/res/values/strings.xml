@@ -15,6 +15,7 @@
     <string name="no_trip_or_ongoing_destination">No trip or ongoing destination</string>
 
     <string name="fuel_error_margin">5</string>
+    <string name="net_gross_margin_error">1</string>
 
 
     <plurals name="numberOfTripsAvailable">

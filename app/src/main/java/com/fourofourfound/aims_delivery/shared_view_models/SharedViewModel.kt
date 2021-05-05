@@ -21,6 +21,8 @@ import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
 
+    var workerStarted: Boolean = false
+
     /**
      * User logged in
      * The live data that keeps track of the user logged in status

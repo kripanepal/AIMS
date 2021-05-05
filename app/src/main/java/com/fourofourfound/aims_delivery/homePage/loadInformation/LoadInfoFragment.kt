@@ -227,9 +227,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 true,
             )
             binding.startTripText.setOnClickListener {
-                CustomWorkManager(requireContext()).apply {
-                    sendLocationAndUpdateTrips()
-                    sendLocationOnetime()
+                if(!sharedViewModel.workerStarted) {
+                    CustomWorkManager(requireContext()).apply {
+                        sendLocationAndUpdateTrips()
+                        sendLocationOnetime()
+                        sharedViewModel.workerStarted = true
+                    }
                 }
 
                 if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
