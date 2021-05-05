@@ -122,6 +122,7 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                 {
                     try {
                         Log.i("NETWORK-CALL", "\nsending saved product pickup message")
+
                         val response = pickupInfo.run {
                             MakeNetworkCall.retrofitService.sendProductPickupInfo(
                                 driverCode,
@@ -143,17 +144,10 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                             )
 
                         }
-                        Handler(Looper.getMainLooper()).post(Runnable {
-                        Toast.makeText(
-                                context!!,
-                                "successful for $pickupInfo",
-                                Toast.LENGTH_LONG
-                            ).show()
 
-                        })
 
                     } catch (e: HttpException) {
-                        Log.i("NETWORK-CALL", e.stackTraceToString())
+                        Log.i("NETWORK-CALL", "Failed")
                     } catch (e: Exception) {
 
                         Log.i("NETWORK-CALL", "Failed")

@@ -69,10 +69,10 @@ class CompletedDeliveryAdapter : RecyclerView.Adapter<ViewHolder>() {
             trailer_end.text =  (item.form.trailerEndReading.toString())
 
             if (item.destination.wayPointTypeDescription != "Source") {
-                stick_reading_before.text =  (item.form.stickReadingBefore.toString())
-                stick_reading_after.text =  (item.form.stickReadingAfter.toString())
-                meter_reading_before.text =  (item.form.meterReadingBefore.toString())
-                meter_reading_after.text =  (item.form.meterReadingAfter.toString())
+                stick_reading_before.text =  ((item.form.stickReadingBefore?:"N/A") as CharSequence?)
+                stick_reading_after.text =  ((item.form.stickReadingAfter?:"N/A") as CharSequence?)
+                meter_reading_before.text =  ((item.form.meterReadingBefore?:"N/A") as CharSequence?)
+                meter_reading_after.text =  ((item.form.meterReadingAfter?:"N/A") as CharSequence?)
 
 
                 site_readings.visibility = View.VISIBLE

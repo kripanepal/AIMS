@@ -121,6 +121,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             sourceOrSiteName.text = sourceOrSite.location.destinationName
             address.text = sourceOrSite.location.address1
             productDesc.text = sourceOrSite.productInfo.productDesc
+            trailerText.text = sourceOrSite.trailerInfo.trailerDesc
+            truckText.text = sourceOrSite.truckInfo.truckDesc
             val qty = "${sourceOrSite.productInfo.requestedQty} ${sourceOrSite.productInfo.uom}"
             productQty.text = qty
         }
@@ -142,12 +144,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
     private fun initializeMap() {
         // This will use external storage to save map cache data, it is also possible to set
         // private app's path
-        // This will use external storage to save map cache data, it is also possible to set
-        // private app's path
         val path: String = File(requireActivity().getExternalFilesDir(null), ".here-map-data")
             .absolutePath
-        // This method will throw IllegalArgumentException if provided path is not writable
-        // This method will throw IllegalArgumentException if provided path is not writable
         MapSettings.setDiskCacheRootPath(path)
 
         binding.progressBarContainer.visibility = View.VISIBLE
@@ -202,7 +200,6 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                     ).builder.show()
                 }
             } else {
-                //TODO need to change these parameters
                 //TODO need to change these parameters
                 routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
                 routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)

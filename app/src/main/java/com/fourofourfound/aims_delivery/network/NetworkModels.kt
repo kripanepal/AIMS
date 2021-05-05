@@ -132,7 +132,7 @@ fun NetworkTrip.asFiltered(): NetworkTrip =
                 siteContainerDescription ,
                 delReqNum,
                 delReqLineNum ,
-                productId ?: 0,
+                productId ?: 1,
                 productCode ?: "Not provided",
                 productDesc ?: "Not provided",
                 requestedQty ?: 0,

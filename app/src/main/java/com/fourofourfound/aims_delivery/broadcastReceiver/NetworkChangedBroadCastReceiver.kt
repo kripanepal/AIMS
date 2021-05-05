@@ -64,7 +64,6 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
         for (each in statusPutToSend) {
             Handler(Looper.getMainLooper()).postDelayed({
                 DeliveryStatusViewModel.sendStatusUpdate(each,database)
-
             }, 500)
 
         }

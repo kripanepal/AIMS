@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">404 Found</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="provider_number">1111111111</string>
     <string name="user_id_hint">User ID</string>
     <string name="need_help_field_text">Need Help?</string>
     <string name="contact_my_provider_field_text">Contact My Provider</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="contact_my_provider_field_text_land">Need Help?</string>
 
     <string name="trip_modified_notification_id">2</string>
@@ -15,6 +13,8 @@
     <string name="no_internet_connection_text">No internet connection</string>
     <string name="back_to_homescreen">Go Back</string>
     <string name="no_trip_or_ongoing_destination">No trip or ongoing destination</string>
+
+    <string name="fuel_error_margin">5</string>
 
 
     <plurals name="numberOfTripsAvailable">

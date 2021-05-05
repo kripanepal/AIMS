@@ -29,6 +29,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: LoadInfoViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
+    var bottomText  =  "Start Trip"
 
     lateinit var currentTrip: Trip
 
@@ -49,13 +50,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         val adapter = LoadInfoAdapter()
 
         binding.pickupList.adapter = adapter
-
         adapter.data = currentTrip.sourceOrSite
         adapter.trip = currentTrip
         sharedViewModel.selectedTrip.observe(viewLifecycleOwner)
         {
             it?.apply {
-                if (it.tripId == currentTrip.tripId && currentTrip!=it) {
+                if (it.tripId == currentTrip.tripId) {
                     adapter.data = it.sourceOrSite
                     currentTrip = it
                     startTripOnClick(currentTrip)
@@ -68,11 +68,11 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
     private fun scrollTripStartIcon() {
         binding.pickupList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            val previousText =  binding.startTripText.text
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0)
-                    binding.startTripText.text = previousText
+                    binding.startTripText.text = bottomText
                 else if (dy < 0)
 
                 binding.startTripText.text =""
@@ -89,14 +89,14 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
 
 
-
-
         if (sharedViewModel.selectedSourceOrSite.value == null && sharedViewModel.selectedTrip.value != null) {
             binding.startTripText.text = "Deliver next"
-
+            bottomText =  "Deliver next"
         }
+
         if (sharedViewModel.selectedSourceOrSite.value != null && sharedViewModel.selectedTrip.value != null) {
             binding.startTripText.text = "Continue Delivery"
+            bottomText = "Continue Delivery"
         }
 
         if (sharedViewModel.selectedTrip.value != null && sharedViewModel.selectedTrip.value!!.tripId != currentTrip.tripId) binding.startTripText.visibility =
@@ -184,11 +184,10 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         }
 
         if (notCompletedList.isEmpty()) {
-            viewModel.changeTripStatus(
-                sharedViewModel.selectedTrip.value!!.tripId,
-                DeliveryStatusEnum.COMPLETED
-            )
+
             binding.startTripText.text = "Trip Completed"
+            bottomText = "Trip Completed"
+
             binding.startTripText.setOnClickListener { null }
             binding.startTripText.visibility = View.VISIBLE
             animateViewVisibility(
@@ -196,17 +195,27 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 binding.startTripText,
                 true,
             )
+            if(sharedViewModel.selectedTrip.value != null) {
+                viewModel.changeTripStatus(
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    DeliveryStatusEnum.COMPLETED
+                )
 
-            val statusCodeToGet = StatusMessageEnum.TRIPDONE
-            val toPut = DatabaseStatusPut(
-                sharedViewModel.driver!!.code.trim(),
-                sharedViewModel.selectedTrip.value!!.tripId,
-                statusCodeToGet.code,
-                statusCodeToGet.message,
-                getDate(Calendar.getInstance())
-            )
+                val statusCodeToGet = StatusMessageEnum.TRIPDONE
+                val toPut = DatabaseStatusPut(
+                    sharedViewModel.driver!!.code.trim(),
+                    sharedViewModel.selectedTrip.value!!.tripId,
+                    statusCodeToGet.code,
+                    statusCodeToGet.message,
+                    getDate(Calendar.getInstance())
+                )
 
-            DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabaseForDriver(requireContext()))
+                DeliveryStatusViewModel.sendStatusUpdate(
+                    toPut,
+                    getDatabaseForDriver(requireContext())
+                )
+                sharedViewModel.selectedTrip.value = null
+            }
 
 
         }
