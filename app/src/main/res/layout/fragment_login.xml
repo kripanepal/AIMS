@@ -131,6 +131,7 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/button_background"
                 android:text="Login"
+                android:textColor="@color/white"
                 android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
 
 
@@ -158,6 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/need_help_field_text"
+                android:textColor="?attr/color"
 
                 app:layout_constraintBottom_toTopOf="@+id/contactMyProvider"
                 app:layout_constraintLeft_toLeftOf="parent"

@@ -234,10 +234,10 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
         routePlan.addWaypoint(destination)
         coreRouter.calculateRoute(
             routePlan,
-            object : Router.Listener<List<RouteResult>, RoutingError> {
+            object : Router.Listener<List<RouteResult>?, RoutingError> {
                 override fun onProgress(i: Int) {}
                 override fun onCalculateRouteFinished(
-                    routeResults: List<RouteResult>,
+                    routeResults: List<RouteResult>?,
                     routingError: RoutingError
                 ) {
                     if (routingError == RoutingError.NONE) {
