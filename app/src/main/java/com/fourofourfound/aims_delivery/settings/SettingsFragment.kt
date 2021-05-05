@@ -1,10 +1,13 @@
 package com.fourofourfound.aims_delivery.settings
 
-import android.app.Activity
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,8 +26,8 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentSettingsBinding
 import com.here.android.mpa.common.MapEngine
 import com.here.android.mpa.guidance.NavigationManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import java.util.*
-import kotlin.system.exitProcess
 
 
 /**
@@ -58,6 +61,9 @@ class SettingsFragment : Fragment() {
      * ViewModel that is used by the fragment to store the data.
      */
     lateinit var viewModel: SettingsViewModel
+    lateinit var observer: androidx.lifecycle.Observer<in Boolean>
+
+    var needToSendSignedInInfo = false
 
     /**
      * On create view
@@ -120,6 +126,49 @@ class SettingsFragment : Fragment() {
         sharedViewModel.driver?.apply {
             binding.driver = this
         }
+
+        binding.clockInOutBtn.setOnClickListener {
+            sharedViewModel.userClockedIn.value =  !sharedViewModel.userClockedIn.value!!
+        }
+
+
+        observer = androidx.lifecycle.Observer{
+            var animation = binding.clockAnimated.drawable
+
+                if (it) {
+
+                    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+                    if (sharedPref != null) {
+                        with (sharedPref.edit()) {
+                            putBoolean("userSignedIn", it)
+                            apply()
+                        }
+                    }
+
+                    if (animation is Animatable)
+                    animation.start()
+                    if(needToSendSignedInInfo)
+                    {
+                        binding.clockInOutBtn.text = "Clock Out"
+                        binding.clockInOutBtn.setBackgroundColor(Color.RED)
+                        sendSigningOnOffMessage(StatusMessageEnum.ONDUTY, sharedViewModel.driver!!.code)
+                        needToSendSignedInInfo = false
+                    }
+                }
+                else {
+                    if (animation is Animatable)
+                   animation.stop()
+                    binding.clockInOutBtn.text = "Clock In"
+                    binding.clockInOutBtn.setBackgroundColor(ContextCompat.getColor(requireActivity(),
+                        R.color.Dark_green))
+                    if (it)
+                    sendSigningOnOffMessage(StatusMessageEnum.OFFDUTY, sharedViewModel.driver!!.code)
+                    needToSendSignedInInfo = true
+                }
+
+        }
+      sharedViewModel.userClockedIn.observe(viewLifecycleOwner, observer)
+
     }
 
     /**
@@ -149,27 +198,23 @@ class SettingsFragment : Fragment() {
      */
     private fun logoutUser() {
         viewModel.loading.value = true
-
+        needToSendSignedInInfo = false
+        sharedViewModel.userClockedIn.removeObserver(observer)
+        if(sharedViewModel.userClockedIn.value!!)sendSigningOnOffMessage(StatusMessageEnum.OFFDUTY,sharedViewModel.driver!!.code)
         viewModel.logoutUser()
-
         NavigationManager.getInstance()?.stop()
         MapEngine.getInstance().onPause()
-
-        sharedViewModel.userLoggedIn.value = false
         sharedViewModel.activeRoute = null
         sharedViewModel.selectedTrip.value = (null)
-        sendSigningOffMessage()
-        clearViewModels()
         viewModel.loading.value = false
-        sharedViewModel.driver = null
+        clearViewModels()
         requireActivity().bottom_navigation.selectedItemId = R.id.home_navigation
 
     }
 
-    private fun sendSigningOffMessage() {
-        val statusCodeToGet = StatusMessageEnum.OFFDUTY
+    private fun sendSigningOnOffMessage(statusCodeToGet: StatusMessageEnum, code: String) {
         val toPut = DatabaseStatusPut(
-            sharedViewModel.driver!!.code,
+           code,
             0,
             statusCodeToGet.code,
             statusCodeToGet.message,
@@ -178,7 +223,7 @@ class SettingsFragment : Fragment() {
 
         DeliveryStatusViewModel.sendStatusUpdate(
             toPut,
-            getDatabase(requireContext(),  sharedViewModel.driver!!.code)
+            getDatabase(requireContext(),  code)
         )
     }
 
@@ -193,7 +238,7 @@ class SettingsFragment : Fragment() {
            this.driver = null
            this.selectedSourceOrSite.value = null
            this.selectedTrip.value = null
-           this.userLoggedIn.value = false
+           this.userClockedIn.value = false
        }
          val deliveryStatusViewModel: DeliveryStatusViewModel by activityViewModels()
 

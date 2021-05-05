@@ -89,7 +89,7 @@
                 app:endIconMode="password_toggle"
                 app:endIconTint="?attr/colorPrimary"
                 app:hintTextColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@+id/login_error_message"
+                app:layout_constraintBottom_toTopOf="@+id/login_message"
                 app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
@@ -112,7 +112,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/login_error_message"
+                android:id="@+id/login_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -132,9 +132,6 @@
                 android:background="@drawable/button_background"
                 android:text="Login"
                 android:textColor="@color/white"
-                android:visibility="@{viewModel.loading?View.GONE:View.VISIBLE}"
-
-
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spin_kit" />
@@ -150,7 +147,7 @@
                 app:SpinKit_Color="@color/Aims_Orange"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_error_message"
+                app:layout_constraintTop_toBottomOf="@+id/login_message"
 
                 />
 

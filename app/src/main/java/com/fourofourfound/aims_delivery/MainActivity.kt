@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         locationPermissionUtil = BackgroundLocationPermissionUtil(this)
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        deliveryStatusViewModel = ViewModelProvider(this).get(DeliveryStatusViewModel::class.java)
         changeInternetConnectionText()
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
@@ -189,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 if (destination.id in noActionBar) hideActionBar(this)
                 else showActionBar(this)
                 if (destination.id in noBottomNavigation) hideBottomNavigation(this)
-                else showBottomNavigation(this)
+                else if(destination.id!= R.id.homePage) showBottomNavigation(this)
             }
             setupActionBarWithNavController(it)
         })

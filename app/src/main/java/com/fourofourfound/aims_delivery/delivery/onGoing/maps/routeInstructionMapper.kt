@@ -14,7 +14,6 @@ fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
     return when (directionName) {
         Maneuver.Icon.START -> R.drawable.start
         Maneuver.Icon.UNDEFINED -> null
-
         Maneuver.Icon.UTURN_RIGHT -> R.drawable.u_turn_right
         Maneuver.Icon.UTURN_LEFT -> R.drawable.u_turn_left
         Maneuver.Icon.HIGHWAY_KEEP_LEFT -> R.drawable.keep_left

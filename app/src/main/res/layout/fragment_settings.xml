@@ -137,8 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name: "
-                    android:textStyle="bold"
                     android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/driverName"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -155,11 +155,11 @@
 
                 <TextView
                     android:id="@+id/id"
-                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Driver ID: "
                     android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
 
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/name" />
@@ -172,6 +172,46 @@
                     android:textSize="@dimen/text_size_medium"
                     app:layout_constraintLeft_toRightOf="@+id/id"
                     app:layout_constraintTop_toBottomOf="@+id/driverName" />
+
+                <TextView
+                    android:id="@+id/companyIdContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Company ID: "
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/id" />
+
+                <TextView
+                    android:id="@+id/companyId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{driver.companyID+``}"
+                    android:textSize="@dimen/text_size_medium"
+                    app:layout_constraintLeft_toRightOf="@+id/companyIdContainer"
+                    app:layout_constraintTop_toBottomOf="@+id/id" />
+
+                <ImageView
+                    android:id="@+id/clock_animated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/time_animation"
+                    app:layout_constraintBottom_toTopOf="@id/clockInOutBtn"
+                    app:layout_constraintEnd_toEndOf="@+id/clockInOutBtn"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/clockInOutBtn"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/clockInOutBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/Red"
+                    android:text="Clock Out"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clock_animated" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
@@ -215,6 +255,8 @@
                 app:drawableStartCompat="@drawable/ic_baseline_logout_24" />
 
             <View style="@style/divider" />
+
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

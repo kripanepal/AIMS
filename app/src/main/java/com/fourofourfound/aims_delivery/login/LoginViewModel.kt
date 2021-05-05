@@ -31,9 +31,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Inform login fragment if it needs to navigate to homepage
      */
-    private val _navigate = MutableLiveData<Boolean>()
-    val navigate: LiveData<Boolean>
-        get() = _navigate
+     val navigate = MutableLiveData<Boolean>()
+
 
     /**
      * Inform login fragment if loading animation needs to be shown
@@ -147,7 +146,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 ).data.resultSet1
                 if (driver.isNotEmpty()) {
                     loggedInDriver = driver[0]
-                    _navigate.value = true
+                    navigate.value = true
                     _loading.value = false
                     saveUser(loggedInDriver, password.value.toString())
                 } else {
@@ -160,7 +159,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 _errorMessage.value = "Connection failed"
             }
             catch (e: Exception) {
-               Log.i("AAAAAAAAAAAAAAA", e.message.toString())
                 _errorMessage.value = "Something Went Wrong"
             }
             finally {
@@ -193,7 +191,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
      * triggered twice
      */
     fun doneNavigatingToHomePage() {
-        _navigate.value = false
+        navigate.value = false
     }
 
     /**

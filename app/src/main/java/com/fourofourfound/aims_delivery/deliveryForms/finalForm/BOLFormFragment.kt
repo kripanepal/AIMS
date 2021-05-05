@@ -281,9 +281,6 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
 
     private fun verifyInput(): Boolean {
         var netGrossMarginError = (requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)
-        Log.i("AAAAAAA",
-            ((requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)).toString())
-
         viewModel.apply {
             if (productDesc.value.isNullOrEmpty()) return showGeneralErrors(
                 binding.billOfLading,

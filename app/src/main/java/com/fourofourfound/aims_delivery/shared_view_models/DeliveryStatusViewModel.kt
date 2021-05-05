@@ -78,6 +78,7 @@ class DeliveryStatusViewModel(application: Application) : AndroidViewModel(appli
                     } catch (e: Exception) {
                         //Save to local database if the update fails
                         database.statusPutDao.insertPutData(toPut)
+                        Log.i("NETWORK-CALL", e.message.toString())
                     }
                 }
 

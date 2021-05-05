@@ -11,6 +11,10 @@
                 android:elevation="3dp"
                 motion:framePosition="100"
                 motion:motionTarget="@+id/Aims_logo" />
+            <KeyAttribute
+                motion:motionTarget="@+id/Aims_logo"
+                motion:framePosition="40"
+                android:alpha="0.5" />
         </KeyFrameSet>
 
     </Transition>
@@ -39,4 +43,22 @@
             motion:layout_constraintBottom_toTopOf="@id/constraintLayout"
             motion:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
+    <ConstraintSet
+        android:id="@+id/loggedIn"
+        motion:deriveConstraintsFrom="@+id/end" />
+    <Transition
+        motion:duration="1000"
+        motion:constraintSetStart="@+id/end"
+        motion:constraintSetEnd="@+id/loggedIn" >
+        <KeyFrameSet >
+            <KeyAttribute
+                motion:motionTarget="@+id/Aims_logo"
+                motion:framePosition="100"
+                android:translationX="300dp" />
+            <KeyAttribute
+                motion:motionTarget="@+id/Aims_logo"
+                motion:framePosition="0"
+                android:translationX="-120dp" />
+        </KeyFrameSet>
+    </Transition>
 </MotionScene>

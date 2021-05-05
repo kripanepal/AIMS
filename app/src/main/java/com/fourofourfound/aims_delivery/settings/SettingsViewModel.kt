@@ -75,7 +75,7 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
                     deleteEncryptedPreference("truckDescription")
                     deleteEncryptedPreference("active")
                 }
-        database.close()
+
     }
 
     /**

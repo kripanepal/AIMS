@@ -1,8 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -83,10 +81,7 @@ class LoginFragment : Fragment() {
 
         //checks if shared preferences already contains a user that is logged in
         if (viewModel.checkUserLoggedIn()) {
-            sharedViewModel.driver = viewModel.loggedInDriver
-
-            findNavController().navigate(R.id.homePage)
-            sharedViewModel.userLoggedIn.value = true
+           moveToHomePage()
             return binding.root
 
         }
@@ -96,25 +91,36 @@ class LoginFragment : Fragment() {
         //navigate to the homepage if valid authentication is provided
         viewModel.navigate.observe(viewLifecycleOwner, {
             if (it) {
+                binding.loginButton.apply {
+                    visibility = View.GONE
+                    text = "Login Successful"
+                    setTextColor(requireContext().getColor(R.color.Green))
+                }
 
-                 if(sendSignedInMessage)
-                 {
-                     val statusCodeToGet= StatusMessageEnum.ONDUTY
-                     val toPut = DatabaseStatusPut(
+                if (sendSignedInMessage) {
+                    val statusCodeToGet = StatusMessageEnum.ONDUTY
+                    val toPut = DatabaseStatusPut(
                         viewModel.loggedInDriver.code,
-                         0,
-                         statusCodeToGet.code,
-                         statusCodeToGet.message,
-                         getDate(Calendar.getInstance())
-                     )
+                        0,
+                        statusCodeToGet.code,
+                        statusCodeToGet.message,
+                        getDate(Calendar.getInstance())
+                    )
 
-                     DeliveryStatusViewModel.sendStatusUpdate(toPut, getDatabase(requireContext(),viewModel.loggedInDriver.code))
-                 }
-                (activity as MainActivity?)?.getDatabase()
-                sharedViewModel.driver = viewModel.loggedInDriver
-                sharedViewModel.userLoggedIn.value = true
-                findNavController().navigate(R.id.homePage)
-                viewModel.doneNavigatingToHomePage()
+                    DeliveryStatusViewModel.sendStatusUpdate(
+                        toPut,
+                        getDatabase(requireContext(), viewModel.loggedInDriver.code)
+                    )
+                    setLoggedInMotionAnimation()
+                    sharedViewModel.userClockedIn.value = true
+
+                } else {
+                    moveToHomePage()
+                    val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+                    sharedViewModel.userClockedIn.value = sharedPref.getBoolean("userSignedIn", false)
+                }
+
+
             }
         })
 
@@ -130,7 +136,7 @@ class LoginFragment : Fragment() {
         setMotionAnimations(binding.passwordInput)
         setMotionAnimations(binding.userIdInput)
 
-        setReverseMotionAnimations(binding.loginPageMainView)
+        setReverseMotionAnimations()
 
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
@@ -138,18 +144,27 @@ class LoginFragment : Fragment() {
 
 
         viewModel.loading.observe(viewLifecycleOwner) {
-            if (it) {
-                hideSoftKeyboard(requireActivity())
-                binding.spinKit.visibility = View.VISIBLE
-            } else binding.spinKit.visibility = View.GONE
+            sharedViewModel.loading.value = it
+            if (it) hideSoftKeyboard(requireActivity())
         }
 
         return binding.root
     }
 
-    private fun setReverseMotionAnimations(view: View) {
+    private fun moveToHomePage() {
+
+        (activity as MainActivity?)?.getDatabase()
+        sharedViewModel.driver = viewModel.loggedInDriver
+
+
+
+        findNavController().navigate(R.id.homePage)
+        viewModel.doneNavigatingToHomePage()
+    }
+
+    private fun setReverseMotionAnimations() {
         val motionContainer = binding.loginPageMainView
-        view.setOnTouchListener { v, _ ->
+        (motionContainer  as View).setOnTouchListener { v, _ ->
             v.performClick()
             if(animated)
             {
@@ -222,6 +237,29 @@ class LoginFragment : Fragment() {
             }
             false
         }
+    }
+
+    private fun setLoggedInMotionAnimation()
+    {
+
+        val motionContainer = binding.loginPageMainView
+                motionContainer.setTransition(R.id.end, R.id.loggedIn)
+                motionContainer.transitionToEnd()
+        motionContainer.addTransitionListener(object:MotionLayout.TransitionListener{
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+
+                moveToHomePage()
+            }
+
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+
+        })
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -27,7 +27,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
      * User logged in
      * The live data that keeps track of the user logged in status
      */
-    var userLoggedIn = MutableLiveData(false)
+    var userClockedIn = MutableLiveData(false)
 
     /**
      * Is location broadcast receiver initialized

@@ -17,7 +17,13 @@
             name="currentTrip"
             type="com.fourofourfound.aims_delivery.domain.Trip" />
     </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 <ScrollView
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -50,16 +56,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_all_sides_10"
-            android:textSize="15dp" />
+            android:textSize="@dimen/text_size_medium" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/card_corner_radius"
-            app:cardElevation="@dimen/card_elevation"
-            android:layout_marginVertical="@dimen/card_vertical_margin"
             android:layout_margin="@dimen/app_horizontal_margin"
-            app:cardBackgroundColor="?attr/colorSecondary">
+            android:layout_marginVertical="@dimen/card_vertical_margin"
+            app:cardBackgroundColor="?attr/colorSecondary"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -87,23 +93,24 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/siteContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/description_text_size" />
-                    <TextView
                         android:layout_marginLeft="10dp"
-                        android:id="@+id/siteContainerDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:textSize="@dimen/description_text_size" />
 
                     <TextView
+                        android:id="@+id/siteContainerDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:textSize="@dimen/description_text_size" />
+
+                    <TextView
                         android:id="@+id/load_notes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:textSize="@dimen/description_text_size" />
                 </LinearLayout>
 
@@ -206,4 +213,5 @@
     </LinearLayout>
 
 </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

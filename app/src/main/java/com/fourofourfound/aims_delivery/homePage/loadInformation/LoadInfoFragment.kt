@@ -20,6 +20,7 @@ import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aims_delivery.worker.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -101,7 +102,8 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             View.GONE
         else {
             scrollTripStartIcon()
-            startTripOnClick(currentTrip)
+            if(sharedViewModel.userClockedIn.value!!) startTripOnClick(currentTrip)
+
         }
 
 
@@ -209,9 +211,9 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!sharedViewModel.userLoggedIn.value!!) {
+        if (sharedViewModel.driver == null)
             findNavController().navigateUp()
-        }
+
 
     }
 
@@ -227,6 +229,9 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 true,
             )
             binding.startTripText.setOnClickListener {
+
+
+
                 if(!sharedViewModel.workerStarted) {
                     CustomWorkManager(requireContext()).apply {
                         sendLocationAndUpdateTrips()
@@ -235,17 +240,23 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                     }
                 }
 
-                if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
-                    showStartTripDialog(sortedList[0], currentTrip)
-                } else {
-                    if (sharedViewModel.selectedSourceOrSite.value == null) {
-                        markDestinationStart(sortedList[0])
+                if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+                else
+                {
+                    if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
+                        showStartTripDialog(sortedList[0], currentTrip)
                     } else {
-                        deliveryStatusViewModel.destinationApproachingShown= false
-                        requireActivity().bottom_navigation.selectedItemId =
-                            R.id.delivery_navigation
+                        if (sharedViewModel.selectedSourceOrSite.value == null) {
+                            markDestinationStart(sortedList[0])
+                        } else {
+                            deliveryStatusViewModel.destinationApproachingShown= false
+                            requireActivity().bottom_navigation.selectedItemId =
+                                R.id.delivery_navigation
+                        }
                     }
                 }
+
+
 
             }
         }

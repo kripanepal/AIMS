@@ -22,8 +22,10 @@ import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
 import com.fourofourfound.aims_delivery.utils.htmlToText
+import com.fourofourfound.aims_delivery.utils.showUserNotClockedInMessage
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.source_or_site_info.*
 import kotlinx.android.synthetic.main.source_or_site_info.view.*
@@ -108,8 +110,14 @@ class OngoingDeliveryFragment : Fragment() {
             binding.directions.text = "Continue Navigation"
         }
 
+        if(!sharedViewModel.userClockedIn.value!!)  Snackbar.make(binding.root, "Please clock in to continue", Snackbar.LENGTH_LONG)
+            .setAction("Clock In") { requireActivity().bottom_navigation.selectedItemId = R.id.settings_navigation }
+            .show()
+
+
         binding.startNavigation.setOnClickListener {
-            findNavController().navigate(OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToNavigationFragment())
+            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            else findNavController().navigate(OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToNavigationFragment())
         }
 
         viewModel.fillingEnded.observe(viewLifecycleOwner)
@@ -131,18 +139,20 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
-
-            val preFillingDialog = ReadingPrePostFilling()
-            val args = Bundle()
-            args.putBoolean("isFilling", true)
-            args.putString(
-                "trailer",
-                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
-            )
-            args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
-            viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
-            preFillingDialog.arguments = args
-            preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            else {
+                val preFillingDialog = ReadingPrePostFilling()
+                val args = Bundle()
+                args.putBoolean("isFilling", true)
+                args.putString(
+                    "trailer",
+                    sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+                )
+                args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+                viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
+                preFillingDialog.arguments = args
+                preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+            }
         }
 
         viewModel.fillingStarted.observe(viewLifecycleOwner)
@@ -167,22 +177,25 @@ class OngoingDeliveryFragment : Fragment() {
      */
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
-            viewModel.endDateAndTime = Calendar.getInstance()
+            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            else {
+                viewModel.endDateAndTime = Calendar.getInstance()
 
-            val preFillingDialog = ReadingPrePostFilling()
+                val preFillingDialog = ReadingPrePostFilling()
 
-            val args = Bundle()
-            args.putBoolean("isFilling", false)
-            args.putString(
-                "trailer",
-                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
-            )
-            args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
-            args.putInt("requiredQuantity", currentSourceOrSite.productInfo.requestedQty!!)
+                val args = Bundle()
+                args.putBoolean("isFilling", false)
+                args.putString(
+                    "trailer",
+                    sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+                )
+                args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+                args.putInt("requiredQuantity", currentSourceOrSite.productInfo.requestedQty!!)
 
-            viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
-            preFillingDialog.arguments = args
-            preFillingDialog.show(childFragmentManager, "PostFillingReadings")
+                viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
+                preFillingDialog.arguments = args
+                preFillingDialog.show(childFragmentManager, "PostFillingReadings")
+            }
 
         }
     }
@@ -275,8 +288,8 @@ class OngoingDeliveryFragment : Fragment() {
     {
         binding.fillForm.visibility = View.VISIBLE
         binding.endFilling.visibility = View.GONE
-        binding.fillForm.setOnClickListener {
-            getFormConfirmation().builder.show()
+        binding.fillForm.setOnClickListener { if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+        else getFormConfirmation().builder.show()
         }
     }
 
