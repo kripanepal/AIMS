@@ -18,15 +18,24 @@ import kotlinx.coroutines.withContext
  * Trip list repository
  * This class holds the trip information and allow access to database
  * @property database the database to be used
- * @constructor Create empty Trip list repository
+ * @constructor
  */
 class TripListRepository(private val database: TripListDatabase) {
+
+    /**
+     * Trips
+     * This helps to convert the data retrieved from database to live data of domain model.
+     */
     val trips = Transformations.map(database.tripDao.getAllTrip())
     {
         it.asDomainModel()
     }
-    var updatingTrips = false
 
+    /**
+     * Updating trips
+     * Flag for updating trips.
+     */
+    var updatingTrips = false
 
     /**
      * Refresh trips
@@ -40,12 +49,11 @@ class TripListRepository(private val database: TripListDatabase) {
                 val databaseData = database.tripDao.getAllTripsOneTime()
                 val storedData = databaseData.asNetworkModel()
 
-
+                //If there are new trips from the network, save it to the database.
                 if (!storedData.containsAll(filteredNetworkList)) {
                     updatingTrips = true
                     val removed = (storedData.filterNot { filteredNetworkList.contains(it) })
                     deleteTrips(removed.map { it.tripId as Int })
-
                     saveTrips(filteredNetworkList)
                 } else {
                 }
@@ -56,8 +64,12 @@ class TripListRepository(private val database: TripListDatabase) {
 
     }
 
+    /**
+     * Save trips
+     * This method saves the trip to the database.
+     * @param list the list of network trips to be saved to the database.
+     */
     private suspend fun saveTrips(list: List<NetworkTrip>) {
-
         withContext(Dispatchers.IO) {
             try {
                 for (each in list) {
@@ -65,7 +77,6 @@ class TripListRepository(private val database: TripListDatabase) {
                         val savedTrip = database.tripDao.getTripById(tripId!!)
                         val trip = DatabaseTrip(tripId, tripName!!, tripDate!!)
                         savedTrip?.apply { trip.deliveryStatus = deliveryStatus }
-
                         val truck = DatabaseTruck(truckId!!, truckCode!!, truckDesc!!)
                         val trailer = DatabaseTrailer(trailerId!!, trailerCode!!, trailerDesc!!)
                         val fuel = DatabaseFuel(productId!!, productCode, productDesc)
@@ -95,21 +106,21 @@ class TripListRepository(private val database: TripListDatabase) {
                             delReqLineNum,
                             requestedQty!!,
                             uom!!,
-                            fill!!,  sourceId, siteId
+                            fill!!, sourceId, siteId
                         )
 
                         var savedSourceOrSite =
                             database.destinationDao.getDestination(tripId, seqNum)
-                        savedSourceOrSite?.apply { sourceOrSite.deliveryStatus = savedSourceOrSite.deliveryStatus }
+                        savedSourceOrSite?.apply {
+                            sourceOrSite.deliveryStatus = savedSourceOrSite.deliveryStatus
+                        }
 
-                        //todo delete all records before adding after if, not here
                         database.locationDao.insertLocation(location)
                         database.tripDao.insertTruck(truck)
                         database.trailerDao.insertTrailer(trailer)
                         database.tripDao.insertTrip(trip)
                         database.productsDao.insertFuel(fuel)
                         database.destinationDao.insertDestination(sourceOrSite)
-
                     }
                 }
             } catch (e: Exception) {
@@ -118,16 +129,12 @@ class TripListRepository(private val database: TripListDatabase) {
             } finally {
                 updatingTrips = false
             }
-
         }
-
-
     }
 
     /**
      * Mark Trip Completed
-     * Marks the trip as completed when the trip
-     * finishes.
+     * Marks the trip as completed when the trip finishes.
      * @param tripId The id of the trip
      * @param deliveryStatus The status of the trip
      */
@@ -137,12 +144,9 @@ class TripListRepository(private val database: TripListDatabase) {
                 //TODO make network call to inform aims dispatcher
                 database.tripDao.changeTripStatus(tripId, deliveryStatus)
             } catch (e: Exception) {
-
             }
-
         }
     }
-
 
     /**
      * Save Location to Database
@@ -158,12 +162,15 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
+    /**
+     * Send form data
+     * This method inserts the form data to the database.
+     * @param formToSubmit the filled up form to be saved in the database.
+     */
     suspend fun sendFormData(formToSubmit: DatabaseCompletionForm) {
         withContext(Dispatchers.IO) {
             try {
-
                 database.formDao.insertFormData(formToSubmit)
-
             } catch (e: Exception) {
                 Log.i("ERROR!!!", e.stackTraceToString())
                 try {
@@ -172,10 +179,17 @@ class TripListRepository(private val database: TripListDatabase) {
                     Log.i("ERROR!!!", e.toString())
                 }
             }
-
         }
     }
 
+    /**
+     * Update delivery status
+     * This method updates the delivery status of the given trip id according to
+     * the sequence number of the delivery.
+     * @param tripId the id of the ongoing trip
+     * @param seqNum the sequence number of on going delivery
+     * @param deliveryStatus the status of the delivery (ongoing, completed or not started)
+     */
     suspend fun updateDeliveryStatus(tripId: Int, seqNum: Int, deliveryStatus: DeliveryStatusEnum) {
         try {
             database.destinationDao.updateDeliveryStatus(tripId, seqNum, deliveryStatus)
@@ -183,6 +197,12 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
+    /**
+     * Update trailer fuel
+     * This method updates the trailer fuel amount of the given trailer id.
+     * @param trailerId the id of the trailer of the truck
+     * @param fuelQuantity the quantity of the fuel to be updated
+     */
     suspend fun updateTrailerFuel(trailerId: Int, fuelQuantity: Double) {
         try {
             database.trailerDao.updateTrailerFuel(trailerId, fuelQuantity)
@@ -190,13 +210,24 @@ class TripListRepository(private val database: TripListDatabase) {
         }
     }
 
+    /**
+     * Delete trips
+     * This method delete the trip with the given trip id from the database.
+     * @param ids the id of the trip to be deleted
+     */
     private fun deleteTrips(ids: List<Int>) {
         val completedTrips = database.tripDao.getCompletedTripsId()
         ids.minus(completedTrips)
         database.tripDao.deleteTripById(ids)
-
     }
 
+    /**
+     * Add bill of lading images
+     * This method adds the path of the image to the database.
+     * @param tripId the id of the current trip
+     * @param seqNum the seq number of ongoing delivery
+     * @param imagePaths the path of the image
+     */
     fun addBillOfLadingImages(tripId: Int, seqNum: Int, imagePaths: MutableList<String>?) {
         if (imagePaths != null) {
             var billOfLadingImages = mutableListOf<BillOfLadingImages>()
@@ -205,9 +236,13 @@ class TripListRepository(private val database: TripListDatabase) {
             }
             database.formDao.addBillOfLadingImages(billOfLadingImages)
         }
-
     }
 
+    /**
+     * Get total trips completed
+     * This methods give the total number of completed trips.
+     * @return the total number of trips completed
+     */
     suspend fun getTotalTripsCompleted(): Int {
         var totalCompleted = 0
         withContext(Dispatchers.IO) {
@@ -216,6 +251,11 @@ class TripListRepository(private val database: TripListDatabase) {
         return totalCompleted
     }
 
+    /**
+     * Get total deliveries made
+     * This method gives the total number of deliveries in all trips.
+     * @return total number of deliveries made
+     */
     suspend fun getTotalDeliveriesMade(): Int {
         var totalCompleted: Int
         withContext(Dispatchers.IO) {
@@ -223,6 +263,4 @@ class TripListRepository(private val database: TripListDatabase) {
         }
         return totalCompleted
     }
-
-
 }

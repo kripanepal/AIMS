@@ -80,7 +80,7 @@ class MapDownloaderAdapter(private val clickListener: CurrentItemClickHandler) :
 
         /**
          * Are items the same
-         * This method checks if the two objects are same
+         * This method checks if the two objects are same.
          * @param oldItem the old item to be compared
          * @param newItem the new item to be compared
          */
