@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.shared_view_models
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
 import com.fourofourfound.aims_delivery.network.Driver
@@ -18,6 +19,8 @@ import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
  * @param application the applicationContext which created this viewModel
  */
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
+
+
     /**
      * User logged in
      * The live data that keeps track of the user logged in status
@@ -28,7 +31,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
      * Is location broadcast receiver initialized
      * It keeps  track of the broadcast receiver state
      */
-    var isLocationBroadcastReceiverInitialized: Boolean = false
+    var broadCastReceiver = NetworkChangedBroadCastReceiver()
+
+    var broadCastReceiverInitialized = false
 
     /**
      * Active route

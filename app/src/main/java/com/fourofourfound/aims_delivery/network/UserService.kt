@@ -74,6 +74,17 @@ interface UserService {
                                @Path("netQuantity") netQuantity: Int,
                                ): ProductPickupResponse
 
+    @GET("/rest/1/apiexpress/api/DispatcherMobileApp/TripProductDeliveryInsert/{driverCode}/{tripId}/{siteId}/{productId}/{deliveryDate}/{grossQuantity}/{netQuantity}/{remainingQuantity}?apiKey=f20f8b25-b149-481c-9d2c-41aeb76246ef")
+    suspend  fun sendProductDropOffInfo( @Path("driverCode") driverCode: String,
+                               @Path("tripId") tripId: Int,
+                               @Path("siteId") sourceId: Int,
+                               @Path("productId") productId: Int,
+                               @Path("deliveryDate") startDate: String,
+                               @Path("grossQuantity") grossQuantity: String,
+                               @Path("netQuantity") netQuantity: String,
+                               @Path("remainingQuantity") remainingQuantity: String,
+                               ): StatusMessageUpdateResponse
+
 
 }
 

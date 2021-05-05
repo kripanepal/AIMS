@@ -5,16 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.fourofourfound.aims_delivery.database.TripListDatabase
+import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
 import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentLocation
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentPickupMessages
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentPutMessages
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.util.concurrent.atomic.AtomicBoolean
+
 
 /**
  * Network changed broad cast receiver
@@ -25,6 +27,8 @@ import kotlinx.coroutines.launch
  *
  */
 class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
+    private var firstTime = true
+
 
     /**
      * On receive
@@ -36,51 +40,29 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
      * @param intent the intent that was sent to the receiver
      */
     override fun onReceive(context: Context, intent: Intent) {
-        if (isNetworkConnected(context)) {
-            //launch a coroutine to in the IO thread
-            GlobalScope.launch(Dispatchers.IO) {
-                //get the instance of the database
-                val database = getDatabaseForDriver(context)
 
-                sendUnsentLocation(database)
-                sendUnsentPutMessages(database)
-                sendUnsentPickupMessages(database)
+
+        if (isNetworkConnected(context) ) {
+            if (firstTime) {
+                //launch a coroutine to in the IO thread
+                GlobalScope.launch(Dispatchers.IO) {
+                     firstTime = false
+                    //get the instance of the database
+                    val database = getDatabaseForDriver(context)
+                    sendUnsentLocation(database)
+                    sendUnsentPutMessages(database)
+                    sendUnsentPickupMessages(database)
+
+                }
             }
         }
-    }
-
-    private  fun sendUnsentPickupMessages(database: TripListDatabase) {
-        val unsentPickupList = database.completedDeliveriesDao.getUnsentProductPickedUp()
-        for (pickupInfo in unsentPickupList)
-            Handler(Looper.getMainLooper()).postDelayed({
-                DeliveryStatusViewModel.sendProductPickedUpMessage(pickupInfo, database)
-            }, 500)
-
+        else firstTime = true
     }
 
 
-    private fun sendUnsentPutMessages(database: TripListDatabase) {
-        val statusPutToSend = database.statusPutDao.getAllUnsentData()
-        for (each in statusPutToSend) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                DeliveryStatusViewModel.sendStatusUpdate(each,database)
-            }, 500)
 
-        }
-    }
 
-    private suspend fun sendUnsentLocation(database: TripListDatabase) {
-        try {
-            //get saved location from the database
-            val locationToSend = database.locationDao.getSavedLocation()
-            //send the data to the dispatcher
-            MakeNetworkCall.retrofitService.sendLocation(locationToSend)
 
-            //delete contents of location table as only latest location is required
-            database.locationDao.deleteAllLocations()
-        } catch (e: Exception) {
-        }
-    }
 
     /**
      * Is network connected

@@ -6,8 +6,7 @@ import com.fourofourfound.aims_delivery.database.entities.*
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.database.relations.CompletedFormWithInfo
 import com.fourofourfound.aims_delivery.database.relations.TripWithInfo
-import com.fourofourfound.aims_delivery.database.utilClasses.ProductPickedUpData
-import com.fourofourfound.aims_delivery.network.ProductPickupResponse
+import com.fourofourfound.aims_delivery.database.utilClasses.ProductData
 import com.fourofourfound.aims_delivery.utils.DeliveryStatusEnum
 
 /**
@@ -73,7 +72,7 @@ interface TripDao {
     fun changeTripStatus(tripId: Int, deliveryStatus: DeliveryStatusEnum)
 
     @Query("select tripId from DatabaseTrip where deliveryStatus = 2")
-    fun getCompletedTripsId():List<Int>
+    fun getCompletedTripsId(): List<Int>
 
     @Query("delete from DatabaseTrip")
     fun deleteAllTrips()
@@ -121,36 +120,36 @@ interface CompletedDeliveriesDao {
 
     @Transaction
     @Query("select * from DatabaseCompletionForm where tripId =:tripId")
-    fun getDetails( tripId:Int): List<CompletedFormWithInfo>
+    fun getDetails(tripId: Int): List<CompletedFormWithInfo>
 
     @Transaction
     @Query("select * from DatabaseCompletionForm where tripId =:tripId and seqNo =:seqNo")
     fun getDetailsForDestination(tripId: Int, seqNo: Int): List<CompletedFormWithInfo>
 
-    @Query("select tripId,billOfLadingNumber,endTime,grossQty,netQty,startTime,sourceOrSiteId as sourceId ,driverId as driverCode, productDelivered as productId from DatabaseCompletionForm where wayPointType='Source' and dataSent = 0")
-    fun getUnsentProductPickedUp(): List<ProductPickedUpData>
+    @Query("select tripId,billOfLadingNumber,endTime,grossQty,netQty,startTime," +
+            "sourceOrSiteId as sourceOrSiteId ,driverId as driverCode,productDelivered as productId," +
+            "wayPointType as type,trailerEndReading as trailerRemainingQuantity from DatabaseCompletionForm " +
+            "where   dataSent = 0")
+    fun getUnsentFormInfo(): List<ProductData>
 
     @Query("update DatabaseCompletionForm set dataSent = 1 where  sourceOrSiteId=:id")
-    fun updateFormSentStatus(id:Int)
-
+    fun updateFormSentStatus(id: Int)
 
 
 }
-
-
 
 
 @Dao
 interface StatusPutDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPutData( toPut:DatabaseStatusPut)
+    fun insertPutData(toPut: DatabaseStatusPut)
 
-   @Delete
-    fun deletePutData( toDelete:DatabaseStatusPut)
+    @Delete
+    fun deletePutData(toDelete: DatabaseStatusPut)
 
     @Query("select * from DatabaseStatusPut")
-    fun getAllUnsentData():List<DatabaseStatusPut>
+    fun getAllUnsentData(): List<DatabaseStatusPut>
 
 
 }

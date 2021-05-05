@@ -99,7 +99,6 @@ class HomePage : Fragment() {
 
         setUpRecyclerView()
         setUpSwipeToRefresh()
-        registerBroadCastReceiver()
         setUpToolBar()
         changeContainerVisibility()
 
@@ -133,17 +132,7 @@ class HomePage : Fragment() {
         }
     }
 
-    /**
-     * Register broad cast receiver
-     * This method registers for a broadcast receiver to listen for internet connection change.
-     */
-    private fun registerBroadCastReceiver() {
-        if (!sharedViewModel.isLocationBroadcastReceiverInitialized) {
-            val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-            requireContext().registerReceiver(NetworkChangedBroadCastReceiver(), intentFilter)
-            sharedViewModel.isLocationBroadcastReceiverInitialized = true
-        }
-    }
+
 
 
     /**
