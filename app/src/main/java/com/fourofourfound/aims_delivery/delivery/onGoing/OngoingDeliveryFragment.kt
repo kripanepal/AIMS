@@ -3,6 +3,7 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.fourofourfound.aims_delivery.deliveryForms.finalForm.DeliveryCompletionViewModel
+import com.fourofourfound.aims_delivery.deliveryForms.finalForm.DeliveryCompletionViewModelFactory
 import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
@@ -52,8 +56,8 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    val viewModel: OngoingDeliveryViewModel by viewModels()
-    lateinit var currentSourceOrSite: SourceOrSite
+    lateinit var viewModel:OngoingDeliveryViewModel
+    private lateinit var currentSourceOrSite: SourceOrSite
 
 
     /**
@@ -84,6 +88,16 @@ class OngoingDeliveryFragment : Fragment() {
             container,
             false
         )
+
+        val viewModelFactory = OnGoingDeliveryViewModelFactory(
+            requireActivity().application,
+            sharedViewModel.selectedSourceOrSite.value!!
+        )
+
+        //getting a view model from a factory
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(OngoingDeliveryViewModel::class.java)
+        viewModel.trailerReading.observe(viewLifecycleOwner){}
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
@@ -119,7 +133,6 @@ class OngoingDeliveryFragment : Fragment() {
         binding.startFilling.setOnClickListener {
 
             val preFillingDialog = ReadingPrePostFilling()
-
             val args = Bundle()
             args.putBoolean("isFilling", true)
             args.putString(
@@ -127,6 +140,7 @@ class OngoingDeliveryFragment : Fragment() {
                 sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
             )
             args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+            viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
             preFillingDialog.arguments = args
             preFillingDialog.show(childFragmentManager, "PreFillingReadings")
         }
@@ -164,6 +178,9 @@ class OngoingDeliveryFragment : Fragment() {
                 sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
             )
             args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+            args.putInt("requiredQuantity", currentSourceOrSite.productInfo.requestedQty!!)
+
+            viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
             preFillingDialog.arguments = args
             preFillingDialog.show(childFragmentManager, "PostFillingReadings")
 
@@ -266,20 +283,21 @@ class OngoingDeliveryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
 
             (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
 
-                viewModel.destination?.also {
+                sharedViewModel.selectedSourceOrSite.value!!.also {
                     if(it != currentSourceOrSite)
                     {
                         viewModel.fillingEnded.value=false
                         viewModel.fillingStarted.value=false
                     }
                 }
-                viewModel.destination = currentSourceOrSite
                 if(viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
                 if(viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
                 observeDestination()

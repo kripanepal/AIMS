@@ -2,6 +2,7 @@ package com.fourofourfound.aims_delivery
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -130,6 +132,20 @@ class MainActivity : AppCompatActivity() {
         super.onPostCreate(savedInstanceState)
         observeLoading()
         trackTruck()
+        registerBroadCastReceiver()
+    }
+
+    /**
+     * Register broad cast receiver
+     * This method registers for a broadcast receiver to listen for internet connection change.
+     */
+    private fun registerBroadCastReceiver() {
+        if(!sharedViewModel.broadCastReceiverInitialized)
+        {
+            val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+            this.registerReceiver(sharedViewModel.broadCastReceiver,  intentFilter)
+            sharedViewModel.broadCastReceiverInitialized = true
+        }
     }
 
     /**
@@ -238,14 +254,26 @@ class MainActivity : AppCompatActivity() {
      * This methods stops the receiving connection broadcast when
      * application close
      */
-    override fun onDestroy() {
-        super.onDestroy()
-        if (sharedViewModel.isLocationBroadcastReceiverInitialized) {
-            try {
-                this.unregisterReceiver(NetworkChangedBroadCastReceiver())
+    override fun onPause() {
+        super. onPause()
+
+          val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val broadCastReceiverOn =  sharedPref.getBoolean("broadCastReceiverOn", false)
+
+        if (broadCastReceiverOn) {
+            with (sharedPref.edit()) {
+                try {
+                this@MainActivity.unregisterReceiver(sharedViewModel.broadCastReceiver)
+                    putBoolean("broadCastReceiverOn", false)
+                    apply()
             } catch (e: Exception) {
+                Log.i("NETWORK-CALL",e.message.toString())
             }
-        }
+            }
+
+            }
+
+
     }
 
     /**

@@ -72,11 +72,9 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0)
-                    binding.startTripText.text = bottomText
+                    binding.startTripText.text =""
                 else if (dy < 0)
-
-                binding.startTripText.text =""
-
+                    binding.startTripText.text = bottomText
             }
 
 
@@ -118,7 +116,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
     private fun markTripStart(sourceOrSite: SourceOrSite, currentTrip: Trip) {
         var time = Calendar.getInstance()
 
-
         currentTrip.deliveryStatus = DeliveryStatusEnum.ONGOING
         sharedViewModel.selectedTrip.value = currentTrip
         val statusCode =  StatusMessageEnum.SELTRIP
@@ -133,24 +130,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
           toPut, getDatabaseForDriver(requireContext())
         )
 
-
         markDestinationStart(sourceOrSite)
-
-
-        Log.d(
-            "NETWORK-CALL",
-            String.format(
-                "Time Stamp: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s",
-                time.get(Calendar.YEAR),
-                time.get(Calendar.MONTH),
-                time.get(Calendar.DAY_OF_MONTH),
-                time.get(Calendar.HOUR_OF_DAY),
-                time.get(Calendar.MINUTE),
-                sharedViewModel.driver!!.code,
-                currentTrip.tripId
-            )
-        )
-
 
     }
 
@@ -247,9 +227,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 true,
             )
             binding.startTripText.setOnClickListener {
-                CustomWorkManager(requireContext()).apply {
-                    sendLocationAndUpdateTrips()
-                    sendLocationOnetime()
+                if(!sharedViewModel.workerStarted) {
+                    CustomWorkManager(requireContext()).apply {
+                        sendLocationAndUpdateTrips()
+                        sendLocationOnetime()
+                        sharedViewModel.workerStarted = true
+                    }
                 }
 
                 if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {

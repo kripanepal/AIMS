@@ -24,26 +24,26 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp">
 
-            <ImageView
-                android:id="@+id/enlarged_image"
+<TextView
+    android:fontFamily="sans-serif-black"
+    android:textColor="@color/Aims_Orange"
+    android:textSize="23sp"
+    android:textStyle="bold"
+    android:id="@+id/destination_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="@{viewModel.currentSourceOrSite.location.destinationName}"
+    />
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="2dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/error_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/Red"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:background="?attr/colorOnPrimary"
+                app:layout_constraintTop_toBottomOf="@id/destination_name"/>
 
 
             <Button
@@ -59,6 +59,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/submit_btn" />
 
+            <TextView
+                android:textSize="@dimen/text_size_medium"
+                android:id="@+id/error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/Red"
+                app:layout_constraintTop_toBottomOf="@id/submit_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bill_of_ladingImages"
                 android:layout_width="match_parent"
@@ -66,10 +78,10 @@
                 android:orientation="horizontal"
                 android:padding="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="@id/form_parent_view"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/submit_btn" />
+                app:layout_constraintTop_toBottomOf="@id/error_text"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <Button
                 android:id="@+id/submit_btn"
@@ -86,7 +98,7 @@
                 app:hintTextColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/error_text">
+                app:layout_constraintTop_toBottomOf="@+id/destination_name" >
 
                 <EditText
                     android:id="@+id/bill_of_lading"

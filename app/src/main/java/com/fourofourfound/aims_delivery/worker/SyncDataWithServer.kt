@@ -24,6 +24,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.repository.TripListRepository
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
 import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
@@ -207,6 +208,9 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
             code = getEncryptedPreference("driverCode")
         }
         repository.refreshTrips(code)
+        DeliveryStatusViewModel.sendUnsentPickupMessages(database)
+        DeliveryStatusViewModel.sendUnsentPutMessages(database)
+        DeliveryStatusViewModel.sendUnsentLocation(database)
         locationManager.removeUpdates(this@SyncDataWithServer)
         Log.i("WORKER-WORK", "SUCCESSFUL")
         Result.success()

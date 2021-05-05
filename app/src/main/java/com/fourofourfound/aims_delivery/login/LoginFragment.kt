@@ -130,6 +130,8 @@ class LoginFragment : Fragment() {
         setMotionAnimations(binding.passwordInput)
         setMotionAnimations(binding.userIdInput)
 
+        setReverseMotionAnimations(binding.loginPageMainView)
+
         binding.loginPageMainView.setOnClickListener {
             hideSoftKeyboard(requireActivity())
         }
@@ -143,6 +145,20 @@ class LoginFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun setReverseMotionAnimations(view: View) {
+        val motionContainer = binding.loginPageMainView
+        view.setOnTouchListener { v, _ ->
+            v.performClick()
+            if(animated)
+            {
+                motionContainer.setTransition(R.id.end, R.id.start)
+                motionContainer.transitionToEnd()
+                animated = false
+            }
+            true
+        }
     }
 
     /**

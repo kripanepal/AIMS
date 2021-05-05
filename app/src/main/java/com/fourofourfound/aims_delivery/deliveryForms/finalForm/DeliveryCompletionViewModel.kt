@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.entities.DatabaseFuel
-import com.fourofourfound.aims_delivery.database.utilClasses.ProductPickedUpData
+import com.fourofourfound.aims_delivery.database.utilClasses.ProductData
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
@@ -106,8 +106,7 @@ class DeliveryCompletionViewModel(
     }
 
     private  fun sendProductPickedUpMessage(productId: Int) {
-        if (destination.wayPointTypeDescription == "Source") {
-            val dataToSend = ProductPickedUpData(
+            val dataToSend = ProductData(
                 driver,
                 tripId,
                 (destination.siteId ?: destination.sourceId)!!,
@@ -116,10 +115,12 @@ class DeliveryCompletionViewModel(
                 (startTime),
                 (endTime),
                 grossQty.value!!,
-                netQty.value!!
+                netQty.value!!,
+                trailerEndReading.value!!,
+                destination.wayPointTypeDescription
             )
-            DeliveryStatusViewModel.sendProductPickedUpMessage(dataToSend,database)
-        }
+            DeliveryStatusViewModel.sendProductFulfilledMessage(dataToSend,database)
+
     }
 
     private suspend fun checkIfProductsAreSame(): Int {
