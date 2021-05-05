@@ -280,7 +280,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun verifyInput(): Boolean {
-        var netGrossMarginError = 1-(requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)
+        var netGrossMarginError = (requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)
         Log.i("AAAAAAA",
             ((requireContext().getString(R.string.net_gross_margin_error).toInt().toDouble()/100)).toString())
 
@@ -308,7 +308,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
 
             if (startTime.timeInMillis > endTime.timeInMillis)  return showErrorMessage("End time cannot be greater than start time")
             if(netQty.value!! < abs(errorMargin*(trailerEndReading.value!!-trailerBeginReading.value!!))) return showErrorMessage("Difference too large for net quantity and trailer readings")
-            if(netQty.value!! < netGrossMarginError*grossQty.value!! || netQty.value!! >netGrossMarginError*grossQty.value!!) return showErrorMessage("Difference too large for net quantity and gross quantity")
+            if(netQty.value!! < (1-netGrossMarginError)*grossQty.value!! || netQty.value!! >(1+netGrossMarginError)*grossQty.value!!) return showErrorMessage("Difference too large for net quantity and gross quantity")
 
             if(sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
                 if (trailerBeginReading.value!! > trailerEndReading.value!!) {
