@@ -371,8 +371,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                 requireContext(),
                 "Sending Product Picked/Delivered Info",
                 String.format(
-                    "Time Stamp: %d-%d-%d %d:%d " +
-                            "\nDriver ID: %s " +
+                    "Driver ID: %s " +
                             "\nTrip ID: %d " +
                             "\nDestination ID: %d " +
                             "\nProduct ID: %s " +
@@ -380,11 +379,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                             "\nEnd Time: %d:%d " +
                             "\nGross Qty: %d " +
                             "\nNet Qty: %d",
-                    time.get(Calendar.YEAR),
-                    time.get(Calendar.MONTH),
-                    time.get(Calendar.DAY_OF_MONTH),
-                    time.get(Calendar.HOUR_OF_DAY),
-                    time.get(Calendar.MINUTE),
+
                     sharedViewModel.driver!!.code,
                     sharedViewModel.selectedTrip.value!!.tripId,
                     viewModel.destination.seqNum,
@@ -409,10 +404,8 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                         sharedViewModel.selectedTrip.value!!.tripId,
                         DeliveryStatusEnum.COMPLETED
                     )
-
-
-                },
-                null,
+              },
+                "Cancel",
                 null,
                 false
             ).builder.show()

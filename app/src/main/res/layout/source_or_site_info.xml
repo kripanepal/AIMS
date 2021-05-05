@@ -88,12 +88,11 @@
         tool:text="1000 GL" />
 
 
-
     <TextView
-        android:layout_marginLeft="10dp"
         android:id="@+id/truck_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="Truck: "
         android:textSize="@dimen/description_text_size"
         android:textStyle="bold"
@@ -101,22 +100,24 @@
         app:layout_constraintTop_toBottomOf="@+id/product_qty_container" />
 
     <TextView
+
         android:id="@+id/truck_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:textSize="@dimen/description_text_size"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toEndOf="@id/product_qty_container"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toEndOf="@+id/truck_container"
         app:layout_constraintTop_toBottomOf="@id/product_qty"
         tool:text="1000 GL" />
 
     <TextView
-        android:layout_marginLeft="10dp"
         android:id="@+id/trailer_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="Trailer: "
         android:textSize="@dimen/description_text_size"
         android:textStyle="bold"
@@ -127,11 +128,10 @@
         android:id="@+id/trailer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:textSize="@dimen/description_text_size"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toEndOf="@id/product_qty_container"
+        app:layout_constraintStart_toEndOf="@+id/trailer_container"
         app:layout_constraintTop_toBottomOf="@id/truck_text"
         tool:text="1000 GL" />
 
