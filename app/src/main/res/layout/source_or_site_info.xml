@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:textColor="@color/Aims_Orange"
-        android:textSize="23sp"
+        android:textSize="23dp"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
         app:layout_constrainedWidth="true"
@@ -24,13 +24,17 @@
 
 
     <TextView
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-smallcaps"
         android:textSize="@dimen/description_text_size"
+        android:textColor="@color/Aims_light_orange"
+
         android:textStyle="bold"
+        android:paddingBottom="20dp"
+
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.00"
@@ -45,7 +49,7 @@
         android:layout_height="wrap_content"
         android:text="Product: "
         android:textSize="@dimen/description_text_size"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/address" />
@@ -56,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:textSize="@dimen/description_text_size"
+        android:fontFamily="sans-serif-smallcaps"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/product_qty"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +70,7 @@
         tool:text="RE687 Gasoline" />
 
     <TextView
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:id="@+id/product_qty_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/description_text_size"
+        android:fontFamily="sans-serif-smallcaps"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
@@ -90,7 +96,7 @@
 
 
     <TextView
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:id="@+id/truck_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,6 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/description_text_size"
+        android:fontFamily="sans-serif-smallcaps"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
@@ -113,7 +120,7 @@
         tool:text="1000 GL" />
 
     <TextView
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:id="@+id/trailer_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -129,6 +136,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/description_text_size"
         app:layout_constrainedWidth="true"
+        android:fontFamily="sans-serif-smallcaps"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintStart_toEndOf="@id/product_qty_container"
