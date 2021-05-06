@@ -126,10 +126,9 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         //TODO remove this as it should run in the defined interval. Just for presentation
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             CustomWorkManager(applicationContext).apply {
-                sendLocationAndUpdateTrips()
                 sendLocationOnetime()
             }
-        }, 15000)
+        }, 12000)
 
 
         buildNotification(successTitle, null, null, null, successChannelId)

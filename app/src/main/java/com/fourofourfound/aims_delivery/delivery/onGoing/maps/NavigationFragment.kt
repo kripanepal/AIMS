@@ -25,6 +25,8 @@ import com.fourofourfound.aims_delivery.utils.animateViewVisibility
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentNavigationBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.here.android.mpa.common.*
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.guidance.NavigationManager.NewInstructionEventListener
@@ -263,21 +265,8 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
             val routeOptions = RouteOptions()
             coreRouter.connectivity = CoreRouter.Connectivity.DEFAULT
             if (sharedViewModel.internetConnection.value == false) {
-                context?.let {
-                    CustomDialogBuilder(
-                        it,
-                        "No Internet Connection",
-                        "Route results may not be accurate without internet connection",
-                        "Continue",
-                        {
-                            routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
-                            createRoute(routeOptions, routePlan, coreRouter)
-                        },
-                        "Cancel Navigation",
-                        { findNavController().navigateUp() },
-                        false
-                    ).builder.show()
-                }
+                routeOptions.transportMode = RouteOptions.TransportMode.UNDEFINED
+                createRoute(routeOptions, routePlan, coreRouter)
             } else {
                 routeOptions.transportMode = RouteOptions.TransportMode.TRUCK
                 routeOptions.setTruckTunnelCategory(RouteOptions.TunnelCategory.E)
@@ -332,8 +321,21 @@ class NavigationFragment : androidx.fragment.app.Fragment() {
                         route = routeResults?.get(0)?.route
                         onRouteCalculated()
                     } else {
-                        Toast.makeText(context, "Error: $routingError", Toast.LENGTH_LONG).show()
-                        showErrorDialog()
+                        binding.progressBarContainer.visibility = View.GONE
+                        activity?.let {
+                            Snackbar.make(
+                                it.bottom_navigation,
+                                "$routingError".replace("_"," "),
+                               Snackbar.LENGTH_INDEFINITE
+                            ).setAnchorView(it.bottom_navigation)
+                                .setAction("Retry") {
+                                    try {
+                                        initializeMap()
+                                    }
+                                    catch (e:java.lang.Exception){}
+                                }
+                                .show()
+                        }
                     }
                 }
             })

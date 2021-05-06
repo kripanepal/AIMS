@@ -329,22 +329,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      * @param sourceOrSite the current destination
      */
     private fun markDestinationStart(sourceOrSite: SourceOrSite) {
-        var time = Calendar.getInstance()
-
-
-        Log.i(
-            "NETWORK-CALL", String.format(
-                "Sending destination started: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
-                time.get(Calendar.YEAR),
-                time.get(Calendar.MONTH),
-                time.get(Calendar.DAY_OF_MONTH),
-                time.get(Calendar.HOUR_OF_DAY),
-                time.get(Calendar.MINUTE),
-                sharedViewModel.driver!!.code,
-                currentTrip.tripId,
-                sourceOrSite.seqNum
-            )
-        )
         sourceOrSite.deliveryStatus = DeliveryStatusEnum.ONGOING
         sharedViewModel.selectedSourceOrSite.value = sourceOrSite
         viewModel.changeDeliveryStatus(

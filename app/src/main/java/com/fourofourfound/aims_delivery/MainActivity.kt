@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
         dialog = showLoadingOverLay(this)
-        Thread.setDefaultUncaughtExceptionHandler{_,_->}
+
 
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
     }
@@ -265,27 +265,27 @@ class MainActivity : AppCompatActivity() {
         super. onPause()
 
         dialog.cancel()
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-        val broadCastReceiverOn =  sharedPref.getBoolean("broadCastReceiverOn", false)
-
-        if (broadCastReceiverOn) {
-            with (sharedPref.edit()) {
-                try {
-                this@MainActivity.unregisterReceiver(sharedViewModel.broadCastReceiver)
-                    putBoolean("broadCastReceiverOn", false)
-                    apply()
-            } catch (e: Exception) {
-                Log.i("NETWORK-CALL",e.message.toString())
-            }
-            }
-
-            }
+//        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+//        val broadCastReceiverOn =  sharedPref.getBoolean("broadCastReceiverOn", false)
+//
+//        if (broadCastReceiverOn) {
+//            with (sharedPref.edit()) {
+//                try {
+//                this@MainActivity.unregisterReceiver(sharedViewModel.broadCastReceiver)
+//                    putBoolean("broadCastReceiverOn", false)
+//                    apply()
+//            } catch (e: Exception) {
+//                Log.i("NETWORK-CALL",e.message.toString())
+//            }
+//            }
+//
+//            }
     }
 
-    override fun onResume() {
-        super.onResume()
-        registerBroadCastReceiver()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        registerBroadCastReceiver()
+//    }
 
     /**
      * On back pressed

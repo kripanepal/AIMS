@@ -76,14 +76,14 @@ class DeliveryCompletionViewModel(
      * Gross qty
      * The live data of gross quantity of the fuel.
      */
-    val grossQty: MutableLiveData<Int> =
-        MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
+    val grossQty: MutableLiveData<Double> =
+        MutableLiveData(currentSourceOrSite.productInfo.requestedQty?.toDouble())
 
     /**
      * Net qty
      * The live data of net quantity of the fuel.
      */
-    val netQty: MutableLiveData<Int> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty)
+    val netQty: MutableLiveData<Double> = MutableLiveData(currentSourceOrSite.productInfo.requestedQty?.toDouble())
 
     /**
      * Comments
@@ -194,8 +194,8 @@ class DeliveryCompletionViewModel(
                         productId,
                         startTime,
                         endTime,
-                        grossQty.value!!,
-                        netQty.value!!,
+                        grossQty.value!!.toInt(),
+                        netQty.value!!.toInt(),
                         trailerBeginReading.value!!,
                         trailerEndReading.value!!,
                         comments.value!!,
@@ -240,8 +240,8 @@ class DeliveryCompletionViewModel(
             billOfLadingNumber.value ?: "Not Provided",
             (startTime),
             (endTime),
-            grossQty.value!!,
-            netQty.value!!,
+            grossQty.value!!.toInt(),
+            netQty.value!!.toInt(),
             trailerEndReading.value!!,
             destination.wayPointTypeDescription
         )
