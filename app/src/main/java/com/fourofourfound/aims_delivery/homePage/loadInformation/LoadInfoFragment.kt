@@ -1,10 +1,9 @@
 package com.fourofourfound.aims_delivery.homePage.loadInformation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -21,6 +20,7 @@ import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aims_delivery.worker.CustomWorkManager
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.LoadInformationBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -80,11 +80,14 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         val tripFragmentArgs by navArgs<LoadInfoFragmentArgs>()
         currentTrip = tripFragmentArgs.trip
+
         binding = DataBindingUtil.inflate(
             inflater, R.layout.load_information, container, false
         )
+
         viewModel = ViewModelProvider(this).get(LoadInfoViewModel::class.java)
         val adapter = LoadInfoAdapter()
 
@@ -112,13 +115,16 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      */
     private fun scrollTripStartIcon() {
         binding.pickupList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0)
-                    binding.startTripText.text = ""
+                    binding.startTripText.text =""
                 else if (dy < 0)
                     binding.startTripText.text = bottomText
             }
+
+
         })
     }
 
@@ -130,10 +136,13 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).supportActionBar?.title = currentTrip.tripName
+
+
         if (sharedViewModel.selectedSourceOrSite.value == null && sharedViewModel.selectedTrip.value != null) {
             binding.startTripText.text = "Deliver next"
-            bottomText = "Deliver next"
+            bottomText =  "Deliver next"
         }
 
         if (sharedViewModel.selectedSourceOrSite.value != null && sharedViewModel.selectedTrip.value != null) {
@@ -145,8 +154,11 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             View.GONE
         else {
             scrollTripStartIcon()
-            if (sharedViewModel.userClockedIn.value!!) startTripOnClick(currentTrip)
+            startTripOnClick(currentTrip)
+
         }
+
+
     }
 
     /**
@@ -158,22 +170,23 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      */
     private fun markTripStart(sourceOrSite: SourceOrSite, currentTrip: Trip) {
         var time = Calendar.getInstance()
+
         currentTrip.deliveryStatus = DeliveryStatusEnum.ONGOING
         sharedViewModel.selectedTrip.value = currentTrip
-        val statusCode = StatusMessageEnum.SELTRIP
+        val statusCode =  StatusMessageEnum.SELTRIP
         viewModel.changeTripStatus(currentTrip.tripId, DeliveryStatusEnum.ONGOING)
 
-        val toPut = DatabaseStatusPut(
-            sharedViewModel.driver!!.code.trim(),
+        val toPut = DatabaseStatusPut(  sharedViewModel.driver!!.code.trim(),
             currentTrip.tripId,
             statusCode.code,
             statusCode.message,
-            getDate(time)
-        )
+            getDate(time))
         DeliveryStatusViewModel.sendStatusUpdate(
-            toPut, getDatabaseForDriver(requireContext())
+          toPut, getDatabaseForDriver(requireContext())
         )
+
         markDestinationStart(sourceOrSite)
+
     }
 
     /**
@@ -205,7 +218,9 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         var notCompletedList = currentTrip.sourceOrSite.filter {
             it.deliveryStatus != DeliveryStatusEnum.COMPLETED
         }
+
         if (notCompletedList.isEmpty()) {
+
             binding.startTripText.text = "Trip Completed"
             bottomText = "Trip Completed"
 
@@ -216,11 +231,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 binding.startTripText,
                 true,
             )
-            if (sharedViewModel.selectedTrip.value != null) {
+            if(sharedViewModel.selectedTrip.value != null) {
                 viewModel.changeTripStatus(
                     sharedViewModel.selectedTrip.value!!.tripId,
                     DeliveryStatusEnum.COMPLETED
                 )
+
                 val statusCodeToGet = StatusMessageEnum.TRIPDONE
                 val toPut = DatabaseStatusPut(
                     sharedViewModel.driver!!.code.trim(),
@@ -229,16 +245,22 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                     statusCodeToGet.message,
                     getDate(Calendar.getInstance())
                 )
+
                 DeliveryStatusViewModel.sendStatusUpdate(
                     toPut,
                     getDatabaseForDriver(requireContext())
                 )
                 sharedViewModel.selectedTrip.value = null
             }
-        } else {
+
+
+        }
+        else
+        {
             var sortedList = notCompletedList.sortedWith(compareBy { it.seqNum })
             setUpClickListener(currentTrip, sortedList)
         }
+
     }
 
     /**
@@ -249,6 +271,8 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         super.onResume()
         if (sharedViewModel.driver == null)
             findNavController().navigateUp()
+
+
     }
 
     /**
@@ -262,6 +286,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
         sortedList: List<SourceOrSite>
     ) {
         if (sortedList.isNotEmpty()) {
+
             animateViewVisibility(
                 binding.startTripText.rootView,
                 binding.startTripText,
@@ -278,6 +303,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
                 else {
                     if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
+
                         showStartTripDialog(sortedList[0], currentTrip)
                     } else {
                         if (sharedViewModel.selectedSourceOrSite.value == null) {
@@ -289,8 +315,12 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                         }
                     }
                 }
+
+
+
             }
         }
+
     }
 
     /**
@@ -299,7 +329,9 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
      * @param sourceOrSite the current destination
      */
     private fun markDestinationStart(sourceOrSite: SourceOrSite) {
-        val time = Calendar.getInstance()
+        var time = Calendar.getInstance()
+
+
         Log.i(
             "NETWORK-CALL", String.format(
                 "Sending destination started: %d-%d-%d %d:%d \nDriver ID: %s \nTrip ID: %s \nSource ID: %s",
@@ -320,9 +352,11 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             sourceOrSite.seqNum,
             DeliveryStatusEnum.ONGOING
         )
-        deliveryStatusViewModel.destinationApproachingShown = false
-        deliveryStatusViewModel.destinationLeavingShown = false
+        deliveryStatusViewModel.destinationApproachingShown= false
+        deliveryStatusViewModel.destinationLeavingShown= false
         //change the active tab to delivery tab
         requireActivity().bottom_navigation.selectedItemId = R.id.delivery_navigation
+
+
     }
 }

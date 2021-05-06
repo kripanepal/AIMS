@@ -86,6 +86,8 @@ class MainActivity : AppCompatActivity() {
      */
     lateinit var dialog: AlertDialog
 
+    var timer = Handler(Looper.getMainLooper())
+
     /**
      * On create
      * This method initializes the activity
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
         dialog = showLoadingOverLay(this)
+        Thread.setDefaultUncaughtExceptionHandler{_,_->}
 
 
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
@@ -115,12 +118,18 @@ class MainActivity : AppCompatActivity() {
      */
     private fun observeLoading() {
         sharedViewModel.loading.observe(this) {
-            if (it) {
-                dialog.show()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    dialog.hide()
-                }, 7000)
-            } else dialog.dismiss()
+
+                timer.removeCallbacksAndMessages(null)
+                if (it) {
+                    dialog.show()
+                    timer.postDelayed({
+                        try {
+                        if(dialog.isShowing)
+                            dialog.cancel()  }catch (e:Exception){}
+                    }, 7000)
+                } else dialog.cancel()
+
+
         }
     }
 
@@ -133,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         super.onPostCreate(savedInstanceState)
         observeLoading()
         trackTruck()
-        registerBroadCastReceiver()
+
     }
 
     /**
@@ -258,7 +267,8 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super. onPause()
 
-          val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        dialog.cancel()
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
         val broadCastReceiverOn =  sharedPref.getBoolean("broadCastReceiverOn", false)
 
         if (broadCastReceiverOn) {
@@ -273,8 +283,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             }
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        registerBroadCastReceiver()
     }
 
     /**

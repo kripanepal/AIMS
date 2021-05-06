@@ -265,7 +265,7 @@ class DeliveryCompletionViewModel(
             }
             //if product is new
             if (isProductNew) {
-                val minProductId = (productListWithAllInfo.value!!.map { it.productId }).minOrNull()
+                val minProductId = (productListWithAllInfo.value!!.map { it.productId }).maxOrNull()
                 if (minProductId != null) {
                     viewModelScope.launch {
                         //save new product to local database
@@ -273,7 +273,7 @@ class DeliveryCompletionViewModel(
                         {
                             database.productsDao.insertFuel(
                                 DatabaseFuel(
-                                    minProductId - 1,
+                                    minProductId + 1,
                                     productSelected,
                                     productSelected
                                 )

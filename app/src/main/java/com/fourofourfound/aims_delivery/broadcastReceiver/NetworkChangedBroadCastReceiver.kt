@@ -42,6 +42,7 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (isNetworkConnected(context)) {
             if (firstTime) {
+                Log.i("NETWORK-CALL","BACK ONLINE")
                 //launch a coroutine to in the IO thread
                 GlobalScope.launch(Dispatchers.IO) {
                     firstTime = false

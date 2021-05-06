@@ -92,6 +92,8 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = this
         //checks if shared preferences already contains a user that is logged in
         if (viewModel.checkUserLoggedIn()) {
+            val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+            sharedViewModel.userClockedIn.value = sharedPref.getBoolean("userSignedIn", false)
             moveToHomePage()
             return binding.root
         }
@@ -104,6 +106,7 @@ class LoginFragment : Fragment() {
                     text = "Login Successful"
                     setTextColor(requireContext().getColor(R.color.Green))
                 }
+
                 if (sendSignedInMessage) {
                     val statusCodeToGet = StatusMessageEnum.ONDUTY
                     val toPut = DatabaseStatusPut(
@@ -124,8 +127,7 @@ class LoginFragment : Fragment() {
                 } else {
                     moveToHomePage()
                     val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-                    sharedViewModel.userClockedIn.value =
-                        sharedPref.getBoolean("userSignedIn", false)
+                    sharedViewModel.userClockedIn.value = sharedPref.getBoolean("userSignedIn", false)
                 }
             }
         })
@@ -169,9 +171,10 @@ class LoginFragment : Fragment() {
      */
     private fun setReverseMotionAnimations() {
         val motionContainer = binding.loginPageMainView
-        (motionContainer as View).setOnTouchListener { v, _ ->
+        (motionContainer  as View).setOnTouchListener { v, _ ->
             v.performClick()
-            if (animated) {
+            if(animated)
+            {
                 motionContainer.setTransition(R.id.end, R.id.start)
                 motionContainer.transitionToEnd()
                 animated = false
@@ -179,7 +182,6 @@ class LoginFragment : Fragment() {
             true
         }
     }
-
 
     /**
      * Login on done key

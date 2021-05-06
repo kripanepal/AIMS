@@ -134,16 +134,14 @@ class SettingsFragment : Fragment() {
 
         observer = androidx.lifecycle.Observer{
             var animation = binding.clockAnimated.drawable
-
-                if (it) {
-
-                    val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+            val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
                     if (sharedPref != null) {
                         with (sharedPref.edit()) {
                             putBoolean("userSignedIn", it)
                             apply()
                         }
                     }
+                if (it) {
 
                     if (animation is Animatable)
                     animation.start()

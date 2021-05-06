@@ -24,9 +24,9 @@
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/downloadProgressBar"
-            style="@style/SpinKitView.Circle"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            style="@style/SpinKitView.CubeGrid"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_marginHorizontal="25dp"
             android:visibility="gone"
             app:SpinKit_Color="@color/Aims_Orange"

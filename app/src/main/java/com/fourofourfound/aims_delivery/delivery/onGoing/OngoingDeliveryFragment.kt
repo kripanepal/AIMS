@@ -264,6 +264,7 @@ class OngoingDeliveryFragment : Fragment() {
                     R.drawable.ic_source
                 )
                 else {
+                    binding.siteInfo.visibility = View.VISIBLE
                     binding.destinationImage.setImageResource(R.drawable.ic_site)
                     val containerInfo =
                         htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerCode)
