@@ -4,6 +4,16 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.fourofourfound.aims_delivery.database.entities.*
 
+/**
+ * Completed form with info
+ * This class represents the relation between the form, destination, location, images and product
+ * @property form the from information
+ * @property destination the destination information
+ * @property location the location information
+ * @property images the bill of the lading images
+ * @property product the product information
+ * @constructor Create empty Completed form with info
+ */
 data class CompletedFormWithInfo(
     @Embedded val form: DatabaseCompletionForm,
 
@@ -23,7 +33,7 @@ data class CompletedFormWithInfo(
         parentColumn = "identifier",
         entityColumn = "identifier",
     )
-    val images: List<BillOfLadingImages> ,
+    val images: List<BillOfLadingImages>,
 
     @Relation(
         parentColumn = "productDelivered",

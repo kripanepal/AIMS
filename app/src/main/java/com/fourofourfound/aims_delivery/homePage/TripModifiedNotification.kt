@@ -6,18 +6,19 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.fourofourfound.aims_delivery.MainActivity
 import com.fourofourfound.aimsdelivery.R
 
-
+/**
+ * Show trip modified notification
+ * This method shows the notification about the trip change.
+ */
 fun HomePage.showTripModifiedNotification() {
     val CHANNEL_ID = "2"
      val notificationManager =
         requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as
                 NotificationManager
-
     val mChannel = NotificationChannel(
         CHANNEL_ID,
         "Trip Modified",
@@ -25,8 +26,6 @@ fun HomePage.showTripModifiedNotification() {
     )
     mChannel.description = "New Trips have been added or modified"
     notificationManager.createNotificationChannel(mChannel)
-
-
     val intent = PendingIntent.getActivity(
         context, 0,
         Intent(context, MainActivity::class.java), 0
@@ -43,7 +42,6 @@ fun HomePage.showTripModifiedNotification() {
         .setContentIntent(intent)
         .setAutoCancel(true)
         .build()
-
     notificationManager.notify(requireContext().getString(R.string.trip_modified_notification_id).toInt(), notification)
 
 }

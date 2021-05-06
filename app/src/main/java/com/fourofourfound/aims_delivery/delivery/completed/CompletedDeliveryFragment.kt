@@ -17,8 +17,7 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryCompletedBind
 /**
  * Completed delivery fragment
  * This fragment is responsible for displaying the data related to
- * completed deliveries
- *
+ * completed deliveries.
  * @constructor Create empty Completed delivery fragment
  */
 class CompletedDeliveryFragment : Fragment() {
@@ -43,7 +42,8 @@ class CompletedDeliveryFragment : Fragment() {
 
     /**
      * On create view
-     * @param inflater the inflator used to inflate the layout
+     * It is called when the fragment is created.
+     * @param inflater the inflater used to inflate the layout
      * @param container the viewGroup where the layout is added
      * @param savedInstanceState any saved data from configuration changes
      * @return the view that is displayed dby this fragment
@@ -61,9 +61,7 @@ class CompletedDeliveryFragment : Fragment() {
             container,
             false
         )
-
         if (sharedViewModel.driver == null) findNavController().navigateUp()
-
         //getting a view model from a factory
         viewModel = ViewModelProvider(this).get(CompletedDeliveryViewModel::class.java)
         viewModel.getTripDetails(tripFragmentArgs.trip.tripId, tripFragmentArgs.seqNo)
@@ -73,14 +71,8 @@ class CompletedDeliveryFragment : Fragment() {
         {
             adapter.data = viewModel.tripDetails
         }
-
-
         binding.lifecycleOwner = this
-
         binding.tripName.text = tripFragmentArgs.trip.tripName
-
         return binding.root
     }
-
-
 }

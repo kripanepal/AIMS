@@ -6,8 +6,7 @@ import com.fourofourfound.aimsdelivery.R
 
 /**
  * Navigation view model
- * This view model is used by the Navigation Fragment to store the information about navigation
- *
+ * This view model is used by the Navigation Fragment to store the information about navigation.
  * @constructor Create empty Navigation view model
  */
 class NavigationViewModel : ViewModel() {

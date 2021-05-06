@@ -7,9 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.fourofourfound.aims_delivery.repository.TripListRepository
 import com.fourofourfound.aims_delivery.utils.CustomSharedPreferences
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Settings view model
@@ -32,7 +30,7 @@ class SettingsViewModel(application: Application) :AndroidViewModel(application)
 
     /**
      * Trip list repository
-     * The repository that holds the information about the trip and the destination
+     * The repository that holds the information about the trip and the destination.
      */
     private var tripListRepository = TripListRepository(database)
 

@@ -20,7 +20,10 @@ import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
  */
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
-
+    /**
+     * Worker started
+     * The flag to check if the worker is started or not.
+     */
     var workerStarted: Boolean = false
 
     /**

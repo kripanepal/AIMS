@@ -4,6 +4,17 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.fourofourfound.aims_delivery.database.entities.*
 
+/**
+ * Destination with info
+ * This class represents the relation between different entities.
+ * @property sourceOrSite the destination information
+ * @property location the location information
+ * @property trailer the trailer information
+ * @property fuel the fuel information
+ * @property trip the trip information
+ * @property truck the truck information
+ * @constructor Create empty Destination with info
+ */
 data class DestinationWithInfo(
     @Embedded val sourceOrSite: DatabaseSourceOrSite,
 

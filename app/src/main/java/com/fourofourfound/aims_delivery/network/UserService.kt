@@ -1,32 +1,35 @@
 package com.fourofourfound.aims_delivery.network
 
-import android.util.Log
-import com.fourofourfound.aims_delivery.database.entities.DatabaseCompletionForm
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
-//server url
-/**
- * Base URL
- * The URL of the server
- */
+
 //private const val BASE_URL =  "https://aims-server.herokuapp.com/"
+/**
+ * B a s e_u r l
+ * Base url for the restful api server.
+ */
 private const val BASE_URL = "https://api.appery.io/"
+
+/**
+ * A p i_k e y
+ * The key for the restful api.
+ */
 private const val API_KEY = "f20f8b25-b149-481c-9d2c-41aeb76246ef"
 
-
-// a retrofit object
+/**
+ * Retrofit
+ * This is a retrofit object to make network calls.
+ */
 var retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(BASE_URL)
     .build()
 
-
-//interface to add the methods
 /**
  * User service
  * Interface to make network calls
@@ -48,19 +51,11 @@ interface UserService {
         @Path("statusMessage") statusMessage: String,
         @Path("statusDate") statusDate: String, ): StatusMessageUpdateResponse
 
-
     @GET("/alltrips")
     suspend fun getAllTripsFromHeroku(): TripResponse
 
-
-
     @POST("/location")
     suspend fun sendLocation(@Body location: CustomDatabaseLocation)
-
-
-    @POST("/form")
-    fun sendFormData(@Body form: DatabaseCompletionForm)
-
 
     @GET("/rest/1/apiexpress/api/DispatcherMobileApp/TripProductPickupPut/{driverCode}/{tripId}/{sourceId}/{productId}/{bol}/{startDate}/{endDate}/{grossQuantity}/{netQuantity}?apiKey=f20f8b25-b149-481c-9d2c-41aeb76246ef")
     suspend  fun sendProductPickupInfo( @Path("driverCode") driverCode: String,
@@ -84,10 +79,7 @@ interface UserService {
                                @Path("netQuantity") netQuantity: String,
                                @Path("remainingQuantity") remainingQuantity: String,
                                ): StatusMessageUpdateResponse
-
-
 }
-
 /**
  * Make network call
  * Object to link interface and retrofit object

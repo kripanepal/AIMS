@@ -3,7 +3,6 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.deliveryForms.finalForm.DeliveryCompletionViewModel
-import com.fourofourfound.aims_delivery.deliveryForms.finalForm.DeliveryCompletionViewModelFactory
 import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
@@ -28,7 +24,6 @@ import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBindin
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.source_or_site_info.*
-import kotlinx.android.synthetic.main.source_or_site_info.view.*
 import java.util.*
 
 
@@ -58,13 +53,23 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    lateinit var viewModel:OngoingDeliveryViewModel
+
+    /**
+     * View model
+     * View model to hold the data data of this fragment.
+     */
+    lateinit var viewModel: OngoingDeliveryViewModel
+
+    /**
+     * Current source or site
+     * The current destination.
+     */
     private lateinit var currentSourceOrSite: SourceOrSite
 
 
     /**
      * On create view
-     * @param inflater the inflator used to inflate the layout
+     * @param inflater the inflater used to inflate the layout
      * @param container the viewGroup where the layout is added
      * @param savedInstanceState any saved data from configuration changes
      * @return the view that is displayed dby this fragment
@@ -74,6 +79,7 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //if no current destination, show empty view
         if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
@@ -81,7 +87,6 @@ class OngoingDeliveryFragment : Fragment() {
             }
             return goback
         }
-
 
         //inflate the layout and initialize the binding object
         _binding = DataBindingUtil.inflate(
@@ -99,7 +104,7 @@ class OngoingDeliveryFragment : Fragment() {
         //getting a view model from a factory
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(OngoingDeliveryViewModel::class.java)
-        viewModel.trailerReading.observe(viewLifecycleOwner){}
+        viewModel.trailerReading.observe(viewLifecycleOwner) {}
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
@@ -110,16 +115,20 @@ class OngoingDeliveryFragment : Fragment() {
             binding.directions.text = "Continue Navigation"
         }
 
-        if(!sharedViewModel.userClockedIn.value!!)  Snackbar.make(binding.root, "Please clock in to continue", Snackbar.LENGTH_LONG)
-            .setAction("Clock In") { requireActivity().bottom_navigation.selectedItemId = R.id.settings_navigation }
+        if (!sharedViewModel.userClockedIn.value!!) Snackbar.make(
+            binding.root,
+            "Please clock in to continue",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("Clock In") {
+                requireActivity().bottom_navigation.selectedItemId = R.id.settings_navigation
+            }
             .show()
 
-
         binding.startNavigation.setOnClickListener {
-            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
             else findNavController().navigate(OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToNavigationFragment())
         }
-
         viewModel.fillingEnded.observe(viewLifecycleOwner)
         {
             if (it) {
@@ -127,7 +136,6 @@ class OngoingDeliveryFragment : Fragment() {
 
             }
         }
-
         viewModel.getDatabase()
         return binding.root
     }
@@ -135,11 +143,11 @@ class OngoingDeliveryFragment : Fragment() {
 
     /**
      * Observe start fueling
-     * This method observes if the fuel filling is started or not
+     * This method observes if the fuel filling is started or not.
      */
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
-            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
             else {
                 val preFillingDialog = ReadingPrePostFilling()
                 val args = Bundle()
@@ -154,10 +162,9 @@ class OngoingDeliveryFragment : Fragment() {
                 preFillingDialog.show(childFragmentManager, "PreFillingReadings")
             }
         }
-
         viewModel.fillingStarted.observe(viewLifecycleOwner)
         {
-            if(it) {
+            if (it) {
                 viewModel.updateFuelInfo(
                     currentSourceOrSite.trailerInfo.trailerId,
                     viewModel.trailerReadingBegin.value!!
@@ -167,17 +174,16 @@ class OngoingDeliveryFragment : Fragment() {
                 viewModel.startDateAndTime = Calendar.getInstance()
                 fuelingStartViews()
             }
-
         }
     }
 
     /**
      * Observe end fueling
-     * This method observes if the fuel filling is ended or not
+     * This method observes if the fuel filling is ended or not.
      */
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
-            if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
             else {
                 viewModel.endDateAndTime = Calendar.getInstance()
 
@@ -196,13 +202,12 @@ class OngoingDeliveryFragment : Fragment() {
                 preFillingDialog.arguments = args
                 preFillingDialog.show(childFragmentManager, "PostFillingReadings")
             }
-
         }
     }
 
     /**
      * Get form confirmation
-     * This method records the time and fuel reading and navigates to the form page
+     * This method records the time and fuel reading and navigates to the form page.
      * @return a dialog
      */
     private fun getFormConfirmation(): CustomDialogBuilder {
@@ -225,7 +230,6 @@ class OngoingDeliveryFragment : Fragment() {
                         viewModel.stickReadingEnd.value
                     )
                 )
-
             },
             "Cancel",
             null,
@@ -235,7 +239,7 @@ class OngoingDeliveryFragment : Fragment() {
 
     /**
      * Observe destination
-     *
+     * This method observes the current source or site for any changes.
      */
     private fun observeDestination() {
         sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
@@ -250,9 +254,9 @@ class OngoingDeliveryFragment : Fragment() {
                         "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
                     address.text = fullAddress
                     productDesc.text = currentSourceOrSite.productInfo.productDesc
-                    var productQtyText =  currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
-                    productQty.text =productQtyText
-
+                    var productQtyText =
+                        currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
+                    productQty.text = productQtyText
                     truck_text.text = currentSourceOrSite.truckInfo.truckDesc
                     trailer_text.text = currentSourceOrSite.trailerInfo.trailerDesc
                 }
@@ -264,11 +268,9 @@ class OngoingDeliveryFragment : Fragment() {
                     val containerInfo =
                         htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerCode)
                     binding.siteContainer.text = containerInfo
-
-                    val  containerDesc =
+                    val containerDesc =
                         htmlToText("<b>Container Desc</b>: " + currentSourceOrSite.siteContainerDescription)
                     binding.siteContainerDescription.text = containerDesc
-
                     val notes = htmlToText("<b>Notes</b>: " + currentSourceOrSite.productInfo.fill)
                     binding.loadNotes.text = notes
                 }
@@ -276,43 +278,49 @@ class OngoingDeliveryFragment : Fragment() {
         }
     }
 
-
-
+    /**
+     * Fueling start views
+     * Called when filling starts.
+     */
     private fun fuelingStartViews() {
         binding.startFilling.visibility = View.GONE
         binding.endFilling.visibility = View.VISIBLE
         binding.startNavigation.visibility = View.GONE
     }
 
-    private fun fuelingEndViews()
-    {
+    /**
+     * Fueling end views
+     * Called when filling ends.
+     */
+    private fun fuelingEndViews() {
         binding.fillForm.visibility = View.VISIBLE
         binding.endFilling.visibility = View.GONE
-        binding.fillForm.setOnClickListener { if(showUserNotClockedInMessage(sharedViewModel,binding.root,requireActivity()))
-        else getFormConfirmation().builder.show()
+        binding.fillForm.setOnClickListener {
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
+            else getFormConfirmation().builder.show()
         }
     }
 
+    /**
+     * On view created
+     * This method is called when the view is created
+     * @param view the view that is created
+     * @param savedInstanceState called when fragment is started
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
         sharedViewModel.selectedTrip.value?.apply {
             sharedViewModel.selectedSourceOrSite.value?.apply {
-
-            (activity as AppCompatActivity).supportActionBar?.title =
+                (activity as AppCompatActivity).supportActionBar?.title =
                     sharedViewModel.selectedTrip.value!!.tripName
-
                 sharedViewModel.selectedSourceOrSite.value!!.also {
-                    if(it != currentSourceOrSite)
-                    {
-                        viewModel.fillingEnded.value=false
-                        viewModel.fillingStarted.value=false
+                    if (it != currentSourceOrSite) {
+                        viewModel.fillingEnded.value = false
+                        viewModel.fillingStarted.value = false
                     }
                 }
-                if(viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
-                if(viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
+                if (viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
+                if (viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
                 observeDestination()
             }
         }

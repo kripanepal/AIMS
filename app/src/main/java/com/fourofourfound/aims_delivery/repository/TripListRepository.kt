@@ -52,6 +52,8 @@ class TripListRepository(private val database: TripListDatabase) {
                 //If there are new trips from the network, save it to the database.
                 if (!storedData.containsAll(filteredNetworkList)) {
                     updatingTrips = true
+
+                    //list of trips that was deleted by the dispatcher
                     val removed = (storedData.filterNot { filteredNetworkList.contains(it) })
                     deleteTrips(removed.map { it.tripId as Int })
                     saveTrips(filteredNetworkList)
@@ -141,7 +143,6 @@ class TripListRepository(private val database: TripListDatabase) {
     suspend fun changeTripStatus(tripId: Int, deliveryStatus: DeliveryStatusEnum) {
         withContext(Dispatchers.IO) {
             try {
-                //TODO make network call to inform aims dispatcher
                 database.tripDao.changeTripStatus(tripId, deliveryStatus)
             } catch (e: Exception) {
             }

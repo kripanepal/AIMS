@@ -7,6 +7,13 @@ import com.fourofourfound.aims_delivery.database.entities.DatabaseTrip
 import com.fourofourfound.aims_delivery.domain.*
 import com.fourofourfound.aims_delivery.network.NetworkTrip
 
+/**
+ * Trip with info
+ * This class represents the relation between trip and destinations.
+ * @property trip the trip information
+ * @property destinationInfo the destination information
+ * @constructor Create empty Trip with info
+ */
 data class TripWithInfo(
     @Embedded val trip: DatabaseTrip,
     @Relation(
@@ -17,11 +24,13 @@ data class TripWithInfo(
     val destinationInfo: List<DestinationWithInfo>
 )
 
-
+/**
+ * As network model
+ * This class converts the trip information from database to network model.
+ * @return the converted trip information
+ */
 fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
-
     var finalList = mutableListOf<NetworkTrip>()
-
     map {
         for (each in it.destinationInfo)
             each.sourceOrSite.apply {
@@ -63,11 +72,14 @@ fun List<TripWithInfo>.asNetworkModel(): List<NetworkTrip> {
                 )
             }
     }
-
     return finalList
 }
 
-
+/**
+ * As domain model
+ * This class converts the trip information from database to domain model.
+ * @return the converted trip information
+ */
 fun List<TripWithInfo>.asDomainModel(): List<Trip> {
     var listOfSourceAndSite: MutableList<SourceOrSite>
     var finalList = mutableListOf<Trip>()
@@ -101,7 +113,8 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
                 )
             }
             destination.trailer.apply {
-                trailerInfo = TrailerInfo(trailerId, trailerCode, trailerDesc, fuelQuantity.toDouble())
+                trailerInfo =
+                    TrailerInfo(trailerId, trailerCode, trailerDesc, fuelQuantity.toDouble())
             }
 
             destination.truck.apply {
@@ -124,16 +137,11 @@ fun List<TripWithInfo>.asDomainModel(): List<Trip> {
                     )
                 )
             }
-
-
         }
         it.trip.apply {
             trip = Trip(tripId, tripName, tripDate, listOfSourceAndSite, deliveryStatus)
         }
         finalList.add(trip)
-
     }
-
     return finalList
-
 }

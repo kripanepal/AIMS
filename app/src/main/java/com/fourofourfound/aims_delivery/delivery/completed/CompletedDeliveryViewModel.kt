@@ -16,19 +16,26 @@ import kotlinx.coroutines.withContext
  * deliveries
  * @constructor
  * Creates a new view model with a trip whose information is to be displayed
- *
- * @param trip trip whose information is to be displayed
+ * @param application Base class for maintaining global application state
  */
 class CompletedDeliveryViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Loading
-     * The loading
+     * The live data that represents the loading state.
      */
     var loading = MutableLiveData(true)
 
+    /**
+     * Database
+     * The database for the currently logged in driver
+     */
     val database = getDatabaseForDriver(application)
 
+    /**
+     * Trip details
+     * The list of form information of a trip.
+     */
     var tripDetails = listOf<CompletedFormWithInfo>()
 
     /**
@@ -40,14 +47,10 @@ class CompletedDeliveryViewModel(application: Application) : AndroidViewModel(ap
     fun getTripDetails(tripId: Int, seqNo: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                if (seqNo == -1) tripDetails = database.completedDeliveriesDao.getDetails(tripId)
-                else tripDetails =
-                    database.completedDeliveriesDao.getDetailsForDestination(tripId, seqNo)
-
+                tripDetails = if (seqNo == -1) database.completedDeliveriesDao.getDetails(tripId)
+                else database.completedDeliveriesDao.getDetailsForDestination(tripId, seqNo)
             }
             loading.value = false
-
         }
     }
-
 }

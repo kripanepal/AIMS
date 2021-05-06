@@ -7,13 +7,13 @@ import com.fourofourfound.aims_delivery.domain.SourceOrSite
 
 /**
  * Completed delivery view model factory
- *Factory class which creates a viewModel for CompletedDeliveryViewModel
- * @property trip the trip which is assigned to the viewModel
- * @constructor Create empty Completed delivery view model factory
+ * Factory class which creates a viewModel for CompletedDeliveryViewModel
+ * @property application Application Base class for maintaining global application state.
+ * @property currentSourceOrSite SourceOrSite current destination
+ * @constructor
  */
 class OnGoingDeliveryViewModelFactory(private val application: Application, private val currentSourceOrSite: SourceOrSite) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-
         //check if object is of type ScoreViewModel
         if (modelClass.isAssignableFrom(OngoingDeliveryViewModel::class.java)) {
             return OngoingDeliveryViewModel(application, currentSourceOrSite) as T

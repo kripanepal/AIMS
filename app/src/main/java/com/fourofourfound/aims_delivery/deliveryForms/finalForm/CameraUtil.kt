@@ -14,20 +14,26 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+/**
+ * Open camera
+ * This method is responsible for opening the camera intent.
+ */
 fun BOLFormFragment.openCamera() {
     getImageContent.launch(context?.let { getPickImageIntent(it) })
 }
 
+/**
+ * Get pick image intent
+ * This method is responsible for opening camera or gallery.
+ * @param context the current context of the application
+ * @return camera or gallery intent
+ */
 @SuppressLint("RestrictedApi")
 fun BOLFormFragment.getPickImageIntent(context: Context): Intent? {
     val builder = VmPolicy.Builder()
     StrictMode.setVmPolicy(builder.build())
-
     var chooserIntent: Intent? = null
-
     var intentList: MutableList<Intent> = ArrayList()
-
     val pickIntent = Intent(
         Intent.ACTION_PICK,
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -41,12 +47,8 @@ fun BOLFormFragment.getPickImageIntent(context: Context): Intent? {
         createImageFile(context)
     )
     takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-
     intentList = addIntentsToList(context, intentList, pickIntent)
     intentList = addIntentsToList(context, intentList, takePhotoIntent)
-
-
-
     if (intentList.isNotEmpty()) {
         chooserIntent = Intent.createChooser(
             intentList.removeAt(intentList.size - 1),
@@ -58,13 +60,20 @@ fun BOLFormFragment.getPickImageIntent(context: Context): Intent? {
         )
     }
     return chooserIntent
-
 }
 
+/**
+ * Add intents to list
+ * This method added the camera and gallery intent to the list.
+ * @param context the current context of the application
+ * @param list the list to hold the intent
+ * @param intent the intent to be added
+ * @return list of added intents
+ */
 private fun addIntentsToList(
-     context: Context,
-     list: MutableList<Intent>,
-     intent: Intent
+    context: Context,
+    list: MutableList<Intent>,
+    intent: Intent
 ): MutableList<Intent> {
     val resInfo: List<ResolveInfo> = context.packageManager.queryIntentActivities(intent, 0)
     for (resolveInfo in resInfo) {
@@ -76,6 +85,12 @@ private fun addIntentsToList(
     return list
 }
 
+/**
+ * Create image file
+ * This method creates the image file with jpg extension
+ * @param context the current context of the application
+ * @return the image file
+ */
 private fun BOLFormFragment.createImageFile(context: Context): File {
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     val imageFileName = "${viewModel.tripId} ${viewModel.destination.seqNum}-${timeStamp} - "

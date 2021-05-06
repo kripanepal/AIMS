@@ -5,12 +5,11 @@ import com.here.android.mpa.routing.Maneuver
 
 /**
  * Route name to image mapper
- * This method provides the upcoming direction sign
+ * This method provides the upcoming direction sign.
  * @param directionName upcoming direction image
  * @return upcoming direction
  */
 fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
-
     return when (directionName) {
         Maneuver.Icon.START -> R.drawable.start
         Maneuver.Icon.UNDEFINED -> null
@@ -32,10 +31,7 @@ fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
         Maneuver.Icon.ENTER_HIGHWAY_LEFT_LANE -> R.drawable.enter_highway_left_lane
         Maneuver.Icon.LEAVE_HIGHWAY_LEFT_LANE -> R.drawable.leave_highway_left_lane
         Maneuver.Icon.LEAVE_HIGHWAY_RIGHT_LANE -> R.drawable.leave_highway_right_lane
-
         Maneuver.Icon.END -> R.drawable.end
-
-
         else -> R.drawable.start
     }
 
@@ -43,12 +39,11 @@ fun routeNameToImageMapper(directionName: Maneuver.Icon?): Int? {
 
 /**
  * Route name to direction text mapper
- * This method provides the name of the next direction
+ * This method provides the name of the next direction.
  * @param directionName upcoming direction text
  * @return upcoming direction text
  */
 fun routeNameToDirectionTextMapper(directionName: Maneuver.Icon?): String {
-
     return when (directionName) {
         Maneuver.Icon.START -> "Start"
         Maneuver.Icon.UNDEFINED -> ""
@@ -77,5 +72,4 @@ fun routeNameToDirectionTextMapper(directionName: Maneuver.Icon?): String {
         Maneuver.Icon.END -> "Arriving"
         else -> "Roundabout"
     }
-
 }

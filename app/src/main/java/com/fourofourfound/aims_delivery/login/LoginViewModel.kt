@@ -1,7 +1,6 @@
 package com.fourofourfound.aims_delivery.login
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -73,17 +72,21 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val passwordFieldTouched: LiveData<Boolean>
         get() = _passwordFieldTouched
 
+    /**
+     * Logged in driver
+     * The logged in driver information
+     */
     lateinit var loggedInDriver: Driver
 
 
     /**
      * Save user
-     * save the user to the shared preferences encrypting the given username and password
-     * @param userName
-     * @param password
+     * Save the user to the shared preferences encrypting the given username and password
+     * @param driver the driver username
+     * @param password the driver password
      */
     private fun saveUser(
-       driver:Driver,password:String
+        driver: Driver, password: String
     ) {
         CustomSharedPreferences(myApplication).apply {
             setEncryptedPreference("driverCode", driver.code)
@@ -103,8 +106,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Check user logged in
      * This method checks if shared preferences already contain a user
-     * that is logged in
-     *
+     * that is logged in.
      * @return if the user is logged in or not
      */
 
