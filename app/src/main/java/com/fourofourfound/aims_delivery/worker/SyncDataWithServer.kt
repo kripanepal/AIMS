@@ -5,7 +5,6 @@ import android.app.*
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -18,7 +17,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.repository.TripListRepository
@@ -128,7 +126,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
             CustomWorkManager(applicationContext).apply {
                 sendLocationOnetime()
             }
-        }, 12000)
+        }, 60000)
 
 
         buildNotification(successTitle, null, null, null, successChannelId)
@@ -140,13 +138,6 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 initializeLocationManager()
                 val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
-                    setForeground(
-                        ForegroundInfo(
-                            NOTIFICATION_ID,
-                            notification,
-                            FOREGROUND_SERVICE_TYPE_LOCATION
-                        )
-                    )
                     return sendLocationToServerAndUpdateTrips()
                 }
                 Log.i("WORKER-WORK", "Missing location")

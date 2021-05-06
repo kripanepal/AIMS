@@ -6,6 +6,9 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentLocation
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentPickupMessages
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel.Companion.sendUnsentPutMessages
 import com.fourofourfound.aims_delivery.utils.getDatabaseForDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -42,12 +45,13 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
             if (firstTime) {
                 //launch a coroutine to in the IO thread
                 GlobalScope.launch(Dispatchers.IO) {
+                    Log.i("NETWORK-CALL", "RECEIVED")
                     firstTime = false
                     //get the instance of the database
                     val database = getDatabaseForDriver(context)
-//                    sendUnsentLocation(database)
-//                    sendUnsentPutMessages(database)
-//                    sendUnsentPickupMessages(database)
+                    sendUnsentLocation(database)
+                    sendUnsentPutMessages(database)
+                    sendUnsentPickupMessages(database)
                 }
             }
         } else firstTime = true
