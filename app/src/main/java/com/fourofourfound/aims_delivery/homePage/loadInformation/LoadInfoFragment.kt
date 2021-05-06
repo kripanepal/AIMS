@@ -102,7 +102,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             View.GONE
         else {
             scrollTripStartIcon()
-            if(sharedViewModel.userClockedIn.value!!) startTripOnClick(currentTrip)
+            startTripOnClick(currentTrip)
 
         }
 
@@ -230,8 +230,6 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
             )
             binding.startTripText.setOnClickListener {
 
-
-
                 if(!sharedViewModel.workerStarted) {
                     CustomWorkManager(requireContext()).apply {
                         sendLocationAndUpdateTrips()
@@ -244,6 +242,7 @@ class LoadInfoFragment : androidx.fragment.app.Fragment() {
                 else
                 {
                     if (sharedViewModel.selectedTrip.value?.tripId != currentTrip.tripId) {
+
                         showStartTripDialog(sortedList[0], currentTrip)
                     } else {
                         if (sharedViewModel.selectedSourceOrSite.value == null) {

@@ -44,6 +44,7 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
 
         if (isNetworkConnected(context) ) {
             if (firstTime) {
+                Log.i("NETWORK-CALL","BACK ONLINE")
                 //launch a coroutine to in the IO thread
                 GlobalScope.launch(Dispatchers.IO) {
                      firstTime = false
@@ -52,7 +53,6 @@ class NetworkChangedBroadCastReceiver : BroadcastReceiver() {
                     sendUnsentLocation(database)
                     sendUnsentPutMessages(database)
                     sendUnsentPickupMessages(database)
-
                 }
             }
         }

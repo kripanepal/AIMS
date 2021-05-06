@@ -119,7 +119,7 @@ class TripListAdapter(
                     val numberOfSites = sourceList.size - sorted.size
                     val productName = productList[index]
                     var sourceName =
-                        if (sorted.isEmpty()) "N/A" else sorted[0].location.destinationName
+                        if (sorted.isEmpty()) "--" else sorted[0].location.destinationName
                     var fuelWithInfo =
                         FuelWithInfo(productName!!, sourceName, numberOfSites.toString())
                     fuelInfo.add(fuelWithInfo)

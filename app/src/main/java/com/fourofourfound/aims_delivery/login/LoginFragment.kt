@@ -81,7 +81,9 @@ class LoginFragment : Fragment() {
 
         //checks if shared preferences already contains a user that is logged in
         if (viewModel.checkUserLoggedIn()) {
-           moveToHomePage()
+            val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+            sharedViewModel.userClockedIn.value = sharedPref.getBoolean("userSignedIn", false)
+            moveToHomePage()
             return binding.root
 
         }
