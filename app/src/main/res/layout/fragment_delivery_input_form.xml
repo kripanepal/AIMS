@@ -243,6 +243,7 @@
                 <EditText
                     android:id="@+id/gross_qty"
                     style="@style/editTextInputLayout"
+                    android:inputType="numberDecimal"
                     android:hint="Gross Quantity"
                     android:text="@={viewModel.grossQty}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -260,6 +261,7 @@
                     android:id="@+id/net_qty"
                     style="@style/editTextInputLayout"
                     android:hint="Net Quantity"
+                    android:inputType="numberDecimal"
                     android:text="@={viewModel.netQty}" />
             </com.google.android.material.textfield.TextInputLayout>
 

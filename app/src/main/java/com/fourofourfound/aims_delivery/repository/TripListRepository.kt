@@ -1,6 +1,5 @@
 package com.fourofourfound.aims_delivery.repository
 
-import android.util.Log
 import androidx.lifecycle.Transformations
 import com.fourofourfound.aims_delivery.database.TripListDatabase
 import com.fourofourfound.aims_delivery.database.entities.*
@@ -60,7 +59,7 @@ class TripListRepository(private val database: TripListDatabase) {
                 } else {
                 }
             } catch (e: Exception) {
-                Log.i("ERROR!!!", e.stackTraceToString())
+
             }
         }
 
@@ -126,7 +125,7 @@ class TripListRepository(private val database: TripListDatabase) {
                     }
                 }
             } catch (e: Exception) {
-                Log.i("ERROR!!!", e.stackTraceToString())
+
 
             } finally {
                 updatingTrips = false
@@ -173,11 +172,11 @@ class TripListRepository(private val database: TripListDatabase) {
             try {
                 database.formDao.insertFormData(formToSubmit)
             } catch (e: Exception) {
-                Log.i("ERROR!!!", e.stackTraceToString())
+
                 try {
                     database.formDao.insertFormData(formToSubmit)
                 } catch (e: Exception) {
-                    Log.i("ERROR!!!", e.toString())
+
                 }
             }
         }

@@ -17,10 +17,8 @@ import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
 import com.fourofourfound.aims_delivery.repository.TripListRepository
@@ -128,10 +126,10 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         //TODO remove this as it should run in the defined interval. Just for presentation
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             CustomWorkManager(applicationContext).apply {
-            sendLocationAndUpdateTrips()
+                sendLocationAndUpdateTrips()
                 sendLocationOnetime()
             }
-        }, 60000)
+        }, 15000)
 
 
         buildNotification(successTitle, null, null, null, successChannelId)

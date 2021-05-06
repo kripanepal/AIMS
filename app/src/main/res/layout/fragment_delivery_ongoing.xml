@@ -106,21 +106,18 @@
                         android:id="@+id/siteContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:textSize="@dimen/description_text_size" />
 
                     <TextView
                         android:id="@+id/siteContainerDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:textSize="@dimen/description_text_size" />
 
                     <TextView
                         android:id="@+id/load_notes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:textSize="@dimen/description_text_size" />
                     </LinearLayout>
                 </LinearLayout>

@@ -213,6 +213,10 @@ class DeliveryCompletionViewModel(
                         currentSourceOrSite.seqNum,
                         imagePaths.value
                     )
+                    database.trailerDao.updateTrailerFuel(
+                        destination.trailerInfo.trailerId,
+                        trailerEndReading.value!!
+                    )
                     sendProductPickedUpMessage(productId)
                 } catch (e: Exception) {
                 }

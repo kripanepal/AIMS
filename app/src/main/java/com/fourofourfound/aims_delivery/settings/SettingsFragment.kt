@@ -61,8 +61,17 @@ class SettingsFragment : Fragment() {
      * ViewModel that is used by the fragment to store the data.
      */
     lateinit var viewModel: SettingsViewModel
+
+    /**
+     * Observer
+     * Callback that can receive from livedata
+     */
     lateinit var observer: androidx.lifecycle.Observer<in Boolean>
 
+    /**
+     * Need to send signed in info
+     * Flag to check if user is signed in to the application or not.
+     */
     var needToSendSignedInInfo = false
 
     /**
@@ -150,7 +159,7 @@ class SettingsFragment : Fragment() {
                         binding.clockInOutBtn.text = "Clock Out"
                         binding.clockInOutBtn.setBackgroundColor(Color.RED)
                         sendSigningOnOffMessage(StatusMessageEnum.ONDUTY, sharedViewModel.driver!!.code)
-                        needToSendSignedInInfo = false
+                        needToSendSignedInInfo = true
                     }
                 }
                 else {
@@ -159,8 +168,11 @@ class SettingsFragment : Fragment() {
                     binding.clockInOutBtn.text = "Clock In"
                     binding.clockInOutBtn.setBackgroundColor(ContextCompat.getColor(requireActivity(),
                         R.color.Dark_green))
-                    if (it)
-                    sendSigningOnOffMessage(StatusMessageEnum.OFFDUTY, sharedViewModel.driver!!.code)
+                    if (needToSendSignedInInfo || sharedViewModel.userClockedIn.value!!)
+                        sendSigningOnOffMessage(
+                            StatusMessageEnum.OFFDUTY,
+                            sharedViewModel.driver!!.code
+                        )
                     needToSendSignedInInfo = true
                 }
 

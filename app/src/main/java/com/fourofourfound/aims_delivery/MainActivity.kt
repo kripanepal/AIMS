@@ -14,14 +14,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.amitshekhar.DebugDB
-import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.database.entities.DatabaseStatusPut
 import com.fourofourfound.aims_delivery.delivery.onGoing.checkDistanceToDestination
 import com.fourofourfound.aims_delivery.domain.DestinationLocation
@@ -106,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         initializeToolBar()
         dialog = showLoadingOverLay(this)
         Thread.setDefaultUncaughtExceptionHandler{_,_->}
-
 
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
     }

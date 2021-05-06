@@ -397,7 +397,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
             )
             if (sharedViewModel.selectedSourceOrSite.value!!.wayPointTypeDescription == "Source") {
                 if (trailerBeginReading.value!! > trailerEndReading.value!!) {
-                    showGeneralErrors(
+                    return showGeneralErrors(
                         binding.trailerEnd,
                         "Begin reading is greater than end reading"
                     )
@@ -422,6 +422,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
      */
     private fun showGeneralErrors(view: EditText, error: String): Boolean {
         view.error = error
+        binding.errorText.text = ""
         return false
     }
 
@@ -455,7 +456,7 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
             if (wayPointTypeDescription == "Source")
                 viewModel.netQty.value =
                     args.trailerEndReading.toInt() - args.trailerBeginReading.toInt()
-            viewModel.netQty.value =
+            else viewModel.netQty.value =
                 args.trailerBeginReading.toInt() - args.trailerEndReading.toInt()
         }
         viewModel.grossQty.value = viewModel.netQty.value
