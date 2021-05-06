@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) setupBottomNavigationBar()
         initializeToolBar()
         dialog = showLoadingOverLay(this)
-        Thread.setDefaultUncaughtExceptionHandler{_,_->}
+
 
         Log.d("DatabaseDebug", DebugDB.getAddressLog())
     }

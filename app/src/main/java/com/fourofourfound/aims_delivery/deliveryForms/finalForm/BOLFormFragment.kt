@@ -455,9 +455,9 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
         sharedViewModel.selectedSourceOrSite.value?.apply {
             if (wayPointTypeDescription == "Source")
                 viewModel.netQty.value =
-                    args.trailerEndReading.toInt() - args.trailerBeginReading.toInt()
+                    args.trailerEndReading - args.trailerBeginReading
             else viewModel.netQty.value =
-                args.trailerBeginReading.toInt() - args.trailerEndReading.toInt()
+                args.trailerBeginReading - args.trailerEndReading
         }
         viewModel.grossQty.value = viewModel.netQty.value
     }
@@ -512,8 +512,8 @@ class BOLFormFragment : androidx.fragment.app.Fragment() {
                     viewModel.startTime.get(Calendar.MINUTE),
                     viewModel.endTime.get(Calendar.HOUR_OF_DAY),
                     viewModel.endTime.get(Calendar.MINUTE),
-                    viewModel.grossQty.value,
-                    viewModel.netQty.value
+                    viewModel.grossQty.value!!.toInt(),
+                    viewModel.netQty.value!!.toInt()
                 ),
                 "OK",
                 { //TODO need to save the captured image bitmap in the database
