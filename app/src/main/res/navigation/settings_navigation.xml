@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_navigation"
-    android:label="Settings"
     app:startDestination="@id/settingsFragment">
 
     <fragment
@@ -12,7 +11,11 @@
         android:label="Settings">
         <action
             android:id="@+id/action_settingsFragment_to_mapDownloadFragment"
-            app:destination="@id/mapDownloadFragment" />
+            app:destination="@id/mapDownloadFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/mapDownloadFragment"

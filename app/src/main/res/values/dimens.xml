@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="app_horizontal_margin">12dp</dimen>
-    <dimen name="card_elevation">10dp</dimen>
+    <dimen name="app_horizontal_margin">8dp</dimen>
+    <dimen name="card_elevation">5dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="card_vertical_margin">15dp</dimen>
-    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_large">25sp</dimen>
     <dimen name="margin_all_sides_10">10dp</dimen>
-    <dimen name="text_size_medium">15sp</dimen>
-    <dimen name="text_size_xl">25sp</dimen>
-    <dimen name="text_size_small">10sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_small">15sp</dimen>
+    <dimen name="botttomSheetPeekHeight">60dp</dimen>
+    <dimen name="description_text_size">20sp</dimen>
+    <dimen name="homepage_dropdown_sec">30dp</dimen>
 </resources>

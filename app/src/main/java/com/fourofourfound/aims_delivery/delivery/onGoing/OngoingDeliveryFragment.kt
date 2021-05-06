@@ -2,30 +2,28 @@ package com.fourofourfound.aims_delivery.delivery.onGoing
 
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.fourofourfound.aims_delivery.domain.GeoCoordinates
+import com.fourofourfound.aims_delivery.deliveryForms.prePostCompletion.ReadingPrePostFilling
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
-import com.fourofourfound.aims_delivery.repository.LocationRepository
 import com.fourofourfound.aims_delivery.shared_view_models.SharedViewModel
 import com.fourofourfound.aims_delivery.utils.CustomDialogBuilder
+import com.fourofourfound.aims_delivery.utils.htmlToText
+import com.fourofourfound.aims_delivery.utils.showUserNotClockedInMessage
 import com.fourofourfound.aimsdelivery.R
 import com.fourofourfound.aimsdelivery.databinding.FragmentDeliveryOngoingBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.load_info_each_item.view.*
+import kotlinx.android.synthetic.main.source_or_site_info.*
 import java.util.*
 
 
@@ -55,12 +53,23 @@ class OngoingDeliveryFragment : Fragment() {
      * trip
      */
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
+    /**
+     * View model
+     * View model to hold the data data of this fragment.
+     */
     lateinit var viewModel: OngoingDeliveryViewModel
-    lateinit var currentSourceOrSite: SourceOrSite
+
+    /**
+     * Current source or site
+     * The current destination.
+     */
+    private lateinit var currentSourceOrSite: SourceOrSite
+
 
     /**
      * On create view
-     * @param inflater the inflator used to inflate the layout
+     * @param inflater the inflater used to inflate the layout
      * @param container the viewGroup where the layout is added
      * @param savedInstanceState any saved data from configuration changes
      * @return the view that is displayed dby this fragment
@@ -70,8 +79,7 @@ class OngoingDeliveryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        //return if no this is not an ongoing delivery
+        //if no current destination, show empty view
         if (sharedViewModel.selectedTrip.value == null || sharedViewModel.selectedSourceOrSite.value == null) {
             var goback = inflater.inflate(R.layout.missing_trip_or_destination, container, false)
             goback.findViewById<Button>(R.id.back_to_homepage).setOnClickListener {
@@ -88,106 +96,151 @@ class OngoingDeliveryFragment : Fragment() {
             false
         )
 
+        val viewModelFactory = OnGoingDeliveryViewModelFactory(
+            requireActivity().application,
+            sharedViewModel.selectedSourceOrSite.value!!
+        )
 
-        //viewModel used by this fragment
-        viewModel = ViewModelProvider(this).get(OngoingDeliveryViewModel::class.java)
+        //getting a view model from a factory
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(OngoingDeliveryViewModel::class.java)
+        viewModel.trailerReading.observe(viewLifecycleOwner) {}
 
         //assigning value to viewModel that is used by the layout
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         currentSourceOrSite = sharedViewModel.selectedSourceOrSite.value!!
-
-
-        if (sharedViewModel.activeRoute !== null) {
-            binding.startNavigation.text =
-                "Continue Navigation"
+        sharedViewModel.activeRoute?.apply {
             binding.startFilling.visibility = View.GONE
+            binding.directions.text = "Continue Navigation"
         }
+
+        if (!sharedViewModel.userClockedIn.value!!) Snackbar.make(
+            binding.root,
+            "Please clock in to continue",
+            Snackbar.LENGTH_LONG
+        )
+            .setAction("Clock In") {
+                requireActivity().bottom_navigation.selectedItemId = R.id.settings_navigation
+            }
+            .show()
 
         binding.startNavigation.setOnClickListener {
-            findNavController().navigate(R.id.navigationFragment)
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
+            else findNavController().navigate(OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToNavigationFragment())
         }
+        viewModel.fillingEnded.observe(viewLifecycleOwner)
+        {
+            if (it) {
+                fuelingEndViews()
 
-
-
+            }
+        }
+        viewModel.getDatabase()
         return binding.root
     }
 
 
+    /**
+     * Observe start fueling
+     * This method observes if the fuel filling is started or not.
+     */
     private fun observeStartFueling() {
         binding.startFilling.setOnClickListener {
-            showFuelConfirmDialog(requireContext())
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
+            else {
+                val preFillingDialog = ReadingPrePostFilling()
+                val args = Bundle()
+                args.putBoolean("isFilling", true)
+                args.putString(
+                    "trailer",
+                    sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+                )
+                args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+                viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
+                preFillingDialog.arguments = args
+                preFillingDialog.show(childFragmentManager, "PreFillingReadings")
+            }
+        }
+        viewModel.fillingStarted.observe(viewLifecycleOwner)
+        {
+            if (it) {
+                viewModel.updateFuelInfo(
+                    currentSourceOrSite.trailerInfo.trailerId,
+                    viewModel.trailerReadingBegin.value!!
+                )
+                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
+                    viewModel.trailerReadingBegin.value!!.toDouble()
+                viewModel.startDateAndTime = Calendar.getInstance()
+                fuelingStartViews()
+            }
         }
     }
 
+    /**
+     * Observe end fueling
+     * This method observes if the fuel filling is ended or not.
+     */
     private fun observeEndFueling() {
         binding.endFilling.setOnClickListener {
-            viewModel.endDateAndTime = Calendar.getInstance()
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
+            else {
+                viewModel.endDateAndTime = Calendar.getInstance()
 
-            var navigateToForm = {
+                val preFillingDialog = ReadingPrePostFilling()
+
+                val args = Bundle()
+                args.putBoolean("isFilling", false)
+                args.putString(
+                    "trailer",
+                    sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.trailerDesc
+                )
+                args.putBoolean("isSite", currentSourceOrSite.wayPointTypeDescription != "Source")
+                args.putInt("requiredQuantity", currentSourceOrSite.productInfo.requestedQty!!)
+
+                viewModel.trailerReading.value?.let { it1 -> args.putInt("trailerReading", it1) }
+                preFillingDialog.arguments = args
+                preFillingDialog.show(childFragmentManager, "PostFillingReadings")
+            }
+        }
+    }
+
+    /**
+     * Get form confirmation
+     * This method records the time and fuel reading and navigates to the form page.
+     * @return a dialog
+     */
+    private fun getFormConfirmation(): CustomDialogBuilder {
+        return CustomDialogBuilder(
+            requireContext(),
+            "Filling Complete",
+            "Fill the form now.",
+            "Ok",
+            {
                 findNavController().navigate(
                     OngoingDeliveryFragmentDirections.actionOngoingDeliveryFragmentToDeliveryCompletionFragment(
                         currentSourceOrSite,
                         viewModel.startDateAndTime,
                         viewModel.endDateAndTime,
+                        viewModel.trailerReadingBegin.value!!,
+                        viewModel.trailerReadingEnd.value!!,
+                        viewModel.meterReadingBegin.value,
+                        viewModel.meterReadingEnd.value,
+                        viewModel.stickReadingBegin.value,
+                        viewModel.stickReadingEnd.value
                     )
                 )
-            }
-
-           val beta =  CustomDialogBuilder(
-               requireContext(),
-               "Filling Complete",
-               "Fill the form now.",
-               "Ok",
-               navigateToForm,
-               "Cancel",
-               null,
-               false
-           )
-
-            var endTime = Calendar.getInstance()
-
-            CustomDialogBuilder(
-                requireContext(),
-                "Sending product delivery/pickup completed message",
-                String.format(
-                    "Time Stamp: %d-%d-%d %d:%d " +
-                            "\nDriver ID: %s " +
-                            "\nTrip ID: %d " +
-                            "\nDestination ID: %d " +
-                            "\nProduct ID: %s " +
-                            "\nStart Time: %d:%d " +
-                            "\nEnd Time: %d:%d " +
-                            "\nGross Qty: %d " +
-                            "\nNet Qty: %d",
-                    endTime.get(Calendar.YEAR),
-                    endTime.get(Calendar.MONTH),
-                    endTime.get(Calendar.DAY_OF_MONTH),
-                    endTime.get(Calendar.HOUR_OF_DAY),
-                    endTime.get(Calendar.MINUTE),
-                    sharedViewModel.driver.driver_id,
-                    sharedViewModel.selectedTrip.value!!.tripId,
-                    currentSourceOrSite.seqNum,
-                    currentSourceOrSite.productInfo.productId,
-                    viewModel.startDateAndTime.get(Calendar.HOUR_OF_DAY),
-                    viewModel.startDateAndTime.get(Calendar.MINUTE),
-                    viewModel.endDateAndTime.get(Calendar.HOUR_OF_DAY),
-                    viewModel.endDateAndTime.get(Calendar.MINUTE),
-                    1000,
-                    1000
-                ),
-
-                "Ok",
-                { beta.builder.show() },
-                null,
-                null,
-                false
-            ).builder.show()
-
-
-        }
+            },
+            "Cancel",
+            null,
+            false
+        )
     }
 
+    /**
+     * Observe destination
+     * This method observes the current source or site for any changes.
+     */
     private fun observeDestination() {
         sharedViewModel.selectedSourceOrSite.observe(viewLifecycleOwner)
         {
@@ -197,82 +250,80 @@ class OngoingDeliveryFragment : Fragment() {
                 binding.currentTrip = sharedViewModel.selectedTrip.value
                 binding.sourceOrSiteInfo.apply {
                     sourceOrSiteName.text = currentSourceOrSite.location.destinationName
-                    address.text = currentSourceOrSite.location.address1
+                    var fullAddress =
+                        "${currentSourceOrSite.location.address1.trim()}, ${currentSourceOrSite.location.city.trim()}, ${currentSourceOrSite.location.stateAbbrev.trim()} ${currentSourceOrSite.location.postalCode}"
+                    address.text = fullAddress
                     productDesc.text = currentSourceOrSite.productInfo.productDesc
-                    productQty.text =
+                    var productQtyText =
                         currentSourceOrSite.productInfo.requestedQty.toString() + " " + currentSourceOrSite.productInfo.uom
+                    productQty.text = productQtyText
+                    truck_text.text = currentSourceOrSite.truckInfo.truckDesc
+                    trailer_text.text = currentSourceOrSite.trailerInfo.trailerDesc
                 }
-                if(it.wayPointTypeDescription == "Source")binding.destinationImage.setImageResource(R.drawable.ic_source)
-                else binding.destinationImage.setImageResource(R.drawable.ic_site)
-
-            }
-        }
-    }
-
-    private fun showFuelConfirmDialog(context: Context) {
-        val input = EditText(context)
-        sharedViewModel.selectedSourceOrSite.value?.trailerInfo?.fuelQuantity?.let {
-            input.setText(it.toString())
-        }
-        input.inputType = InputType.TYPE_CLASS_NUMBER
-        val alert = AlertDialog.Builder(context)
-            .setTitle("Confirm Fuel Quantity")
-            .setView(input)
-            .setMessage("Please enter/confirm the trailer fuel quantity")
-            .setPositiveButton("Submit") { dialog, _ ->
-                viewModel.updateFuelInfo(
-                    currentSourceOrSite.trailerInfo.trailerId,
-                    Integer.parseInt(input.text.toString())
+                if (it.wayPointTypeDescription == "Source") binding.destinationImage.setImageResource(
+                    R.drawable.ic_source
                 )
-                sharedViewModel.selectedSourceOrSite.value!!.trailerInfo.fuelQuantity =
-                    Integer.parseInt(input.text.toString())
-                viewModel.startDateAndTime = Calendar.getInstance()
-                fuelingStartViews()
-                dialog.cancel()
+                else {
+                    binding.siteInfo.visibility = View.VISIBLE
+                    binding.destinationImage.setImageResource(R.drawable.ic_site)
+                    val containerInfo =
+                        htmlToText("<b>Container</b>: " + currentSourceOrSite.siteContainerCode)
+                    binding.siteContainer.text = containerInfo
+                    val containerDesc =
+                        htmlToText("<b>Container Desc</b>: " + currentSourceOrSite.siteContainerDescription)
+                    binding.siteContainerDescription.text = containerDesc
+                    val notes = htmlToText("<b>Notes</b>: " + currentSourceOrSite.productInfo.fill)
+                    binding.loadNotes.text = notes
+                }
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }.create()
-
-        alert.show()
+        }
     }
 
+    /**
+     * Fueling start views
+     * Called when filling starts.
+     */
     private fun fuelingStartViews() {
         binding.startFilling.visibility = View.GONE
         binding.endFilling.visibility = View.VISIBLE
         binding.startNavigation.visibility = View.GONE
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        sharedViewModel.selectedTrip.value?.apply {
-            sharedViewModel.selectedSourceOrSite.value?.apply {
-                val locationRepository = LocationRepository(requireContext())
-                val destination = GeoCoordinates(
-                    currentSourceOrSite.location.latitude,
-                    currentSourceOrSite.location.longitude
-                )
-                locationRepository.coordinates.observe(viewLifecycleOwner)
-                {
-                    if (checkDistanceToDestination(
-                            it,
-                            destination
-                        ) && !viewModel.destinationApproaching
-                    ) {
-                        showDestinationApproachingDialog(requireContext())
-                        viewModel.destinationApproaching = true
-                    }
-                }
-
-
-                (activity as AppCompatActivity).supportActionBar?.title =
-                    sharedViewModel.selectedTrip.value!!.tripName
-                observeDestination()
-                observeStartFueling()
-                observeEndFueling()
-            }
+    /**
+     * Fueling end views
+     * Called when filling ends.
+     */
+    private fun fuelingEndViews() {
+        binding.fillForm.visibility = View.VISIBLE
+        binding.endFilling.visibility = View.GONE
+        binding.fillForm.setOnClickListener {
+            if (showUserNotClockedInMessage(sharedViewModel, binding.root, requireActivity()))
+            else getFormConfirmation().builder.show()
         }
     }
 
+    /**
+     * On view created
+     * This method is called when the view is created
+     * @param view the view that is created
+     * @param savedInstanceState called when fragment is started
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.selectedTrip.value?.apply {
+            sharedViewModel.selectedSourceOrSite.value?.apply {
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    sharedViewModel.selectedTrip.value!!.tripName
+                sharedViewModel.selectedSourceOrSite.value!!.also {
+                    if (it != currentSourceOrSite) {
+                        viewModel.fillingEnded.value = false
+                        viewModel.fillingStarted.value = false
+                    }
+                }
+                if (viewModel.fillingEnded.value!!) fuelingEndViews() else observeEndFueling()
+                if (viewModel.fillingStarted.value!!) fuelingStartViews() else observeStartFueling()
+                observeDestination()
+            }
+        }
+    }
 }

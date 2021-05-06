@@ -8,7 +8,7 @@ import com.fourofourfound.aimsdelivery.R
 
 /**
  * Start call
- *Start an intent to start the call to a
+ * Start an intent to start the call to a
  * specific number
  */
 private fun startCall(context: Context) {
@@ -20,7 +20,7 @@ private fun startCall(context: Context) {
 }
 /**
  * Show dialog
- *method to display the dialog with provider's number
+ * Method to display the dialog with provider's number
  */
 fun showStartCallDialog(context: Context) {
     val dialogView = LayoutInflater.from(context).inflate(
@@ -34,6 +34,6 @@ fun showStartCallDialog(context: Context) {
         { startCall(context) },
         "Cancel",
         null,
-        false
+        true
     ).builder.setView(dialogView).show()
 }

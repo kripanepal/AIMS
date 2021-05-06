@@ -10,26 +10,24 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.fourofourfound.aims_delivery.database.entities.location.CustomDatabaseLocation
-import com.fourofourfound.aims_delivery.database.getDatabase
-import com.fourofourfound.aims_delivery.network.MakeNetworkCall
 import com.fourofourfound.aims_delivery.repository.TripListRepository
-import com.fourofourfound.aims_delivery.utils.checkPermission
-import com.fourofourfound.aims_delivery.utils.getLocationPermissionsToBeChecked
+import com.fourofourfound.aims_delivery.shared_view_models.DeliveryStatusViewModel
+import com.fourofourfound.aims_delivery.utils.*
 import com.fourofourfound.aimsdelivery.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 
 /**
@@ -43,16 +41,50 @@ import kotlinx.coroutines.withContext
  */
 class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params), LocationListener {
+
+    /**
+     * Location manager
+     * The location manager that is responsible for getting the user current location
+     */
     var locationManager: LocationManager =
         appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val database = getDatabase(applicationContext)
+
+    /**
+     * Database
+     * The database of the currently logged in driver
+     */
+    val database = getDatabaseForDriver(applicationContext)
+
+    /**
+     * Repository
+     * The repository which contains information about the trip and destinations
+     */
     private val repository = TripListRepository(database)
+
+    /**
+     * Custom location
+     * The location class that holds the current location coordinates and timestamp of the driver
+     */
     lateinit var customLocation: CustomDatabaseLocation
+
+    /**
+     * Notification builder
+     * The builder that builds the notification
+     */
     lateinit var notificationBuilder: NotificationCompat.Builder
+
+    /**
+     * Notification
+     * The notification the is shown when the required permisson are disabled
+     */
     lateinit var notification: Notification
+
+    /**
+     * Notification manager
+     * The manager that is responsible for showing and hiding notifications
+     */
     private val notificationManager =
-        appContext.getSystemService(NOTIFICATION_SERVICE) as
-                NotificationManager
+        appContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     companion object {
         const val WORK_NAME = "RefreshDataWorker"
@@ -89,14 +121,25 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      * @return Result of the work
      */
     override suspend fun doWork(): Result {
-        Log.i("WORKER", "Running")
+        Log.i("WORKER-WORK", "Running")
+
+        //TODO remove this as it should run in the defined interval. Just for presentation
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
+            CustomWorkManager(applicationContext).apply {
+                sendLocationAndUpdateTrips()
+                sendLocationOnetime()
+            }
+        }, 15000)
+
+
         buildNotification(successTitle, null, null, null, successChannelId)
 
+        //GPS available
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //location permission provided
             if (checkPermission(permissionsToCheck, applicationContext)) {
-
                 initializeLocationManager()
-                var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 location?.apply {
                     setForeground(
                         ForegroundInfo(
@@ -107,13 +150,13 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                     )
                     return sendLocationToServerAndUpdateTrips()
                 }
-                Log.i("WORKER", "Missing location")
+                Log.i("WORKER-WORK", "Missing location")
                 return showMissingPermissionNotification()
             } else {
                 return showMissingPermissionNotification()
             }
         } else {
-            Log.i("WORKER", "GPS not enabled")
+            Log.i("WORKER-WORK", "GPS not enabled")
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             buildNotification(
                 gpsErrorTitle,
@@ -123,13 +166,18 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 errorChannelId
             )
             notificationManager.notify(NOTIFICATION_ID, notification)
-            Log.i("WORKER", "Missing permissions")
+            Log.i("WORKER-WORK", "Missing permissions")
             return Result.failure()
         }
+
     }
 
+    /**
+     * Show missing permission notification
+     * This method shows notification if location permission is missing
+     * @return the result of the work manager (failed)
+     */
     private fun showMissingPermissionNotification(): Result {
-
         val resultIntent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
         buildNotification(
             locationErrorTitle,
@@ -138,9 +186,8 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
             resultIntent,
             errorChannelId
         )
-
         notificationManager.notify(NOTIFICATION_ID, notification)
-        return Result.retry()
+        return Result.failure()
     }
 
     /**
@@ -149,15 +196,25 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
      * and gets updated trip from the server if any
      */
     private suspend fun Location.sendLocationToServerAndUpdateTrips() = try {
-        Log.i("WORKER", "SENDING LOCATION")
+
         customLocation =
-            CustomDatabaseLocation(latitude, longitude, "time")
-        repository.refreshTrips()
-        MakeNetworkCall.retrofitService.sendLocation(customLocation)
+            CustomDatabaseLocation(latitude, longitude, getDateAndTime(Calendar.getInstance()))
+        Log.i("WORKER-WORK", "SENDING LOCATION $customLocation")
+        Log.i("WORKER-WORK", "Refreshing trips")
+        var code: String
+        CustomSharedPreferences(applicationContext).apply {
+            code = getEncryptedPreference("driverCode")
+        }
+        repository.refreshTrips(code)
+        DeliveryStatusViewModel.sendUnsentPickupMessages(database)
+        DeliveryStatusViewModel.sendUnsentPutMessages(database)
+        DeliveryStatusViewModel.sendUnsentLocation(database)
         locationManager.removeUpdates(this@SyncDataWithServer)
+        Log.i("WORKER-WORK", "SUCCESSFUL")
         Result.success()
     } catch (exception: Exception) {
-        Log.i("WORKER", "Failed")
+        Log.i("WORKER-WORK", "Failed")
+        Log.i("WORKER-WORK", exception.message.toString())
         repository.saveLocationToDatabase(customLocation)
         locationManager.removeUpdates(this@SyncDataWithServer)
         Result.failure()
@@ -179,16 +236,21 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
     }
 
+    /**
+     * Build notification
+     * This method is responsible for building a notification
+     * @param title the title of the notification
+     * @param contentText the message of the notification
+     * @param bigText the description of the notification
+     * @param resultIntent the intent that is to be handled when notification is clicked
+     * @param channelId the channel id for the notification
+     */
     private fun buildNotification(
         title: String,
         contentText: String?,
         bigText: String?, resultIntent: Intent?, channelId: String
     ) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(channelId)
-        }
-
+        createNotificationChannel(channelId)
         var resultPendingIntent: PendingIntent? = null
         resultIntent?.apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -196,7 +258,6 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
                 val uri: Uri = Uri.fromParts("package", applicationContext.packageName, null)
                 data = uri
             }
-
             resultPendingIntent = PendingIntent.getActivity(
                 applicationContext,
                 0,
@@ -205,7 +266,7 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         }
         notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
 
-
+        //builds a notification
         notificationBuilder
             .setOngoing(false)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -221,19 +282,19 @@ class SyncDataWithServer(appContext: Context, params: WorkerParameters) :
         notification = notificationBuilder.build()
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
+    /**
+     * Create notification channel
+     * This methods creates the notification channel
+     * @param id the channel id
+     */
     private fun createNotificationChannel(id: String) {
         var name = successChannelName
         var description = successChannelDescription
-        var importance = NotificationManager.IMPORTANCE_DEFAULT
+        var importance = NotificationManager.IMPORTANCE_LOW
         if (id === errorChannelId) {
             name = errorChannelName
             description = errorChannelDescription
-            importance = NotificationManager.IMPORTANCE_DEFAULT
         }
-
-
         val mChannel = NotificationChannel(id, name, importance)
         mChannel.description = description
         notificationManager.createNotificationChannel(mChannel)

@@ -7,45 +7,259 @@
         <variable
             name="viewModel"
             type="com.fourofourfound.aims_delivery.settings.SettingsViewModel" />
+
+        <variable
+            name="driver"
+            type="com.fourofourfound.aims_delivery.network.Driver" />
     </data>
 
-    <LinearLayout
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context="com.fourofourfound.aims_delivery.settings.SettingsFragment">
 
-        <TextView
-            android:id="@+id/download_maps"
-            style="@style/SettingsMenu"
-            android:text="Download Maps"
-            app:drawableStartCompat="@drawable/ic_baseline_download_24" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        <View style="@style/divider" />
+            android:background="@drawable/settings_background"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/help"
-            style="@style/SettingsMenu"
-            android:text="Help"
-            app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
+            <ImageView
+                android:id="@+id/profile_picture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/profile_picture_rounded"
+                android:src="@drawable/ic_profile_picture"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <View style="@style/divider" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                app:layout_constraintTop_toBottomOf="@id/profile_picture" />
 
-        <TextView
-            android:id="@+id/about"
-            style="@style/SettingsMenu"
-            android:text="About"
-            app:drawableStartCompat="@drawable/ic_baseline_about_24" />
+            <TextView
+                android:id="@+id/total_deliveries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="@dimen/app_horizontal_margin"
+                android:text="Total Deliveries"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
 
-        <View style="@style/divider" />
+            <TextView
+                setIntAsString="@{viewModel.totalDeliveriesCompleted.intValue()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/app_horizontal_margin"
+                android:padding="@dimen/app_horizontal_margin"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/view"
+                app:layout_constraintTop_toBottomOf="@+id/total_deliveries"
+                tools:text="100" />
 
-        <TextView
-            android:id="@+id/logout_view"
-            style="@style/SettingsMenu"
-            android:text="Logout"
-            app:drawableStartCompat="@drawable/ic_baseline_logout_24" />
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="50dp"
+                android:background="@color/light_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/total_deliveries"
+                app:layout_constraintRight_toLeftOf="@id/total_trips"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
 
-        <View style="@style/divider" />
+                />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/total_trips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/app_horizontal_margin"
+                android:text="Total Trips"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toRightOf="@+id/total_deliveries"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+            <TextView
+                setIntAsString="@{viewModel.totalTripsCompleted.intValue()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/app_horizontal_margin"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintLeft_toRightOf="@id/view"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total_trips"
+                tools:text="100" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="@dimen/card_elevation"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_constraintLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/card_vertical_margin"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_constraintLayout">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: "
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/driverName"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/driverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{driver.driverName}"
+                    android:textSize="@dimen/text_size_medium"
+
+                    app:layout_constraintLeft_toRightOf="@+id/name"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Driver ID: "
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name" />
+
+                <TextView
+                    android:id="@+id/driverID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{driver.code}"
+                    android:textSize="@dimen/text_size_medium"
+                    app:layout_constraintLeft_toRightOf="@+id/id"
+                    app:layout_constraintTop_toBottomOf="@+id/driverName" />
+
+                <TextView
+                    android:id="@+id/companyIdContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Company ID: "
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/id" />
+
+                <TextView
+                    android:id="@+id/companyId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{driver.companyID+``}"
+                    android:textSize="@dimen/text_size_medium"
+                    app:layout_constraintLeft_toRightOf="@+id/companyIdContainer"
+                    app:layout_constraintTop_toBottomOf="@+id/id" />
+
+                <ImageView
+                    android:id="@+id/clock_animated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/time_animation"
+                    app:layout_constraintBottom_toTopOf="@id/clockInOutBtn"
+                    app:layout_constraintEnd_toEndOf="@+id/clockInOutBtn"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/clockInOutBtn"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/clockInOutBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/Red"
+                    android:text="Clock Out"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clock_animated" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <TextView
+                android:id="@+id/download_maps"
+                style="@style/SettingsMenu"
+                android:text="Download Maps"
+                app:drawableStartCompat="@drawable/ic_baseline_download_24" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                android:id="@+id/help"
+                style="@style/SettingsMenu"
+                android:text="Help"
+                app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                android:id="@+id/about"
+                style="@style/SettingsMenu"
+                android:text="About"
+                app:drawableStartCompat="@drawable/ic_baseline_about_24" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                android:id="@+id/logout_view"
+                style="@style/SettingsMenu"
+                android:text="Logout"
+                app:drawableStartCompat="@drawable/ic_baseline_logout_24" />
+
+            <View style="@style/divider" />
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+   </ScrollView>
 </layout>

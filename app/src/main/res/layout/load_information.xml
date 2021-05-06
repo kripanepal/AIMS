@@ -7,11 +7,16 @@
 
     </data>
 
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment"
-        android:background="?attr/colorSecondaryVariant">
+        android:animateLayoutChanges="true"
+        android:background="?attr/colorSecondaryVariant"
+        tools:context="com.fourofourfound.aims_delivery.homePage.loadInformation.LoadInfoFragment">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pickup_list"
@@ -25,20 +30,31 @@
             tools:listitem="@layout/load_info_each_item" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/start_navigation"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:clickable="true"
-            app:fabCustomSize="75dp"
-            app:layout_constraintBottom_toBottomOf="@+id/pickup_list"
-            app:layout_constraintEnd_toEndOf="@+id/pickup_list"
-            app:layout_constraintHorizontal_bias="0.914"
+        <TextView
+            android:id="@+id/start_trip_text"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="-75dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/circle_fab"
+            android:backgroundTint="@color/Aims_Orange"
+            android:gravity="fill_horizontal|center_vertical"
+            android:paddingHorizontal="20dp"
+
+            android:paddingVertical="10dp"
+            android:text="Start"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:drawableStartCompat="@drawable/ic_delivery"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.94"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pickup_list"
-            app:layout_constraintVertical_bias="0.918"
-            app:srcCompat="@drawable/ic_delivery"
-            app:maxImageSize="45dp"/>
+            app:layout_constraintVertical_bias="0.97" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

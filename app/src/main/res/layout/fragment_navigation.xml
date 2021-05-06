@@ -20,12 +20,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/mapFragmentContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                >
+
+                <fragment
+                    android:id="@+id/mapfragment"
+                    class="com.here.android.mpa.mapping.AndroidXMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+
             <RelativeLayout
                 android:id="@+id/nextInfoContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="14dp"
-                app:layout_constraintBottom_toTopOf="@id/mapFragmentContainer"
+                android:background="?attr/colorSecondaryVariant"
+                android:paddingHorizontal="14dp"
+                android:visibility="gone"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -67,41 +89,24 @@
             </RelativeLayout>
 
 
-            <LinearLayout
-                android:id="@+id/mapFragmentContainer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nextInfoContainer"
-
-                >
-
-                <fragment
-                    android:id="@+id/mapfragment"
-                    class="com.here.android.mpa.mapping.AndroidXMapFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
-
             <ProgressBar
                 android:id="@+id/deliveryProgress"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:background="@android:color/transparent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/nextInfoContainer" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/speedInfoContainer"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="@dimen/botttomSheetPeekHeight"
                 android:background="#FFFFFF"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:paddingBottom="5dp"
                 app:layout_constraintBottom_toBottomOf="@id/mapFragmentContainer"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -110,6 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
+                    android:layout_marginBottom="@dimen/botttomSheetPeekHeight"
                     android:background="@drawable/border"
                     android:gravity="center"
                     android:padding="10dp"
@@ -128,9 +134,10 @@
                     android:gravity="center"
                     android:padding="2dp"
                     android:paddingHorizontal="4dp"
-                    android:text="N/A"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/currentSpeedLimit"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -150,17 +157,16 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <ImageView
-                android:id="@+id/mapRecenterBtn"
-                android:layout_width="36dp"
-                android:layout_height="43dp"
-                android:layout_marginEnd="28dp"
-                android:layout_marginBottom="25dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/recenter" />
+                android:id="@+id/map_recenter"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="@dimen/botttomSheetPeekHeight"
+                android:paddingBottom="5dp"
+                android:src="@drawable/recenter_background"
+                app:layout_constraintBottom_toBottomOf="@id/mapFragmentContainer"
+                app:layout_constraintEnd_toEndOf="parent" />
 
 
             <LinearLayout
@@ -184,51 +190,90 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/draggableView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/colorSecondaryVariant"
             android:orientation="vertical"
-            app:behavior_peekHeight="50dp"
+            app:behavior_peekHeight="@dimen/botttomSheetPeekHeight"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
+
             <View
-                android:layout_marginBottom="25dp"
-                android:layout_width="80dp"
-                android:layout_height="15dp"
+                android:id="@+id/dragger"
+                android:layout_width="40dp"
+                android:layout_height="5dp"
                 android:layout_gravity="center_horizontal"
+                android:background="@drawable/rounded_corneres"
                 android:backgroundTint="@color/Aims_Orange"
-                android:background="@drawable/rounded_corneres" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/start_reached_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorSecondaryVariant"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <include
-                    android:id="@+id/destinationInfo"
-                    layout="@layout/source_or_site_info"
-                    app:layout_constraintStart_toStartOf="parent" />
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <Button
-
-                    android:id="@+id/destinationReached"
+                    android:id="@+id/start_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@id/destinationInfo"
-                    android:layout_margin="10dp"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/rounded_corners_fab"
+                    android:backgroundTint="@color/Aims_Orange"
+                    android:drawableLeft="@drawable/ic_navigate_outline"
+                    android:text="Start"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/remainingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/destinationReached_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corners_fab"
+                    android:backgroundTint="@color/Aims_Orange"
                     android:text="Reached"
-                    app:layout_constraintBottom_toBottomOf="@+id/destinationInfo"
-                    app:layout_constraintEnd_toEndOf="@+id/destinationInfo"
-                    app:layout_constraintTop_toTopOf="@+id/destinationInfo" />
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <include
+                android:id="@+id/destinationInfo"
+                layout="@layout/source_or_site_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_reached_container" />
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -1,43 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
 
     <TextView
         android:id="@+id/sourceOrSiteName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/teko_semibold"
+        android:fontFamily="sans-serif-black"
         android:textColor="@color/Aims_Orange"
-        android:textSize="25dp"
-        android:textStyle="bold" />
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="Monroe Bul " />
+
 
     <TextView
         android:id="@+id/address"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-smallcaps"
         android:paddingBottom="5dp"
-        android:textColor="@color/Aims_light_orange"
-        android:textSize="20dp"
-        android:textStyle="italic" />
+        android:textColor="@color/dark_orange"
+        android:textSize="@dimen/description_text_size"
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.00"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sourceOrSiteName"
+        tool:text="200 Thomas Road " />
+
+
+    <TextView
+        android:id="@+id/product_desc_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product: "
+        android:textSize="@dimen/description_text_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address" />
 
     <TextView
         android:id="@+id/product_desc"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:paddingBottom="5dp"
-        android:textSize="15dp" />
+        android:layout_marginStart="5dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:paddingTop="2dp"
+        android:textSize="@dimen/description_text_size"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/product_qty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/product_desc_container"
+        app:layout_constraintTop_toTopOf="@id/product_desc_container"
+        tool:text="RE687 Gasoline" />
+
+    <TextView
+        android:id="@+id/product_qty_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quantity: "
+        android:textSize="@dimen/description_text_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_desc" />
 
     <TextView
         android:id="@+id/product_qty"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:textSize="15dp" />
+        android:fontFamily="sans-serif-smallcaps"
+        android:textSize="@dimen/description_text_size"
+        android:layout_marginTop="4dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toEndOf="@id/product_qty_container"
+        app:layout_constraintTop_toBottomOf="@id/product_desc"
+        tool:text="1000 GL" />
 
 
+    <TextView
+        android:id="@+id/truck_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Truck: "
+        android:textSize="@dimen/description_text_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_qty_container" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/truck_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textSize="@dimen/description_text_size"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toEndOf="@+id/truck_container"
+        app:layout_constraintTop_toBottomOf="@id/product_qty"
+        tool:text="1000 GL" />
+
+    <TextView
+        android:id="@+id/trailer_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trailer: "
+        android:textSize="@dimen/description_text_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/truck_text" />
+
+    <TextView
+        android:id="@+id/trailer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textSize="@dimen/description_text_size"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintStart_toEndOf="@+id/trailer_container"
+        app:layout_constraintTop_toBottomOf="@id/truck_text"
+        tool:text="1000 GL" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

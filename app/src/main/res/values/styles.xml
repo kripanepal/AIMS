@@ -15,22 +15,13 @@
         <item name="android:inputType">number</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:layout_margin">5dp</item>
-    </style>
-
-    <style name="roundedImageView">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">15dp</item>
+        <item name="android:layout_marginHorizontal">15dp</item>
     </style>
 
     <style name="cardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">15dp</item>
-    </style>
-
-    <style name="CustomDialog" parent="android:Theme.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="SettingsMenu">
@@ -47,7 +38,18 @@
     <style name="divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">?attr/colorOnSecondary</item>
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
     </style>
+
+    <style name="textSizeDeliveryCompleted">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="textColorBlack">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

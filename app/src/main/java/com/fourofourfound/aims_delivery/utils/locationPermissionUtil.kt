@@ -3,10 +3,7 @@ package com.fourofourfound.aims_delivery.utils
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.fourofourfound.aims_delivery.MainActivity
 
@@ -18,7 +15,16 @@ import com.fourofourfound.aims_delivery.MainActivity
  */
 class BackgroundLocationPermissionUtil(var context: Context) {
 
+    /**
+     * Permission missing dialog
+     * The dialog that is shown when location permission is missing
+     */
     lateinit var permissionMissingDialog: AlertDialog
+
+    /**
+     * Permissions to check
+     * The list of permission that are to be checked
+     */
     private var permissionsToCheck = getLocationPermissionsToBeChecked()
 
     init {
@@ -26,22 +32,8 @@ class BackgroundLocationPermissionUtil(var context: Context) {
     }
 
     /**
-     * Take to Permission Screen Intent
-     * This method takes the user to the permission settings screen
-     *
-     * @return permission setting intent
-     */
-    private fun takeToPermissionScreenIntent(): Intent {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val uri: Uri = Uri.fromParts("package", context.packageName, null)
-        intent.data = uri
-        return (intent)
-    }
-
-    /**
      * On permission selected
-     * This method is called everytime the permission for the
+     * This method is called every time the permission for the
      * application is changed
      */
     fun onPermissionSelected() {
@@ -58,7 +50,6 @@ class BackgroundLocationPermissionUtil(var context: Context) {
      * Check Permission On Start
      * This method shows the permission missing dialog on the startup
      * if the permission is not granted.
-     *
      */
     fun checkPermissionsOnStart() {
         val tempPermissionList = permissionsToCheck.toMutableList()
@@ -83,7 +74,7 @@ class BackgroundLocationPermissionUtil(var context: Context) {
             "Please provide background location access all the time. " +
                     "This app uses background location to track the delivery",
             "Enable location",
-            { context.startActivity(takeToPermissionScreenIntent()) },
+            { context.startActivity(takeToPermissionScreenIntent(context)) },
             null,
             null,
             false

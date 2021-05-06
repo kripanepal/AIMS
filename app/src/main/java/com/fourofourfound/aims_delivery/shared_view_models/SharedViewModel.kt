@@ -3,15 +3,11 @@ package com.fourofourfound.aims_delivery.shared_view_models
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.fourofourfound.aims_delivery.database.entities.Driver
-import com.fourofourfound.aims_delivery.database.getDatabase
+import com.fourofourfound.aims_delivery.broadcastReceiver.NetworkChangedBroadCastReceiver
 import com.fourofourfound.aims_delivery.domain.SourceOrSite
 import com.fourofourfound.aims_delivery.domain.Trip
+import com.fourofourfound.aims_delivery.network.Driver
 import com.fourofourfound.aims_delivery.utils.CheckInternetConnection
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Shared View Model
@@ -23,22 +19,63 @@ import kotlinx.coroutines.withContext
  * @param application the applicationContext which created this viewModel
  */
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
-    var userLoggedIn = MutableLiveData(false)
-    var isLocationBroadcastReceiverInitialized: Boolean = false
-    var activeRoute: com.here.android.mpa.routing.Route? = null
-    var selectedTrip = MutableLiveData<Trip>()
-    var selectedSourceOrSite = MutableLiveData<SourceOrSite>()
-    val internetConnection = CheckInternetConnection(application)
-    val loading = MutableLiveData(false)
-    lateinit var driver: Driver
 
-    fun getDriver(application: Application) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-               getDatabase(application).driverDao.getDriver()?.apply {
-                    driver = this
-                }
-            }
-        }
-    }
+    /**
+     * Worker started
+     * The flag to check if the worker is started or not.
+     */
+    var workerStarted: Boolean = false
+
+    /**
+     * User logged in
+     * The live data that keeps track of the user logged in status
+     */
+    var userClockedIn = MutableLiveData(false)
+
+    /**
+     * Is location broadcast receiver initialized
+     * It keeps  track of the broadcast receiver state
+     */
+    var broadCastReceiver = NetworkChangedBroadCastReceiver()
+
+    var broadCastReceiverInitialized = false
+
+    /**
+     * Active route
+     * The current route in the application if the application is in navigation
+     */
+    var activeRoute: com.here.android.mpa.routing.Route? = null
+
+    /**
+     * Selected trip
+     * The live data that keeps track of the current trip
+     */
+    var selectedTrip = MutableLiveData<Trip?>()
+
+    /**
+     * Selected source or site
+     * The live data that keep track of current destination
+     */
+    var selectedSourceOrSite = MutableLiveData<SourceOrSite>()
+
+    /**
+     * Internet connection
+     * It keeps track of the internet connection state
+     */
+    val internetConnection = CheckInternetConnection(application)
+
+    /**
+     * Loading
+     * The live data that tells the application whether the loading animation needs to
+     * be shown or not.
+     */
+    val loading = MutableLiveData(false)
+
+    /**
+     * Driver
+     * The current driver who is logged into the app.
+     */
+    var driver: Driver? = null
+
+
 }

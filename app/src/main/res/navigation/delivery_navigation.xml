@@ -10,8 +10,19 @@
 
         android:label="Current Trip">
         <action
-            android:id="@+id/action_ongoingDeliveryFragment_to_deliveryCompletionFragment"
-            app:destination="@id/deliveryCompletionFragment" />
+            android:id="@+id/actionOngoingDeliveryFragmentToDeliveryCompletionFragment"
+            app:destination="@id/deliveryCompletionFragment"
+            app:enterAnim="@anim/push_up_in"
+            app:exitAnim="@anim/push_up_out"
+            app:popEnterAnim="@anim/push_down_in"
+            app:popExitAnim="@anim/push_down_out" />
+        <action
+            android:id="@+id/action_ongoingDeliveryFragment_to_navigationFragment"
+            app:destination="@id/navigationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/push_down_in"
+            app:popExitAnim="@anim/push_down_out" />
     </fragment>
     <fragment
         android:id="@+id/navigationFragment"
@@ -19,7 +30,7 @@
         android:label="Navigation" />
     <fragment
         android:id="@+id/deliveryCompletionFragment"
-        android:name="com.fourofourfound.aims_delivery.deliveryCompletionForm.DeliveryCompletionFragment"
+        android:name="com.fourofourfound.aims_delivery.deliveryForms.finalForm.BOLFormFragment"
         android:label="Form">
         <argument
             android:name="sourceOrSite"
@@ -33,7 +44,30 @@
         <action
             android:id="@+id/action_deliveryCompletionFragment_to_ongoingDeliveryFragment"
             app:destination="@id/ongoingDeliveryFragment"
-            app:popUpTo="@id/ongoingDeliveryFragment" />
+            app:popUpTo="@id/ongoingDeliveryFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="trailerBeginReading"
+            app:argType="java.lang.Double" />
+        <argument
+            android:name="trailerEndReading"
+            app:argType="java.lang.Double" />
+        <argument
+            android:name="meterBeginReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument
+            android:name="meterEndReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument
+            android:name="stickBeginReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
+        <argument
+            android:name="stickEndReading"
+            app:argType="java.lang.Double"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
